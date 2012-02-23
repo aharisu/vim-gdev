@@ -20,8 +20,6 @@
 (define (display-std . x) (display-port x (standard-output-port)))
 (define (display-err . x) (display-port x (standard-error-port)))
 
-
-
 ;;---------------------
 ;;Functions related to state
 ;;---------------------
@@ -60,33 +58,16 @@
 ;;---------------------
 ;;Functions related to doccument
 ;;---------------------
-(define *docs*  '())
-(define (update-doc doc)
-  (set! *docs* (cons doc
-                     (remove! (lambda (d) (equal? (ref doc 'name) (ref d 'name)))
-                              *docs*))))
-
-(define (load-info loader)
-  (guard (e [(<geninfo-warning> e) (print-err "Error: " (ref e 'message))])
-    (update-doc (loader))))
-
-(define (match-unit-list cmp)
-  (append-map
-    (lambda (doc)
-      (filter
-        (lambda (unit) (cmp (ref unit 'name)))
-        (ref doc 'units)))
-    *docs*))
-
-(define (unit-candidate-list text)
-  (match-unit-list
-    (let1 len (string-length text)
-      (lambda (name)
-        (and (<= len (string-length name))
-          (string=? text (substring name 0 len)))))))
-
-(define (exact-match-unit-list text)
-  (match-unit-list (cut string=? text <>)))
+(define loaded-doc-names  '())
+(define (load-info loader name update?)
+  (guard (e [else #f]) ;catch all error
+    (let1 loaded? (any (cut equal? <> name) loaded-doc-names)
+      (if (or update? (not loaded?))
+        (let1 doc (loader)
+          (when (not loaded?) 
+            (set! loaded-doc-names (cons (ref doc 'name) loaded-doc-names)))
+          doc)
+        #f))))
 
 ;;
 ;;
@@ -107,32 +88,42 @@
                       (substring path 1 (string-length path))))
         path))))
 
+(define (filter-cons car cdr)
+  (if car
+    (cons car cdr)
+    cdr))
+
 (define (load-from-texts texts name)
   ;;TODO
   (define (get-load-path op) (map to-abs-path *load-path*))
-  (with-input-from-string 
-    texts
-    (pa$ port-for-each
-         (lambda (e)
-           (match e
-             [(or ('use (? symbol? name) op ...) 
-                ('import ((? symbol? name) op ...)))
-              (load-info (pa$ geninfo name))]
-             [('import (? symbol? name)) 
-              (load-info (pa$ geninfo (string->symbol name)))]
-             [('load (? string? file) op ...) 
-              (let* ([load-path (get-load-path op)]
-                     [path (find-file-in-paths (if (path-extension file)
-                                                   file
-                                                   (path-swap-extension file "scm"))
-                                               :paths load-path
-                                               :pred file-is-readable?)])
-                (when path
-                  (load-info (pa$ geninfo path))))]
-             ;;do nothing
-             [else #t]))
-         guarded-read))
-  (load-info (pa$ geninfo-from-text texts name)))
+  (filter-cons 
+    (load-info (pa$ geninfo-from-text texts name) name #t)
+    (with-input-from-string 
+      texts
+      (pa$ port-fold
+           (lambda (e acc)
+             (filter-cons (match e
+                            [(or ('use (? symbol? name) op ...) 
+                               ('import ((? symbol? name) op ...)))
+                             (load-info (pa$ geninfo name) name #f)]
+                            [('import (? symbol? name)) 
+                             (load-info (pa$ geninfo (string->symbol name)) 
+                                        (string->symbol name) #f)]
+                            [('load (? string? file) op ...) 
+                             (let* ([load-path (get-load-path op)]
+                                    [path (find-file-in-paths (if (path-extension file)
+                                                                file
+                                                                (path-swap-extension file "scm"))
+                                                              :paths load-path
+                                                              :pred file-is-readable?)])
+                               (if path
+                                 (load-info (pa$ geninfo path) path #f)
+                                 #f))]
+                            ;;do nothing
+                            [else #f])
+                          acc))
+           '()
+           guarded-read))))
 
 (let ([name #f]
       [texts #f])
@@ -146,14 +137,14 @@
                     (set! texts (string-append texts "\n" line))))
                 (lambda () ;exit execution
                   ;;load info from text
-                  (load-from-texts texts name)
+                  (output-unit-list (load-from-texts texts name) #t)
                   (set! name #f)
-                  (set! texts #f))))
+                  (set! texts #f)
+                  )))
 
 (define-cmd stdin
             (lambda (num) (eq? 1 num))
-            (lambda (name)
-              (cons 'read-texts (list name))))
+            (lambda (name) (cons 'read-texts (list name))))
 
 (define-class <json-context> (<convert-context>) ())
 
@@ -195,41 +186,45 @@
   (display-std (string-append
                  ",\"supers\":[" (make-list-text (ref unit 'supers))"],"
                  "\"slots\":[" (make-params-text (ref unit 'slots)) "]"))
-
   )
 
+(define-method output ((c <json-context>) (doc <doc>))
+  (display-std (string-append
+                 "\"name\":\"" (x->string (ref doc 'name)) "\","
+                 "\"units\":"))
+  (output-unit-list (ref doc 'units) #f))
+
+
 (define-constant *json-context* (make <json-context>))
-(define (output-unit-list unit-list)
+(define (output-unit-list unit-list newline?)
   (display-std "[")
   (unless (null? unit-list)
     (display-std "{")
     (output *json-context* (car unit-list))
-    (display-std "}"))
-  (for-each
-    (lambda (u)
-      (display-std ",{")
-      (output *json-context* u)
-      (display-std "}"))
-    (cdr unit-list))
-  (print-std "]"))
+    (display-std "}")
+    (for-each
+      (lambda (u)
+        (display-std ",{")
+        (output *json-context* u)
+        (display-std "}"))
+      (cdr unit-list)))
+  (display-std "]")
+  (when newline?
+    (newline)
+    (flush)))
 
 ;;
 ;;definination of initial state
 (define-state init
               (lambda ())
               (lambda (line)
-                (if (eq? (string-ref line 0) #\#)
-                  (let* ([tokens (string-split line #[\s])]
-                         [cmd (get-command (car tokens))])
-                    (if cmd
-                      (if ((cmd-valid-arg cmd) (length (cdr tokens)))
-                        (apply (cmd-exec cmd) (cdr tokens))
-                        (print-err "Invalid argument.")) 
-                      (print-err (format #f "Unkown command [~a]." line))))
-                  (let1 units (unit-candidate-list line)
-                    (if (null? units)
-                      (print-err "Not found.")
-                      (output-unit-list units)))))
+                (let* ([tokens (string-split line #[\s])]
+                       [cmd (get-command (car tokens))])
+                  (if cmd
+                    (if ((cmd-valid-arg cmd) (length (cdr tokens)))
+                      (apply (cmd-exec cmd) (cdr tokens))
+                      (print-err "Invalid argument.")) 
+                    (print-err (format #f "Unkown command [~a]." line)))))
               (lambda ()))
   
 

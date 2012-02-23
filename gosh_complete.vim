@@ -5,6 +5,8 @@ let s:source = {
       \}
 
 let s:gosh_complete_path = get(g:, 'gosh_complete_path', expand("<sfile>:p:h") . "/gosh_complete.scm")
+let s:async_task_queue = []
+let s:word_list = []
 
 function! s:source.initialize()
   if neocomplcache#util#has_vimproc()
@@ -13,7 +15,10 @@ function! s:source.initialize()
 
     augroup neocomplcache
       autocmd FileType scheme call s:doc_parce_proc()
-      autocmd CursorHold * call s:doc_parce_proc()
+      autocmd CursorHold * call s:cursor_handler('hold')
+      autocmd CursorHoldI * call s:cursor_handler('holdi')
+      autocmd CursorMoved * call s:cursor_handler('move')
+      autocmd CursorMovedI * call s:cursor_handler('movei')
     augroup END
 
     call s:doc_parce_proc()
@@ -41,10 +46,8 @@ endfunction
 
 function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str)
   if s:enable
-    let units = s:get_unit_list(a:cur_keyword_str)
-
-    call map(units, '{"word" : v:val["name"], "menu" : "[gosh]"}')
-    return units
+    "It is not necessary to copy?
+    return neocomplcache#keyword_filter(copy(s:word_list), a:cur_keyword_str)
   elseif
     return []
   endif
@@ -53,6 +56,61 @@ endfunction
 function! neocomplcache#sources#gosh_complete#define()
   return s:source
 endfunction 
+
+function! s:cursor_handler(type)
+  "call neocomplcache#print_warning(a:type)
+
+  call s:check_async_task()
+endfunction
+
+function! s:add_doc_list(docs)
+  let comp_word_list = []
+  let doc_name_list = []
+
+  for doc in a:docs
+    let units = doc["units"]
+    call map(units, '{"word":v:val["name"], 
+          \ "menu":"[" . s:get_unit_module_name(doc["name"])  . "]",  
+          \ "kind": s:get_unit_type_kind(v:val["type"]),  "module" : doc["name"]}')
+
+    call extend(comp_word_list, units)
+    call add(doc_name_list, doc["name"])
+  endfor
+
+  call filter(s:word_list, '!s:any_doc_name(doc_name_list, v:val)')
+  call extend(s:word_list, comp_word_list)
+endfunction
+
+function! s:any_doc_name(name_list, word)
+  for name in a:name_list
+    if a:word["module"] ==# name
+      return 1
+    endif
+  endfor
+  return 0
+endfunction
+
+function! s:get_unit_type_kind(type)
+  if a:type ==# 'Function'
+    return 'f'
+  elseif a:type ==# 'var'|| a:type ==# 'Constant' || a:type ==# 'Parameter'
+    return 'v'
+  elseif a:type ==# 'Method'
+    return 'm'
+  elseif a:type ==# 'Class'
+    return 'c'
+  else
+    return ''
+  endif
+endfunction
+
+function! s:get_unit_module_name(module)
+  if match(a:module, '^#') == -1
+    return a:module
+  else
+    return fnamemodify(a:module[2 :], ':t:r')
+  endif
+endfunction
 
 "
 " Communicate to gosh-complete.scm
@@ -66,72 +124,68 @@ function! s:finale_proc()
   call s:gosh_comp.waitpid()
 endfunction
 
-function! s:get_unit_list(symbol)
-  call s:gosh_comp.stdin.write(a:symbol . "\n")
-
-  let [out, err] = s:read_output(s:gosh_comp)
-  if !empty(err)
-    "error
-    return []
-  endif
-  
-  "ok without a check?
-  return  eval(strpart(out, 0, strlen(out) - 1))
-endfunction
-
 function! s:doc_parce_proc()
-  call s:gosh_comp.stdin.write("#stdin " . bufnr('%') . "\n")
-  call s:gosh_comp.stdin.write(join(getline(1, line('$')), "\n") . "\n")
-  call s:gosh_comp.stdin.write("#stdin-eof\n")
-  call s:check_error()
+  let bufnumber = bufnr('%')
+  let filename = bufname(bufnumber)
+  if empty(filename)
+    let filename = '[No Name]'
+  endif
+
+  call s:add_async_task("#stdin #" . bufnumber . filename . "\n" .
+        \ join(getbufline('%', 1, '$'), "\n") . "\n" .
+        \ "#stdin-eof\n", 
+        \ function('s:doc_parce_proc_end_callback'))
 endfunction
 
-function! s:check_error()
-  let [out, err] = s:read_output(s:gosh_comp)
+function! s:doc_parce_proc_end_callback(out, err)
+  call neocomplcache#print_warning("end parse")
 
-  if empty(err)
-    return 0
-  else
-    call neocomplcache#print_warning("error:" . err)
-    return 1
+  if !empty(a:out)
+    let docs = eval(strpart(a:out, 0, strlen(a:out) - 1))
+    call s:add_doc_list(docs)
   endif
 endfunction
 
-let s:retry_count = 3
-function! s:read_output(proc)
-  let c = 0
+function! s:add_async_task(text, callback)
+  if empty(s:async_task_queue)
+    call s:gosh_comp.stdin.write(a:text)
+    call add(s:async_task_queue, [a:callback])
+  else
+    call add(s:async_task_queue, [a:text, a:callback])
+  endif
+endfunction
 
-  let res_out = a:proc.stdout.read()
-  let res_err = a:proc.stderr.read()
-  while c < s:retry_count
-    if empty(res_out) && empty(res_err)
-      let c += 1
-    elseif !empty(res_out)
-      let port = a:proc.stdout
-      let out = res_out
-      let port_kind = 1
-      break
-    else
-      let port = a:proc.stderr
-      let out = res_err
-      let port_kind = 0
-      break
+function! s:check_async_task()
+  if empty(s:async_task_queue)
+    return
+  endif
+
+  let out = s:read_output_one_try(s:gosh_comp.stdout)
+  let err = ""
+  if empty(out)
+    let err = s:read_output_one_try(s:gosh_comp.stderr)
+  endif
+
+  if !empty(out) || !empty(err)
+    let [Callback] = remove(s:async_task_queue, 0)
+    call Callback(out, err)
+
+    "execution next task
+    let task = get(s:async_task_queue, 0)
+    if task isnot 0
+      call s:gosh_comp.stdin.write(task[0])
+      call remove(task, 0)
     endif
-
-    let res_out = a:proc.stdout.read()
-    let res_err = a:proc.stderr.read()
-  endwhile
-
-  if exists('port')
-    let res_out = port.read()
-    while !empty(res_out)
-      let out .= res_out
-      let res_out = port.read()
-    endwhile
-
-    return port_kind ? [out, ""] : ["", out]
-  else
-    return ["", ""]
   endif
+endfunction
+
+function! s:read_output_one_try(port)
+  let out = ""
+  let res = a:port.read()
+  while !empty(res)
+    let out .= res
+    let res = a:port.read()
+  endwhile
+  return out
 endfunction
 
