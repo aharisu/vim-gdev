@@ -71,7 +71,9 @@ function! s:add_doc_list(docs)
     let units = doc["units"]
     call map(units, '{"word":v:val["name"], 
           \ "menu":"[" . s:get_unit_module_name(doc["name"])  . "]",  
-          \ "kind": s:get_unit_type_kind(v:val["type"]),  "module" : doc["name"]}')
+          \ "kind": s:get_unit_type_kind(v:val["type"]),  
+          \ "info" : s:get_unit_info(v:val),
+          \ "module" : doc["name"]}')
 
     call extend(comp_word_list, units)
     call add(doc_name_list, doc["name"])
@@ -110,6 +112,24 @@ function! s:get_unit_module_name(module)
   else
     return fnamemodify(a:module[2 :], ':t:r')
   endif
+endfunction
+
+function! s:get_unit_info(unit)
+
+  let type = a:unit["type"]
+  if type ==# 'Function' || type ==# 'Method'
+    let info = "(" . a:unit["name"] .  " " . join(map(a:unit["params"], 'v:val["name"]'), ' ') . ")"
+  elseif type ==# 'Class'
+    let info = a:unit["name"] .  " :" . join(map(a:unit["slots"], 'v:val["name"]'), ' :')
+  else
+    let info = a:unit["name"]
+  endif
+    
+  if !empty(a:unit["description"])
+    let info .= "\n" . a:unit["description"]
+  endif
+
+  return info
 endfunction
 
 "
