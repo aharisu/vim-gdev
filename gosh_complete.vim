@@ -15,14 +15,15 @@ function! s:source.initialize()
     call s:init_proc()
 
     augroup neocomplcache
-      autocmd FileType scheme call s:doc_parce_proc()
+      autocmd FileType scheme call s:parse_cur_buf()
       autocmd CursorHold * call s:cursor_handler('hold')
       autocmd CursorHoldI * call s:cursor_handler('holdi')
       autocmd CursorMoved * call s:cursor_handler('move')
       autocmd CursorMovedI * call s:cursor_handler('movei')
     augroup END
 
-    call s:doc_parce_proc()
+    call s:load_defualt_module()
+    call s:parse_cur_buf()
   elseif
     let s:enable = 0
     call neocomplcache#print_error("don't has vimproc")
@@ -146,7 +147,21 @@ function! s:finale_proc()
   call s:gosh_comp.waitpid()
 endfunction
 
-function! s:doc_parce_proc()
+function! s:load_defualt_module()
+  call s:add_async_task("#load-defualt-module\n", 
+        \ function('s:load_defualt_module_end_callback'))
+endfunction
+
+function! s:load_defualt_module_end_callback(out, err)
+  call neocomplcache#print_warning("end defualt parse")
+
+  if !empty(a:out)
+    let docs = eval(strpart(a:out, 0, strlen(a:out) - 1))
+    call s:add_doc_list(docs)
+  endif
+endfunction
+
+function! s:parse_cur_buf()
   let bufnumber = bufnr('%')
   let filename = bufname(bufnumber)
   if empty(filename)
@@ -156,10 +171,10 @@ function! s:doc_parce_proc()
   call s:add_async_task("#stdin #" . bufnumber . filename . "\n" .
         \ join(getbufline('%', 1, '$'), "\n") . "\n" .
         \ "#stdin-eof\n", 
-        \ function('s:doc_parce_proc_end_callback'))
+        \ function('s:parce_cur_buf_end_callback'))
 endfunction
 
-function! s:doc_parce_proc_end_callback(out, err)
+function! s:parce_cur_buf_end_callback(out, err)
   call neocomplcache#print_warning("end parse")
 
   if !empty(a:out)
