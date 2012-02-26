@@ -70,7 +70,7 @@
       (if (or update? (not loaded?))
         (let1 doc (loader)
           (when (not loaded?) 
-            (set! loaded-doc-names (cons (ref doc 'name) loaded-doc-names)))
+            (set! loaded-doc-names (cons name loaded-doc-names)))
           doc)
         #f))))
 
@@ -109,7 +109,9 @@
   ;;TODO
   (define (get-load-path op) (map to-abs-path *load-path*))
   (filter-cons 
-    (load-info (pa$ geninfo-from-text texts name) name #t)
+    (let1 doc (load-info (pa$ geninfo-from-text texts name) name #t)
+      (print-err doc)
+      doc)
     (with-input-from-string 
       texts
       (pa$ port-fold
@@ -166,6 +168,16 @@
                   (lambda (m) (load-info (pa$ geninfo (alt-geninfo-file m)) m #t))
                   default-module)
                 #t)))
+
+(define-cmd load-file
+            (lambda (num) (and (<= 1 num) (<= num 2)))
+            (lambda (file :optional name)
+              (let1 name (if (undefined? name) file name)
+                (output-unit-list
+                  (let1 doc (load-info (pa$ geninfo file) name #t)
+                    (slot-set! doc 'name name)
+                    (cons doc '()))
+                  #t))))
 
 
 (define-class <json-context> (<convert-context>) ())
