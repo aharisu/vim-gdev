@@ -7,7 +7,7 @@
 (use ginfo)
 
 
-(define-constant default-module '(null gauche scheme))
+(define-constant default-module '(gauche scheme null))
 (define generated-doc-directory #f)
 
 ;;---------------------
@@ -69,10 +69,41 @@
     (let1 loaded? (any (cut equal? <> name) loaded-doc-names)
       (if (or update? (not loaded?))
         (let1 doc (loader)
+          (slot-set! doc 'name name)
           (when (not loaded?) 
             (set! loaded-doc-names (cons name loaded-doc-names)))
-          doc)
-        #f))))
+          (cons name doc))
+        (cons name #f)))))
+
+(define (output-order order)
+  (display-std "[")
+  (unless (null? order)
+    (display-std "\"")
+    (display-std (car order))
+    (display-std "\"")
+    (for-each
+      (lambda (m)
+        (display-std ",\"")
+        (display-std m)
+        (display-std "\""))
+      (cdr order)))
+  (display-std "]"))
+
+(define (output-result name-and-docs)
+  (let1 order-and-docs (fold
+                         (lambda (d acc)
+                           (cons
+                             (cons (car d) (car acc))
+                             (filter-cons (cdr d) (cdr acc))))
+                         (cons '() '())
+                         name-and-docs)
+    (display-std "{")
+    (display-std "\"order\":")
+    (output-order (car order-and-docs))
+    (display-std ",")
+    (display-std "\"docs\":")
+    (output-unit-list (cdr order-and-docs))
+    (print-std "}")))
 
 ;;
 ;;
@@ -105,39 +136,35 @@
               generated-doc-path
               module)))
 
-(define (load-from-texts texts name)
+(define (parse-related-module port)
   ;;TODO
   (define (get-load-path op) (map to-abs-path *load-path*))
-  (filter-cons 
-    (let1 doc (load-info (pa$ geninfo-from-text texts name) name #t)
-      (print-err doc)
-      doc)
-    (with-input-from-string 
-      texts
-      (pa$ port-fold
-           (lambda (e acc)
-             (filter-cons (match e
-                            [(or ('use (? symbol? name) op ...) 
-                               ('import ((? symbol? name) op ...)))
-                             (load-info (pa$ geninfo (alt-geninfo-file name)) name #f)]
-                            [('import (? symbol? name)) 
-                             (load-info (pa$ geninfo (alt-geninfo-file (string->symbol name))) 
-                                        (string->symbol name) #f)]
-                            [('load (? string? file) op ...) 
-                             (let* ([load-path (get-load-path op)]
-                                    [path (find-file-in-paths (if (path-extension file)
-                                                                file
-                                                                (path-swap-extension file "scm"))
-                                                              :paths load-path
-                                                              :pred file-is-readable?)])
-                               (if path
-                                 (load-info (pa$ geninfo path) path #f)
-                                 #f))]
-                            ;;do nothing
-                            [else #f])
-                          acc))
-           '()
-           guarded-read))))
+  (with-input-from-port
+    port
+    (pa$ port-fold
+         (lambda (e acc)
+           (filter-cons (match e
+                          [(or ('use (? symbol? name) op ...) 
+                             ('import ((? symbol? name) op ...)))
+                           (load-info (pa$ geninfo (alt-geninfo-file name)) name #f)]
+                          [('import (? symbol? name)) 
+                           (load-info (pa$ geninfo (alt-geninfo-file (string->symbol name))) 
+                                      (string->symbol name) #f)]
+                          [('load (? string? file) op ...) 
+                           (let* ([load-path (get-load-path op)]
+                                  [path (find-file-in-paths (if (path-extension file)
+                                                              file
+                                                              (path-swap-extension file "scm"))
+                                                            :paths load-path
+                                                            :pred file-is-readable?)])
+                             (if path
+                               (load-info (pa$ geninfo path) path #f)
+                               #f))]
+                          ;;do nothing
+                          [else #f])
+                        acc))
+         '()
+         guarded-read)))
 
 (let ([name #f]
       [texts #f])
@@ -150,8 +177,10 @@
                     (cons 'init '())
                     (set! texts (string-append texts "\n" line))))
                 (lambda () ;exit execution
-                  ;;load info from text
-                  (output-unit-list (load-from-texts texts name) #t)
+                  (output-result
+                    (cons
+                      (load-info (pa$ geninfo-from-text texts name) name #t)
+                      (parse-related-module (open-input-string texts))))
                   (set! name #f)
                   (set! texts #f)
                   )))
@@ -163,21 +192,19 @@
 (define-cmd load-defualt-module
             (lambda (num) (zero? num))
             (lambda ()
-              (output-unit-list 
+              (output-result 
                 (map
                   (lambda (m) (load-info (pa$ geninfo (alt-geninfo-file m)) m #t))
-                  default-module)
-                #t)))
+                  default-module))))
 
 (define-cmd load-file
             (lambda (num) (and (<= 1 num) (<= num 2)))
             (lambda (file :optional name)
               (let1 name (if (undefined? name) file name)
-                (output-unit-list
-                  (let1 doc (load-info (pa$ geninfo file) name #t)
-                    (slot-set! doc 'name name)
-                    (cons doc '()))
-                  #t))))
+                (output-result
+                  (cons
+                    (load-info (pa$ geninfo file) name #t)
+                    (call-with-input-file file parse-related-module))))))
 
 
 (define-class <json-context> (<convert-context>) ())
@@ -226,11 +253,11 @@
   (display-std (string-append
                  "\"name\":\"" (x->string (ref doc 'name)) "\","
                  "\"units\":"))
-  (output-unit-list (ref doc 'units) #f))
+  (output-unit-list (ref doc 'units)))
 
 
 (define-constant *json-context* (make <json-context>))
-(define (output-unit-list unit-list newline?)
+(define (output-unit-list unit-list)
   (display-std "[")
   (unless (null? unit-list)
     (display-std "{")
@@ -242,10 +269,7 @@
         (output *json-context* u)
         (display-std "}"))
       (cdr unit-list)))
-  (display-std "]")
-  (when newline?
-    (newline)
-    (flush)))
+  (display-std "]"))
 
 ;;
 ;;definination of initial state
