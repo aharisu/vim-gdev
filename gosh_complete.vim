@@ -148,10 +148,12 @@ function! s:check_word_duplicates(word_list)
     let name = word["word"]
     if has_key(check_table, name)
       let dup_word = check_table[name]
-      if empty(dup_word["info"])
-        let dup_word["info"] = word["info"]
-      elseif !empty(word["info"])
-        let dup_word["info"] .= "\nAlt: " . word["info"]
+      if word["info"] !=# dup_word["info"]
+        if empty(dup_word["info"])
+          let dup_word["info"] = word["info"]
+        elseif !empty(word["info"])
+          let dup_word["info"] .= "\nAlt: " . word["info"]
+        endif
       endif
     else
       let check_table[name] = word
