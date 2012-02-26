@@ -72,7 +72,7 @@ function! s:add_doc_list(docs)
   for doc in a:docs
     let units = doc["units"]
     call map(units, '{"word":v:val["name"], 
-          \ "menu":"[" . s:get_unit_module_name(doc["name"])  . "]",  
+          \ "menu": s:get_unit_menu(doc["name"]),
           \ "kind": s:get_unit_type_kind(v:val["type"]),  
           \ "info" : s:get_unit_info(v:val),
           \ "module" : doc["name"]}')
@@ -109,19 +109,26 @@ function! s:get_unit_type_kind(type)
   endif
 endfunction
 
-function! s:get_unit_module_name(module)
+function! s:get_unit_menu(module)
+  let text = '[gosh] '
   if match(a:module, '^#') == -1
-    return a:module
+    let text .= fnamemodify(a:module, ':t')
   else
-    return fnamemodify(a:module[2 :], ':t:r')
+    let text .= fnamemodify(a:module[2 :], ':t:r')
   endif
+  return text
 endfunction
 
 function! s:get_unit_info(unit)
 
   let type = a:unit["type"]
   if type ==# 'Function' || type ==# 'Method'
-    let info = "(" . a:unit["name"] .  " " . join(map(a:unit["params"], 'v:val["name"]'), ' ') . ")"
+    let info = "(" . a:unit["name"]
+    let params = join(map(a:unit["params"], 'v:val["name"]'), ' ')
+    if !empty(params)
+      let info .= " " . params
+    endif
+    let info .= ")"
   elseif type ==# 'Class'
     let info = a:unit["name"] .  " :" . join(map(a:unit["slots"], 'v:val["name"]'), ' :')
   else
