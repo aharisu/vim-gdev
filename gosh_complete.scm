@@ -3,7 +3,12 @@
 (use util.list)
 (use util.match)
 (use file.util)
+(use gauche.parseopt)
 (use ginfo)
+
+
+(define-constant default-module '(null gauche scheme))
+(define generated-doc-directory #f)
 
 ;;---------------------
 ;;Functions related to print
@@ -93,6 +98,13 @@
     (cons car cdr)
     cdr))
 
+;;If you have read the generated document
+(define (alt-geninfo-file module)
+  (let1 generated-doc-path (build-path generated-doc-directory (symbol->string module))
+    (if (file-is-readable? generated-doc-path)
+              generated-doc-path
+              module)))
+
 (define (load-from-texts texts name)
   ;;TODO
   (define (get-load-path op) (map to-abs-path *load-path*))
@@ -105,9 +117,9 @@
              (filter-cons (match e
                             [(or ('use (? symbol? name) op ...) 
                                ('import ((? symbol? name) op ...)))
-                             (load-info (pa$ geninfo name) name #f)]
+                             (load-info (pa$ geninfo (alt-geninfo-file name)) name #f)]
                             [('import (? symbol? name)) 
-                             (load-info (pa$ geninfo (string->symbol name)) 
+                             (load-info (pa$ geninfo (alt-geninfo-file (string->symbol name))) 
                                         (string->symbol name) #f)]
                             [('load (? string? file) op ...) 
                              (let* ([load-path (get-load-path op)]
@@ -145,6 +157,16 @@
 (define-cmd stdin
             (lambda (num) (eq? 1 num))
             (lambda (name) (cons 'read-texts (list name))))
+
+(define-cmd load-defualt-module
+            (lambda (num) (zero? num))
+            (lambda ()
+              (output-unit-list 
+                (map
+                  (lambda (m) (load-info (pa$ geninfo (alt-geninfo-file m)) m #t))
+                  default-module)
+                #t)))
+
 
 (define-class <json-context> (<convert-context>) ())
 
@@ -249,16 +271,20 @@
               (apply (state-in state) (cdr result)))]
         [else (error "State not found.")]))))
 
-
 (define (main args)
-  (unwind-protect
-    (begin
-      (let loop ([line (read-line)])
-        (unless (eof-object? line)
-          (let1 line (string-trim-both line)
-            (unless (string=? line "#exit")
-              (unless (zero? (string-length line))
-                (exec-line line))
-              (loop (read-line))))))
-      0)
-    1))
+  (let-args (cdr args)
+    ([gdd "generated-doc-directory=s" "./doc"]
+     . args)
+    (set! generated-doc-directory gdd) 
+    (unwind-protect
+      (begin
+        (let loop ([line (read-line)])
+          (unless (eof-object? line)
+            (let1 line (string-trim-both line)
+              (unless (string=? line "#exit")
+                (unless (zero? (string-length line))
+                  (exec-line line))
+                (loop (read-line))))))
+        0)
+      1)))
+

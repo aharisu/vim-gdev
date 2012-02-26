@@ -4,7 +4,8 @@ let s:source = {
       \ 'filetypes' : {'scheme' : 1},
       \}
 
-let s:gosh_complete_path = get(g:, 'gosh_complete_path', expand("<sfile>:p:h") . "/gosh_complete.scm")
+let s:neocom_sources_directory = expand("<sfile>:p:h")
+let s:gosh_complete_path = get(g:, 'gosh_complete_path', s:neocom_sources_directory . "/gosh_complete.scm")
 let s:async_task_queue = []
 let s:word_list = []
 
@@ -136,7 +137,8 @@ endfunction
 " Communicate to gosh-complete.scm
 
 function! s:init_proc()
-  let s:gosh_comp = vimproc#popen3('gosh ' . s:gosh_complete_path)
+  let s:gosh_comp = vimproc#popen3('gosh ' . s:gosh_complete_path
+        \ . " --generated-doc-directory=" . s:neocom_sources_directory . "/doc")
 endfunction
 
 function! s:finale_proc()
