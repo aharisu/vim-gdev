@@ -5,7 +5,7 @@ let s:source = {
       \}
 
 let g:gosh_complete_parse_tick =
-      \ get(g:, 'gosh_complete_parse_tick', 50)
+      \ get(g:, 'gosh_complete_parse_tick', 300)
 
 let s:neocom_sources_directory = expand("<sfile>:p:h")
 let s:gosh_complete_path = get(g:, 'gosh_complete_path', s:neocom_sources_directory . "/gosh_complete.scm")
@@ -13,6 +13,9 @@ let s:async_task_queue = []
 
 let s:default_module_order = []
 let s:docinfo_table = {}
+
+let s:limit_buffer_parse_filesize = 20000
+let s:limit_buffer_parse_linecount = 750
 
 function! s:source.initialize()
   if neocomplcache#util#has_vimproc()
@@ -26,6 +29,7 @@ function! s:source.initialize()
       autocmd CursorHoldI * call s:cursor_hold('holdi')
       autocmd CursorMoved * call s:cursor_moved('move')
       autocmd CursorMovedI * call s:cursor_moved('movei')
+      autocmd InsertLeave * call s:parse_cur_buf(0)
     augroup END
 
     call s:load_defualt_module()
@@ -68,8 +72,6 @@ endfunction
 
 
 function! s:cursor_hold(type)
-  "call neocomplcache#print_warning(a:type)
-
   call s:parse_cur_buf(1)
 
   "wait until all tasks
@@ -79,8 +81,6 @@ function! s:cursor_hold(type)
 endfunction
 
 function! s:cursor_moved(type)
-  "call neocomplcache#print_warning(a:type)
-
   call s:check_async_task()
 endfunction
 
@@ -263,6 +263,7 @@ function! s:parse_cur_buf_from_file()
 endfunction
 
 function! s:parse_cur_buf(is_force)
+
   if !a:is_force && 
         \ (b:changedtick - b:prev_parse_tick ) < g:gosh_complete_parse_tick
     return
@@ -272,17 +273,25 @@ function! s:parse_cur_buf(is_force)
   let filename = bufname(bufnumber)
   let docname = s:constract_docname(bufnumber, filename)
   if empty(filename) || b:changedtick != b:prev_parse_tick
-    let b:prev_parse_tick = b:changedtick
 
-    "call neocomplcache#print_warning('from buffer')
+    if empty(filename)
+      let filesize = 0
+    else
+      let filesize = getfsize(fnamemodify(filename, ':p'))
+    endif
 
-    "parse from buffer
-    call s:add_async_task('#stdin ' . docname . "\n" .
-          \ join(getbufline('%', 1, '$'), "\n") . "\n" .
-          \ "#stdin-eof\n", 
-          \ function('s:parce_cur_buf_end_callback'))
+    if filesize < s:limit_buffer_parse_filesize
+          \ && line('$') < s:limit_buffer_parse_linecount
+      let b:prev_parse_tick = b:changedtick
+
+
+      "parse from buffer
+      call s:add_async_task('#stdin ' . docname . "\n" .
+            \ join(getbufline('%', 1, '$'), "\n") . "\n" .
+            \ "#stdin-eof\n", 
+            \ function('s:parce_cur_buf_end_callback'))
+    endif
   else
-    "call neocomplcache#print_warning('from file')
 
     "parse from file
     call s:add_async_task('#load-file ' . fnamemodify(filename, ':p') . ' ' . docname . "\n",
