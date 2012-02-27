@@ -6,6 +6,7 @@
 (use gauche.parseopt)
 (use ginfo)
 
+(ignore-geninfo-warning? #t)
 
 (define-constant default-module '(gauche scheme null))
 (define generated-doc-directory #f)
