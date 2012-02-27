@@ -178,7 +178,7 @@
                     (set! texts (string-append texts "\n" line))))
                 (lambda () ;exit execution
                   (output-result
-                    (cons
+                    (filter-cons
                       (load-info (pa$ geninfo-from-text texts name) name #t)
                       (parse-related-module (open-input-string texts))))
                   (set! name #f)
@@ -193,7 +193,7 @@
             (lambda (num) (zero? num))
             (lambda ()
               (output-result 
-                (map
+                (filter-map
                   (lambda (m) (load-info (pa$ geninfo (alt-geninfo-file m)) m #t))
                   default-module))))
 
@@ -202,7 +202,7 @@
             (lambda (file :optional name)
               (let1 name (if (undefined? name) file name)
                 (output-result
-                  (cons
+                  (filter-cons
                     (load-info (pa$ geninfo file) name #t)
                     (call-with-input-file file parse-related-module))))))
 
