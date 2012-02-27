@@ -109,6 +109,8 @@ function! s:cursor_hold(type)
   "wait until all tasks
   while !empty(s:async_task_queue)
     call s:check_async_task()
+
+    sleep 150m
   endwhile
 endfunction
 
