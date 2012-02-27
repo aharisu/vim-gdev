@@ -256,13 +256,20 @@ function! s:load_defualt_module_end_callback(out, err)
 endfunction
 
 function! s:parse_cur_buf_from_file()
-  if b:prev_parse_tick != b:changedtick
+  let ft = getbufvar(bufnr('%'), '&filetype')
+
+  if ft == 'scheme' &&
+        \ b:prev_parse_tick != b:changedtick
     let b:prev_parse_tick = b:changedtick
     call s:parse_cur_buf(1)
   endif
 endfunction
 
 function! s:parse_cur_buf(is_force)
+  let ft = getbufvar(bufnr('%'), '&filetype')
+  if ft != 'scheme'
+    return
+  endif
 
   if !a:is_force && 
         \ (b:changedtick - b:prev_parse_tick ) < g:gosh_complete_parse_tick
