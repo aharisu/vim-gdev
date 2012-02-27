@@ -200,11 +200,13 @@
 (define-cmd load-file
             (lambda (num) (and (<= 1 num) (<= num 2)))
             (lambda (file :optional name)
-              (let1 name (if (undefined? name) file name)
-                (output-result
-                  (filter-cons
-                    (load-info (pa$ geninfo file) name #t)
-                    (call-with-input-file file parse-related-module))))))
+              (if (file-is-readable? file)
+                (let1 name (if (undefined? name) file name)
+                  (output-result
+                    (filter-cons
+                      (load-info (pa$ geninfo file) name #t)
+                      (call-with-input-file file parse-related-module))))
+                (output-result '()))))
 
 
 (define-class <json-context> (<convert-context>) ())
