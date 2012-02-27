@@ -34,7 +34,7 @@ function! s:source.initialize()
       autocmd CursorHoldI * call s:cursor_hold('holdi')
       autocmd CursorMoved * call s:cursor_moved('move')
       autocmd CursorMovedI * call s:cursor_moved('movei')
-      autocmd InsertLeave * call s:parse_cur_buf(0)
+      autocmd InsertLeave * call s:parse_cur_buf(g:gosh_complete_parse_tick)
     augroup END
 
     call s:load_default_module()
@@ -133,7 +133,7 @@ function! s:initialize_buffer()
   call s:check_buffer_init()
 
   if !has_key(s:docinfo_table, s:constract_docname(bufnr('%'), b:buf_name))
-    call s:parse_cur_buf(1)
+    call s:parse_cur_buf(0)
   endif
 endfunction
 
@@ -311,22 +311,27 @@ function! s:parse_cur_buf_from_file()
   if b:prev_parse_tick != b:changedtick
     let b:prev_parse_tick = b:changedtick
 
-    call s:parse_cur_buf(1)
+    call s:parse_cur_buf(0)
   endif
 endfunction
 
-function! s:parse_cur_buf(is_force)
+function! s:parse_cur_buf(parse_tick)
   if s:debug
-    call neocomplcache#print_warning('s:parse_cur_buf()' . a:is_force)
+    call neocomplcache#print_warning('s:parse_cur_buf(' 
+          \ . a:parse_tick . ')'
+          \ . (b:changedtick - b:prev_parse_tick))
   endif
 
   if !s:check_buffer_init()
     return
   endif
 
-  if !a:is_force && 
-        \ (b:changedtick - b:prev_parse_tick ) < g:gosh_complete_parse_tick
+  if (b:changedtick - b:prev_parse_tick) < a:parse_tick
     return
+  endif
+
+  if s:debug
+    call neocomplcache#print_warning('do parse')
   endif
 
   let bufnumber = bufnr('%')
