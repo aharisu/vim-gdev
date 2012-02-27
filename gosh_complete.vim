@@ -16,6 +16,8 @@ let s:docinfo_table = {}
 
 let s:limit_buffer_parse_filesize = 20000
 let s:limit_buffer_parse_linecount = 750
+"5 seconds
+let s:async_task_timeout = 5
 
 function! s:source.initialize()
   if neocomplcache#util#has_vimproc()
@@ -248,7 +250,21 @@ endfunction"}}}
 
 function! s:init_proc()
   let s:gosh_comp = vimproc#popen3('gosh ' . s:gosh_complete_path
-        \ . " --generated-doc-directory=" . s:neocom_sources_directory . "/doc")
+        \ . " --generated-doc-directory=" . s:neocom_sources_directory . "/doc"
+        \ . ' --loaded-modules="' . join(map(keys(s:docinfo_table), 's:get_loaded_module_name(v:val)'), ' ') . '"')
+endfunction
+
+function! s:get_loaded_module_name(docname)
+  if match(a:docname, '^#') == -1
+    let name = 'm' . a:docname
+  else
+    let name = 'f' . a:docname[2 :]
+    if name ==# '[No Name]'
+      let name = ''
+    endif
+  endif
+
+  return name
 endfunction
 
 function! s:finale_proc()
@@ -338,12 +354,18 @@ function! s:parce_cur_buf_end_callback(out, err)
   endif
 endfunction
 
+function! s:restart_gosh_process()
+  "signal 15 is SIGTERM
+  call s:gosh_comp.kill(15)
+  call s:init_proc()
+endfunction
+
 function! s:add_async_task(text, callback)
   if empty(s:async_task_queue)
     call s:gosh_comp.stdin.write(a:text)
-    call add(s:async_task_queue, [a:callback])
+    call add(s:async_task_queue, {'callback':a:callback, 'time' : localtime()})
   else
-    call add(s:async_task_queue, [a:text, a:callback])
+    call add(s:async_task_queue, {'text' : a:text, 'callback': a:callback})
   endif
 endfunction
 
@@ -358,17 +380,40 @@ function! s:check_async_task()
     let err = s:read_output_one_try(s:gosh_comp.stderr)
   endif
 
+  let is_exec_next_task = 0
   if !empty(out) || !empty(err)
-    let [Callback] = remove(s:async_task_queue, 0)
+    let finish_task = remove(s:async_task_queue, 0)
+    let Callback = finish_task['callback']
     call Callback(out, err)
 
+    let is_exec_next_task = 1
+  else
+    let cur_task = get(s:async_task_queue, 0)
+    if s:async_task_timeout < (localtime() - cur_task['time'])
+      if s:debug
+        call neocomplcache#print_warning('timeout')
+      endif
+
+      "timeout: task failure
+      call remove(s:async_task_queue, 0)
+
+      "kill current process and restart gosh_complete
+      call s:restart_gosh_process()
+
+      let is_exec_next_task = 1
+    endif
+  endif
+
+  if is_exec_next_task
     "execution next task
     let task = get(s:async_task_queue, 0)
     if task isnot 0
-      call s:gosh_comp.stdin.write(task[0])
-      call remove(task, 0)
+      call s:gosh_comp.stdin.write(task['text'])
+      let task['text'] = 0
+      let task['time'] = localtime()
     endif
   endif
+
 endfunction
 
 function! s:read_output_one_try(port)

@@ -313,7 +313,20 @@
 (define (main args)
   (let-args (cdr args)
     ([gdd "generated-doc-directory=s" "./doc"]
+     [loaded "loaded-modules=s" '() => 
+             (lambda (opt)
+               (filter-map
+                 (lambda (token)
+                   (if (string-null? token)
+                     #f
+                     (let1 kind (string-ref token 0)
+                       (cond
+                         ([eq? #\m kind] (string->symbol (substring token 1 (string-length token))))
+                         ([eq? #\f kind] (substring token 1 (string-length token)))
+                         ([else (errorf "illegal token.[~S]" token)])))))
+                   (string-split opt #[\s])))]
      . args)
+    (set! loaded-doc-names (append loaded-doc-names loaded))
     (set! generated-doc-directory gdd) 
     (unwind-protect
       (begin
