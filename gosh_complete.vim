@@ -34,7 +34,7 @@ function! s:source.initialize()
       autocmd InsertLeave * call s:parse_cur_buf(0)
     augroup END
 
-    call s:load_defualt_module()
+    call s:load_default_module()
     call s:initialize_buffer()
   elseif
     let s:enable = 0
@@ -272,13 +272,12 @@ function! s:finale_proc()
   call s:gosh_comp.waitpid()
 endfunction
 
-function! s:load_defualt_module()
-  call s:add_async_task("#load-defualt-module\n", 
-        \ function('s:load_defualt_module_end_callback'))
+function! s:load_default_module()
+  call s:add_async_task("#load-default-module\n", 
+        \ function('s:load_default_module_end_callback'))
 endfunction
 
-function! s:load_defualt_module_end_callback(out, err)
-  "call neocomplcache#print_warning("end defualt parse")
+function! s:load_default_module_end_callback(out, err)
 
   if !empty(a:out)
     let result = eval(strpart(a:out, 0, strlen(a:out) - 1))
@@ -332,18 +331,18 @@ function! s:parse_cur_buf(is_force)
       call s:add_async_task('#stdin ' . docname . "\n" .
             \ join(getbufline('%', 1, '$'), "\n") . "\n" .
             \ "#stdin-eof\n", 
-            \ function('s:parce_cur_buf_end_callback'))
+            \ function('s:parse_cur_buf_end_callback'))
     endif
   else
 
     "parse from file
     call s:add_async_task('#load-file ' . fnamemodify(filename, ':p') . ' ' . docname . "\n",
-          \ function('s:parce_cur_buf_end_callback'))
+          \ function('s:parse_cur_buf_end_callback'))
   endif
 
 endfunction
 
-function! s:parce_cur_buf_end_callback(out, err)
+function! s:parse_cur_buf_end_callback(out, err)
   "call neocomplcache#print_warning("end parse")
 
   if !empty(a:out)

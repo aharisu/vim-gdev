@@ -190,7 +190,7 @@
             (lambda (num) (eq? 1 num))
             (lambda (name) (cons 'read-texts (list name))))
 
-(define-cmd load-defualt-module
+(define-cmd load-default-module
             (lambda (num) (zero? num))
             (lambda ()
               (output-result 
