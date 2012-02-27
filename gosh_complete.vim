@@ -181,14 +181,14 @@ function! s:units_to_word_list(docname, units) "{{{
 endfunction "}}}
 
 function! s:get_unit_type_kind(type)"{{{
-  if a:type ==# 'Function'
+  if a:type ==# 'Function' || a:type ==# 'Method'
     return 'f'
   elseif a:type ==# 'var'|| a:type ==# 'Constant' || a:type ==# 'Parameter'
     return 'v'
-  elseif a:type ==# 'Method'
-    return 'm'
   elseif a:type ==# 'Class'
     return 'c'
+  elseif a:type ==# 'Macro'
+    return 'm'
   else
     return ''
   endif
@@ -207,7 +207,7 @@ endfunction"}}}
 function! s:get_unit_info(unit)"{{{
 
   let type = a:unit["type"]
-  if type ==# 'Function' || type ==# 'Method'
+  if type ==# 'Function' || type ==# 'Method' || type ==# 'Macro'
     let info = "(" . a:unit["name"]
     let params = join(map(a:unit["params"], 'v:val["name"]'), ' ')
     if !empty(params)
