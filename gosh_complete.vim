@@ -7,6 +7,9 @@ let s:source = {
 let g:gosh_complete_parse_tick =
       \ get(g:, 'gosh_complete_parse_tick', 300)
 
+let s:debug = 0
+let s:debug_out_err = 0
+
 let s:neocom_sources_directory = expand("<sfile>:p:h")
 let s:gosh_complete_path = get(g:, 'gosh_complete_path', s:neocom_sources_directory . "/gosh_complete.scm")
 let s:async_task_queue = []
@@ -123,6 +126,10 @@ function! s:constract_docname(bufnum, bufname)
 endfunction
 
 function! s:initialize_buffer()
+  if s:debug
+    call neocomplcache#print_warning('s:initialize_buffer()')
+  endif
+
   call s:check_buffer_init()
 
   if !has_key(s:docinfo_table, s:constract_docname(bufnr('%'), b:buf_name))
@@ -278,6 +285,9 @@ function! s:load_default_module()
 endfunction
 
 function! s:load_default_module_end_callback(out, err)
+  if s:debug
+    call neocomplcache#print_warning("end default parse")
+  endif
 
   if !empty(a:out)
     let result = eval(strpart(a:out, 0, strlen(a:out) - 1))
@@ -290,6 +300,10 @@ function! s:load_default_module_end_callback(out, err)
 endfunction
 
 function! s:parse_cur_buf_from_file()
+  if s:debug
+    call neocomplcache#print_warning('s:parse_cur_buf_from_file()')
+  endif
+
   if !s:check_buffer_init()
     return
   endif
@@ -302,6 +316,10 @@ function! s:parse_cur_buf_from_file()
 endfunction
 
 function! s:parse_cur_buf(is_force)
+  if s:debug
+    call neocomplcache#print_warning('s:parse_cur_buf()' . a:is_force)
+  endif
+
   if !s:check_buffer_init()
     return
   endif
@@ -343,7 +361,9 @@ function! s:parse_cur_buf(is_force)
 endfunction
 
 function! s:parse_cur_buf_end_callback(out, err)
-  "call neocomplcache#print_warning("end parse")
+  if s:debug
+    call neocomplcache#print_warning("end parse")
+  endif
 
   if !empty(a:out)
     let result = eval(strpart(a:out, 0, strlen(a:out) - 1))
@@ -384,6 +404,16 @@ function! s:check_async_task()
     let finish_task = remove(s:async_task_queue, 0)
     let Callback = finish_task['callback']
     call Callback(out, err)
+
+
+    if s:debug_out_err
+      if !empty(out)
+        call neocomplcache#print_warning('out:' . out)
+      endif
+      if !empty(err)
+        call neocomplcache#print_warning('err:' . err)
+      endif
+    endif
 
     let is_exec_next_task = 1
   else
