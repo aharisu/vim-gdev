@@ -24,7 +24,7 @@ function! s:source.initialize()
 
     augroup neocomplcache
       autocmd FileType scheme call s:initialize_buffer()
-      autocmd BufWritePost * call s:parse_cur_buf_from_file()
+      autocmd BufWritePost * call s:buf_write_post()
       autocmd CursorHold * call s:cursor_hold('hold')
       autocmd CursorHoldI * call s:cursor_hold('holdi')
       autocmd CursorMoved * call s:cursor_moved('move')
@@ -47,7 +47,7 @@ function! s:source.finalize()
 endfunction
 
 function! s:source.get_keyword_pos(cur_text)
-  if s:enable
+  if s:enable && s:check_buffer_init()
     let pattern = "\\%([[:alpha:]_$!&%@\\-\\+\\*/\\?<>=~^;][[:alnum:]_$!&%@\\-\\+\\*/\\?<>=~^:\\.]*\\m\\)$"
     let [cur_keyword_pos, cur_keyword_str] = neocomplcache#match_word(a:cur_text, l:pattern)
     return cur_keyword_pos
@@ -57,7 +57,8 @@ function! s:source.get_keyword_pos(cur_text)
 endfunction
 
 function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str)
-  if s:enable
+  if s:enable && s:check_buffer_init()
+
     "It is not necessary to copy?
     return neocomplcache#keyword_filter(copy(b:word_list), a:cur_keyword_str)
   elseif
@@ -69,7 +70,33 @@ function! neocomplcache#sources#gosh_complete#define()
   return s:source
 endfunction 
 
+function! s:check_buffer_init()
+  if getbufvar(bufnr('%'), '&filetype') != 'scheme'
+    return 0
+  endif
 
+  if !exists('b:word_list')
+    let b:word_list = []
+  endif
+
+  if !exists('b:buf_name')
+    let b:buf_name = bufname(bufnr('%'))
+  endif
+
+  if !exists('b:prev_parse_tick')
+    let b:prev_parse_tick = b:changedtick
+  endif
+
+  return 1
+endfunction
+
+function! s:buf_write_post()
+  if !s:check_buffer_init()
+    return
+  endif
+
+  call s:parse_cur_buf_from_file()
+endfunction
 
 function! s:cursor_hold(type)
   call s:parse_cur_buf(1)
@@ -94,17 +121,9 @@ function! s:constract_docname(bufnum, bufname)
 endfunction
 
 function! s:initialize_buffer()
+  call s:check_buffer_init()
 
-  if !exists('b:word_list')
-    let b:word_list = []
-  endif
-
-  let bufnum = bufnr('%')
-  let b:buf_name = bufname(bufnum)
-  let docname = s:constract_docname(bufnum, b:buf_name)
-  let b:prev_parse_tick = b:changedtick
-
-  if !has_key(s:docinfo_table, docname)
+  if !has_key(s:docinfo_table, s:constract_docname(bufnr('%'), b:buf_name))
     call s:parse_cur_buf(1)
   endif
 endfunction
@@ -256,18 +275,19 @@ function! s:load_defualt_module_end_callback(out, err)
 endfunction
 
 function! s:parse_cur_buf_from_file()
-  let ft = getbufvar(bufnr('%'), '&filetype')
+  if !s:check_buffer_init()
+    return
+  endif
 
-  if ft == 'scheme' &&
-        \ b:prev_parse_tick != b:changedtick
+  if b:prev_parse_tick != b:changedtick
     let b:prev_parse_tick = b:changedtick
+
     call s:parse_cur_buf(1)
   endif
 endfunction
 
 function! s:parse_cur_buf(is_force)
-  let ft = getbufvar(bufnr('%'), '&filetype')
-  if ft != 'scheme'
+  if !s:check_buffer_init()
     return
   endif
 
