@@ -22,10 +22,10 @@ function! s:source.initialize()
     augroup neocomplcache
       autocmd FileType scheme call s:initialize_buffer()
       autocmd BufWritePost * call s:parse_cur_buf_from_file()
-      autocmd CursorHold * call s:cursor_handler('hold')
-      autocmd CursorHoldI * call s:cursor_handler('holdi')
-      autocmd CursorMoved * call s:cursor_handler('move')
-      autocmd CursorMovedI * call s:cursor_handler('movei')
+      autocmd CursorHold * call s:cursor_hold('hold')
+      autocmd CursorHoldI * call s:cursor_hold('holdi')
+      autocmd CursorMoved * call s:cursor_moved('move')
+      autocmd CursorMovedI * call s:cursor_moved('movei')
     augroup END
 
     call s:load_defualt_module()
@@ -67,7 +67,18 @@ endfunction
 
 
 
-function! s:cursor_handler(type)
+function! s:cursor_hold(type)
+  "call neocomplcache#print_warning(a:type)
+
+  call s:parse_cur_buf(1)
+
+  "wait until all tasks
+  while !empty(s:async_task_queue)
+    call s:check_async_task()
+  endwhile
+endfunction
+
+function! s:cursor_moved(type)
   "call neocomplcache#print_warning(a:type)
 
   call s:check_async_task()
