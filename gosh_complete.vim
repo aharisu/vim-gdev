@@ -147,9 +147,11 @@ function! s:add_doc(docs)"{{{
     if has_key(s:docinfo_table, docname)
       let info = s:docinfo_table[docname]
       let info['words'] = word_list
+      let info['extend'] = doc['extend']
     else
       let s:docinfo_table[docname] = {
-            \ 'words' : word_list
+            \ 'words' : word_list,
+            \ 'extend' : doc['extend']
             \ }
     endif
   endfor
@@ -260,7 +262,20 @@ endfunction"}}}
 function! s:init_proc()
   let s:gosh_comp = vimproc#popen3('gosh ' . s:gosh_complete_path
         \ . " --generated-doc-directory=" . s:neocom_sources_directory . "/doc"
-        \ . ' --loaded-modules="' . join(map(keys(s:docinfo_table), 's:get_loaded_module_name(v:val)'), ' ') . '"')
+        \ . s:get_loaded_module_text())
+endfunction
+
+function s:get_loaded_module_text()
+  let text = ''
+  for [name, doc] in items(s:docinfo_table)
+    let text .= ' --loaded-module="' . s:get_loaded_module_name(name)
+    for module in doc['extend']
+      let text .= ' ' . module
+    endfor
+    let text .= '"'
+  endfor
+
+  return text
 endfunction
 
 function! s:get_loaded_module_name(docname)

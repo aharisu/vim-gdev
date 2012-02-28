@@ -65,16 +65,41 @@
 ;;Functions related to doccument
 ;;---------------------
 (define loaded-doc-names  '())
+(define module-extend-table (make-hash-table 'equal?))
 (define (load-info loader name update?)
-  (guard (e [else #f]) ;catch all error
+  (guard (e [else '()]) ;catch all error
     (let1 loaded? (any (cut equal? <> name) loaded-doc-names)
       (if (or update? (not loaded?))
         (let1 doc (loader)
+          ;;overwrite document name
           (slot-set! doc 'name name)
+          ;;store loaded document name
           (when (not loaded?) 
             (set! loaded-doc-names (cons name loaded-doc-names)))
-          (cons name doc))
-        (cons name #f)))))
+          ;;store module extend list
+          (unless (null? (ref doc 'extend))
+            (hash-table-put! module-extend-table name (ref doc 'extend)))
+          (cons
+            (cons name doc)
+            (fold
+              (lambda (m acc)
+                (append
+                  (load-info (pa$ geninfo (alt-geninfo-file m)) m #f)
+                  acc))
+              '()
+              (ref doc 'extend))))
+        (cons
+          (cons name #f)
+          (let loop ([extend (hash-table-get module-extend-table name '())]
+                     [acc '()])
+            (if (null? extend)
+              acc
+              (loop (cdr extend)
+                    (append
+                      (cons (cons (car extend) #f) acc)
+                      (loop (hash-table-get module-extend-table (car extend) '())
+                            '()))))))
+        ))))
 
 (define (output-order order)
   (display-std "[")
@@ -144,26 +169,26 @@
     port
     (pa$ port-fold
          (lambda (e acc)
-           (filter-cons (match e
-                          [(or ('use (? symbol? name) op ...) 
-                             ('import ((? symbol? name) op ...)))
-                           (load-info (pa$ geninfo (alt-geninfo-file name)) name #f)]
-                          [('import (? symbol? name)) 
-                           (load-info (pa$ geninfo (alt-geninfo-file (string->symbol name))) 
-                                      (string->symbol name) #f)]
-                          [('load (? string? file) op ...) 
-                           (let* ([load-path (get-load-path op)]
-                                  [path (find-file-in-paths (if (path-extension file)
-                                                              file
-                                                              (path-swap-extension file "scm"))
-                                                            :paths load-path
-                                                            :pred file-is-readable?)])
-                             (if path
-                               (load-info (pa$ geninfo path) path #f)
-                               #f))]
-                          ;;do nothing
-                          [else #f])
-                        acc))
+           (append (match e
+                     [(or ('use (? symbol? name) op ...) 
+                        ('import ((? symbol? name) op ...)))
+                      (load-info (pa$ geninfo (alt-geninfo-file name)) name #f)]
+                     [('import (? symbol? name)) 
+                      (load-info (pa$ geninfo (alt-geninfo-file (string->symbol name))) 
+                                 (string->symbol name) #f)]
+                     [('load (? string? file) op ...) 
+                      (let* ([load-path (get-load-path op)]
+                             [path (find-file-in-paths (if (path-extension file)
+                                                         file
+                                                         (path-swap-extension file "scm"))
+                                                       :paths load-path
+                                                       :pred file-is-readable?)])
+                        (if path
+                          (load-info (pa$ geninfo path) path #f)
+                          '()))]
+                     ;;do nothing
+                     [_ '()])
+                   acc))
          '()
          guarded-read)))
 
@@ -179,7 +204,7 @@
                     (set! texts (string-append texts "\n" line))))
                 (lambda () ;exit execution
                   (output-result
-                    (filter-cons
+                    (append
                       (load-info (pa$ geninfo-from-text texts name) name #t)
                       (parse-related-module (open-input-string texts))))
                   (set! name #f)
@@ -194,7 +219,7 @@
             (lambda (num) (zero? num))
             (lambda ()
               (output-result 
-                (filter-map
+                (append-map
                   (lambda (m) (load-info (pa$ geninfo (alt-geninfo-file m)) m #t))
                   default-module))))
 
@@ -204,7 +229,7 @@
               (if (file-is-readable? file)
                 (let1 name (if (undefined? name) file name)
                   (output-result
-                    (filter-cons
+                    (append
                       (load-info (pa$ geninfo file) name #t)
                       (call-with-input-file file parse-related-module))))
                 (output-result '()))))
@@ -255,6 +280,11 @@
 (define-method output ((c <json-context>) (doc <doc>))
   (display-std (string-append
                  "\"name\":\"" (x->string (ref doc 'name)) "\","
+                 "\"extend\":[" (string-join 
+                                  (map 
+                                    (lambda (mod) (string-append "\"" (symbol->string mod) "\""))
+                                    (ref doc 'extend))
+                                  ",") "],"
                  "\"units\":"))
   (output-unit-list (ref doc 'units)))
 
@@ -310,23 +340,27 @@
               (apply (state-in state) (cdr result)))]
         [else (error "State not found.")]))))
 
+(define (convert-token token)
+  (let1 kind (string-ref token 0)
+    (cond
+      ([eq? #\m kind] (string->symbol (substring token 1 (string-length token))))
+      ([eq? #\f kind] (substring token 1 (string-length token)))
+      ([else (errorf "illegal token.[~S]" token)]))))
+
 (define (main args)
   (let-args (cdr args)
     ([gdd "generated-doc-directory=s" "./doc"]
-     [loaded "loaded-modules=s" '() => 
-             (lambda (opt)
-               (filter-map
-                 (lambda (token)
-                   (if (string-null? token)
-                     #f
-                     (let1 kind (string-ref token 0)
-                       (cond
-                         ([eq? #\m kind] (string->symbol (substring token 1 (string-length token))))
-                         ([eq? #\f kind] (substring token 1 (string-length token)))
-                         ([else (errorf "illegal token.[~S]" token)])))))
-                   (string-split opt #[\s])))]
+     [#f "loaded-module=s" 
+      => (lambda (opt)
+           (let1 modules (string-split opt #[\s])
+             (when (null? modules) (errorf "invalid format.[~s]" opt))
+             (let1 module (convert-token (car modules))
+               (set! loaded-doc-names (cons  module loaded-doc-names))
+               (unless (null? (cdr modules))
+                 (hash-table-put!  module-extend-table
+                                   module
+                                   (map string->symbol (cdr modules)))))))]
      . args)
-    (set! loaded-doc-names (append loaded-doc-names loaded))
     (set! generated-doc-directory gdd) 
     (unwind-protect
       (begin
