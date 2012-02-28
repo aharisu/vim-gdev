@@ -29,7 +29,7 @@ function! s:source.initialize()
 
     augroup neocomplcache
       autocmd FileType scheme call s:initialize_buffer()
-      autocmd BufWritePost * call s:buf_write_post()
+      autocmd BufWritePost * call s:parse_cur_buf_from_file()
       autocmd CursorHold * call s:cursor_hold('hold')
       autocmd CursorHoldI * call s:cursor_hold('holdi')
       autocmd CursorMoved * call s:cursor_moved('move')
@@ -93,14 +93,6 @@ function! s:check_buffer_init()
   endif
 
   return 1
-endfunction
-
-function! s:buf_write_post()
-  if !s:check_buffer_init()
-    return
-  endif
-
-  call s:parse_cur_buf_from_file()
 endfunction
 
 function! s:cursor_hold(type)
