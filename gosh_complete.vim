@@ -23,56 +23,47 @@ let s:limit_buffer_parse_linecount = 750
 let s:async_task_timeout = 5
 
 function! s:source.initialize()
-  if neocomplcache#util#has_vimproc()
-    let s:enable = 1
-    call s:init_proc()
+  call s:init_proc()
 
-    augroup neocomplcache
-      autocmd FileType scheme call s:initialize_buffer()
-      autocmd BufWritePost * call s:parse_cur_buf_from_file()
-      autocmd CursorHold * call s:cursor_hold('hold')
-      autocmd CursorHoldI * call s:cursor_hold('holdi')
-      autocmd CursorMoved * call s:cursor_moved('move')
-      autocmd CursorMovedI * call s:cursor_moved('movei')
-      autocmd InsertLeave * call s:parse_cur_buf(g:gosh_complete_parse_tick)
-    augroup END
+  augroup neocomplcache
+    autocmd FileType scheme call s:initialize_buffer()
+    autocmd BufWritePost * call s:parse_cur_buf_from_file()
+    autocmd CursorHold * call s:cursor_hold('hold')
+    autocmd CursorHoldI * call s:cursor_hold('holdi')
+    autocmd CursorMoved * call s:cursor_moved('move')
+    autocmd CursorMovedI * call s:cursor_moved('movei')
+    autocmd InsertLeave * call s:parse_cur_buf(g:gosh_complete_parse_tick)
+  augroup END
 
-    call s:load_default_module()
-    call s:initialize_buffer()
-  elseif
-    let s:enable = 0
-    call neocomplcache#print_error("don't has vimproc")
-  endif
+  call s:load_default_module()
+  call s:initialize_buffer()
 endfunction
 
 function! s:source.finalize()
-  if s:enable
-    call s:finale_proc()
-  endif
+  call s:finale_proc()
 endfunction
 
 function! s:source.get_keyword_pos(cur_text)
-  if s:enable && s:check_buffer_init()
-    let pattern = "\\%([[:alpha:]_$!&%@\\-\\+\\*/\\?<>=~^;][[:alnum:]_$!&%@\\-\\+\\*/\\?<>=~^:\\.]*\\m\\)$"
-    let [cur_keyword_pos, cur_keyword_str] = neocomplcache#match_word(a:cur_text, l:pattern)
-    return cur_keyword_pos
-  elseif
-    return -1
-  endif
+  let pattern = "\\%([[:alpha:]_$!&%@\\-\\+\\*/\\?<>=~^;][[:alnum:]_$!&%@\\-\\+\\*/\\?<>=~^:\\.]*\\m\\)$"
+  let [cur_keyword_pos, cur_keyword_str] = neocomplcache#match_word(a:cur_text, l:pattern)
+  return cur_keyword_pos
 endfunction
 
 function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str)
-  if s:enable && s:check_buffer_init()
-
+  if s:check_buffer_init()
     "It is not necessary to copy?
     return neocomplcache#keyword_filter(copy(b:word_list), a:cur_keyword_str)
-  elseif
+  else
     return []
   endif
 endfunction
 
 function! neocomplcache#sources#gosh_complete#define()
-  return s:source
+  if neocomplcache#util#has_vimproc()
+    return s:source
+  else
+    return {}
+  endif
 endfunction 
 
 function! s:check_buffer_init()
