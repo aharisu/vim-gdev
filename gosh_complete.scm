@@ -165,30 +165,34 @@
 (define (parse-related-module port)
   ;;TODO
   (define (get-load-path op) (map to-abs-path *load-path*))
+  (define (parse-expression e)
+    (match e
+      [(or ('use (? symbol? name) op ...) 
+         ('import ((? symbol? name) op ...)))
+       (load-info (pa$ geninfo (alt-geninfo-file name)) name #f)]
+      [('import (? symbol? name)) 
+       (load-info (pa$ geninfo (alt-geninfo-file (string->symbol name))) 
+                  (string->symbol name) #f)]
+      [('load (? string? file) op ...) 
+       (let* ([load-path (get-load-path op)]
+              [path (find-file-in-paths (if (path-extension file)
+                                          file
+                                          (path-swap-extension file "scm"))
+                                        :paths load-path
+                                        :pred file-is-readable?)])
+         (if path
+           (load-info (pa$ geninfo path) path #f)
+           '()))]
+      [('define-module (? symbol? mod) spec ...)
+       (append-map
+         (cut parse-expression <>)
+         spec)]
+      ;;do nothing
+      [_ '()]))
   (with-input-from-port
     port
     (pa$ port-fold
-         (lambda (e acc)
-           (append (match e
-                     [(or ('use (? symbol? name) op ...) 
-                        ('import ((? symbol? name) op ...)))
-                      (load-info (pa$ geninfo (alt-geninfo-file name)) name #f)]
-                     [('import (? symbol? name)) 
-                      (load-info (pa$ geninfo (alt-geninfo-file (string->symbol name))) 
-                                 (string->symbol name) #f)]
-                     [('load (? string? file) op ...) 
-                      (let* ([load-path (get-load-path op)]
-                             [path (find-file-in-paths (if (path-extension file)
-                                                         file
-                                                         (path-swap-extension file "scm"))
-                                                       :paths load-path
-                                                       :pred file-is-readable?)])
-                        (if path
-                          (load-info (pa$ geninfo path) path #f)
-                          '()))]
-                     ;;do nothing
-                     [_ '()])
-                   acc))
+         (lambda (e acc) (append (parse-expression e) acc))
          '()
          guarded-read)))
 
