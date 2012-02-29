@@ -187,6 +187,10 @@
        (append-map
          (cut parse-expression <>)
          spec)]
+      [('extend module ...)
+       (append-map
+         (lambda (m) (load-info (pa$ geninfo (alt-geninfo-file m)) m #f))
+         module)]
       ;;do nothing
       [_ '()]))
   (with-input-from-port
