@@ -258,36 +258,39 @@
     (map
       (lambda (p)
         (string-append
-          "{\"name\":\"" (param-name p) "\","
-          "\"description\":\"" (make-description (param-description p)) "\","
-          "\"accept\":[" (make-list-text (param-acceptable p)) "]}"))
+          "{\"n\":\"" (param-name p) "\","
+          "\"d\":\"" (make-description (param-description p)) "\","
+          "\"a\":[" (make-list-text (param-acceptable p)) "]}"))
       params)
     ","))
 
 (define-method output ((c <json-context>) (unit <unit-top>))
   (display-std (string-append
-                 "\"type\":\"" (ref unit 'type) "\","
-                 "\"name\":\"" (ref unit 'name) "\","
-                 "\"description\":\"" (make-description (ref unit 'description)) "\""
+                 "\"t\":\"" (cond
+                              [(equal? type-fn (ref unit 'type)) "F"]
+                              [(equal? type-const (ref unit 'type)) "C"]
+                              [else (ref unit 'type)]) "\","
+                 "\"n\":\"" (ref unit 'name) "\","
+                 "\"d\":\"" (make-description (ref unit 'description)) "\""
                  )))
 
 (define-method output ((c <json-context>) (unit <unit-proc>))
   (next-method)
   (display-std (string-append
-                 ",\"params\":[" (make-params-text (ref unit 'param)) "],"
-                 "\"return\":\"" (make-description (ref unit 'return)) "\""))
+                 ",\"p\":[" (make-params-text (ref unit 'param)) "],"
+                 "\"r\":\"" (make-description (ref unit 'return)) "\""))
   )
 
 (define-method output ((c <json-context>) (unit <unit-class>))
   (next-method)
   (display-std (string-append
                  ",\"supers\":[" (make-list-text (ref unit 'supers))"],"
-                 "\"slots\":[" (make-params-text (ref unit 'slots)) "]"))
+                 "\"s\":[" (make-params-text (ref unit 'slots)) "]"))
   )
 
 (define-method output ((c <json-context>) (doc <doc>))
   (display-std (string-append
-                 "\"name\":\"" (x->string (ref doc 'name)) "\","
+                 "\"n\":\"" (x->string (ref doc 'name)) "\","
                  "\"extend\":[" (string-join 
                                   (map 
                                     (lambda (mod) (string-append "\"" (symbol->string mod) "\""))

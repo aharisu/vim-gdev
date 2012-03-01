@@ -125,7 +125,8 @@ endfunction
 
 function! s:add_doc(docs)"{{{
   for doc in a:docs
-    let docname = doc['name']
+    "             doc[name]
+    let docname = doc['n']
     let word_list = s:units_to_word_list(docname, doc['units'])
 
     if has_key(s:docinfo_table, docname)
@@ -145,7 +146,8 @@ function! s:units_to_word_list(docname, units) "{{{
   let table = {}
 
   for u in a:units
-    let name = u['name']
+    "          u[name]
+    let name = u['n']
 
     if has_key(table, name)
       let word = table[name]
@@ -158,7 +160,7 @@ function! s:units_to_word_list(docname, units) "{{{
     else
       let table[name] = {'word' : name,
             \ 'menu' : s:get_unit_menu(a:docname),
-            \ 'kind' : s:get_unit_type_kind(u['type']),
+            \ 'kind' : s:get_unit_type_kind(u['t']),
             \ 'info' : s:get_unit_info(u)}
     endif
   endfor
@@ -167,9 +169,11 @@ function! s:units_to_word_list(docname, units) "{{{
 endfunction "}}}
 
 function! s:get_unit_type_kind(type)"{{{
-  if a:type ==# 'Function' || a:type ==# 'Method'
+  "  a:type ==# 'Function'
+  if a:type ==# 'F' || a:type ==# 'Method'
     return 'f'
-  elseif a:type ==# 'var'|| a:type ==# 'Constant' || a:type ==# 'Parameter'
+   "                        a:type ==# Constant
+  elseif a:type ==# 'var'|| a:type ==# 'C' || a:type ==# 'Parameter'
     return 'v'
   elseif a:type ==# 'Class'
     return 'c'
@@ -191,23 +195,26 @@ function! s:get_unit_menu(module)"{{{
 endfunction"}}}
 
 function! s:get_unit_info(unit)"{{{
-
-  let type = a:unit["type"]
-  if type ==# 'Function' || type ==# 'Method' || type ==# 'Macro'
-    let info = "(" . a:unit["name"]
-    let params = join(map(a:unit["params"], 'v:val["name"]'), ' ')
+  "          a:unit[type]
+  let type = a:unit["t"] 
+  if type ==# 'F' || type ==# 'Method' || type ==# 'Macro'
+    "                a:unit[name]
+    let info = "(" . a:unit["n"] 
+    "                     a:unit[params] v:val[name]
+    let params = join(map(a:unit["p"], 'v:val["n"]'), ' ')
     if !empty(params)
       let info .= " " . params
     endif
     let info .= ")"
   elseif type ==# 'Class'
-    let info = a:unit["name"] .  " :" . join(map(a:unit["slots"], 'v:val["name"]'), ' :')
+    "                                         a:unit[slot]
+    let info = a:unit["n"] .  " :" . join(map(a:unit["s"], 'v:val["n"]'), ' :')
   else
-    let info = a:unit["name"]
+    let info = a:unit["n"]
   endif
     
-  if !empty(a:unit["description"])
-    let info .= "\n" . a:unit["description"]
+  if !empty(a:unit["d"])
+    let info .= "\n" . a:unit["d"]
   endif
 
   return info
