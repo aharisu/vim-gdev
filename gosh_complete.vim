@@ -67,10 +67,6 @@ function! neocomplcache#sources#gosh_complete#define()
 endfunction 
 
 function! s:check_buffer_init()
-  if getbufvar(bufnr('%'), '&filetype') != 'scheme'
-    return 0
-  endif
-
   if !exists('b:word_list')
     let b:word_list = []
   endif
@@ -81,6 +77,10 @@ function! s:check_buffer_init()
 
   if !exists('b:prev_parse_tick')
     let b:prev_parse_tick = b:changedtick
+  endif
+
+  if getbufvar(bufnr('%'), '&filetype') != 'scheme'
+    return 0
   endif
 
   return 1
