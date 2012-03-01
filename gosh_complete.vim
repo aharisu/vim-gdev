@@ -10,8 +10,9 @@ let g:gosh_complete_parse_tick =
 let s:debug = 0
 let s:debug_out_err = 0
 
-let s:neocom_sources_directory = expand("<sfile>:p:h")
-let s:gosh_complete_path = get(g:, 'gosh_complete_path', s:neocom_sources_directory . "/gosh_complete.scm")
+let s:neocom_sources_directory = expand('<sfile>:p:h')
+let s:gosh_complete_path = escape(get(g:, 'gosh_complete_path', s:neocom_sources_directory . '/gosh_complete.scm'), ' \')
+let s:gosh_generated_doc_path = escape(s:neocom_sources_directory . '/doc',  ' \')
 let s:async_task_queue = []
 
 let s:default_module_order = []
@@ -72,7 +73,7 @@ function! s:check_buffer_init()
   endif
 
   if !exists('b:buf_name')
-    let b:buf_name = bufname(bufnr('%'))
+    let b:buf_name = s:bufname(bufnr('%'))
   endif
 
   if !exists('b:prev_parse_tick')
@@ -244,7 +245,7 @@ endfunction"}}}
 
 function! s:init_proc()
   let s:gosh_comp = vimproc#popen3('gosh ' . s:gosh_complete_path
-        \ . " --generated-doc-directory=" . s:neocom_sources_directory . "/doc"
+        \ . " --generated-doc-directory=" . s:gosh_generated_doc_path
         \ . s:get_loaded_module_text())
 endfunction
 
@@ -335,7 +336,7 @@ function! s:parse_cur_buf(parse_tick)
   endif
 
   let bufnumber = bufnr('%')
-  let filename = bufname(bufnumber)
+  let filename = s:bufname(bufnumber)
   let docname = s:constract_docname(bufnumber, filename)
   if empty(filename) || b:changedtick != b:prev_parse_tick
 
@@ -459,5 +460,8 @@ function! s:read_output_one_try(port)
   endwhile
   return out
 endfunction
+function! s:bufname(bufnum) "{{{
+  return escape(bufname(a:bufnum),  ' \')
+endfunction"}}}
 
 " vim: foldmethod=marker
