@@ -73,7 +73,7 @@ function! s:check_buffer_init()
   endif
 
   if !exists('b:buf_name')
-    let b:buf_name = s:bufname(bufnr('%'))
+    let b:buf_name = s:cur_buf_filepath()
   endif
 
   if !exists('b:prev_parse_tick')
@@ -336,14 +336,14 @@ function! s:parse_cur_buf(parse_tick)
   endif
 
   let bufnumber = bufnr('%')
-  let filename = s:bufname(bufnumber)
+  let filename = s:cur_buf_filepath()
   let docname = s:constract_docname(bufnumber, filename)
   if empty(filename) || b:changedtick != b:prev_parse_tick
 
     if empty(filename)
       let filesize = 0
     else
-      let filesize = getfsize(fnamemodify(filename, ':p'))
+      let filesize = getfsize(filename)
     endif
 
     if filesize < s:limit_buffer_parse_filesize
@@ -360,7 +360,7 @@ function! s:parse_cur_buf(parse_tick)
   else
 
     "parse from file
-    call s:add_async_task('#load-file ' . fnamemodify(filename, ':p') . ' ' . docname . "\n",
+    call s:add_async_task('#load-file ' . filename . ' ' . docname . "\n",
           \ function('s:parse_cur_buf_end_callback'))
   endif
 
@@ -459,9 +459,10 @@ function! s:read_output_one_try(port)
     let res = a:port.read()
   endwhile
   return out
-endfunction
-function! s:bufname(bufnum) "{{{
-  return escape(bufname(a:bufnum),  ' \')
+endfunction"}}}
+
+function! s:cur_buf_filepath() "{{{
+  return escape(expand('%:p'),  ' \')
 endfunction"}}}
 
 " vim: foldmethod=marker
