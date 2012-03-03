@@ -4,9 +4,6 @@ let s:source = {
       \ 'filetypes' : {'scheme' : 1},
       \}
 
-let g:gosh_complete_parse_tick =
-      \ get(g:, 'gosh_complete_parse_tick', 300)
-
 let s:debug = 0
 let s:debug_out_err = 0
 
@@ -18,8 +15,6 @@ let s:async_task_queue = []
 let s:default_module_order = []
 let s:docinfo_table = {}
 
-let s:limit_buffer_parse_filesize = 20000
-let s:limit_buffer_parse_linecount = 750
 "5 seconds
 let s:async_task_timeout = 5
 
@@ -33,7 +28,6 @@ function! s:source.initialize()"{{{
     autocmd CursorHoldI * call s:cursor_hold('holdi')
     autocmd CursorMoved * call s:cursor_moved('move')
     autocmd CursorMovedI * call s:cursor_moved('movei')
-    autocmd InsertLeave * call s:parse_cur_buf(g:gosh_complete_parse_tick)
   augroup END
 
   call s:load_default_module()
@@ -345,24 +339,13 @@ function! s:parse_cur_buf(parse_tick)"{{{
 
   let docname = s:constract_docname(bufnumber, filename)
   if empty(filename) || b:changedtick != b:prev_parse_tick
+    let b:prev_parse_tick = b:changedtick
 
-    if empty(filename)
-      let filesize = 0
-    else
-      let filesize = getfsize(filename)
-    endif
-
-    if filesize < s:limit_buffer_parse_filesize
-          \ && line('$') < s:limit_buffer_parse_linecount
-      let b:prev_parse_tick = b:changedtick
-
-
-      "parse from buffer
-      call s:add_async_task('#stdin ' . docname . "\n" .
-            \ join(getbufline('%', 1, '$'), "\n") . "\n" .
-            \ "#stdin-eof\n", 
-            \ function('s:parse_cur_buf_end_callback'))
-    endif
+    "parse from buffer
+    call s:add_async_task('#stdin ' . docname . "\n" .
+          \ join(getbufline('%', 1, '$'), "\n") . "\n" .
+          \ "#stdin-eof\n", 
+          \ function('s:parse_cur_buf_end_callback'))
   else
 
     "parse from file
