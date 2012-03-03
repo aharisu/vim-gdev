@@ -298,7 +298,7 @@ function! s:load_default_module_end_callback(out, err)
   endif
 
   if !empty(a:out)
-    let result = eval(strpart(a:out, 0, strlen(a:out) - 1))
+    let result = eval(a:out)
 
     let s:default_module_order = result['order']
 
@@ -379,7 +379,7 @@ function! s:parse_cur_buf_end_callback(out, err)
   endif
 
   if !empty(a:out)
-    let result = eval(strpart(a:out, 0, strlen(a:out) - 1))
+    let result = eval(a:out)
 
     call s:add_doc(result['docs'])
     call s:constract_word_list(result['order'])
@@ -460,11 +460,22 @@ endfunction
 
 function! s:read_output_one_try(port)
   let out = ""
+
   let res = a:port.read()
-  while !empty(res)
-    let out .= res
-    let res = a:port.read()
-  endwhile
+  if !empty(res)
+    while 1
+      let len = strlen(res)
+      if res[len - 1] ==# "\n"
+        let out .= strpart(res, 0, len - 1)
+        break
+      else
+        let out .= res
+      endif
+
+      let res = a:port.read()
+    endwhile
+  endif
+
   return out
 endfunction"}}}
 
