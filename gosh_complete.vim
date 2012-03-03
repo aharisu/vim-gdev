@@ -127,16 +127,16 @@ function! s:add_doc(docs)"{{{
   for doc in a:docs
     "             doc[name]
     let docname = doc['n']
-    let word_list = s:units_to_word_list(docname, doc['units'])
+    let word_list = s:units_to_word_list(docname, get(doc, 'units', []))
 
     if has_key(s:docinfo_table, docname)
       let info = s:docinfo_table[docname]
       let info['words'] = word_list
-      let info['extend'] = doc['extend']
+      let info['extend'] = get(doc, 'extend', [])
     else
       let s:docinfo_table[docname] = {
             \ 'words' : word_list,
-            \ 'extend' : doc['extend']
+            \ 'extend' : get(doc, 'extend', [])
             \ }
     endif
   endfor
@@ -201,20 +201,20 @@ function! s:get_unit_info(unit)"{{{
     "                a:unit[name]
     let info = "(" . a:unit["n"] 
     "                     a:unit[params] v:val[name]
-    let params = join(map(a:unit["p"], 'v:val["n"]'), ' ')
+    let params = join(map(get(a:unit, 'p', []), 'v:val["n"]'), ' ')
     if !empty(params)
       let info .= " " . params
     endif
     let info .= ")"
   elseif type ==# 'Class'
     "                                         a:unit[slot]
-    let info = a:unit["n"] .  " :" . join(map(a:unit["s"], 'v:val["n"]'), ' :')
+    let info = a:unit["n"] . " :" . join(map(get(a:unit, 's', []), 'v:val["n"]'), ' :')
   else
     let info = a:unit["n"]
   endif
     
-  if !empty(a:unit["d"])
-    let info .= "\n" . a:unit["d"]
+  if !empty(get(a:unit, 'd', ''))
+    let info .= "\n" . get(a:unit, 'd', '')
   endif
 
   return info

@@ -10,6 +10,11 @@
 
 (define-constant default-module '(gauche scheme null))
 (define generated-doc-directory #f)
+(define output-full-member #f)
+(define-syntax output?
+  (syntax-rules ()
+    [(_ text)
+     (or output-full-member (not (string-null? text)))]))
 
 ;;---------------------
 ;;Functions related to print
@@ -258,45 +263,78 @@
     (map
       (lambda (p)
         (string-append
-          "{\"n\":\"" (param-name p) "\","
-          "\"d\":\"" (make-description (param-description p)) "\","
-          "\"a\":[" (make-list-text (param-acceptable p)) "]}"))
+          ;; n is name
+          "{\"n\":\"" (param-name p) "\""
+          (let1 desc (make-description (param-description p))
+            (if (output? desc)
+              ;; d is description
+              (string-append ",\"d\":\"" desc "\"")
+              ""))
+          (let1 accept (make-list-text (param-acceptable p))
+            (if (output? accept)
+              ;; a is accept
+              (string-append",\"a\":[" accept "]")
+              ""))
+          "}"))
       params)
     ","))
 
 (define-method output ((c <json-context>) (unit <unit-top>))
   (display-std (string-append
+                 ;; t is type
                  "\"t\":\"" (cond
                               [(equal? type-fn (ref unit 'type)) "F"]
                               [(equal? type-const (ref unit 'type)) "C"]
-                              [else (ref unit 'type)]) "\","
-                 "\"n\":\"" (ref unit 'name) "\","
-                 "\"d\":\"" (make-description (ref unit 'description)) "\""
+                              [else (ref unit 'type)]) "\""
+                 ;; n is name
+                 ",\"n\":\"" (ref unit 'name) "\""
+                 ;; d is description
+                 (let1 desc (make-description (ref unit 'description))
+                   (if (output? desc)
+                     (string-append ",\"d\":\"" desc "\"")
+                     ""))
                  )))
 
 (define-method output ((c <json-context>) (unit <unit-proc>))
   (next-method)
   (display-std (string-append
-                 ",\"p\":[" (make-params-text (ref unit 'param)) "],"
-                 "\"r\":\"" (make-description (ref unit 'return)) "\""))
+                 ;; p is param
+                 (let1 param (make-params-text (ref unit 'param))
+                   (if (output? param)
+                     (string-append ",\"p\":[" param "]")
+                     ""))
+                 ;; r is return
+                 (let1 return (make-description (ref unit 'return))
+                   (if (output? return)
+                     (string-append ",\"r\":\"" return "\"")
+                     ""))))
   )
 
 (define-method output ((c <json-context>) (unit <unit-class>))
   (next-method)
   (display-std (string-append
-                 ",\"supers\":[" (make-list-text (ref unit 'supers))"],"
-                 "\"s\":[" (make-params-text (ref unit 'slots)) "]"))
+                 (let1 supers (make-list-text (ref unit 'supers))
+                   (if (output? supers)
+                     (string-append ",\"supers\":[" supers "]")
+                     ""))
+                 (let1 slots (make-params-text (ref unit 'slots))
+                   (if (output? slots)
+                     (string-append ",\"s\":[" slots "]")
+                     ""))))
   )
 
 (define-method output ((c <json-context>) (doc <doc>))
   (display-std (string-append
-                 "\"n\":\"" (x->string (ref doc 'name)) "\","
-                 "\"extend\":[" (string-join 
+                 "\"n\":\"" (x->string (ref doc 'name)) "\""
+                 (let1 extend (string-join 
                                   (map 
                                     (lambda (mod) (string-append "\"" (symbol->string mod) "\""))
                                     (ref doc 'extend))
-                                  ",") "],"
-                 "\"units\":"))
+                                  ",")
+                   (if (output? extend)
+                     (string-append ",\"extend\":[" extend "]")
+                     ""))
+                 ",\"units\":"))
   (output-unit-list (ref doc 'units)))
 
 
@@ -371,6 +409,8 @@
                  (hash-table-put!  module-extend-table
                                    module
                                    (map string->symbol (cdr modules)))))))]
+     [#f "output-full-member"
+      => (lambda () (set! output-full-member #t))]
      . args)
     (set! generated-doc-directory gdd) 
     (unwind-protect
