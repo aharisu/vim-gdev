@@ -72,10 +72,15 @@
 
 
 ;;---------------------
-;;Functions related to doccument
+;;Functions related to load doccument
 ;;---------------------
 (define loaded-doc-names  '())
 (define module-extend-table (make-hash-table 'equal?))
+
+(define (guarded-read :optional (port (current-input-port)))
+  (guard (exc [(<read-error> exc) (guarded-read)])
+    (read port)))
+
 (define (load-info loader name update?)
   (guard (e [else '()]) ;catch all error
     (let1 loaded? (any (cut equal? <> name) loaded-doc-names)
@@ -111,43 +116,12 @@
                             '()))))))
         ))))
 
-(define (output-order order)
-  (display-std "[")
-  (unless (null? order)
-    (display-std "\"")
-    (display-std (car order))
-    (display-std "\"")
-    (for-each
-      (lambda (m)
-        (display-std ",\"")
-        (display-std m)
-        (display-std "\""))
-      (cdr order)))
-  (display-std "]"))
-
-(define (output-result name-and-docs)
-  (let1 order-and-docs (fold
-                         (lambda (d acc)
-                           (cons
-                             (cons (car d) (car acc))
-                             (filter-cons (cdr d) (cdr acc))))
-                         (cons '() '())
-                         name-and-docs)
-    (display-std "{")
-    (display-std "\"order\":")
-    (output-order (car order-and-docs))
-    (display-std ",")
-    (display-std "\"docs\":")
-    (output-unit-list (cdr order-and-docs))
-    (print-std "}")))
-
-;;
-;;
-;;
-
-(define (guarded-read :optional (port (current-input-port)))
-  (guard (exc [(<read-error> exc) (guarded-read)])
-    (read port)))
+;;If you have read the generated document
+(define (alt-geninfo-file module)
+  (let1 generated-doc-path (build-path generated-doc-directory (symbol->string module))
+    (if (file-is-readable? generated-doc-path)
+              generated-doc-path
+              module)))
 
 (define (to-abs-path path)
   (if (absolute-path? path)
@@ -159,18 +133,6 @@
                       (substring path 2 (string-length path))
                       (substring path 1 (string-length path))))
         path))))
-
-(define (filter-cons car cdr)
-  (if car
-    (cons car cdr)
-    cdr))
-
-;;If you have read the generated document
-(define (alt-geninfo-file module)
-  (let1 generated-doc-path (build-path generated-doc-directory (symbol->string module))
-    (if (file-is-readable? generated-doc-path)
-              generated-doc-path
-              module)))
 
 (define (parse-related-module port)
   ;;TODO
@@ -210,49 +172,30 @@
          '()
          guarded-read)))
 
-(let ([name #f]
-      [texts #f])
-  (define-state read-texts
-                (lambda (n); enter execution
-                  (set! name n)
-                  (set! texts ""))
-                (lambda (line)
-                  (if (string=? "#stdin-eof" line)
-                    (cons 'init '())
-                    (set! texts (string-append texts "\n" line))))
-                (lambda () ;exit execution
-                  (output-result
-                    (append
-                      (load-info (pa$ geninfo-from-text texts name) name #t)
-                      (parse-related-module (open-input-string texts))))
-                  (set! name #f)
-                  (set! texts #f)
-                  )))
+;;---------------------
+;;Functions related to output
+;;---------------------
 
-(define-cmd stdin
-            (lambda (num) (eq? 1 num))
-            (lambda (name) (cons 'read-texts (list name))))
+;;---
+;;output order list
+;;---
+(define (output-order order)
+  (display-std "[")
+  (unless (null? order)
+    (display-std "\"")
+    (display-std (car order))
+    (display-std "\"")
+    (for-each
+      (lambda (m)
+        (display-std ",\"")
+        (display-std m)
+        (display-std "\""))
+      (cdr order)))
+  (display-std "]"))
 
-(define-cmd load-default-module
-            (lambda (num) (zero? num))
-            (lambda ()
-              (output-result 
-                (append-map
-                  (lambda (m) (load-info (pa$ geninfo (alt-geninfo-file m)) m #t))
-                  default-module))))
-
-(define-cmd load-file
-            (lambda (num) (and (<= 1 num) (<= num 2)))
-            (lambda (file :optional name)
-              (if (file-is-readable? file)
-                (let1 name (if (undefined? name) file name)
-                  (output-result
-                    (append
-                      (load-info (pa$ geninfo file) name #t)
-                      (call-with-input-file file parse-related-module))))
-                (output-result '()))))
-
-
+;;---
+;;output unit list
+;;---
 (define-class <json-context> (<convert-context>) ())
 
 (define (make-description description-list)
@@ -342,7 +285,6 @@
                  ",\"units\":"))
   (output-unit-list (ref doc 'units)))
 
-
 (define-constant *json-context* (make <json-context>))
 (define (output-unit-list unit-list)
   (display-std "[")
@@ -357,6 +299,81 @@
         (display-std "}"))
       (cdr unit-list)))
   (display-std "]"))
+
+;;---
+;;output all result
+;;---
+(define (filter-cons car cdr)
+  (if car
+    (cons car cdr)
+    cdr))
+
+(define (output-result name-and-docs)
+  (let1 order-and-docs (fold
+                         (lambda (d acc)
+                           (cons
+                             (cons (car d) (car acc))
+                             (filter-cons (cdr d) (cdr acc))))
+                         (cons '() '())
+                         name-and-docs)
+    (display-std "{")
+    (display-std "\"order\":")
+    (output-order (car order-and-docs))
+    (display-std ",")
+    (display-std "\"docs\":")
+    (output-unit-list (cdr order-and-docs))
+    (print-std "}")))
+
+
+;;--------------------
+;;definination of command
+;;--------------------
+
+(define-cmd stdin
+            (lambda (num) (eq? 1 num))
+            (lambda (name) (cons 'read-texts (list name))))
+
+(define-cmd load-default-module
+            (lambda (num) (zero? num))
+            (lambda ()
+              (output-result 
+                (append-map
+                  (lambda (m) (load-info (pa$ geninfo (alt-geninfo-file m)) m #t))
+                  default-module))))
+
+(define-cmd load-file
+            (lambda (num) (and (<= 1 num) (<= num 2)))
+            (lambda (file :optional name)
+              (if (file-is-readable? file)
+                (let1 name (if (undefined? name) file name)
+                  (output-result
+                    (append
+                      (load-info (pa$ geninfo file) name #t)
+                      (call-with-input-file file parse-related-module))))
+                (output-result '()))))
+
+;;--------------------
+;;definination of state
+;;--------------------
+
+(let ([name #f]
+      [texts #f])
+  (define-state read-texts
+                (lambda (n); enter execution
+                  (set! name n)
+                  (set! texts ""))
+                (lambda (line)
+                  (if (string=? "#stdin-eof" line)
+                    (cons 'init '())
+                    (set! texts (string-append texts "\n" line))))
+                (lambda () ;exit execution
+                  (output-result
+                    (append
+                      (load-info (pa$ geninfo-from-text texts name) name #t)
+                      (parse-related-module (open-input-string texts))))
+                  (set! name #f)
+                  (set! texts #f)
+                  )))
 
 ;;
 ;;definination of initial state

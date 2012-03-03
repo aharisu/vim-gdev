@@ -23,7 +23,7 @@ let s:limit_buffer_parse_linecount = 750
 "5 seconds
 let s:async_task_timeout = 5
 
-function! s:source.initialize()
+function! s:source.initialize()"{{{
   call s:init_proc()
 
   augroup neocomplcache
@@ -38,36 +38,36 @@ function! s:source.initialize()
 
   call s:load_default_module()
   call s:initialize_buffer()
-endfunction
+endfunction"}}}
 
-function! s:source.finalize()
+function! s:source.finalize()"{{{
   call s:finale_proc()
-endfunction
+endfunction"}}}
 
-function! s:source.get_keyword_pos(cur_text)
+function! s:source.get_keyword_pos(cur_text)"{{{
   let pattern = "\\%([[:alpha:]_$!&%@\\-\\+\\*/\\?<>=~^;][[:alnum:]_$!&%@\\-\\+\\*/\\?<>=~^:\\.]*\\m\\)$"
   let [cur_keyword_pos, cur_keyword_str] = neocomplcache#match_word(a:cur_text, l:pattern)
   return cur_keyword_pos
-endfunction
+endfunction"}}}
 
-function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str)
+function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str)"{{{
   if s:check_buffer_init()
     "It is not necessary to copy?
     return neocomplcache#keyword_filter(copy(b:word_list), a:cur_keyword_str)
   else
     return []
   endif
-endfunction
+endfunction"}}}
 
-function! neocomplcache#sources#gosh_complete#define()
+function! neocomplcache#sources#gosh_complete#define()"{{{
   if neocomplcache#util#has_vimproc()
     return s:source
   else
     return {}
   endif
-endfunction 
+endfunction "}}}
 
-function! s:check_buffer_init()
+function! s:check_buffer_init()"{{{
   if !exists('b:word_list')
     let b:word_list = []
   endif
@@ -85,9 +85,9 @@ function! s:check_buffer_init()
   endif
 
   return 1
-endfunction
+endfunction"}}}
 
-function! s:cursor_hold(type)
+function! s:cursor_hold(type)"{{{
   call s:parse_cur_buf(1)
 
   "wait until all tasks
@@ -96,22 +96,21 @@ function! s:cursor_hold(type)
 
     sleep 150m
   endwhile
-endfunction
+endfunction"}}}
 
-function! s:cursor_moved(type)
+function! s:cursor_moved(type)"{{{
   call s:check_async_task()
-endfunction
+endfunction"}}}
 
-
-function! s:constract_docname(bufnum, bufname)
+function! s:constract_docname(bufnum, bufname)"{{{
   if empty(a:bufname)
     return '#' . a:bufnum . '[No Name]'
   else
     return a:bufname
   endif
-endfunction
+endfunction"}}}
 
-function! s:initialize_buffer()
+function! s:initialize_buffer()"{{{
   if s:debug
     call neocomplcache#print_warning('s:initialize_buffer()')
   endif
@@ -121,7 +120,7 @@ function! s:initialize_buffer()
   if !has_key(s:docinfo_table, s:constract_docname(bufnr('%'), b:buf_name))
     call s:parse_cur_buf(0)
   endif
-endfunction
+endfunction"}}}
 
 function! s:add_doc(docs)"{{{
   for doc in a:docs
@@ -221,14 +220,14 @@ function! s:get_unit_info(unit)"{{{
 endfunction"}}}
 "}}}
 
-function! s:constract_word_list(order)
+function! s:constract_word_list(order)"{{{
   let table = {}
 
   call s:add_word_list_in_order(table, s:default_module_order)
   call s:add_word_list_in_order(table, a:order)
 
   let b:word_list = values(table)
-endfunction
+endfunction"}}}
 
 function! s:add_word_list_in_order(table, order)"{{{
 
@@ -245,19 +244,17 @@ function! s:add_word_list_in_order(table, order)"{{{
 
 endfunction"}}}
 
-
-
 "
 " Communicate to gosh-complete.scm
 
-function! s:init_proc()
+function! s:init_proc()"{{{
   let s:gosh_comp = vimproc#popen3('gosh ' . s:gosh_complete_path
         \ . " --generated-doc-directory=" . s:gosh_generated_doc_path
         \ . " --io-encoding=\"" . s:encoding() . "\""
         \ . s:get_loaded_module_text())
 endfunction
 
-function s:get_loaded_module_text()
+function s:get_loaded_module_text()"{{{
   let text = ''
   for [name, doc] in items(s:docinfo_table)
     let text .= ' --loaded-module="' . s:get_loaded_module_name(name)
@@ -268,9 +265,9 @@ function s:get_loaded_module_text()
   endfor
 
   return text
-endfunction
+endfunction"}}}
 
-function! s:get_loaded_module_name(docname)
+function! s:get_loaded_module_name(docname)"{{{
   if match(a:docname, '^#') == -1
     let name = 'm' . a:docname
   else
@@ -281,14 +278,14 @@ function! s:get_loaded_module_name(docname)
   endif
 
   return name
-endfunction
+endfunction"}}}"}}}
 
-function! s:finale_proc()
+function! s:finale_proc()"{{{
   call s:gosh_comp.stdin.write("#exit\n")
   call s:gosh_comp.waitpid()
-endfunction
+endfunction"}}}
 
-function! s:load_default_module()
+function! s:load_default_module()"{{{
   call s:add_async_task("#load-default-module\n", 
         \ function('s:load_default_module_end_callback'))
 endfunction
@@ -306,9 +303,9 @@ function! s:load_default_module_end_callback(out, err)
     call s:add_doc(result['docs'])
     call s:constract_word_list([])
   endif
-endfunction
+endfunction"}}}
 
-function! s:parse_cur_buf_from_file()
+function! s:parse_cur_buf_from_file()"{{{
   if s:debug
     call neocomplcache#print_warning('s:parse_cur_buf_from_file()')
   endif
@@ -322,17 +319,17 @@ function! s:parse_cur_buf_from_file()
 
     call s:parse_cur_buf(0)
   endif
-endfunction
+endfunction"}}}
 
-function! s:parse_cur_buf(parse_tick)
+function! s:parse_cur_buf(parse_tick)"{{{
+  if !s:check_buffer_init()
+    return
+  endif
+
   if s:debug
     call neocomplcache#print_warning('s:parse_cur_buf(' 
           \ . a:parse_tick . ')'
           \ . (b:changedtick - b:prev_parse_tick))
-  endif
-
-  if !s:check_buffer_init()
-    return
   endif
 
   if (b:changedtick - b:prev_parse_tick) < a:parse_tick
@@ -345,6 +342,7 @@ function! s:parse_cur_buf(parse_tick)
 
   let bufnumber = bufnr('%')
   let filename = s:cur_buf_filepath()
+
   let docname = s:constract_docname(bufnumber, filename)
   if empty(filename) || b:changedtick != b:prev_parse_tick
 
@@ -385,15 +383,15 @@ function! s:parse_cur_buf_end_callback(out, err)
     call s:add_doc(result['docs'])
     call s:constract_word_list(result['order'])
   endif
-endfunction
+endfunction"}}}
 
-function! s:restart_gosh_process()
+function! s:restart_gosh_process()"{{{
   "signal 15 is SIGTERM
   call s:gosh_comp.kill(15)
   call s:init_proc()
-endfunction
+endfunction"}}}
 
-function! s:add_async_task(text, callback)
+function! s:add_async_task(text, callback)"{{{
   if empty(s:async_task_queue)
     call s:gosh_comp.stdin.write(a:text)
     call add(s:async_task_queue, {'callback':a:callback, 'time' : localtime()})
@@ -408,6 +406,7 @@ function! s:check_async_task()
   endif
 
   let out = s:read_output_one_try(s:gosh_comp.stdout)
+
   let err = ""
   if empty(out)
     let err = s:read_output_one_try(s:gosh_comp.stderr)
@@ -418,7 +417,6 @@ function! s:check_async_task()
     let finish_task = remove(s:async_task_queue, 0)
     let Callback = finish_task['callback']
     call Callback(out, err)
-
 
     if s:debug_out_err
       if !empty(out)
@@ -480,7 +478,10 @@ function! s:read_output_one_try(port)
   return out
 endfunction"}}}
 
-function! s:encoding()
+"
+" util
+
+function! s:encoding()"{{{
   let enc = &encoding
   if enc == 'utf-8'
     return 'utf-8'
@@ -491,7 +492,7 @@ function! s:encoding()
   elseif enc == 'iso-2022-jp'
     return 'iso2022jp'
   endif
-endfunction
+endfunction"}}}
 
 function! s:cur_buf_filepath() "{{{
   return escape(expand('%:p'),  ' \')
