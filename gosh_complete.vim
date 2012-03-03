@@ -28,6 +28,7 @@ function! s:source.initialize()"{{{
     autocmd CursorHoldI * call s:cursor_hold('holdi')
     autocmd CursorMoved * call s:cursor_moved('move')
     autocmd CursorMovedI * call s:cursor_moved('movei')
+    autocmd VimLeave * call s:finale_proc()
   augroup END
 
   call s:load_default_module()
