@@ -253,6 +253,7 @@ endfunction"}}}
 function! s:init_proc()
   let s:gosh_comp = vimproc#popen3('gosh ' . s:gosh_complete_path
         \ . " --generated-doc-directory=" . s:gosh_generated_doc_path
+        \ . " --io-encoding=\"" . s:encoding() . "\""
         \ . s:get_loaded_module_text())
 endfunction
 
@@ -478,6 +479,19 @@ function! s:read_output_one_try(port)
 
   return out
 endfunction"}}}
+
+function! s:encoding()
+  let enc = &encoding
+  if enc == 'utf-8'
+    return 'utf-8'
+  elseif enc == 'cp932'
+    return 'shift_jis'
+  elseif enc == 'euc-jp'
+    return 'euc_jp'
+  elseif enc == 'iso-2022-jp'
+    return 'iso2022jp'
+  endif
+endfunction
 
 function! s:cur_buf_filepath() "{{{
   return escape(expand('%:p'),  ' \')

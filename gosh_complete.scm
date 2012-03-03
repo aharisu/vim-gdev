@@ -4,6 +4,7 @@
 (use util.match)
 (use file.util)
 (use gauche.parseopt)
+(use gauche.charconv)
 (use ginfo)
 
 (ignore-geninfo-warning? #t)
@@ -19,15 +20,19 @@
 ;;---------------------
 ;;Functions related to print
 ;;---------------------
+
+(define in-conv identity)
+(define out-conv identity)
+
 (define (print-port x port)
-  (for-each (cut display <> port) x)
+  (for-each (lambda (s) (display (out-conv (x->string s)) port)) x)
   (newline port)
   (flush port))
 (define (print-std . x) (print-port x (standard-output-port)))
 (define (print-err . x) (print-port x (standard-error-port)))
 
 (define (display-port x port)
-  (for-each (cut display <> port) x))
+  (for-each (lambda (s) (display (out-conv (x->string s)) port)) x))
 (define (display-std . x) (display-port x (standard-output-port)))
 (define (display-err . x) (display-port x (standard-error-port)))
 
@@ -411,17 +416,26 @@
                                    (map string->symbol (cdr modules)))))))]
      [#f "output-full-member"
       => (lambda () (set! output-full-member #t))]
+     [#f "io-encoding=s"
+      => (lambda (opt) 
+           (let1 opt (string-downcase (string-trim-both opt))
+             (case (string->symbol opt)
+               [(utf-8) ]
+               [(euc_jp shift_jis iso2022jp)
+                (set! in-conv (lambda (s) (ces-convert s opt)))
+                (set! out-conv (lambda (s) (ces-convert s (gauche-character-encoding) opt)))]
+               [else (errorf "invalid encoding.[~s]" opt)])))]
      . args)
     (set! generated-doc-directory gdd) 
     (unwind-protect
       (begin
-        (let loop ([line (read-line)])
+        (let loop ([line (in-conv (read-line))])
           (unless (eof-object? line)
             (let1 line (string-trim-both line)
               (unless (string=? line "#exit")
                 (unless (zero? (string-length line))
                   (exec-line line))
-                (loop (read-line))))))
+                (loop (in-conv (read-line)))))))
         0)
       1)))
 
