@@ -236,7 +236,6 @@ function! s:add_word_list_in_order(table, order)"{{{
       let a:table[word['word']] = word
     endfor
   endfor
-
 endfunction"}}}
 
 "
