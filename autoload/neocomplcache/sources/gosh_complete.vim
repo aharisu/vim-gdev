@@ -242,7 +242,9 @@ endfunction"}}}
 " Communicate to gosh-complete.scm
 
 function! s:init_proc()"{{{
-  let s:gosh_comp = vimproc#popen3('gosh ' . s:gosh_complete_path
+  let s:gosh_comp = vimproc#popen3('gosh' 
+        \ . ' -I' . escape(s:neocom_sources_directory, ' \') . ' '
+        \ . s:gosh_complete_path
         \ . " --generated-doc-directory=" . s:gosh_generated_doc_path
         \ . " --io-encoding=\"" . s:encoding() . "\""
         \ . s:get_loaded_module_text())
