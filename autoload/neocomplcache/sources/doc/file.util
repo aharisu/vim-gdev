@@ -1,0 +1,402 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name with-lock-file
+;;@param lock-name 
+;;@param thunk 
+;;@param :key 
+;;@param type 
+;;@param retry-interval 
+;;@param @ 
+
+;;;;;
+;;@type Function
+;;@name file->sexp-list
+;;@param filename 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name file->string-list
+;;@param filename 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name file->list
+;;@param reader 
+;;@param filename 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name file->string
+;;@param filename 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name delete-files
+;;@param paths 
+
+;;;;;
+;;@type Function
+;;@name remove-files
+;;@param paths 
+
+;;;;;
+;;@type Function
+;;@name move-file
+;;@param src 
+;;@param dst 
+;;@param :key 
+;;@param if-exists 
+;;@param backup-suffix 
+
+;;;;;
+;;@type Function
+;;@name copy-file
+;;@param src 
+;;@param dst 
+;;@param :key 
+;;@param if-exists 
+;;@param backup-suffix 
+;;@param safe 
+;;@param keep-timestamp 
+;;@param keep-mode 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name touch-file
+;;@param path 
+
+;;;;;
+;;@type Method
+;;@name file-atime=?
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Method
+;;@name file-ctime=?
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Method
+;;@name file-mtime>=?
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Method
+;;@name file-mtime>?
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Method
+;;@name file-mtime<=?
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Method
+;;@name file-mtime<?
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Method
+;;@name file-mtime=?
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Function
+;;@name file-equal?
+;;@param path1 
+;;@param path2 
+
+;;;;;
+;;@type Function
+;;@name file-eqv?
+;;@param path1 
+;;@param path2 
+
+;;;;;
+;;@type Function
+;;@name file-eq?
+;;@param path1 
+;;@param path2 
+
+;;;;;
+;;@type Function
+;;@name file-is-symlink?
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name file-ctime
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-mtime
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-atime
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-size
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-gid
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-uid
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-nlink
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-rdev
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-dev
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-ino
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-mode
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-perm
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-type
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name console-device
+
+;;;;;
+;;@type Function
+;;@name null-device
+
+;;;;;
+;;@type Function
+;;@name find-file-in-paths
+;;@param name 
+;;@param :key 
+;;@param paths 
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name path-swap-extension
+;;@param path 
+;;@param newext 
+
+;;;;;
+;;@type Function
+;;@name path-sans-extension
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name path-extension
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name decompose-path
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name simplify-path
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name resolve-path
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name expand-path
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name relative-path?
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name absolute-path?
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name build-path
+;;@param base-path 
+;;@param component 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name check-directory-tree
+;;@param dir 
+;;@param spec 
+
+;;;;;
+;;@type Function
+;;@name create-directory-tree
+;;@param dir 
+;;@param spec 
+
+;;;;;
+;;@type Function
+;;@name copy-directory*
+;;@param src 
+;;@param dst 
+;;@param :key 
+;;@param if-exists 
+;;@param backup-suffix 
+;;@param safe 
+;;@param keep-timestamp 
+;;@param keep-mode 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name delete-directory*
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name remove-directory*
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name create-directory*
+;;@param name 
+;;@param :optional 
+;;@param perm 
+
+;;;;;
+;;@type Function
+;;@name make-directory*
+;;@param name 
+;;@param :optional 
+;;@param perm 
+
+;;;;;
+;;@type Function
+;;@name directory-fold
+;;@param path 
+;;@param proc 
+;;@param seed 
+;;@param :key 
+;;@param lister 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name directory-list2
+;;@param path 
+;;@param :key 
+;;@param children? 
+;;@param add-path? 
+;;@param filter 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name directory-list
+;;@param path 
+;;@param :key 
+;;@param children? 
+;;@param add-path? 
+;;@param filter 
+;;@param filter-add-path? 
+
+;;;;;
+;;@type Parameter
+;;@name temporary-directory
+
+;;;;;
+;;@type Function
+;;@name home-directory
+;;@param :optional 
+;;@param user 
+
+;;;;;
+;;@type Function
+;;@name current-directory
+;;@param :optional 
+;;@param new-directory 
+

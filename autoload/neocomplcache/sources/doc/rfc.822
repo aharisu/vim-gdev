@@ -1,0 +1,88 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name date->rfc822-date
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name rfc822-write-headers
+;;@param headers 
+;;@param :key 
+;;@param output 
+;;@param continue 
+;;@param check 
+
+;;;;;
+;;@type Function
+;;@name rfc822-date->date
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name rfc822-parse-date
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name rfc822-quoted-string
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name rfc822-dot-atom
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name rfc822-atom
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name rfc822-skip-cfws
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name rfc822-field->tokens
+;;@param field 
+;;@param :optional 
+;;@param tokenizer-specs 
+
+;;;;;
+;;@type Function
+;;@name rfc822-next-token
+;;@param iport 
+;;@param :optional 
+;;@param tokenizer-specs 
+
+;;;;;
+;;@type Function
+;;@name rfc822-header-ref
+;;@param header-list 
+;;@param field-name 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name rfc822-header->list
+;;@param iport 
+;;@param :key 
+;;@param strict? 
+;;@param reader 
+
+;;;;;
+;;@type Function
+;;@name rfc822-read-headers
+;;@param iport 
+;;@param :key 
+;;@param strict? 
+;;@param reader 
+

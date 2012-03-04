@@ -1,0 +1,71 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name sha512-digest-string
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sha384-digest-string
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sha256-digest-string
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sha224-digest-string
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sha1-digest-string
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sha512-digest
+
+;;;;;
+;;@type Function
+;;@name sha384-digest
+
+;;;;;
+;;@type Function
+;;@name sha256-digest
+
+;;;;;
+;;@type Function
+;;@name sha224-digest
+
+;;;;;
+;;@type Function
+;;@name sha1-digest
+
+;;;;;
+;;@type Class
+;;@name <sha512>
+
+;;;;;
+;;@type Class
+;;@name <sha384>
+
+;;;;;
+;;@type Class
+;;@name <sha256>
+
+;;;;;
+;;@type Class
+;;@name <sha224>
+
+;;;;;
+;;@type Class
+;;@name <sha1>
+

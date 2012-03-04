@@ -1,0 +1,154 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name codepoints-foldcase
+;;@param sequence 
+
+;;;;;
+;;@type Function
+;;@name codepoints-titlecase
+;;@param sequence 
+
+;;;;;
+;;@type Function
+;;@name codepoints-downcase
+;;@param sequence 
+
+;;;;;
+;;@type Function
+;;@name codepoints-upcase
+;;@param sequence 
+
+;;;;;
+;;@type Function
+;;@name string-foldcase
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name string-titlecase
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name string-downcase
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name string-upcase
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name make-grapheme-cluster-reader
+;;@param generator 
+;;@param return 
+
+;;;;;
+;;@type Function
+;;@name make-word-reader
+;;@param generator 
+;;@param return 
+
+;;;;;
+;;@type Function
+;;@name make-grapheme-cluster-breaker
+;;@param generator 
+
+;;;;;
+;;@type Function
+;;@name make-word-breaker
+;;@param generator 
+
+;;;;;
+;;@type Function
+;;@name codepoints->grapheme-clusters
+;;@param sequence 
+
+;;;;;
+;;@type Function
+;;@name string->grapheme-clusters
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name codepoints->words
+;;@param sequence 
+
+;;;;;
+;;@type Function
+;;@name string->words
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name utf16->ucs4
+;;@param octet-list 
+;;@param :optional 
+;;@param strictness 
+
+;;;;;
+;;@type Function
+;;@name utf16-length
+;;@param octet 
+;;@param :optional 
+;;@param strictness 
+
+;;;;;
+;;@type Function
+;;@name ucs4->utf16
+;;@param codepoint 
+;;@param :optional 
+;;@param strictness 
+
+;;;;;
+;;@type Function
+;;@name utf8->ucs4
+;;@param octet-list 
+;;@param :optional 
+;;@param strictness 
+
+;;;;;
+;;@type Function
+;;@name utf8-length
+;;@param octet 
+;;@param :optional 
+;;@param strictness 
+
+;;;;;
+;;@type Function
+;;@name ucs4->utf8
+;;@param codepoint 
+;;@param :optional 
+;;@param strictness 
+
+;;;;;
+;;@type Function
+;;@name string-downcase
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-upcase
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-titlecase
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+

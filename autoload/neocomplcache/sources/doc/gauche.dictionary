@@ -1,0 +1,75 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name bimap-right-delete!
+;;@param bimap 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name bimap-left-delete!
+;;@param bimap 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name bimap-put!
+;;@param bimap 
+;;@param x 
+;;@param y 
+;;@param &key 
+;;@param (on-conflict supersede) 
+
+;;;;;
+;;@type Function
+;;@name bimap-right-exists?
+;;@param bimap 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name bimap-left-exists?
+;;@param bimap 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name bimap-right-get
+;;@param bimap 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name bimap-left-get
+;;@param bimap 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name bimap-right
+;;@param bimap 
+
+;;;;;
+;;@type Function
+;;@name bimap-left
+;;@param bimap 
+
+;;;;;
+;;@type Function
+;;@name make-bimap
+;;@param left-map 
+;;@param right-map 
+
+;;;;;
+;;@type Class
+;;@name <bimap>
+

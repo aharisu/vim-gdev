@@ -1,0 +1,36 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name record-modifier
+;;@param rtd 
+;;@param field-name 
+
+;;;;;
+;;@type Function
+;;@name record-accessor
+;;@param rtd 
+;;@param field-name 
+
+;;;;;
+;;@type Function
+;;@name record-predicate
+;;@param rtd 
+
+;;;;;
+;;@type Function
+;;@name record-constructor
+;;@param rtd 
+;;@param :optional 
+;;@param field-names 
+
+;;;;;
+;;@type Function
+;;@name make-record-type
+;;@param type-name 
+;;@param field-names 
+

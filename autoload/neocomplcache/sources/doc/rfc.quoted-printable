@@ -1,0 +1,30 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name quoted-printable-decode-string
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name quoted-printable-decode
+
+;;;;;
+;;@type Function
+;;@name quoted-printable-encode-string
+;;@param string 
+;;@param :key 
+;;@param line-width 
+;;@param binary 
+
+;;;;;
+;;@type Function
+;;@name quoted-printable-encode
+;;@param :key 
+;;@param line-width 
+;;@param binary 
+

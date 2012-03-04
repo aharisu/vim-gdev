@@ -1,0 +1,25 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name diff-report
+;;@param src-a 
+;;@param src-b 
+;;@param :key 
+;;@param reader 
+;;@param eq-fn 
+;;@param writer 
+
+;;;;;
+;;@type Function
+;;@name diff
+;;@param src-a 
+;;@param src-b 
+;;@param :key 
+;;@param reader 
+;;@param eq-fn 
+

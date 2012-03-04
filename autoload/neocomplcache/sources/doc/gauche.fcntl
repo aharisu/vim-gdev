@@ -1,0 +1,18 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Class
+;;@name <sys-flock>
+
+;;;;;
+;;@type Function
+;;@name sys-fcntl
+;;@param port-or-fd 
+;;@param operation 
+;;@param :optional 
+;;@param arg 
+

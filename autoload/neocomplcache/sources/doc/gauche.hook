@@ -1,0 +1,63 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Method
+;;@name run-hook
+;;@param (hook <hook>) 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name hook->list
+;;@param (hook <hook>) 
+
+;;;;;
+;;@type Method
+;;@name reset-hook!
+;;@param (hook <hook>) 
+
+;;;;;
+;;@type Method
+;;@name remove-hook!
+;;@param (hook <hook>) 
+;;@param proc 
+
+;;;;;
+;;@type Method
+;;@name delete-hook!
+;;@param (hook <hook>) 
+;;@param proc 
+
+;;;;;
+;;@type Method
+;;@name add-hook!
+;;@param (hook <hook>) 
+;;@param proc 
+;;@param :optional 
+;;@param (append? #f) 
+
+;;;;;
+;;@type Function
+;;@name hook-empty?
+;;@param hook 
+
+;;;;;
+;;@type Function
+;;@name hook?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name make-hook
+;;@param :optional 
+;;@param (arity 0) 
+
+;;;;;
+;;@type Class
+;;@name <hook>
+

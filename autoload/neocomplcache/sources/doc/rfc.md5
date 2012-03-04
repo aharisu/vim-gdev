@@ -1,0 +1,19 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name md5-digest-string
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name md5-digest
+
+;;;;;
+;;@type Class
+;;@name <md5>
+

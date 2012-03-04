@@ -1,0 +1,21 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name make-csv-writer
+;;@param separator 
+;;@param :optional 
+;;@param newline 
+;;@param (quote-char ") 
+
+;;;;;
+;;@type Function
+;;@name make-csv-reader
+;;@param separator 
+;;@param :optional 
+;;@param (quote-char ") 
+

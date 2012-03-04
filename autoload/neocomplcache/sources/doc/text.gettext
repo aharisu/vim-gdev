@@ -1,0 +1,59 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name make-gettext
+;;@param :optional 
+;;@param domain 
+;;@param locale 
+;;@param dirs 
+;;@param gettext-cached? 
+;;@param lookup-cached? 
+
+;;;;;
+;;@type Function
+;;@name dcgettext
+;;@param domain 
+;;@param msg-id 
+;;@param locale 
+
+;;;;;
+;;@type Function
+;;@name dgettext
+;;@param domain 
+;;@param msg-id 
+
+;;;;;
+;;@type Function
+;;@name bindtextdomain
+;;@param domain 
+;;@param dirs 
+
+;;;;;
+;;@type Function
+;;@name ngettext
+;;@param msg-id 
+;;@param :optional 
+;;@param msg-id2 
+;;@param num 
+
+;;;;;
+;;@type Function
+;;@name gettext
+;;@param msg-id 
+
+;;;;;
+;;@type Function
+;;@name textdomain
+;;@param domain-name 
+;;@param :optional 
+;;@param locale 
+;;@param dirs 
+;;@param cdir 
+;;@param cached? 
+;;@param lookup-cached? 
+

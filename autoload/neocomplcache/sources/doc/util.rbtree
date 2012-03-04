@@ -1,0 +1,146 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name alist->rbtree
+;;@param alist 
+;;@param key=? 
+;;@param key<? 
+
+;;;;;
+;;@type Function
+;;@name rbtree->alist
+;;@param rbtree 
+
+;;;;;
+;;@type Function
+;;@name rbtree-values
+;;@param rbtree 
+
+;;;;;
+;;@type Function
+;;@name rbtree-keys
+;;@param rbtree 
+
+;;;;;
+;;@type Function
+;;@name rbtree-fold-right
+;;@param rbtree 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name rbtree-fold
+;;@param rbtree 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name rbtree-extract-max!
+;;@param rbtree 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-extract-min!
+;;@param rbtree 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-max
+;;@param rbtree 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-min
+;;@param rbtree 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-pop!
+;;@param rbtree 
+;;@param key 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-push!
+;;@param rbtree 
+;;@param key 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name rbtree-update!
+;;@param rbtree 
+;;@param key 
+;;@param proc 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-delete!
+;;@param rbtree 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name rbtree-put!
+;;@param rbtree 
+;;@param key 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name rbtree-get
+;;@param rbtree 
+;;@param key 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-exists?
+;;@param rbtree 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name rbtree-num-entries
+;;@param rbtree 
+
+;;;;;
+;;@type Function
+;;@name rbtree-empty?
+;;@param rbtree 
+
+;;;;;
+;;@type Function
+;;@name rbtree-copy
+;;@param rbtree 
+
+;;;;;
+;;@type Function
+;;@name make-rbtree
+;;@param key=? 
+;;@param key<? 
+
+;;;;;
+;;@type Class
+;;@name <rbtree>
+

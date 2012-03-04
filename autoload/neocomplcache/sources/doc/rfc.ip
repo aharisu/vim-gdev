@@ -1,0 +1,36 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name ip-destination-address
+;;@param packet 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name ip-source-address
+;;@param packet 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name ip-protocol
+;;@param packet 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name ip-header-length
+;;@param packet 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name ip-version
+;;@param packet 
+;;@param offset 
+

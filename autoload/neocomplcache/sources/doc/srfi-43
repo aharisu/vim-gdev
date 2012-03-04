@@ -1,0 +1,212 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name reverse-list->vector
+;;@param list 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name reverse-vector->list
+;;@param vec 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name vector-reverse-copy!
+;;@param target 
+;;@param tstart 
+;;@param source 
+;;@param :optional 
+;;@param sstart 
+;;@param send 
+
+;;;;;
+;;@type Function
+;;@name vector-copy!
+;;@param target 
+;;@param tstart 
+;;@param source 
+;;@param :optional 
+;;@param sstart 
+;;@param send 
+
+;;;;;
+;;@type Function
+;;@name vector-reverse!
+;;@param vec 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name vector-swap!
+;;@param vec 
+;;@param i 
+;;@param j 
+
+;;;;;
+;;@type Function
+;;@name vector-every
+;;@param pred 
+;;@param vec1 
+;;@param vec2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-any
+;;@param pred 
+;;@param vec1 
+;;@param vec2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-binary-search
+;;@param vec 
+;;@param value 
+;;@param cmp 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name vector-skip-right
+;;@param pred 
+;;@param vec1 
+;;@param vec2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-skip
+;;@param pred 
+;;@param vec1 
+;;@param vec2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-index-right
+;;@param pred 
+;;@param vec1 
+;;@param vec2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-index
+;;@param pred 
+;;@param vec1 
+;;@param vec2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-count
+;;@param f 
+;;@param vec1 
+;;@param vec2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-for-each
+;;@param f 
+;;@param vec1 
+;;@param vec2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-map!
+;;@param f 
+;;@param vec1 
+;;@param vec2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-map
+;;@param f 
+;;@param vec1 
+;;@param vec2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-fold-right
+;;@param kons 
+;;@param knil 
+;;@param vec1 
+;;@param vec2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-fold
+;;@param kons 
+;;@param knil 
+;;@param vec1 
+;;@param vec2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector=
+;;@param elt= 
+;;@param vec 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-empty?
+;;@param vec 
+
+;;;;;
+;;@type Function
+;;@name vector-concatenate
+;;@param list-of-vectors 
+
+;;;;;
+;;@type Function
+;;@name vector-append
+;;@param vec 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-reverse-copy
+;;@param vec 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name vector-unfold-right
+;;@param f 
+;;@param length 
+;;@param seed 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name vector-unfold
+;;@param f 
+;;@param length 
+;;@param seed 
+;;@param ... 
+

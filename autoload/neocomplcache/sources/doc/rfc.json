@@ -1,0 +1,29 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name construct-json-string
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name construct-json
+;;@param obj 
+;;@param :optional 
+;;@param output-port 
+
+;;;;;
+;;@type Function
+;;@name parse-json-string
+;;@param str 
+
+;;;;;
+;;@type Function
+;;@name parse-json
+;;@param :optional 
+;;@param input-port 
+

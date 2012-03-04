@@ -1,0 +1,159 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name trie-for-each
+;;@param trie 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name trie-map
+;;@param trie 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name trie-fold
+;;@param trie 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name trie-common-prefix-for-each
+;;@param trie 
+;;@param prefix 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name trie-common-prefix-map
+;;@param trie 
+;;@param prefix 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name trie-common-prefix-fold
+;;@param trie 
+;;@param prefix 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name trie-common-prefix-values
+;;@param trie 
+;;@param prefix 
+
+;;;;;
+;;@type Function
+;;@name trie-common-prefix-keys
+;;@param trie 
+;;@param prefix 
+
+;;;;;
+;;@type Function
+;;@name trie-common-prefix
+;;@param trie 
+;;@param prefix 
+
+;;;;;
+;;@type Function
+;;@name trie->hash-table
+;;@param trie 
+;;@param ht-type 
+
+;;;;;
+;;@type Function
+;;@name trie-values
+;;@param trie 
+
+;;;;;
+;;@type Function
+;;@name trie-keys
+;;@param trie 
+
+;;;;;
+;;@type Function
+;;@name trie->list
+;;@param trie 
+
+;;;;;
+;;@type Function
+;;@name trie-delete!
+;;@param trie 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name trie-update!
+;;@param trie 
+;;@param key 
+;;@param proc 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name trie-put!
+;;@param trie 
+;;@param key 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name trie-get
+;;@param trie 
+;;@param key 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name trie-exists?
+;;@param trie 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name trie-num-entries
+;;@param trie 
+
+;;;;;
+;;@type Function
+;;@name trie?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name trie-with-keys
+;;@param params 
+;;@param key 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name trie
+;;@param params 
+;;@param kv 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name make-trie
+;;@param :optional 
+;;@param tab-make 
+;;@param tab-get 
+;;@param tab-put! 
+;;@param tab-fold 
+
+;;;;;
+;;@type Class
+;;@name <trie>
+

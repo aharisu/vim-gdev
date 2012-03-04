@@ -1,0 +1,44 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name job-finish-time
+;;@param job 
+
+;;;;;
+;;@type Function
+;;@name job-start-time
+;;@param job 
+
+;;;;;
+;;@type Function
+;;@name job-acknowledge-time
+;;@param job 
+
+;;;;;
+;;@type Function
+;;@name job-wait
+;;@param job 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name job-result
+;;@param job 
+
+;;;;;
+;;@type Function
+;;@name job-status
+;;@param job 
+
+;;;;;
+;;@type Function
+;;@name job?
+;;@param obj 
+

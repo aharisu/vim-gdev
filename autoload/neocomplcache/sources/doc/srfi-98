@@ -1,0 +1,15 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name get-environment-variables
+
+;;;;;
+;;@type Function
+;;@name get-environment-variable
+;;@param name 
+

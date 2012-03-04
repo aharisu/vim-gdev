@@ -1,0 +1,155 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name write-block
+;;@param vec 
+;;@param :optional 
+;;@param oport 
+;;@param start 
+;;@param end 
+;;@param endian 
+
+;;;;;
+;;@type Function
+;;@name read-block!
+;;@param vec 
+;;@param :optional 
+;;@param iport 
+;;@param start 
+;;@param end 
+;;@param endian 
+
+;;;;;
+;;@type Function
+;;@name uvector-alias
+;;@param uvector-class 
+;;@param vec 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name u32vector->string
+;;@param vec 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name s32vector->string
+;;@param vec 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string->u32vector
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string->s32vector
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name u8vector->string
+;;@param vec 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name s8vector->string
+;;@param vec 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string->u8vector!
+;;@param target 
+;;@param tstart 
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string->s8vector!
+;;@param target 
+;;@param tstart 
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string->u8vector
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string->s8vector
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name uvector-copy!
+;;@param target 
+;;@param tstart 
+;;@param source 
+;;@param :optional 
+;;@param sstart 
+;;@param send 
+
+;;;;;
+;;@type Function
+;;@name uvector-size
+;;@param uvector 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Method
+;;@name subseq
+;;@param (seq <sequence>) 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Method
+;;@name modifier
+;;@param (seq <sequence>) 
+
+;;;;;
+;;@type Method
+;;@name referencer
+;;@param (seq <sequence>) 
+

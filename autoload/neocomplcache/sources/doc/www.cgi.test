@@ -1,0 +1,48 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name run-cgi-script->string-list
+;;@param script 
+;;@param :key 
+;;@param environment 
+;;@param parameters 
+
+;;;;;
+;;@type Function
+;;@name run-cgi-script->string
+;;@param script 
+;;@param :key 
+;;@param environment 
+;;@param parameters 
+
+;;;;;
+;;@type Function
+;;@name run-cgi-script->sxml
+;;@param script 
+;;@param :key 
+;;@param environment 
+;;@param parameters 
+
+;;;;;
+;;@type Function
+;;@name run-cgi-script->header&body
+;;@param script 
+;;@param reader 
+;;@param :key 
+;;@param environment 
+;;@param parameters 
+
+;;;;;
+;;@type Function
+;;@name call-with-cgi-script
+;;@param script 
+;;@param proc 
+;;@param :key 
+;;@param (environment ()) 
+;;@param (parameters #f) 
+

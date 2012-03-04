@@ -1,0 +1,28 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name base64-decode-string
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name base64-decode
+
+;;;;;
+;;@type Function
+;;@name base64-encode-string
+;;@param string 
+;;@param :key 
+;;@param line-width 
+
+;;;;;
+;;@type Function
+;;@name base64-encode
+;;@param :key 
+;;@param line-width 
+

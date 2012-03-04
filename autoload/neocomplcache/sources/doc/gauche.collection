@@ -1,0 +1,30 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name partition
+;;@param pred 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name remove
+;;@param pred 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name filter
+;;@param pred 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name call-with-iterators
+;;@param collections 
+;;@param proc 
+

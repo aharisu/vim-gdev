@@ -1,0 +1,405 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name string->date
+;;@param string 
+;;@param template-string 
+
+;;;;;
+;;@type Function
+;;@name date->string
+;;@param date 
+;;@param :optional 
+;;@param format-string 
+
+;;;;;
+;;@type Function
+;;@name time-utc->time-tai!
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-utc->time-tai
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-utc->time-monotonic!
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-utc->time-monotonic
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-utc->modified-julian-day
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-utc->julian-day
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-utc->date
+;;@param time 
+;;@param :optional 
+;;@param tz-offset 
+
+;;;;;
+;;@type Function
+;;@name time-tai->time-utc!
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-tai->time-utc
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-tai->time-monotonic!
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-tai->time-monotonic
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-tai->modified-julian-day
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-tai->julian-day
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-tai->date
+;;@param time 
+;;@param :optional 
+;;@param tz-offset 
+
+;;;;;
+;;@type Function
+;;@name time-monotonic->time-utc!
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-monotonic->time-utc
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-monotonic->time-tai!
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-monotonic->time-tai
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-monotonic->modified-julian-day
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-monotonic->julian-day
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-monotonic->date
+;;@param time 
+;;@param :optional 
+;;@param tz-offset 
+
+;;;;;
+;;@type Function
+;;@name modified-julian-day->time-utc
+;;@param jd 
+
+;;;;;
+;;@type Function
+;;@name modified-julian-day->time-tai
+;;@param jd 
+
+;;;;;
+;;@type Function
+;;@name modified-julian-day->time-monotonic
+;;@param jd 
+
+;;;;;
+;;@type Function
+;;@name modified-julian-day->date
+;;@param jd 
+;;@param :optional 
+;;@param tz-offset 
+
+;;;;;
+;;@type Function
+;;@name julian-day->time-utc
+;;@param jd 
+
+;;;;;
+;;@type Function
+;;@name julian-day->time-tai
+;;@param jd 
+
+;;;;;
+;;@type Function
+;;@name julian-day->time-monotonic
+;;@param jd 
+
+;;;;;
+;;@type Function
+;;@name julian-day->date
+;;@param jd 
+;;@param :optional 
+;;@param tz-offset 
+
+;;;;;
+;;@type Function
+;;@name date->time-utc
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date->time-tai
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date->time-monotonic
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date->modified-julian-day
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date->julian-day
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date-week-number
+;;@param date 
+;;@param day-of-week-starting-week 
+
+;;;;;
+;;@type Function
+;;@name date-week-day
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date-year-day
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date-zone-offset
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date-year
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date-month
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date-day
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date-hour
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date-minute
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date-second
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date-nanosecond
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name date?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name make-date
+;;@param nanosecond 
+;;@param second 
+;;@param minute 
+;;@param hour 
+;;@param day 
+;;@param month 
+;;@param year 
+;;@param zone-offset 
+
+;;;;;
+;;@type Class
+;;@name <date>
+
+;;;;;
+;;@type Function
+;;@name subtract-duration!
+;;@param time0 
+;;@param time-duration 
+
+;;;;;
+;;@type Function
+;;@name subtract-duration
+;;@param time0 
+;;@param time-duration 
+
+;;;;;
+;;@type Function
+;;@name add-duration!
+;;@param time0 
+;;@param time-duration 
+
+;;;;;
+;;@type Function
+;;@name add-duration
+;;@param time0 
+;;@param time-duration 
+
+;;;;;
+;;@type Function
+;;@name time-difference!
+;;@param time0 
+;;@param time1 
+
+;;;;;
+;;@type Function
+;;@name time-difference
+;;@param time0 
+;;@param time1 
+
+;;;;;
+;;@type Function
+;;@name time>=?
+;;@param time0 
+;;@param time1 
+
+;;;;;
+;;@type Function
+;;@name time>?
+;;@param time0 
+;;@param time1 
+
+;;;;;
+;;@type Function
+;;@name time<=?
+;;@param time0 
+;;@param time1 
+
+;;;;;
+;;@type Function
+;;@name time<?
+;;@param time0 
+;;@param time1 
+
+;;;;;
+;;@type Function
+;;@name time=?
+;;@param time0 
+;;@param time1 
+
+;;;;;
+;;@type Function
+;;@name copy-time
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name set-time-nanosecond!
+;;@param time 
+;;@param nanosecond 
+
+;;;;;
+;;@type Function
+;;@name set-time-second!
+;;@param time 
+;;@param second 
+
+;;;;;
+;;@type Function
+;;@name set-time-type!
+;;@param time 
+;;@param type 
+
+;;;;;
+;;@type Function
+;;@name time-nanosecond
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-second
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time-type
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name make-time
+;;@param type 
+;;@param nanoseconds 
+;;@param seconds 
+
+;;;;;
+;;@type Function
+;;@name time-resolution
+
+;;;;;
+;;@type Function
+;;@name current-modified-julian-day
+
+;;;;;
+;;@type Function
+;;@name current-julian-day
+
+;;;;;
+;;@type Function
+;;@name current-date
+;;@param :optional 
+;;@param tz-offset 
+

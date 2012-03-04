@@ -1,0 +1,78 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name test-module
+;;@param module 
+;;@param :key 
+;;@param allow-undefined 
+
+;;;;;
+;;@type var
+;;@name *test-report-error*
+
+;;;;;
+;;@type var
+;;@name *test-error*
+
+;;;;;
+;;@type Function
+;;@name test-error
+;;@param :optional 
+;;@param (condition-type <error>) 
+
+;;;;;
+;;@type Function
+;;@name test-one-of
+;;@param choice 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name test-check
+;;@param expected 
+;;@param result 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name test
+;;@param name 
+;;@param expected 
+;;@param thunk 
+;;@param :optional 
+;;@param check 
+
+;;;;;
+;;@type Function
+;;@name test*
+;;@param name 
+;;@param expected 
+;;@param expr 
+;;@param :optional 
+;;@param check 
+
+;;;;;
+;;@type Function
+;;@name test-record-file
+;;@param file 
+
+;;;;;
+;;@type Function
+;;@name test-end
+
+;;;;;
+;;@type Function
+;;@name test-section
+;;@param section-name 
+
+;;;;;
+;;@type Function
+;;@name test-start
+;;@param module-name 
+

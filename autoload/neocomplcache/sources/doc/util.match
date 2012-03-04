@@ -1,0 +1,68 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name match-define
+;;@param pat 
+;;@param expr 
+
+;;;;;
+;;@type Function
+;;@name match-let1
+;;@param pat 
+;;@param expr 
+;;@param body-expr 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name match-letrec
+;;@param ((pat expr) ...) 
+;;@param body-expr 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name match-let*
+;;@param ((pat expr) ...) 
+;;@param body-expr 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name match-let
+;;@param name 
+;;@param ((pat expr) ...) 
+;;@param body-expr 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name match-let
+;;@param ((pat expr) ...) 
+;;@param body-expr 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name match-lambda*
+;;@param clause 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name match-lambda
+;;@param clause 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name match
+;;@param expr 
+;;@param clause 
+;;@param ... 
+

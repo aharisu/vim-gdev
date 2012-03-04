@@ -1,0 +1,28 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name tree->string
+;;@param tree 
+
+;;;;;
+;;@type Method
+;;@name write-tree
+;;@param ((tree <top>) out) 
+
+;;;;;
+;;@type Method
+;;@name write-tree
+;;@param ((tree <list>) out) 
+
+;;;;;
+;;@type Method
+;;@name write-tree
+;;@param tree 
+;;@param :optional 
+;;@param out 
+

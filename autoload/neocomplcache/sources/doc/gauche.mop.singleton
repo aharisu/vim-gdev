@@ -1,0 +1,21 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Class
+;;@name <singleton-mixin>
+
+;;;;;
+;;@type Method
+;;@name instance-of
+;;@param (class <singleton-meta>) 
+;;@param :rest 
+;;@param initargs 
+
+;;;;;
+;;@type Class
+;;@name <singleton-meta>
+

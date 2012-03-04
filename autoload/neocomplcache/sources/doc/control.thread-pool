@@ -1,0 +1,52 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name terminate-all!
+;;@param pool 
+;;@param :key 
+;;@param (force-timeout #f) 
+;;@param (cancel-queued-jobs #f) 
+
+;;;;;
+;;@type Function
+;;@name wait-all
+;;@param pool 
+;;@param :optional 
+;;@param (timeout #f) 
+;;@param (check-interval 500000000) 
+
+;;;;;
+;;@type Function
+;;@name add-job!
+;;@param pool 
+;;@param thunk 
+;;@param :optional 
+;;@param (need-result #f) 
+;;@param (timeout #f) 
+
+;;;;;
+;;@type Function
+;;@name thread-pool-shut-down?
+;;@param pool 
+
+;;;;;
+;;@type Function
+;;@name thread-pool-results
+;;@param pool 
+
+;;;;;
+;;@type Function
+;;@name make-thread-pool
+;;@param size 
+;;@param :key 
+;;@param (max-backlog 0) 
+
+;;;;;
+;;@type Class
+;;@name <thread-pool>
+

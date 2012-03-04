@@ -1,0 +1,94 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name http-secure-connection-available?
+
+;;;;;
+;;@type Function
+;;@name http-compose-form-data
+;;@param params 
+;;@param port 
+;;@param :optional 
+;;@param encoding 
+
+;;;;;
+;;@type Function
+;;@name http-compose-query
+;;@param path 
+;;@param params 
+;;@param :optional 
+;;@param encoding 
+
+;;;;;
+;;@type Parameter
+;;@name http-user-agent
+;;@param :optional 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name http-delete
+;;@param server 
+;;@param request-uri 
+;;@param :key 
+;;@param sink 
+;;@param flusher 
+;;@param secure 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name http-put
+;;@param server 
+;;@param request-uri 
+;;@param body 
+;;@param :key 
+;;@param sink 
+;;@param flusher 
+;;@param secure 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name http-post
+;;@param server 
+;;@param request-uri 
+;;@param body 
+;;@param :key 
+;;@param sink 
+;;@param flusher 
+;;@param no-redirect 
+;;@param secure 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name http-head
+;;@param server 
+;;@param request-uri 
+;;@param :key 
+;;@param no-redirect 
+;;@param secure 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name http-get
+;;@param server 
+;;@param request-uri 
+;;@param :key 
+;;@param sink 
+;;@param flusher 
+;;@param no-redirect 
+;;@param secure 
+;;@param ... 
+
+;;;;;
+;;@type Class
+;;@name <http-error>
+

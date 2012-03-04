@@ -1,0 +1,30 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name file-is-executable?
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name file-is-writable?
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name file-is-readable?
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name string-index
+;;@param s 
+;;@param char/char-set/pred 
+;;@param :optional 
+;;@param start 
+;;@param end 
+

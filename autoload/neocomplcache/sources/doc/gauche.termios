@@ -1,0 +1,106 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name without-echoing
+;;@param iport 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name sys-forkpty-and-exec
+;;@param command 
+;;@param args 
+;;@param :key 
+;;@param iomap 
+;;@param term 
+;;@param sigmask 
+
+;;;;;
+;;@type Function
+;;@name sys-forkpty
+;;@param :optional 
+;;@param term 
+
+;;;;;
+;;@type Function
+;;@name sys-openpty
+;;@param :optional 
+;;@param term 
+
+;;;;;
+;;@type Function
+;;@name sys-cfsetospeed
+;;@param termios 
+;;@param speed 
+
+;;;;;
+;;@type Function
+;;@name sys-cfgetospeed
+;;@param termios 
+
+;;;;;
+;;@type Function
+;;@name sys-cfsetispeed
+;;@param termios 
+;;@param speed 
+
+;;;;;
+;;@type Function
+;;@name sys-cfgetispeed
+;;@param termios 
+
+;;;;;
+;;@type Function
+;;@name sys-tcsetpgrp
+;;@param port-or-fd 
+;;@param pgrp 
+
+;;;;;
+;;@type Function
+;;@name sys-tcgetpgrp
+;;@param port-or-fd 
+
+;;;;;
+;;@type Function
+;;@name sys-tcflow
+;;@param port-or-fd 
+;;@param action 
+
+;;;;;
+;;@type Function
+;;@name sys-tcflush
+;;@param port-or-fd 
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name sys-tcdrain
+;;@param port-or-fd 
+
+;;;;;
+;;@type Function
+;;@name sys-tcsendbreak
+;;@param port-or-fd 
+;;@param duration 
+
+;;;;;
+;;@type Function
+;;@name sys-tcsetattr
+;;@param port-or-fd 
+;;@param when 
+;;@param termios 
+
+;;;;;
+;;@type Function
+;;@name sys-tcgetattr
+;;@param port-or-fd 
+
+;;;;;
+;;@type Class
+;;@name <sys-termios>
+

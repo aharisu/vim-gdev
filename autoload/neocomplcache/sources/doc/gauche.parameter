@@ -1,0 +1,51 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Method
+;;@name parameter-post-observers
+;;@param (p <parameter>) 
+
+;;;;;
+;;@type Method
+;;@name parameter-pre-observers
+;;@param (p <parameter>) 
+
+;;;;;
+;;@type Method
+;;@name parameter-observer-delete!
+;;@param (p <parameter>) 
+;;@param proc 
+;;@param :optional 
+;;@param when 
+
+;;;;;
+;;@type Method
+;;@name parameter-observer-add!
+;;@param (p <parameter>) 
+;;@param proc 
+;;@param :optional 
+;;@param when 
+;;@param where 
+
+;;;;;
+;;@type Function
+;;@name parameterize
+;;@param ((param value) ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name make-parameter
+;;@param value 
+;;@param :optional 
+;;@param filter 
+
+;;;;;
+;;@type Class
+;;@name <parameter>
+

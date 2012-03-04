@@ -1,0 +1,107 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name icmp6-parameter-code->string
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp6-exceeded-code->string
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp6-unreach-code->string
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp6-message-type->string
+;;@param type 
+
+;;;;;
+;;@type Function
+;;@name icmp4-security-code->string
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp4-parameter-code->string
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp4-exceeded-code->string
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp4-router-code->string
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp4-redirect-code->string
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp4-unreach-code->string
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp4-message-type->string
+;;@param type 
+
+;;;;;
+;;@type Function
+;;@name icmp6-describe-packet
+;;@param buffer 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name icmp4-describe-packet
+;;@param buffer 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name icmp-packet-code
+;;@param buffer 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name icmp-packet-type
+;;@param buffer 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name icmp6-fill-echo!
+;;@param buffer 
+;;@param ident 
+;;@param sequence 
+;;@param data 
+
+;;;;;
+;;@type Function
+;;@name icmp4-fill-checksum!
+;;@param buffer 
+;;@param size 
+
+;;;;;
+;;@type Function
+;;@name icmp4-fill-echo!
+;;@param buffer 
+;;@param ident 
+;;@param sequence 
+;;@param data 
+

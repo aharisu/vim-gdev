@@ -1,0 +1,92 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name with-time-counter
+;;@param counter 
+;;@param expr 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name time-counter-value
+;;@param (counter <time-counter>) 
+
+;;;;;
+;;@type Method
+;;@name time-counter-reset!
+;;@param (counter <time-counter>) 
+
+;;;;;
+;;@type Method
+;;@name time-counter-stop!
+;;@param (counter <time-counter>) 
+
+;;;;;
+;;@type Method
+;;@name time-counter-start!
+;;@param (counter <time-counter>) 
+
+;;;;;
+;;@type Class
+;;@name <process-time-counter>
+
+;;;;;
+;;@type Class
+;;@name <system-time-counter>
+
+;;;;;
+;;@type Class
+;;@name <user-time-counter>
+
+;;;;;
+;;@type Class
+;;@name <real-time-counter>
+
+;;;;;
+;;@type Class
+;;@name <time-counter>
+
+;;;;;
+;;@type Function
+;;@name report-time-results
+;;@param result 
+
+;;;;;
+;;@type Function
+;;@name time-these/report
+;;@param how 
+;;@param alist 
+
+;;;;;
+;;@type Function
+;;@name time-these
+;;@param how 
+;;@param alist 
+
+;;;;;
+;;@type Function
+;;@name time-result-
+;;@param t1 
+;;@param t2 
+;;@param :key 
+;;@param (with-count #f) 
+
+;;;;;
+;;@type Function
+;;@name time-result+
+;;@param t1 
+;;@param t2 
+;;@param :key 
+;;@param (with-count #f) 
+
+;;;;;
+;;@type Function
+;;@name time-this
+;;@param how 
+;;@param thunk 
+

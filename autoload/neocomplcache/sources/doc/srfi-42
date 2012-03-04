@@ -1,0 +1,133 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name fold3-ec
+;;@param seed 
+;;@param qualifier 
+;;@param ... 
+;;@param expr 
+;;@param init 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name fold-ec
+;;@param seed 
+;;@param qualifier 
+;;@param ... 
+;;@param expr 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name last-ec
+;;@param default 
+;;@param qualifier 
+;;@param ... 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name first-ec
+;;@param default 
+;;@param qualifier 
+;;@param ... 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name every?-ec
+;;@param qualifier 
+;;@param ... 
+;;@param test 
+
+;;;;;
+;;@type Function
+;;@name any?-ec
+;;@param qualifier 
+;;@param ... 
+;;@param test 
+
+;;;;;
+;;@type Function
+;;@name max-ec
+;;@param qualifier 
+;;@param ... 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name min-ec
+;;@param qualifier 
+;;@param ... 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name product-ec
+;;@param qualifier 
+;;@param ... 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name sum-ec
+;;@param qualifier 
+;;@param ... 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name vector-of-length-ec
+;;@param k 
+;;@param qualifier 
+;;@param ... 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name vector-ec
+;;@param qualifier 
+;;@param ... 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name string-append-ec
+;;@param qualifier 
+;;@param ... 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name string-ec
+;;@param qualifier 
+;;@param ... 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name append-ec
+;;@param qualifier 
+;;@param ... 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name list-ec
+;;@param qualifier 
+;;@param ... 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name do-ec
+;;@param qualifier 
+;;@param ... 
+;;@param body 
+

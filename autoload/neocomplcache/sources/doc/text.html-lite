@@ -1,0 +1,21 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name html-doctype
+;;@param :key 
+;;@param type 
+
+;;;;;
+;;@type Function
+;;@name html-escape-string
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name html-escape
+

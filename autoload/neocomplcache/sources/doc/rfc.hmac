@@ -1,0 +1,36 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Method
+;;@name hmac-digest-string
+;;@param string 
+;;@param :key 
+;;@param key 
+;;@param hasher 
+
+;;;;;
+;;@type Method
+;;@name hmac-digest
+;;@param :key 
+;;@param key 
+;;@param hasher 
+
+;;;;;
+;;@type Method
+;;@name hmac-final!
+;;@param (hmac <hmac>) 
+
+;;;;;
+;;@type Method
+;;@name hmac-update!
+;;@param (hmac <hmac>) 
+;;@param data 
+
+;;;;;
+;;@type Class
+;;@name <hmac>
+

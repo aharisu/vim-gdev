@@ -1,0 +1,37 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Method
+;;@name log-format
+;;@param (drain <log-drain>) 
+;;@param (format <string>) 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name log-format
+;;@param (format <string>) 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Parameter
+;;@name log-default-drain
+
+;;;;;
+;;@type Function
+;;@name log-open
+;;@param path 
+;;@param :key 
+;;@param prefix 
+;;@param program-name 
+
+;;;;;
+;;@type Class
+;;@name <log-drain>
+

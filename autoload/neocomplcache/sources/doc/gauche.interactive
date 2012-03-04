@@ -1,0 +1,49 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name reload-verbose
+;;@param :optional 
+;;@param flag 
+
+;;;;;
+;;@type Function
+;;@name module-reload-rules
+;;@param :optional 
+;;@param module-rules 
+
+;;;;;
+;;@type Function
+;;@name reload-modified-modules
+;;@param :optional 
+;;@param module-rules 
+
+;;;;;
+;;@type Function
+;;@name reload
+;;@param module-name 
+;;@param :optional 
+;;@param rule 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name d
+;;@param obj 
+
+;;;;;
+;;@type Method
+;;@name describe
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name apropos
+;;@param pattern 
+;;@param :optional 
+;;@param module 
+

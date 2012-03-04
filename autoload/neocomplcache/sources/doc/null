@@ -1,0 +1,196 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name let
+;;@param (rest val ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name let
+;;@param name 
+;;@param (rest val ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name let
+;;@param (rest val ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name syntax-rules
+;;@param literals 
+;;@param clause1 
+;;@param clause2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name letrec-syntax
+;;@param ((name transformer-spec) ...) 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name let-syntax
+;;@param ((name transformer-spec) ...) 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name define-syntax
+;;@param name 
+;;@param transformer-spec 
+
+;;;;;
+;;@type Function
+;;@name define
+;;@param (variable . formals) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name define
+;;@param variable 
+;;@param expression 
+
+;;;;;
+;;@type Function
+;;@name unquote-splicing
+;;@param datum 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name unquote
+;;@param datum 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name quasiquote
+;;@param template 
+
+;;;;;
+;;@type Function
+;;@name let
+;;@param name 
+;;@param bindings 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name do
+;;@param ((variable init (step)) ...) 
+;;@param (test expr ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name begin
+;;@param form 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name letrec
+;;@param ((var expr) ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name let*
+;;@param ((var expr) ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name let
+;;@param ((var expr) ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name or
+;;@param test 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name and
+;;@param test 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name case
+;;@param key 
+;;@param clause1 
+;;@param clause2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name cond
+;;@param clause1 
+;;@param clause2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name if
+;;@param test 
+;;@param consequent 
+
+;;;;;
+;;@type Function
+;;@name if
+;;@param test 
+;;@param consequent 
+;;@param alternative 
+
+;;;;;
+;;@type Function
+;;@name set!
+;;@param (proc arg ...) 
+;;@param expression 
+
+;;;;;
+;;@type Function
+;;@name set!
+;;@param symbol 
+;;@param expression 
+
+;;;;;
+;;@type Function
+;;@name lambda
+;;@param formals 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name quote
+;;@param datum 
+
+;;;;;
+;;@type Function
+;;@name delay
+;;@param expression 
+

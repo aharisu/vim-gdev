@@ -1,0 +1,48 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name option-processor
+
+;;;;;
+;;@type Function
+;;@name option-optional-arg?
+;;@param option 
+
+;;;;;
+;;@type Function
+;;@name option-required-arg?
+;;@param option 
+
+;;;;;
+;;@type Function
+;;@name option-names
+;;@param option 
+
+;;;;;
+;;@type Function
+;;@name option?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name option
+;;@param names 
+;;@param require-arg? 
+;;@param optional-arg? 
+;;@param processor 
+
+;;;;;
+;;@type Function
+;;@name args-fold
+;;@param args 
+;;@param options 
+;;@param unrecognized-proc 
+;;@param operand-proc 
+;;@param :rest 
+;;@param seeds 
+

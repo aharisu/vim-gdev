@@ -1,0 +1,1155 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name length+
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name load
+;;@param file 
+;;@param :key 
+;;@param paths 
+;;@param (error-if-not-found #t) 
+;;@param environment 
+;;@param ignore-coding 
+
+;;;;;
+;;@type Function
+;;@name write-char
+;;@param char 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name newline
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name display
+;;@param obj 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name write
+;;@param obj 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name char-ready?
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name eof-object?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name peek-char
+;;@param :optional 
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name read-char
+;;@param :optional 
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name read
+;;@param :optional 
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name with-output-to-file
+;;@param string 
+;;@param thunk 
+;;@param :key 
+;;@param if-does-not-exist 
+;;@param if-exists 
+;;@param buffering 
+;;@param element-type 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name with-input-from-file
+;;@param string 
+;;@param thunk 
+;;@param :key 
+;;@param if-does-not-exist 
+;;@param buffering 
+;;@param element-type 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name call-with-output-file
+;;@param string 
+;;@param proc 
+;;@param :key 
+;;@param if-does-not-exist 
+;;@param if-exists 
+;;@param buffering 
+;;@param element-type 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name call-with-input-file
+;;@param string 
+;;@param proc 
+;;@param :key 
+;;@param if-does-not-exist 
+;;@param buffering 
+;;@param element-type 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name open-output-file
+;;@param filename 
+;;@param :key 
+;;@param if-does-not-exist 
+;;@param if-exists 
+;;@param buffering 
+;;@param element-type 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name open-input-file
+;;@param filename 
+;;@param :key 
+;;@param if-does-not-exist 
+;;@param buffering 
+;;@param element-type 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name close-output-port
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name close-input-port
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name current-output-port
+
+;;;;;
+;;@type Function
+;;@name current-input-port
+
+;;;;;
+;;@type Function
+;;@name output-port?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name input-port?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name port?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name interaction-environment
+
+;;;;;
+;;@type Function
+;;@name scheme-report-environment
+;;@param version 
+
+;;;;;
+;;@type Function
+;;@name null-environment
+;;@param version 
+
+;;;;;
+;;@type Function
+;;@name eval
+;;@param expr 
+;;@param env 
+
+;;;;;
+;;@type Function
+;;@name force
+;;@param promise 
+
+;;;;;
+;;@type Function
+;;@name call-with-values
+;;@param producer 
+;;@param consumer 
+
+;;;;;
+;;@type Function
+;;@name values
+;;@param obj 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name dynamic-wind
+;;@param before 
+;;@param thunk 
+;;@param after 
+
+;;;;;
+;;@type Function
+;;@name call/cc
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name call-with-current-continuation
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name for-each
+;;@param proc 
+;;@param list1 
+;;@param list2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name map
+;;@param proc 
+;;@param list1 
+;;@param list2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name apply
+;;@param proc 
+;;@param arg1 
+;;@param ... 
+;;@param args 
+
+;;;;;
+;;@type Function
+;;@name procedure?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name vector-fill!
+;;@param vector 
+;;@param fill 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name list->vector
+;;@param list 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name vector->list
+;;@param vector 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name vector-set!
+;;@param vector 
+;;@param k 
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name vector-ref
+;;@param vector 
+;;@param k 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name vector-length
+;;@param vector 
+
+;;;;;
+;;@type Function
+;;@name vector
+;;@param obj 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name make-vector
+;;@param k 
+;;@param :optional 
+;;@param fill 
+
+;;;;;
+;;@type Function
+;;@name vector?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name string-copy
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name list->string
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name string->list
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-append
+;;@param string 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name substring
+;;@param string 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-ci>=?
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string-ci>?
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string-ci<=?
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string-ci<?
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string>=?
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string>?
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string<=?
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string<?
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string-ci=?
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string=?
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string-set!
+;;@param string 
+;;@param k 
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name string-ref
+;;@param cstring 
+;;@param k 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name string-length
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name string
+;;@param char 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name make-string
+;;@param k 
+;;@param :optional 
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name string?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name char-downcase
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-upcase
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name integer->char
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name char->integer
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-lower-case?
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-upper-case?
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-whitespace?
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-numeric?
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-alphabetic?
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-ci>=?
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-ci>?
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-ci<=?
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-ci<?
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-ci=?
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char>=?
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char>?
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char<=?
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char<?
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char=?
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name string->symbol
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name symbol->string
+;;@param symbol 
+
+;;;;;
+;;@type Function
+;;@name symbol?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name assoc
+;;@param obj 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name assv
+;;@param obj 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name assq
+;;@param obj 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name member
+;;@param obj 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name memv
+;;@param obj 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name memq
+;;@param obj 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name reverse
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name append
+;;@param list 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name list-ref
+;;@param list 
+;;@param k 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name list-tail
+;;@param list 
+;;@param k 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name length
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name cddddr
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name cdddar
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name cadr
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name caar
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name set-cdr!
+;;@param pair 
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name set-car!
+;;@param pair 
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name cdr
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name car
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name list
+;;@param obj 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name cons
+;;@param obj1 
+;;@param obj2 
+
+;;;;;
+;;@type Function
+;;@name list?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name null?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name pair?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name boolean?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name not
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name string->number
+;;@param string 
+;;@param :optional 
+;;@param radix 
+
+;;;;;
+;;@type Function
+;;@name number->string
+;;@param z 
+;;@param :optional 
+;;@param radix 
+;;@param use-upper? 
+
+;;;;;
+;;@type Function
+;;@name inexact->exact
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name exact->inexact
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name inexact
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name exact
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name angle
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name magnitude
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name imag-part
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name real-part
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name make-polar
+;;@param x1 
+;;@param x2 
+
+;;;;;
+;;@type Function
+;;@name make-rectangular
+;;@param x1 
+;;@param x2 
+
+;;;;;
+;;@type Function
+;;@name expt
+;;@param z1 
+;;@param z2 
+
+;;;;;
+;;@type Function
+;;@name exact-integer-sqrt
+;;@param k 
+
+;;;;;
+;;@type Function
+;;@name sqrt
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name atan
+;;@param y 
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name atan
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name acos
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name asin
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name tan
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name cos
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name sin
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name log
+;;@param z1 
+;;@param z2 
+
+;;;;;
+;;@type Function
+;;@name log
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name exp
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name round
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name truncate
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name ceiling
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name floor
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name denominator
+;;@param q 
+
+;;;;;
+;;@type Function
+;;@name numerator
+;;@param q 
+
+;;;;;
+;;@type Function
+;;@name lcm
+;;@param n 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name gcd
+;;@param n 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name div0-and-mod0
+;;@param x 
+;;@param y 
+
+;;;;;
+;;@type Function
+;;@name mod0
+;;@param x 
+;;@param y 
+
+;;;;;
+;;@type Function
+;;@name div0
+;;@param x 
+;;@param y 
+
+;;;;;
+;;@type Function
+;;@name div-and-mod
+;;@param x 
+;;@param y 
+
+;;;;;
+;;@type Function
+;;@name mod
+;;@param x 
+;;@param y 
+
+;;;;;
+;;@type Function
+;;@name div
+;;@param x 
+;;@param y 
+
+;;;;;
+;;@type Function
+;;@name modulo
+;;@param n1 
+;;@param n2 
+
+;;;;;
+;;@type Function
+;;@name remainder
+;;@param n1 
+;;@param n2 
+
+;;;;;
+;;@type Function
+;;@name quotient
+;;@param n1 
+;;@param n2 
+
+;;;;;
+;;@type Function
+;;@name abs
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name /
+;;@param z1 
+;;@param z2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name -
+;;@param z1 
+;;@param z2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name +
+;;@param z 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name min
+;;@param x1 
+;;@param x2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name max
+;;@param x1 
+;;@param x2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name >=
+;;@param x1 
+;;@param x2 
+;;@param x3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name >
+;;@param x1 
+;;@param x2 
+;;@param x3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name <=
+;;@param x1 
+;;@param x2 
+;;@param x3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name <
+;;@param x1 
+;;@param x2 
+;;@param x3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name =
+;;@param z1 
+;;@param z2 
+;;@param z3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name even?
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name odd?
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name negative?
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name positive?
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name zero?
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name inexact?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name exact?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name integer-valued?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name rational-valued?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name real-valued?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name integer?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name rational?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name real?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name complex?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name number?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name equal?
+;;@param obj1 
+;;@param obj2 
+
+;;;;;
+;;@type Function
+;;@name eqv?
+;;@param obj1 
+;;@param obj2 
+
+;;;;;
+;;@type Function
+;;@name eq?
+;;@param obj1 
+;;@param obj2 
+

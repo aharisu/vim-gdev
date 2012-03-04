@@ -1,0 +1,185 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name ftp-rename
+;;@param conn 
+;;@param from-name 
+;;@param to-name 
+
+;;;;;
+;;@type Function
+;;@name ftp-put-unique
+;;@param conn 
+;;@param from-file 
+
+;;;;;
+;;@type Function
+;;@name ftp-put
+;;@param conn 
+;;@param from-file 
+;;@param :optional 
+;;@param to-file 
+
+;;;;;
+;;@type Function
+;;@name ftp-get
+;;@param conn 
+;;@param path 
+;;@param :key 
+;;@param sink 
+;;@param flusher 
+
+;;;;;
+;;@type Function
+;;@name ftp-ls
+;;@param conn 
+;;@param :optional 
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name ftp-name-list
+;;@param conn 
+;;@param :optional 
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name ftp-list
+;;@param conn 
+;;@param :optional 
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name ftp-noop
+;;@param conn 
+
+;;;;;
+;;@type Function
+;;@name ftp-mtime
+;;@param conn 
+;;@param path 
+;;@param :optional 
+;;@param local-time? 
+
+;;;;;
+;;@type Function
+;;@name ftp-mdtm
+;;@param conn 
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name ftp-size
+;;@param conn 
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name ftp-system
+;;@param conn 
+
+;;;;;
+;;@type Function
+;;@name ftp-stat
+;;@param conn 
+;;@param :optional 
+;;@param pathname 
+
+;;;;;
+;;@type Function
+;;@name ftp-rmdir
+;;@param conn 
+;;@param dirname 
+
+;;;;;
+;;@type Function
+;;@name ftp-site
+;;@param conn 
+;;@param arg 
+
+;;;;;
+;;@type Function
+;;@name ftp-current-directory
+;;@param conn 
+
+;;;;;
+;;@type Function
+;;@name ftp-mkdir
+;;@param conn 
+;;@param dirname 
+
+;;;;;
+;;@type Function
+;;@name ftp-help
+;;@param conn 
+;;@param :optional 
+;;@param option 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name ftp-remove
+;;@param conn 
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name ftp-chdir
+;;@param conn 
+;;@param dirname 
+
+;;;;;
+;;@type Function
+;;@name ftp-quit
+;;@param conn 
+
+;;;;;
+;;@type Function
+;;@name ftp-login
+;;@param host 
+;;@param :key 
+;;@param passive 
+;;@param port 
+;;@param username 
+;;@param password 
+;;@param account 
+;;@param log-drain 
+
+;;;;;
+;;@type Function
+;;@name ftp-passive?
+;;@param conn 
+
+;;;;;
+;;@type Function
+;;@name ftp-transfer-type
+;;@param conn 
+
+;;;;;
+;;@type Function
+;;@name call-with-ftp-connection
+;;@param host 
+;;@param proc 
+;;@param :key 
+;;@param passive 
+;;@param port 
+;;@param username 
+;;@param password 
+;;@param account 
+;;@param log-drain 
+
+;;;;;
+;;@type Class
+;;@name <ftp-error>
+
+;;;;;
+;;@type Class
+;;@name <ftp-connection>
+

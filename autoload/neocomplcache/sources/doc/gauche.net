@@ -1,0 +1,438 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name sys-htonl
+;;@param integer 
+
+;;;;;
+;;@type Function
+;;@name sys-htons
+;;@param integer 
+
+;;;;;
+;;@type Function
+;;@name sys-ntohl
+;;@param integer 
+
+;;;;;
+;;@type Function
+;;@name sys-ntohs
+;;@param integer 
+
+;;;;;
+;;@type Function
+;;@name sys-getaddrinfo
+;;@param nodename 
+;;@param servname 
+;;@param hints 
+
+;;;;;
+;;@type Class
+;;@name <sys-addrinfo>
+
+;;;;;
+;;@type Function
+;;@name sys-getprotobynumber
+;;@param number 
+
+;;;;;
+;;@type Function
+;;@name sys-getprotobyname
+;;@param name 
+
+;;;;;
+;;@type Class
+;;@name <sys-protoent>
+
+;;;;;
+;;@type Function
+;;@name sys-getservbyport
+;;@param port 
+;;@param proto 
+
+;;;;;
+;;@type Function
+;;@name sys-getservbyname
+;;@param name 
+;;@param proto 
+
+;;;;;
+;;@type Class
+;;@name <sys-servent>
+
+;;;;;
+;;@type Function
+;;@name sys-gethostbyaddr
+;;@param addr 
+;;@param proto 
+
+;;;;;
+;;@type Function
+;;@name sys-gethostbyname
+;;@param name 
+
+;;;;;
+;;@type Class
+;;@name <sys-hostent>
+
+;;;;;
+;;@type Function
+;;@name inet-checksum
+;;@param packet 
+;;@param size 
+
+;;;;;
+;;@type var
+;;@name SO_ERROR
+
+;;;;;
+;;@type var
+;;@name SO_PRIORITY
+
+;;;;;
+;;@type var
+;;@name SO_BROADCAST
+
+;;;;;
+;;@type var
+;;@name SO_TYPE
+
+;;;;;
+;;@type var
+;;@name SO_REUSEADDR
+
+;;;;;
+;;@type var
+;;@name SO_OOBINLINE
+
+;;;;;
+;;@type var
+;;@name SO_KEEPALIVE
+
+;;;;;
+;;@type var
+;;@name SOL_IP
+
+;;;;;
+;;@type var
+;;@name SOL_TCP
+
+;;;;;
+;;@type var
+;;@name SOL_SOCKET
+
+;;;;;
+;;@type Function
+;;@name socket-getsockopt
+;;@param socket 
+;;@param level 
+;;@param option 
+;;@param rsize 
+
+;;;;;
+;;@type Function
+;;@name socket-setsockopt
+;;@param socket 
+;;@param level 
+;;@param option 
+;;@param value 
+
+;;;;;
+;;@type var
+;;@name MSG_WAITALL
+
+;;;;;
+;;@type var
+;;@name MSG_TRUNC
+
+;;;;;
+;;@type var
+;;@name MSG_PEEK
+
+;;;;;
+;;@type var
+;;@name MSG_OOB
+
+;;;;;
+;;@type var
+;;@name MSG_EOR
+
+;;;;;
+;;@type var
+;;@name MSG_DONTROUTE
+
+;;;;;
+;;@type var
+;;@name MSG_CTRUNC
+
+;;;;;
+;;@type Function
+;;@name socket-recvfrom
+;;@param socket 
+;;@param bytes 
+;;@param :optional 
+;;@param flags 
+
+;;;;;
+;;@type Function
+;;@name socket-recv
+;;@param socket 
+;;@param bytes 
+;;@param :optional 
+;;@param flags 
+
+;;;;;
+;;@type Function
+;;@name socket-recvfrom!
+;;@param socket 
+;;@param buf 
+;;@param addrs 
+;;@param :optional 
+;;@param flags 
+
+;;;;;
+;;@type Function
+;;@name socket-recv!
+;;@param socket 
+;;@param buf 
+;;@param :optional 
+;;@param flags 
+
+;;;;;
+;;@type Function
+;;@name socket-buildmsg
+;;@param addr 
+;;@param iov 
+;;@param control 
+;;@param flags 
+;;@param :optional 
+;;@param buf 
+
+;;;;;
+;;@type Function
+;;@name socket-sendmsg
+;;@param socket 
+;;@param msghdr 
+;;@param :optional 
+;;@param flags 
+
+;;;;;
+;;@type Function
+;;@name socket-sendto
+;;@param socket 
+;;@param msg 
+;;@param to-address 
+;;@param :optional 
+;;@param flags. 
+
+;;;;;
+;;@type Function
+;;@name socket-send
+;;@param socket 
+;;@param msg 
+;;@param :optional 
+;;@param flags 
+
+;;;;;
+;;@type Function
+;;@name socket-getpeername
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name socket-getsockname
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name socket-shutdown
+;;@param socket 
+;;@param how 
+
+;;;;;
+;;@type Function
+;;@name socket-connect
+;;@param socket 
+;;@param address 
+
+;;;;;
+;;@type Function
+;;@name socket-accept
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name socket-listen
+;;@param socket 
+;;@param backlog 
+
+;;;;;
+;;@type Function
+;;@name socket-bind
+;;@param socket 
+;;@param address 
+
+;;;;;
+;;@type Function
+;;@name socket-status
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name socket-fd
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name make-socket
+;;@param domain 
+;;@param type 
+;;@param :optional 
+;;@param protocol 
+
+;;;;;
+;;@type Function
+;;@name call-with-client-socket
+;;@param socket 
+;;@param proc 
+;;@param :key 
+;;@param input-buffering 
+;;@param output-buffering 
+
+;;;;;
+;;@type Function
+;;@name socket-close
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name socket-output-port
+;;@param socket 
+;;@param :key 
+;;@param (buffering line) 
+
+;;;;;
+;;@type Function
+;;@name socket-input-port
+;;@param socket 
+;;@param :key 
+;;@param (buffering modest) 
+
+;;;;;
+;;@type Function
+;;@name socket-address
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name make-server-sockets
+;;@param host 
+;;@param port 
+;;@param :key 
+;;@param reuse-addr? 
+;;@param sock-init 
+
+;;;;;
+;;@type Function
+;;@name make-server-socket
+;;@param :optional 
+;;@param address-spec 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name make-client-socket
+;;@param :optional 
+;;@param address-spec 
+;;@param ... 
+
+;;;;;
+;;@type Class
+;;@name <socket>
+
+;;;;;
+;;@type Function
+;;@name inet-address->string
+;;@param address 
+;;@param protocol 
+
+;;;;;
+;;@type Function
+;;@name inet-string->address!
+;;@param address 
+;;@param buf 
+
+;;;;;
+;;@type Function
+;;@name inet-string->address
+;;@param address 
+
+;;;;;
+;;@type Function
+;;@name make-sockaddrs
+;;@param host 
+;;@param port 
+;;@param :optional 
+;;@param proto 
+
+;;;;;
+;;@type Class
+;;@name <sockaddr-in6>
+
+;;;;;
+;;@type Method
+;;@name sockaddr-name
+;;@param (addr <sockaddr-un>) 
+
+;;;;;
+;;@type Method
+;;@name sockaddr-family
+;;@param (addr <sockaddr-un>) 
+
+;;;;;
+;;@type Class
+;;@name <sockaddr-un>
+
+;;;;;
+;;@type Method
+;;@name sockaddr-port
+;;@param (addr <sockaddr-in>) 
+
+;;;;;
+;;@type Method
+;;@name sockaddr-addr
+;;@param (addr <sockaddr-in>) 
+
+;;;;;
+;;@type Method
+;;@name sockaddr-name
+;;@param (addr <sockaddr-in>) 
+
+;;;;;
+;;@type Method
+;;@name sockaddr-family
+;;@param (addr <sockaddr-in>) 
+
+;;;;;
+;;@type Class
+;;@name <sockaddr-in>
+
+;;;;;
+;;@type Method
+;;@name sockaddr-name
+;;@param addr 
+
+;;;;;
+;;@type Method
+;;@name sockaddr-family
+;;@param addr 
+
+;;;;;
+;;@type Class
+;;@name <sockaddr>
+

@@ -1,0 +1,119 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Class
+;;@name <object-set-relation>
+
+;;;;;
+;;@type Class
+;;@name <simple-relation>
+
+;;;;;
+;;@type Method
+;;@name relation-fold
+;;@param (r <relation>) 
+;;@param proc 
+;;@param seed 
+;;@param column 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name relation-delete!
+;;@param (r <relation>) 
+;;@param row 
+
+;;;;;
+;;@type Method
+;;@name relation-deletable?
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-insert!
+;;@param (r <relation>) 
+;;@param row 
+
+;;;;;
+;;@type Method
+;;@name relation-insertable?
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-coercer
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-column-setters
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-column-getters
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-set!
+;;@param (r <relation>) 
+;;@param row 
+;;@param column 
+;;@param value 
+
+;;;;;
+;;@type Method
+;;@name relation-ref
+;;@param (r <relation>) 
+;;@param row 
+;;@param column 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Method
+;;@name relation-column-setter
+;;@param (r <relation>) 
+;;@param column 
+
+;;;;;
+;;@type Method
+;;@name relation-column-getter
+;;@param (r <relation>) 
+;;@param column 
+
+;;;;;
+;;@type Method
+;;@name relation-column-name?
+;;@param (r <relation>) 
+;;@param column 
+
+;;;;;
+;;@type Method
+;;@name relation-rows
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-modifier
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-accessor
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-column-names
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Class
+;;@name <relation>
+

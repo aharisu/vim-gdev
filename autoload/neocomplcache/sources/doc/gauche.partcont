@@ -1,0 +1,24 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name call/pc
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name shift
+;;@param var 
+;;@param expr 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name reset
+;;@param expr 
+;;@param ... 
+

@@ -1,0 +1,171 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name assv-set!
+;;@param alist 
+;;@param key 
+;;@param val 
+
+;;;;;
+;;@type Function
+;;@name assq-set!
+;;@param alist 
+;;@param key 
+;;@param val 
+
+;;;;;
+;;@type Function
+;;@name assoc-set!
+;;@param alist 
+;;@param key 
+;;@param val 
+;;@param :optional 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name rassv-ref
+;;@param alist 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name rassq-ref
+;;@param alist 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name rassoc-ref
+;;@param alist 
+;;@param key 
+;;@param :optional 
+;;@param default 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name assv-ref
+;;@param alist 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name assq-ref
+;;@param alist 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name assoc-ref
+;;@param alist 
+;;@param key 
+;;@param :optional 
+;;@param default 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name rassv
+;;@param key 
+;;@param alist 
+
+;;;;;
+;;@type Function
+;;@name rassq
+;;@param key 
+;;@param alist 
+
+;;;;;
+;;@type Function
+;;@name rassoc
+;;@param key 
+;;@param alist 
+;;@param :optional 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name hash-table->alist
+;;@param hash-table 
+
+;;;;;
+;;@type Function
+;;@name alist->hash-table
+;;@param alist 
+;;@param :optional 
+;;@param cmp 
+
+;;;;;
+;;@type Function
+;;@name cond-list
+;;@param clause 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name intersperse
+;;@param item 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name slices
+;;@param list 
+;;@param k 
+;;@param :optional 
+;;@param fill? 
+;;@param padding 
+
+;;;;;
+;;@type Function
+;;@name split-at*
+;;@param list 
+;;@param k 
+;;@param :optional 
+;;@param fill? 
+;;@param padding 
+
+;;;;;
+;;@type Function
+;;@name drop-right*
+;;@param list 
+;;@param k 
+
+;;;;;
+;;@type Function
+;;@name take-right*
+;;@param list 
+;;@param k 
+;;@param :optional 
+;;@param fill? 
+;;@param padding 
+
+;;;;;
+;;@type Function
+;;@name drop*
+;;@param list 
+;;@param k 
+
+;;;;;
+;;@type Function
+;;@name take*
+;;@param list 
+;;@param k 
+;;@param :optional 
+;;@param fill? 
+;;@param padding 
+

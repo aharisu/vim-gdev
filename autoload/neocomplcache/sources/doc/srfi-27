@@ -1,0 +1,63 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name random-source-make-reals
+;;@param s 
+;;@param :optional 
+;;@param unit 
+
+;;;;;
+;;@type Function
+;;@name random-source-make-integers
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name random-source-pseudo-randomize!
+;;@param s 
+;;@param i 
+;;@param j 
+
+;;;;;
+;;@type Function
+;;@name random-source-randomize!
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name random-source-state-set!
+;;@param s 
+;;@param state 
+
+;;;;;
+;;@type Function
+;;@name random-source-state-ref
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name random-source?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name make-random-source
+
+;;;;;
+;;@type var
+;;@name default-random-source
+
+;;;;;
+;;@type Function
+;;@name random-real
+
+;;;;;
+;;@type Function
+;;@name random-integer
+;;@param n 
+

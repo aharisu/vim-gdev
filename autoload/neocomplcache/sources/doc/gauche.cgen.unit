@@ -1,0 +1,114 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name cgen-add!
+;;@param cgen-node 
+
+;;;;;
+;;@type Method
+;;@name cgen-emit-init
+;;@param cgen-node 
+
+;;;;;
+;;@type Method
+;;@name cgen-emit-body
+;;@param cgen-node 
+
+;;;;;
+;;@type Method
+;;@name cgen-emit-decl
+;;@param cgen-node 
+
+;;;;;
+;;@type Method
+;;@name cgen-emit-xtrn
+;;@param cgen-node 
+
+;;;;;
+;;@type Class
+;;@name <cgen-node>
+
+;;;;;
+;;@type Function
+;;@name cgen-with-cpp-condition
+;;@param cpp-expr 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name cgen-safe-comment
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name cgen-safe-name-friendly
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name cgen-safe-name
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name cgen-init
+;;@param code 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name cgen-body
+;;@param code 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name cgen-decl
+;;@param code 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name cgen-extern
+;;@param code 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name cgen-unit-init-name
+;;@param cgen-unit 
+
+;;;;;
+;;@type Method
+;;@name cgen-unit-h-file
+;;@param cgen-unit 
+
+;;;;;
+;;@type Method
+;;@name cgen-unit-c-file
+;;@param cgen-unit 
+
+;;;;;
+;;@type Method
+;;@name cgen-emit-h
+;;@param cgen-unit 
+
+;;;;;
+;;@type Method
+;;@name cgen-emit-c
+;;@param cgen-unit 
+
+;;;;;
+;;@type Parameter
+;;@name cgen-current-unit
+
+;;;;;
+;;@type Class
+;;@name <cgen-unit>
+

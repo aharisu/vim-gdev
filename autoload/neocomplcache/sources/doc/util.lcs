@@ -1,0 +1,42 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name lcs-edit-list
+;;@param a 
+;;@param b 
+;;@param :optional 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name lcs-fold
+;;@param a-proc 
+;;@param b-proc 
+;;@param both-proc 
+;;@param seed 
+;;@param a 
+;;@param b 
+;;@param :optional 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name lcs-with-positions
+;;@param seq-a 
+;;@param seq-b 
+;;@param :optional 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name lcs
+;;@param seq-a 
+;;@param seq-b 
+;;@param :optional 
+;;@param eq-fn 
+

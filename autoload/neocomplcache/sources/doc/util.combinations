@@ -1,0 +1,103 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name cartesian-product-right
+;;@param list-of-sets 
+
+;;;;;
+;;@type Function
+;;@name cartesian-product
+;;@param list-of-sets 
+
+;;;;;
+;;@type Function
+;;@name power-set-binary
+;;@param set 
+
+;;;;;
+;;@type Function
+;;@name power-set*-for-each
+;;@param proc 
+;;@param set 
+;;@param :optional 
+;;@param eq 
+
+;;;;;
+;;@type Function
+;;@name power-set-for-each
+;;@param proc 
+;;@param set 
+
+;;;;;
+;;@type Function
+;;@name power-set*
+;;@param set 
+;;@param :optional 
+;;@param eq 
+
+;;;;;
+;;@type Function
+;;@name power-set
+;;@param set 
+
+;;;;;
+;;@type Function
+;;@name combinations*-for-each
+;;@param proc 
+;;@param set 
+;;@param n 
+;;@param :optional 
+;;@param eq 
+
+;;;;;
+;;@type Function
+;;@name combinations-for-each
+;;@param proc 
+;;@param set 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name combinations*
+;;@param set 
+;;@param n 
+;;@param :optional 
+;;@param eq 
+
+;;;;;
+;;@type Function
+;;@name combinations
+;;@param set 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name permutations*-for-each
+;;@param proc 
+;;@param set 
+;;@param :optional 
+;;@param eq 
+
+;;;;;
+;;@type Function
+;;@name permutations-for-each
+;;@param proc 
+;;@param set 
+
+;;;;;
+;;@type Function
+;;@name permutations*
+;;@param set 
+;;@param :optional 
+;;@param eq 
+
+;;;;;
+;;@type Function
+;;@name permutations
+;;@param set 
+

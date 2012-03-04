@@ -1,0 +1,113 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Method
+;;@name dbm-db-move
+;;@param class 
+;;@param from 
+;;@param to 
+
+;;;;;
+;;@type Method
+;;@name dbm-db-copy
+;;@param class 
+;;@param from 
+;;@param to 
+
+;;;;;
+;;@type Method
+;;@name dbm-db-remove
+;;@param class 
+;;@param name 
+
+;;;;;
+;;@type Method
+;;@name dbm-db-exists?
+;;@param class 
+;;@param name 
+
+;;;;;
+;;@type Method
+;;@name dbm-map
+;;@param (dbm @code (<dbm>)) 
+;;@param procedure 
+
+;;;;;
+;;@type Method
+;;@name dbm-for-each
+;;@param (dbm @code (<dbm>)) 
+;;@param procedure 
+
+;;;;;
+;;@type Method
+;;@name dbm-fold
+;;@param (dbm @code (<dbm>)) 
+;;@param procedure 
+;;@param knil 
+
+;;;;;
+;;@type Method
+;;@name dbm-delete!
+;;@param (dbm @code (<dbm>)) 
+;;@param key 
+
+;;;;;
+;;@type Method
+;;@name dbm-exists?
+;;@param (dbm @code (<dbm>)) 
+;;@param key 
+
+;;;;;
+;;@type Method
+;;@name dbm-get
+;;@param (dbm @code (<dbm>)) 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Method
+;;@name dbm-put!
+;;@param (dbm @code (<dbm>)) 
+;;@param key 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name dbm-type->class
+;;@param dbmtype 
+
+;;;;;
+;;@type Method
+;;@name dbm-closed?
+;;@param (dbm @code (<dbm>)) 
+
+;;;;;
+;;@type Method
+;;@name dbm-close
+;;@param (dbm @code (<dbm>)) 
+
+;;;;;
+;;@type Method
+;;@name dbm-open
+;;@param (dbm-class <dbm-meta>) 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name dbm-open
+;;@param (dbm <dbm>) 
+
+;;;;;
+;;@type Class
+;;@name <dbm-meta>
+
+;;;;;
+;;@type Class
+;;@name <dbm>
+

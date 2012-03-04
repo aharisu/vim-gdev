@@ -1,0 +1,16 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Method
+;;@name cgen-cexpr
+;;@param cgen-literal 
+
+;;;;;
+;;@type Function
+;;@name cgen-literal
+;;@param obj 
+

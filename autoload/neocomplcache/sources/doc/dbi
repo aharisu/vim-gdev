@@ -1,0 +1,186 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name dbi-prepare-sql
+;;@param connection 
+;;@param sql 
+
+;;;;;
+;;@type Function
+;;@name dbi-parse-dsn
+;;@param data-source-name 
+
+;;;;;
+;;@type Method
+;;@name dbi-do
+;;@param (c <foo-connection>) 
+;;@param (sql <string>) 
+;;@param :optional 
+;;@param options 
+;;@param parameter-value 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name dbi-close
+;;@param (r <foo-result>) 
+
+;;;;;
+;;@type Method
+;;@name dbi-close
+;;@param (q <foo-query>) 
+
+;;;;;
+;;@type Method
+;;@name dbi-close
+;;@param (c <foo-connection>) 
+
+;;;;;
+;;@type Method
+;;@name dbi-open?
+;;@param (r <foo-result>) 
+
+;;;;;
+;;@type Method
+;;@name dbi-open?
+;;@param (q <foo-query>) 
+
+;;;;;
+;;@type Method
+;;@name dbi-open?
+;;@param (c <foo-connection>) 
+
+;;;;;
+;;@type Method
+;;@name dbi-escape-sql
+;;@param (c <foo-connection>) 
+;;@param str 
+
+;;;;;
+;;@type Method
+;;@name dbi-execute-using-connection
+;;@param (c <foo-connection>) 
+;;@param (q <dbi-query>) 
+;;@param (params <list>) 
+
+;;;;;
+;;@type Method
+;;@name dbi-prepare
+;;@param (c <foo-connection>) 
+;;@param (sql <string>) 
+;;@param :key 
+;;@param pass-through 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name dbi-close
+;;@param result 
+
+;;;;;
+;;@type Method
+;;@name dbi-open?
+;;@param result 
+
+;;;;;
+;;@type Method
+;;@name dbi-escape-sql
+;;@param conn 
+;;@param str 
+
+;;;;;
+;;@type Method
+;;@name dbi-do
+;;@param conn 
+;;@param sql 
+;;@param :optional 
+;;@param options 
+;;@param parameter-value 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name dbi-execute
+;;@param (q <dbi-query>) 
+;;@param parameter 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name dbi-close
+;;@param (q <dbi-query>) 
+
+;;;;;
+;;@type Method
+;;@name dbi-open?
+;;@param (q <dbi-query>) 
+
+;;;;;
+;;@type Class
+;;@name <dbi-query>
+
+;;;;;
+;;@type Method
+;;@name dbi-prepare
+;;@param conn 
+;;@param sql 
+;;@param :key 
+;;@param pass-through 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name dbi-make-driver
+;;@param driver-name 
+
+;;;;;
+;;@type Class
+;;@name <dbi-driver>
+
+;;;;;
+;;@type Function
+;;@name dbi-list-drivers
+
+;;;;;
+;;@type Method
+;;@name dbi-close
+;;@param (c <dbi-connection>) 
+
+;;;;;
+;;@type Method
+;;@name dbi-open?
+;;@param (c <dbi-connection>) 
+
+;;;;;
+;;@type Class
+;;@name <dbi-connection>
+
+;;;;;
+;;@type Function
+;;@name dbi-connect
+;;@param dsn 
+;;@param :key 
+;;@param username 
+;;@param password 
+
+;;;;;
+;;@type Class
+;;@name <dbi-parameter-error>
+
+;;;;;
+;;@type Class
+;;@name <dbi-unsupported-error>
+
+;;;;;
+;;@type Class
+;;@name <dbi-nonexistent-driver-error>
+
+;;;;;
+;;@type Class
+;;@name <dbi-error>
+

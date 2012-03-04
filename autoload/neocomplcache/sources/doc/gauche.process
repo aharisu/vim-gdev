@@ -1,0 +1,212 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name shell-escape-string
+;;@param arg 
+
+;;;;;
+;;@type Function
+;;@name process-output->string-list
+;;@param command 
+;;@param :key 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name process-output->string
+;;@param command 
+;;@param :key 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name call-with-process-io
+;;@param command 
+;;@param proc 
+;;@param :key 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name with-output-to-process
+;;@param command 
+;;@param thunk 
+;;@param :key 
+;;@param output 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name call-with-output-process
+;;@param command 
+;;@param proc 
+;;@param :key 
+;;@param output 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name open-output-process-port
+;;@param command 
+;;@param :key 
+;;@param output 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name with-input-from-process
+;;@param command 
+;;@param thunk 
+;;@param :key 
+;;@param input 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name call-with-input-process
+;;@param command 
+;;@param proc 
+;;@param :key 
+;;@param input 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name open-input-process-port
+;;@param command 
+;;@param :key 
+;;@param input 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name process-continue
+;;@param process 
+
+;;;;;
+;;@type Function
+;;@name process-stop
+;;@param process 
+
+;;;;;
+;;@type Function
+;;@name process-kill
+;;@param process 
+
+;;;;;
+;;@type Function
+;;@name process-send-signal
+;;@param process 
+;;@param signal 
+
+;;;;;
+;;@type Function
+;;@name process-exit-status
+;;@param process 
+
+;;;;;
+;;@type Function
+;;@name process-wait-any
+;;@param :optional 
+;;@param nohang 
+
+;;;;;
+;;@type Function
+;;@name process-wait
+;;@param process 
+;;@param :optional 
+;;@param nohang 
+;;@param error-on-nonzero-status 
+
+;;;;;
+;;@type Function
+;;@name process-list
+
+;;;;;
+;;@type Function
+;;@name process-alive?
+;;@param process 
+
+;;;;;
+;;@type Method
+;;@name process-error
+;;@param (process <process>) 
+
+;;;;;
+;;@type Method
+;;@name process-output
+;;@param (process <process>) 
+;;@param :optional 
+;;@param name 
+
+;;;;;
+;;@type Method
+;;@name process-input
+;;@param (process <process>) 
+;;@param :optional 
+;;@param name 
+
+;;;;;
+;;@type Method
+;;@name process-command
+;;@param (process <process>) 
+
+;;;;;
+;;@type Method
+;;@name process-pid
+;;@param (process <process>) 
+
+;;;;;
+;;@type Function
+;;@name process?
+;;@param obj 
+
+;;;;;
+;;@type Class
+;;@name <process-abnormal-exit>
+
+;;;;;
+;;@type Class
+;;@name <process>
+
+;;;;;
+;;@type Function
+;;@name run-process
+;;@param cmd/args 
+;;@param :key 
+;;@param redirects 
+;;@param input 
+;;@param output 
+;;@param error 
+;;@param @ 
+

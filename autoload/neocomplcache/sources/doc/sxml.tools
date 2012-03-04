@@ -1,0 +1,325 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name sxml:sxml->html
+;;@param tree 
+
+;;;;;
+;;@type Function
+;;@name sxml:non-terminated-html-tag?
+;;@param tag 
+
+;;;;;
+;;@type Function
+;;@name sxml:string->html
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr->html
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:sxml->xml
+;;@param tree 
+
+;;;;;
+;;@type Function
+;;@name sxml:string->xml
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr->xml
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:clean-feed
+;;@param fragments 
+
+;;;;;
+;;@type Function
+;;@name sxml:lookup
+;;@param id 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name sxml:node-parent
+;;@param rootnode 
+
+;;;;;
+;;@type Function
+;;@name sxml:add-parents
+;;@param obj 
+;;@param top-ptr 
+
+;;;;;
+;;@type Function
+;;@name sxml:clean
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:squeeze!
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:squeeze
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:add-aux!
+;;@param obj 
+;;@param aux-node 
+
+;;;;;
+;;@type Function
+;;@name sxml:add-aux
+;;@param obj 
+;;@param aux-node 
+
+;;;;;
+;;@type Function
+;;@name sxml:set-attr!
+;;@param obj 
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:set-attr
+;;@param obj 
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-attr!
+;;@param obj 
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-attr
+;;@param obj 
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:add-attr!
+;;@param obj 
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:add-attr
+;;@param obj 
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-name!
+;;@param obj 
+;;@param new-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-name
+;;@param obj 
+;;@param new-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-attrlist!
+;;@param obj 
+;;@param new-attrlist 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-attrlist
+;;@param obj 
+;;@param new-attrlist 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-content!
+;;@param obj 
+;;@param new-content 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-content
+;;@param obj 
+;;@param new-content 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-prefix
+;;@param ns-assoc 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-uri
+;;@param ns-assoc 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-id
+;;@param ns-assoc 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-uri->id
+;;@param obj 
+;;@param uri 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-id->uri
+;;@param obj 
+;;@param namespace-id 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-id->nodes
+;;@param obj 
+;;@param namespace-id 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-list
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr-u
+;;@param obj 
+;;@param attr-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:num-attr
+;;@param obj 
+;;@param attr-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr
+;;@param obj 
+;;@param attr-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:aux-nodes
+;;@param obj 
+;;@param aux-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:aux-node
+;;@param obj 
+;;@param aux-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:aux-list-u
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:aux-list
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr-list-u
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:aux-as-list
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:aux-list-node
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr-as-list
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr-list-node
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:content-raw
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:content
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:name->ns-id
+;;@param sxml-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:ncname
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:node-name
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:element-name
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:name
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:minimized?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:shallow-minimized?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:normalized?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:shallow-normalized?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:empty-element?
+;;@param obj 
+

@@ -1,0 +1,44 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name build-transliterator
+;;@param from-list 
+;;@param to-list 
+;;@param :key 
+;;@param :complement 
+;;@param :delete 
+;;@param :squeeze 
+;;@param :table-size 
+;;@param :input 
+;;@param :output 
+
+;;;;;
+;;@type Function
+;;@name string-tr
+;;@param string 
+;;@param from-list 
+;;@param to-list 
+;;@param :key 
+;;@param :complement 
+;;@param :delete 
+;;@param :squeeze 
+;;@param :table-size 
+
+;;;;;
+;;@type Function
+;;@name tr
+;;@param from-list 
+;;@param to-list 
+;;@param :key 
+;;@param :complement 
+;;@param :delete 
+;;@param :squeeze 
+;;@param :table-size 
+;;@param :input 
+;;@param :output 
+

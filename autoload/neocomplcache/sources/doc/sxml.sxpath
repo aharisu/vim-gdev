@@ -1,0 +1,273 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name sxml:child-elements
+;;@param nodeset 
+
+;;;;;
+;;@type Function
+;;@name sxml:child-nodes
+;;@param nodeset 
+
+;;;;;
+;;@type Function
+;;@name sxml:preceding-sibling
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:preceding
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:namespace
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:following-sibling
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:following
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:descendant-or-self
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:descendant
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:ancestor-or-self
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:ancestor
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:parent
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:child
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:attribute
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:relational-cmp
+;;@param op 
+
+;;;;;
+;;@type Function
+;;@name sxml:not-equal?
+;;@param a 
+;;@param b 
+
+;;;;;
+;;@type Function
+;;@name sxml:equal?
+;;@param a 
+;;@param b 
+
+;;;;;
+;;@type Function
+;;@name sxml:equality-cmp
+;;@param bool-op 
+;;@param number-op 
+;;@param string-op 
+
+;;;;;
+;;@type Function
+;;@name sxml:id
+;;@param id-index 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr-list
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:node?
+;;@param node 
+
+;;;;;
+;;@type Function
+;;@name sxml:string-value
+;;@param node 
+
+;;;;;
+;;@type Function
+;;@name sxml:number
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:boolean
+;;@param object 
+
+;;;;;
+;;@type Function
+;;@name sxml:string
+;;@param object 
+
+;;;;;
+;;@type Function
+;;@name sxml:id-alist
+;;@param node 
+;;@param lpaths 
+
+;;;;;
+;;@type Function
+;;@name car-sxpath
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name if-car-sxpath
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name if-sxpath
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name sxpath
+;;@param abbrpath 
+;;@param ns-binding 
+
+;;;;;
+;;@type Function
+;;@name node-closure
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name node-or
+;;@param converters 
+
+;;;;;
+;;@type Function
+;;@name node-reduce
+;;@param converters 
+
+;;;;;
+;;@type Function
+;;@name node-join
+;;@param selectors 
+
+;;;;;
+;;@type Function
+;;@name node-self
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name select-kids
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name node-trace
+;;@param title 
+
+;;;;;
+;;@type Function
+;;@name node-reverse
+;;@param node-or-nodeset 
+
+;;;;;
+;;@type Function
+;;@name map-union
+;;@param proc 
+;;@param lst 
+
+;;;;;
+;;@type Function
+;;@name take-after
+;;@param pred? 
+
+;;;;;
+;;@type Function
+;;@name take-until
+;;@param pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:filter
+;;@param pred? 
+
+;;;;;
+;;@type Function
+;;@name node-pos
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name node-equal?
+;;@param other 
+
+;;;;;
+;;@type Function
+;;@name node-eq?
+;;@param other 
+
+;;;;;
+;;@type Function
+;;@name sxml:invert
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name ntype-namespace-id??
+;;@param ns-id 
+
+;;;;;
+;;@type Function
+;;@name ntype??
+;;@param crit 
+
+;;;;;
+;;@type Function
+;;@name ntype-names??
+;;@param crit 
+
+;;;;;
+;;@type Function
+;;@name sxml:element?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name as-nodeset
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name nodeset?
+;;@param x 
+

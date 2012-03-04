@@ -1,0 +1,25 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name complete-sexp?
+;;@param str 
+
+;;;;;
+;;@type Method
+;;@name listener-show-prompt
+;;@param (listener <listener>) 
+
+;;;;;
+;;@type Method
+;;@name listener-read-handler
+;;@param (listener <listener>) 
+
+;;;;;
+;;@type Class
+;;@name <listener>
+

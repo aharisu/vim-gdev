@@ -1,0 +1,32 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name open-output-uvector
+;;@param uvector 
+
+;;;;;
+;;@type Function
+;;@name open-input-uvector
+;;@param uvector 
+
+;;;;;
+;;@type Class
+;;@name <buffered-output-port>
+
+;;;;;
+;;@type Class
+;;@name <buffered-input-port>
+
+;;;;;
+;;@type Class
+;;@name <virtual-output-port>
+
+;;;;;
+;;@type Class
+;;@name <virtual-input-port>
+

@@ -1,0 +1,29 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name make-option-parser
+;;@param (option-clause ...) 
+
+;;;;;
+;;@type Function
+;;@name parse-options
+;;@param args 
+;;@param (option-clause ...) 
+
+;;;;;
+;;@type Class
+;;@name <parseopt-error>
+
+;;;;;
+;;@type Function
+;;@name let-args
+;;@param args 
+;;@param rest 
+;;@param body 
+;;@param ... 
+

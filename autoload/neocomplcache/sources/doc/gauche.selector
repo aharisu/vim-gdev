@@ -1,0 +1,33 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Method
+;;@name selector-select
+;;@param (self <selector>) 
+;;@param :optional 
+;;@param (timeout #f) 
+
+;;;;;
+;;@type Method
+;;@name selector-delete!
+;;@param (self <selector>) 
+;;@param port-or-fd 
+;;@param proc 
+;;@param flags 
+
+;;;;;
+;;@type Method
+;;@name selector-add!
+;;@param (self <selector>) 
+;;@param port-or-fd 
+;;@param proc 
+;;@param flags 
+
+;;;;;
+;;@type Class
+;;@name <selector>
+

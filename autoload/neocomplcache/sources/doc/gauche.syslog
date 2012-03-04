@@ -1,0 +1,33 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name sys-logmask
+;;@param level 
+
+;;;;;
+;;@type Function
+;;@name sys-setlogmask
+;;@param mask 
+
+;;;;;
+;;@type Function
+;;@name sys-closelog
+
+;;;;;
+;;@type Function
+;;@name sys-syslog
+;;@param priority 
+;;@param message 
+
+;;;;;
+;;@type Function
+;;@name sys-openlog
+;;@param ident 
+;;@param option 
+;;@param facility 
+

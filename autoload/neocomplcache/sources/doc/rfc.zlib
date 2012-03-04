@@ -1,0 +1,150 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name adler32
+;;@param string 
+;;@param :optional 
+;;@param checksum 
+
+;;;;;
+;;@type Function
+;;@name crc32
+;;@param string 
+;;@param :optional 
+;;@param checksum 
+
+;;;;;
+;;@type Function
+;;@name gzip-decode-string
+;;@param string 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name gzip-encode-string
+;;@param string 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name inflate-string
+;;@param string 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name deflate-string
+;;@param string 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name zlib-version
+
+;;;;;
+;;@type Function
+;;@name inflate-sync
+;;@param inflating-port 
+
+;;;;;
+;;@type Function
+;;@name deflating-port-full-flush
+;;@param deflating-port 
+
+;;;;;
+;;@type Function
+;;@name zstream-dictionary-adler32
+;;@param deflating-port 
+
+;;;;;
+;;@type Function
+;;@name zstream-params-set!
+;;@param deflating-port 
+;;@param :key 
+;;@param compression-level 
+;;@param strategy 
+
+;;;;;
+;;@type Function
+;;@name zstream-data-type
+;;@param xflating-port 
+
+;;;;;
+;;@type Function
+;;@name zstream-adler32
+;;@param xflating-port 
+
+;;;;;
+;;@type Function
+;;@name zstream-total-out
+;;@param xflating-port 
+
+;;;;;
+;;@type Function
+;;@name zstream-total-in
+;;@param xflating-port 
+
+;;;;;
+;;@type Function
+;;@name open-inflating-port
+;;@param source 
+;;@param :key 
+;;@param buffer-size 
+;;@param window-bits 
+;;@param dictionary 
+;;@param owner? 
+
+;;;;;
+;;@type Function
+;;@name open-deflating-port
+;;@param drain 
+;;@param :key 
+;;@param compression-level 
+;;@param buffer-size 
+;;@param window-bits 
+;;@param memory-level 
+;;@param strategy 
+;;@param dictionary 
+;;@param owner? 
+
+;;;;;
+;;@type Class
+;;@name <inflating-port>
+
+;;;;;
+;;@type Class
+;;@name <deflating-port>
+
+;;;;;
+;;@type Class
+;;@name <zlib-version-error>
+
+;;;;;
+;;@type Class
+;;@name <zlib-memory-error>
+
+;;;;;
+;;@type Class
+;;@name <zlib-data-error>
+
+;;;;;
+;;@type Class
+;;@name <zlib-stream-error>
+
+;;;;;
+;;@type Class
+;;@name <zlib-need-dict-error>
+
+;;;;;
+;;@type Class
+;;@name <zlib-error>
+

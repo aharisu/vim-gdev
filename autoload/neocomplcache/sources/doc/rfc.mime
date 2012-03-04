@@ -1,0 +1,116 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name mime-make-boundary
+
+;;;;;
+;;@type Function
+;;@name mime-compose-message-string
+;;@param parts 
+;;@param &key 
+;;@param boundary 
+
+;;;;;
+;;@type Function
+;;@name mime-compose-message
+;;@param parts 
+;;@param :optional 
+;;@param port 
+;;@param &key 
+;;@param boundary 
+
+;;;;;
+;;@type Function
+;;@name mime-body->file
+;;@param part-info 
+;;@param xport 
+;;@param filename 
+
+;;;;;
+;;@type Function
+;;@name mime-body->string
+;;@param part-info 
+;;@param xport 
+
+;;;;;
+;;@type Function
+;;@name mime-retrieve-body
+;;@param part-info 
+;;@param xport 
+;;@param outp 
+
+;;;;;
+;;@type Class
+;;@name <mime-part>
+
+;;;;;
+;;@type Function
+;;@name mime-parse-message
+;;@param port 
+;;@param headers 
+;;@param handler 
+
+;;;;;
+;;@type Function
+;;@name mime-encode-text
+;;@param text 
+;;@param :key 
+;;@param charset 
+;;@param transfer-encoding 
+;;@param line-width 
+;;@param start-column 
+;;@param force 
+
+;;;;;
+;;@type Function
+;;@name mime-encode-word
+;;@param word 
+;;@param :key 
+;;@param charset 
+;;@param transfer-encoding 
+
+;;;;;
+;;@type Function
+;;@name mime-decode-text
+;;@param text 
+
+;;;;;
+;;@type Function
+;;@name mime-decode-word
+;;@param word 
+
+;;;;;
+;;@type Function
+;;@name mime-compose-parameters
+;;@param params 
+;;@param :optional 
+;;@param oport 
+;;@param &key 
+;;@param start-column 
+
+;;;;;
+;;@type Function
+;;@name mime-parse-parameters
+;;@param :optional 
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name mime-parse-content-disposition
+;;@param field 
+
+;;;;;
+;;@type Function
+;;@name mime-parse-content-type
+;;@param field 
+
+;;;;;
+;;@type Function
+;;@name mime-parse-version
+;;@param field 
+

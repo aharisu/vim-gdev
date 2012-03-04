@@ -1,0 +1,232 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name sparse-table-values
+;;@param st 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-keys
+;;@param st 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-map
+;;@param st 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-for-each
+;;@param st 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-fold
+;;@param st 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-pop!
+;;@param st 
+;;@param key 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-push!
+;;@param st 
+;;@param key 
+;;@param val 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-update!
+;;@param st 
+;;@param key 
+;;@param proc 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-clear!
+;;@param st 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-delete!
+;;@param st 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-exists?
+;;@param st 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-set!
+;;@param st 
+;;@param key 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-ref
+;;@param st 
+;;@param key 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-num-entries
+;;@param st 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-copy
+;;@param st 
+
+;;;;;
+;;@type Function
+;;@name make-sparse-table
+;;@param type 
+
+;;;;;
+;;@type Class
+;;@name <sparse-table>
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-values
+;;@param sv 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-keys
+;;@param sv 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-map
+;;@param sv 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-for-each
+;;@param sv 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-fold
+;;@param sv 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-pop!
+;;@param sv 
+;;@param k 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-push!
+;;@param sv 
+;;@param k 
+;;@param val 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-update!
+;;@param sv 
+;;@param k 
+;;@param proc 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-inc!
+;;@param sv 
+;;@param k 
+;;@param delta 
+;;@param :optional 
+;;@param (fallback 0) 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-clear!
+;;@param sv 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-delete!
+;;@param sv 
+;;@param k 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-exists?
+;;@param sv 
+;;@param k 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-num-entries
+;;@param sv 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-set!
+;;@param sv 
+;;@param k 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-ref
+;;@param sv 
+;;@param k 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-copy
+;;@param sv 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-max-index-bits
+
+;;;;;
+;;@type Function
+;;@name make-sparse-vector
+;;@param :optional 
+;;@param type 
+
+;;;;;
+;;@type Class
+;;@name <sparse-vector>
+
+;;;;;
+;;@type Class
+;;@name <sparse-vector-base>
+

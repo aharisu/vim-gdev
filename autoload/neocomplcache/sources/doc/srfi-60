@@ -1,0 +1,102 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name booleans->integer
+;;@param bool 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name list->integer
+;;@param lis 
+
+;;;;;
+;;@type Function
+;;@name integer->list
+;;@param n 
+;;@param :optional 
+;;@param len 
+
+;;;;;
+;;@type Function
+;;@name reverse-bit-field
+;;@param n 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name rotate-bit-field
+;;@param n 
+;;@param count 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name arithmetic-shift
+;;@param n 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name bit-set?
+;;@param index 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name first-set-bit
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name log2-binary-factors
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name bit-count
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name any-bits-set?
+;;@param mask 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name bitwise-if
+;;@param mask 
+;;@param n0 
+;;@param n1 
+
+;;;;;
+;;@type Function
+;;@name bitwise-xor
+;;@param n 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name bitwise-ior
+;;@param n 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name bitwise-and
+;;@param n 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name bitwise-not
+;;@param n 
+

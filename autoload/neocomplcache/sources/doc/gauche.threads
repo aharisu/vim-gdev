@@ -1,0 +1,237 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name uncaught-exception-reason
+;;@param exc 
+
+;;;;;
+;;@type Function
+;;@name uncaught-exception?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name terminated-thread-exception?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name abandoned-mutex-exception?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name join-timeout-exception?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name atomic-update!
+;;@param atom 
+;;@param proc 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name atomic
+;;@param atom 
+;;@param proc 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name atom-ref
+;;@param atom 
+;;@param :optional 
+;;@param index 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name atom?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name atom
+;;@param val 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name condition-variable-broadcast!
+;;@param cv 
+
+;;;;;
+;;@type Function
+;;@name condition-variable-signal!
+;;@param cv 
+
+;;;;;
+;;@type Function
+;;@name condition-variable-specific-set!
+;;@param cv 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name condition-variable-specific
+;;@param cv 
+
+;;;;;
+;;@type Function
+;;@name condition-variable-name
+;;@param cv 
+
+;;;;;
+;;@type Function
+;;@name make-condition-variable
+;;@param :optional 
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name condition-variable?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name with-locking-mutex
+;;@param mutex 
+;;@param thunk 
+
+;;;;;
+;;@type Function
+;;@name mutex-unlock!
+;;@param mutex 
+;;@param :optional 
+;;@param condition-variable 
+;;@param timeout 
+
+;;;;;
+;;@type Function
+;;@name mutex-lock!
+;;@param mutex 
+;;@param :optional 
+;;@param timeout 
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name mutex-state
+;;@param mutex 
+
+;;;;;
+;;@type Function
+;;@name mutex-specific-set!
+;;@param mutex 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name mutex-specific
+;;@param mutex 
+
+;;;;;
+;;@type Function
+;;@name mutex-name
+;;@param mutex 
+
+;;;;;
+;;@type Function
+;;@name make-mutex
+;;@param :optional 
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name mutex?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name thread-join!
+;;@param thread 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name thread-terminate!
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name thread-cont!
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name thread-stop!
+;;@param thread 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name thread-sleep!
+;;@param timeout 
+
+;;;;;
+;;@type Function
+;;@name thread-yield!
+
+;;;;;
+;;@type Function
+;;@name thread-start!
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name thread-specific-set!
+;;@param thread 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name thread-specific
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name thread-name
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name thread-state
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name make-thread
+;;@param thunk 
+;;@param :optional 
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name thread?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name gauche-thread-type
+

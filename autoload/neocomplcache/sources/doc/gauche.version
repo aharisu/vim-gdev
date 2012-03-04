@@ -1,0 +1,48 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name relnum-compare
+;;@param rel1 
+;;@param rel2 
+
+;;;;;
+;;@type Function
+;;@name version-compare
+;;@param ver1 
+;;@param ver2 
+
+;;;;;
+;;@type Function
+;;@name version>=?
+;;@param ver1 
+;;@param ver2 
+
+;;;;;
+;;@type Function
+;;@name version>?
+;;@param ver1 
+;;@param ver2 
+
+;;;;;
+;;@type Function
+;;@name version<=?
+;;@param ver1 
+;;@param ver2 
+
+;;;;;
+;;@type Function
+;;@name version<?
+;;@param ver1 
+;;@param ver2 
+
+;;;;;
+;;@type Function
+;;@name version=?
+;;@param ver1 
+;;@param ver2 
+

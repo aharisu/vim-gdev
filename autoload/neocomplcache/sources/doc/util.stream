@@ -1,0 +1,461 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name write-stream
+;;@param stream 
+;;@param :optional 
+;;@param oport 
+;;@param writer 
+
+;;;;;
+;;@type Function
+;;@name stream-grep
+;;@param re 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-delete-duplicates
+;;@param stream 
+;;@param :optional 
+;;@param elt= 
+
+;;;;;
+;;@type Function
+;;@name stream-delete
+;;@param obj 
+;;@param stream 
+;;@param :optional 
+;;@param elt= 
+
+;;;;;
+;;@type Function
+;;@name stream-memv
+;;@param obj 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-memq
+;;@param obj 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-member
+;;@param obj 
+;;@param stream 
+;;@param :optional 
+;;@param elt= 
+
+;;;;;
+;;@type Function
+;;@name stream-index
+;;@param pred 
+;;@param stream 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-every
+;;@param pred 
+;;@param stream 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-any
+;;@param pred 
+;;@param stream 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-break
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-span
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-drop-while
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-take-while
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-find-tail
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-find
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-partition
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-remove
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-count
+;;@param pred 
+;;@param stream 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-reverse
+;;@param stream 
+;;@param :optional 
+;;@param tail-stream 
+
+;;;;;
+;;@type Function
+;;@name stream-concatenate
+;;@param streams 
+
+;;;;;
+;;@type Function
+;;@name stream-append
+;;@param stream 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-length>=
+;;@param stream 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name stream-length
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-butlast-n
+;;@param stream 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name stream-butlast
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-last-n
+;;@param stream 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name stream-last
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-split
+;;@param stream 
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name stream-intersperse
+;;@param stream 
+;;@param element 
+
+;;;;;
+;;@type Function
+;;@name stream-drop-safe
+;;@param stream 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name stream-drop
+;;@param stream 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name stream-take-safe
+;;@param stream 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name stream-take
+;;@param stream 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name stream-tenth
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-ninth
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-eighth
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-seventh
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-sixth
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-fifth
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-fourth
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-third
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-second
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-first
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-ref
+;;@param stream 
+;;@param pos 
+
+;;;;;
+;;@type Function
+;;@name stream-cddddr
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-cdddar
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-cadr
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-caar
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-prefix=
+;;@param stream 
+;;@param prefix 
+;;@param :optional 
+;;@param elt= 
+
+;;;;;
+;;@type Function
+;;@name stream=
+;;@param elt= 
+;;@param stream 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-lines
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name iterator->stream
+;;@param iter 
+
+;;;;;
+;;@type Function
+;;@name port->stream
+;;@param :optional 
+;;@param iport 
+;;@param reader 
+;;@param closer 
+
+;;;;;
+;;@type Function
+;;@name string->stream
+;;@param string 
+;;@param :optional 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name list->stream
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name stream->string
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream->list
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-format
+;;@param fmt 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-iota
+;;@param count 
+;;@param :optional 
+;;@param start 
+;;@param step 
+
+;;;;;
+;;@type Function
+;;@name stream-tabulate
+;;@param n 
+;;@param init-proc 
+
+;;;;;
+;;@type Function
+;;@name make-stream
+;;@param n 
+;;@param :optional 
+;;@param init 
+
+;;;;;
+;;@type Function
+;;@name stream-cons*
+;;@param elt 
+;;@param ... 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-xcons
+;;@param a 
+;;@param b 
+
+;;;;;
+;;@type Function
+;;@name stream-filter
+;;@param pred? 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-for-each
+;;@param func 
+;;@param streams 
+
+;;;;;
+;;@type Function
+;;@name stream-map
+;;@param func 
+;;@param streams 
+
+;;;;;
+;;@type Function
+;;@name stream-unfoldn
+;;@param generator 
+;;@param seed 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name stream
+;;@param obj 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-delay
+;;@param expr 
+
+;;;;;
+;;@type Function
+;;@name stream-cdr
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-car
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-pair?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name stream-null?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name stream-cons
+;;@param object 
+;;@param stream 
+
+;;;;;
+;;@type var
+;;@name stream-null
+
+;;;;;
+;;@type Function
+;;@name stream?
+;;@param obj 
+

@@ -1,0 +1,93 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name pseudo-rtd
+;;@param instance-class 
+
+;;;;;
+;;@type Function
+;;@name rtd-mutator
+;;@param rtd 
+;;@param field-name 
+
+;;;;;
+;;@type Function
+;;@name rtd-accessor
+;;@param rtd 
+;;@param field-name 
+
+;;;;;
+;;@type Function
+;;@name rtd-predicate
+;;@param rtd 
+
+;;;;;
+;;@type Function
+;;@name rtd-constructor
+;;@param rtd 
+;;@param :optional 
+;;@param field-specs 
+
+;;;;;
+;;@type Function
+;;@name rtd?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name make-rtd
+;;@param name 
+;;@param field-specs 
+;;@param :optional 
+;;@param parent 
+
+;;;;;
+;;@type Function
+;;@name rtd-field-mutable?
+;;@param rtd 
+;;@param field-name 
+
+;;;;;
+;;@type Function
+;;@name rtd-all-field-names
+;;@param rtd 
+
+;;;;;
+;;@type Function
+;;@name rtd-field-names
+;;@param rtd 
+
+;;;;;
+;;@type Function
+;;@name rtd-parent
+;;@param rtd 
+
+;;;;;
+;;@type Function
+;;@name rtd-name
+;;@param rtd 
+
+;;;;;
+;;@type Function
+;;@name record-rtd
+;;@param record 
+
+;;;;;
+;;@type Function
+;;@name record?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name define-record-type
+;;@param type-spec 
+;;@param ctor-spec 
+;;@param pred-spec 
+;;@param field-spec 
+;;@param ... 
+

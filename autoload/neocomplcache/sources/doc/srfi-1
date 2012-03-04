@@ -1,0 +1,547 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name lset-diff+intersection!
+;;@param elt= 
+;;@param list1 
+;;@param list2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lset-xor!
+;;@param elt= 
+;;@param list1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lset-difference!
+;;@param elt= 
+;;@param list1 
+;;@param list2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lset-intersection!
+;;@param elt= 
+;;@param list1 
+;;@param list2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lset-union!
+;;@param elt= 
+;;@param list 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lset-diff+intersection
+;;@param elt= 
+;;@param list1 
+;;@param list2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lset-xor
+;;@param elt= 
+;;@param list1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lset-difference
+;;@param elt= 
+;;@param list1 
+;;@param list2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lset-intersection
+;;@param elt= 
+;;@param list1 
+;;@param list2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lset-union
+;;@param elt= 
+;;@param list1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lset-adjoin
+;;@param elt= 
+;;@param list 
+;;@param elt 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lset=
+;;@param elt= 
+;;@param list1 
+;;@param list2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lset<=
+;;@param elt= 
+;;@param list1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name alist-delete!
+;;@param key 
+;;@param alist 
+;;@param :optional 
+;;@param = 
+
+;;;;;
+;;@type Function
+;;@name alist-delete
+;;@param key 
+;;@param alist 
+;;@param :optional 
+;;@param = 
+
+;;;;;
+;;@type Function
+;;@name alist-copy
+;;@param alist 
+
+;;;;;
+;;@type Function
+;;@name alist-cons
+;;@param key 
+;;@param datum 
+;;@param alist 
+
+;;;;;
+;;@type Function
+;;@name delete-duplicates!
+;;@param list 
+;;@param :optional 
+;;@param elt= 
+
+;;;;;
+;;@type Function
+;;@name delete-duplicates
+;;@param list 
+;;@param :optional 
+;;@param elt= 
+
+;;;;;
+;;@type Function
+;;@name delete!
+;;@param x 
+;;@param list 
+;;@param :optional 
+;;@param elt= 
+
+;;;;;
+;;@type Function
+;;@name delete
+;;@param x 
+;;@param list 
+;;@param :optional 
+;;@param elt= 
+
+;;;;;
+;;@type Function
+;;@name list-index
+;;@param pred 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name break!
+;;@param pred 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name break
+;;@param pred 
+;;@param clist 
+
+;;;;;
+;;@type Function
+;;@name span!
+;;@param pred 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name span
+;;@param pred 
+;;@param clist 
+
+;;;;;
+;;@type Function
+;;@name drop-while
+;;@param pred 
+;;@param clist 
+
+;;;;;
+;;@type Function
+;;@name take-while!
+;;@param pred 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name take-while
+;;@param pred 
+;;@param clist 
+
+;;;;;
+;;@type Function
+;;@name find-tail
+;;@param pred 
+;;@param clist 
+
+;;;;;
+;;@type Function
+;;@name partition!
+;;@param pred 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name remove!
+;;@param pred 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name filter!
+;;@param pred 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name filter-map
+;;@param f 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name pair-for-each
+;;@param f 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name map-in-order
+;;@param f 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name map!
+;;@param f 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name append-map!
+;;@param f 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name append-map
+;;@param f 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name unfold-right
+;;@param p 
+;;@param f 
+;;@param g 
+;;@param seed 
+;;@param :optional 
+;;@param tail 
+
+;;;;;
+;;@type Function
+;;@name unfold
+;;@param p 
+;;@param f 
+;;@param g 
+;;@param seed 
+;;@param :optional 
+;;@param tail-gen 
+
+;;;;;
+;;@type Function
+;;@name reduce-right
+;;@param f 
+;;@param ridentity 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name reduce
+;;@param f 
+;;@param ridentity 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name pair-fold-right
+;;@param kons 
+;;@param knil 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name pair-fold
+;;@param kons 
+;;@param knil 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name count
+;;@param pred 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name unzip5
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name unzip4
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name unzip3
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name unzip2
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name unzip1
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name zip
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name append-reverse!
+;;@param rev-head 
+;;@param tail 
+
+;;;;;
+;;@type Function
+;;@name append-reverse
+;;@param rev-head 
+;;@param tail 
+
+;;;;;
+;;@type Function
+;;@name concatenate!
+;;@param list-of-lists! 
+
+;;;;;
+;;@type Function
+;;@name concatenate
+;;@param list-of-lists 
+
+;;;;;
+;;@type Function
+;;@name last
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name split-at!
+;;@param x 
+;;@param i 
+
+;;;;;
+;;@type Function
+;;@name drop-right!
+;;@param x 
+;;@param i 
+
+;;;;;
+;;@type Function
+;;@name take!
+;;@param x 
+;;@param i 
+
+;;;;;
+;;@type Function
+;;@name drop-right
+;;@param flist 
+;;@param i 
+
+;;;;;
+;;@type Function
+;;@name take-right
+;;@param flist 
+;;@param i 
+
+;;;;;
+;;@type Function
+;;@name drop
+;;@param x 
+;;@param i 
+
+;;;;;
+;;@type Function
+;;@name take
+;;@param x 
+;;@param i 
+
+;;;;;
+;;@type Function
+;;@name car+cdr
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name tenth
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name ninth
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name eighth
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name seventh
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name sixth
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name fifth
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name fourth
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name third
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name second
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name first
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name list=
+;;@param elt= 
+;;@param list 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name not-pair?
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name iota
+;;@param count 
+;;@param :optional 
+;;@param (start 0) 
+;;@param (step 1) 
+
+;;;;;
+;;@type Function
+;;@name circular-list
+;;@param elt1 
+;;@param elt2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name list-tabulate
+;;@param n 
+;;@param init-proc 
+
+;;;;;
+;;@type Function
+;;@name cons*
+;;@param elt1 
+;;@param elt2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name xcons
+;;@param cd 
+;;@param ca 
+

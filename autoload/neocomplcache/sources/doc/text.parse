@@ -1,0 +1,65 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name read-string
+;;@param n 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name next-token-of
+;;@param char-list/pred 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name next-token
+;;@param prefix-char-list 
+;;@param break-char-list 
+;;@param :optional 
+;;@param comment 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name skip-while
+;;@param char-list 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name skip-until
+;;@param char-list/number 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name assert-curr-char
+;;@param char-list 
+;;@param string 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name peek-next-char
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name find-string-from-port?
+;;@param str 
+;;@param in-port 
+;;@param :optional 
+;;@param max-no-chars 
+

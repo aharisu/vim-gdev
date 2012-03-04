@@ -1,0 +1,728 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name string-kmp-partial-search
+;;@param pat 
+;;@param rv 
+;;@param s 
+;;@param i 
+;;@param :optional 
+;;@param c= 
+;;@param p-start 
+;;@param s-start 
+;;@param s-end 
+
+;;;;;
+;;@type Function
+;;@name kmp-step
+;;@param pat 
+;;@param rv 
+;;@param c 
+;;@param i 
+;;@param c= 
+;;@param p-start 
+
+;;;;;
+;;@type Function
+;;@name make-kmp-restart-vector
+;;@param s 
+;;@param :optional 
+;;@param c= 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name substring-spec-ok?
+;;@param s 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name check-substring-spec
+;;@param proc 
+;;@param s 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name let-string-start+end
+;;@param (start end (rest)) 
+;;@param proc-exp 
+;;@param s-exp 
+;;@param args-exp 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name string-parse-final-start+end
+;;@param proc 
+;;@param s 
+;;@param args 
+
+;;;;;
+;;@type Function
+;;@name string-parse-start+end
+;;@param proc 
+;;@param s 
+;;@param args 
+
+;;;;;
+;;@type Function
+;;@name string-delete
+;;@param s 
+;;@param char/char-set/pred 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-filter
+;;@param s 
+;;@param char/char-set/pred 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-tokenize
+;;@param s 
+;;@param :optional 
+;;@param token-set 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-replace
+;;@param s1 
+;;@param s2 
+;;@param start1 
+;;@param end1 
+;;@param :optional 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-xcopy!
+;;@param target 
+;;@param tstart 
+;;@param s 
+;;@param sfrom 
+;;@param :optional 
+;;@param sto 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name xsubstring
+;;@param s 
+;;@param from 
+;;@param :optional 
+;;@param to 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-for-each-index
+;;@param proc 
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-for-each
+;;@param proc 
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-unfold-right
+;;@param p 
+;;@param f 
+;;@param g 
+;;@param seed 
+;;@param :optional 
+;;@param base 
+;;@param make-final 
+
+;;;;;
+;;@type Function
+;;@name string-unfold
+;;@param p 
+;;@param f 
+;;@param g 
+;;@param seed 
+;;@param :optional 
+;;@param base 
+;;@param make-final 
+
+;;;;;
+;;@type Function
+;;@name string-fold-right
+;;@param kons 
+;;@param knil 
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-fold
+;;@param kons 
+;;@param knil 
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-map!
+;;@param proc 
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-map
+;;@param proc 
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-concatenate-reverse/shared
+;;@param string-list 
+
+;;;;;
+;;@type Function
+;;@name string-concatenate-reverse
+;;@param string-list 
+
+;;;;;
+;;@type Function
+;;@name string-append/shared
+;;@param s 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name string-concatenate/shared
+;;@param string-list 
+
+;;;;;
+;;@type Function
+;;@name string-concatenate
+;;@param string-list 
+
+;;;;;
+;;@type Function
+;;@name string-reverse!
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-reverse
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-downcase!
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-upcase!
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-titlecase!
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-contains-ci
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-contains
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-count
+;;@param s 
+;;@param char/char-set/pred 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-skip-right
+;;@param s 
+;;@param char/char-set/pred 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-skip
+;;@param s 
+;;@param char/char-set/pred 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-index-right
+;;@param s 
+;;@param char/char-set/pred 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-suffix-ci?
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-prefix-ci?
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-suffix?
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-prefix?
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-suffix-length-ci
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-prefix-length-ci
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-suffix-length
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-prefix-length
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-hash-ci
+;;@param s 
+;;@param :optional 
+;;@param bound 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-hash
+;;@param s 
+;;@param :optional 
+;;@param bound 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-ci>=
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-ci>
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-ci<=
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-ci<
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-ci<>
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-ci=
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string>=
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string>
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string<=
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string<
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string<>
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string=
+;;@param s1 
+;;@param s2 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-compare-ci
+;;@param s1 
+;;@param s2 
+;;@param proc< 
+;;@param proc= 
+;;@param proc> 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-compare
+;;@param s1 
+;;@param s2 
+;;@param proc< 
+;;@param proc= 
+;;@param proc> 
+;;@param :optional 
+;;@param start1 
+;;@param end1 
+;;@param start2 
+;;@param end2 
+
+;;;;;
+;;@type Function
+;;@name string-trim-both
+;;@param s 
+;;@param :optional 
+;;@param char/char-set/pred 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-trim-right
+;;@param s 
+;;@param :optional 
+;;@param char/char-set/pred 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-trim
+;;@param s 
+;;@param :optional 
+;;@param char/char-set/pred 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-pad-right
+;;@param s 
+;;@param len 
+;;@param :optional 
+;;@param char 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-pad
+;;@param s 
+;;@param len 
+;;@param :optional 
+;;@param char 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-drop-right
+;;@param s 
+;;@param nchars 
+
+;;;;;
+;;@type Function
+;;@name string-take-right
+;;@param s 
+;;@param nchars 
+
+;;;;;
+;;@type Function
+;;@name string-drop
+;;@param s 
+;;@param nchars 
+
+;;;;;
+;;@type Function
+;;@name string-take
+;;@param s 
+;;@param nchars 
+
+;;;;;
+;;@type Function
+;;@name string-copy!
+;;@param target 
+;;@param tstart 
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name substring/shared
+;;@param s 
+;;@param start 
+;;@param :optional 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name reverse-list->string
+;;@param char-list 
+
+;;;;;
+;;@type Function
+;;@name string-tabulate
+;;@param proc 
+;;@param len 
+
+;;;;;
+;;@type Function
+;;@name string-any
+;;@param char/char-set/pred 
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-every
+;;@param char/char-set/pred 
+;;@param s 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-null?
+;;@param s 
+

@@ -1,0 +1,48 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Method
+;;@name find-index
+;;@param pred 
+;;@param (seq <sequence>) 
+
+;;;;;
+;;@type Method
+;;@name find-with-index
+;;@param pred 
+;;@param (seq <sequence>) 
+
+;;;;;
+;;@type Method
+;;@name for-each-with-index
+;;@param proc 
+;;@param (seq <sequence>) 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name map-to-with-index
+;;@param class 
+;;@param proc 
+;;@param (seq <sequence>) 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name map-with-index
+;;@param proc 
+;;@param (seq <sequence>) 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name fold-with-index
+;;@param kons 
+;;@param knil 
+;;@param (seq <sequence>) 
+;;@param ... 
+

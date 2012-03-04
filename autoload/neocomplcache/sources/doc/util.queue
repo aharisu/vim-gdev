@@ -1,0 +1,202 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name queue-pop/wait!
+;;@param mtqueue 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name dequeue/wait!
+;;@param mtqueue 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name queue-push/wait!
+;;@param mtqueue 
+;;@param obj 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name enqueue/wait!
+;;@param mtqueue 
+;;@param obj 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name remove-from-queue!
+;;@param pred 
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name every-in-queue
+;;@param pred 
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name any-in-queue
+;;@param pred 
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name find-in-queue
+;;@param pred 
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name queue->list
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name list->queue
+;;@param list 
+;;@param :optional 
+;;@param class 
+;;@param :rest 
+;;@param initargs 
+
+;;;;;
+;;@type Function
+;;@name queue-rear
+;;@param queue 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name queue-front
+;;@param queue 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name dequeue-all!
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name queue-pop!
+;;@param queue 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name dequeue!
+;;@param queue 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name queue-push-unique!
+;;@param queue 
+;;@param eq-proc 
+;;@param obj 
+;;@param :optional 
+;;@param more-objs 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name enqueue-unique!
+;;@param queue 
+;;@param eq-proc 
+;;@param obj 
+;;@param :optional 
+;;@param more-objs 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name queue-push!
+;;@param queue 
+;;@param obj 
+;;@param :optional 
+;;@param more-objs 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name enqueue!
+;;@param queue 
+;;@param obj 
+;;@param :optional 
+;;@param more-objs 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name copy-queue
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name mtqueue-room
+;;@param mtqueue 
+
+;;;;;
+;;@type Function
+;;@name mtqueue-max-length
+;;@param mtqueue 
+
+;;;;;
+;;@type Function
+;;@name queue-length
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name queue-empty?
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name mtqueue?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name queue?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name make-mtqueue
+;;@param &key 
+;;@param max-length 
+
+;;;;;
+;;@type Function
+;;@name make-queue
+
+;;;;;
+;;@type Class
+;;@name <mtqueue>
+
+;;;;;
+;;@type Class
+;;@name <queue>
+

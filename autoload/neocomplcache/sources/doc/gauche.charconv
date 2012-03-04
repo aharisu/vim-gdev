@@ -1,0 +1,118 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name wrap-with-output-conversion
+;;@param port 
+;;@param to-code 
+;;@param :key 
+;;@param from-code 
+;;@param owner? 
+;;@param buffer-size 
+
+;;;;;
+;;@type Function
+;;@name wrap-with-input-conversion
+;;@param port 
+;;@param from-code 
+;;@param :key 
+;;@param to-code 
+;;@param owner? 
+;;@param buffer-size 
+
+;;;;;
+;;@type Function
+;;@name with-output-conversion
+;;@param oport 
+;;@param thunk 
+;;@param :key 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name with-input-conversion
+;;@param iport 
+;;@param thunk 
+;;@param :key 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name call-with-output-conversion
+;;@param oport 
+;;@param proc 
+;;@param :key 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name call-with-input-conversion
+;;@param iport 
+;;@param proc 
+;;@param :key 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name ces-convert
+;;@param string 
+;;@param from-code 
+;;@param :optional 
+;;@param to-code 
+
+;;;;;
+;;@type Function
+;;@name open-output-conversion-port
+;;@param sink 
+;;@param to-code 
+;;@param :key 
+;;@param from-code 
+;;@param buffer-size 
+;;@param owner? 
+
+;;;;;
+;;@type Function
+;;@name open-input-conversion-port
+;;@param source 
+;;@param from-code 
+;;@param :key 
+;;@param to-code 
+;;@param buffer-size 
+;;@param owner? 
+
+;;;;;
+;;@type Function
+;;@name ces-guess-from-string
+;;@param string 
+;;@param scheme 
+
+;;;;;
+;;@type Function
+;;@name ces-upper-compatible?
+;;@param ces-a 
+;;@param ces-b 
+;;@param :optional 
+;;@param unknown-value 
+
+;;;;;
+;;@type Function
+;;@name ces-equivalent?
+;;@param ces-a 
+;;@param ces-b 
+;;@param :optional 
+;;@param unknown-value 
+
+;;;;;
+;;@type Function
+;;@name ces-conversion-supported?
+;;@param from-ces 
+;;@param to-ces 
+

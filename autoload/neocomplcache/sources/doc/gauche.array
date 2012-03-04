@@ -1,0 +1,402 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name array-div-elements!
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-div-elements
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-mul-elements!
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-mul-elements
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-sub-elements!
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-sub-elements
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-add-elements!
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-add-elements
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-div-right
+;;@param a 
+;;@param b 
+
+;;;;;
+;;@type Function
+;;@name array-div-left
+;;@param a 
+;;@param b 
+
+;;;;;
+;;@type Function
+;;@name array-expt
+;;@param array 
+;;@param pow 
+
+;;;;;
+;;@type Function
+;;@name array-mul
+;;@param a 
+;;@param b 
+
+;;;;;
+;;@type Function
+;;@name determinant!
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name determinant
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name array-inverse
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name identity-array
+;;@param dimension 
+;;@param :optional 
+;;@param class 
+
+;;;;;
+;;@type Function
+;;@name array-flip!
+;;@param array 
+;;@param :optional 
+;;@param dimension 
+
+;;;;;
+;;@type Function
+;;@name array-flip
+;;@param array 
+;;@param :optional 
+;;@param dimension 
+
+;;;;;
+;;@type Function
+;;@name array-rotate-90
+;;@param array 
+;;@param :optional 
+;;@param dim1 
+;;@param dim2 
+
+;;;;;
+;;@type Function
+;;@name array-transpose
+;;@param array 
+;;@param :optional 
+;;@param dim1 
+;;@param dim2 
+
+;;;;;
+;;@type Function
+;;@name array-concatenate
+;;@param a 
+;;@param b 
+;;@param :optional 
+;;@param dimension 
+
+;;;;;
+;;@type Function
+;;@name array->list
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name array->vector
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name array-map!
+;;@param array 
+;;@param shape 
+;;@param proc 
+;;@param array0 
+;;@param array1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-map!
+;;@param array 
+;;@param proc 
+;;@param array0 
+;;@param array1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-map
+;;@param shape 
+;;@param proc 
+;;@param array0 
+;;@param array1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-map
+;;@param proc 
+;;@param array0 
+;;@param array1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-retabulate!
+;;@param array 
+;;@param shape 
+;;@param proc 
+;;@param :optional 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name array-retabulate!
+;;@param array 
+;;@param proc 
+;;@param :optional 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name tabulate-array
+;;@param shape 
+;;@param proc 
+;;@param :optional 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name shape-for-each
+;;@param shape 
+;;@param proc 
+;;@param :optional 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name array-for-each-index
+;;@param array 
+;;@param proc 
+;;@param :optional 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name share-array
+;;@param array 
+;;@param shape 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name array-set!
+;;@param array 
+;;@param index 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name array-set!
+;;@param array 
+;;@param k 
+;;@param ... 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name array-ref
+;;@param array 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name array-ref
+;;@param array 
+;;@param k 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-size
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name array-length
+;;@param array 
+;;@param dim 
+
+;;;;;
+;;@type Function
+;;@name array-end
+;;@param array 
+;;@param dim 
+
+;;;;;
+;;@type Function
+;;@name array-start
+;;@param array 
+;;@param dim 
+
+;;;;;
+;;@type Function
+;;@name array-shape
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name array-rank
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name array
+;;@param shape 
+;;@param init 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name shape
+;;@param bound 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name make-f64array
+;;@param shape 
+;;@param :optional 
+;;@param init 
+
+;;;;;
+;;@type Function
+;;@name make-f32array
+;;@param shape 
+;;@param :optional 
+;;@param init 
+
+;;;;;
+;;@type Function
+;;@name make-s8array
+;;@param shape 
+;;@param :optional 
+;;@param init 
+
+;;;;;
+;;@type Function
+;;@name make-u8array
+;;@param shape 
+;;@param :optional 
+;;@param init 
+
+;;;;;
+;;@type Function
+;;@name make-array
+;;@param shape 
+;;@param :optional 
+;;@param init 
+
+;;;;;
+;;@type Function
+;;@name array?
+;;@param obj 
+
+;;;;;
+;;@type Class
+;;@name <f64array>
+
+;;;;;
+;;@type Class
+;;@name <f32array>
+
+;;;;;
+;;@type Class
+;;@name <f16array>
+
+;;;;;
+;;@type Class
+;;@name <s64array>
+
+;;;;;
+;;@type Class
+;;@name <u64array>
+
+;;;;;
+;;@type Class
+;;@name <s32array>
+
+;;;;;
+;;@type Class
+;;@name <u32array>
+
+;;;;;
+;;@type Class
+;;@name <s16array>
+
+;;;;;
+;;@type Class
+;;@name <u16array>
+
+;;;;;
+;;@type Class
+;;@name <s8array>
+
+;;;;;
+;;@type Class
+;;@name <u8array>
+
+;;;;;
+;;@type Class
+;;@name <array>
+

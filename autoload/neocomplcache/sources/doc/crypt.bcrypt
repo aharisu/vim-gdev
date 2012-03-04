@@ -1,0 +1,21 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name bcrypt-gensalt
+;;@param &key 
+;;@param prefix 
+;;@param count 
+;;@param entropy-source 
+
+;;;;;
+;;@type Function
+;;@name bcrypt-hashpw
+;;@param password 
+;;@param :optional 
+;;@param setting 
+

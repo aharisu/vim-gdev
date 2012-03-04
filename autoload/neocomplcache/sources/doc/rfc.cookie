@@ -1,0 +1,20 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name construct-cookie-string
+;;@param specs 
+;;@param :optional 
+;;@param version 
+
+;;;;;
+;;@type Function
+;;@name parse-cookie-string
+;;@param string 
+;;@param :optional 
+;;@param version 
+

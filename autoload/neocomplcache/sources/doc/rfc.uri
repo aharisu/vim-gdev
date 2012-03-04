@@ -1,0 +1,77 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name uri-encode-string
+;;@param string 
+;;@param :key 
+;;@param :noescape 
+;;@param :encoding 
+
+;;;;;
+;;@type Function
+;;@name uri-encode
+;;@param :key 
+;;@param :noescape 
+
+;;;;;
+;;@type Function
+;;@name uri-decode-string
+;;@param string 
+;;@param :key 
+;;@param :cgi-decode 
+;;@param :encoding 
+
+;;;;;
+;;@type Function
+;;@name uri-decode
+;;@param :key 
+;;@param :cgi-decode 
+
+;;;;;
+;;@type Function
+;;@name uri-merge
+;;@param base-uri 
+;;@param relative-uri 
+;;@param relative-uri2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name uri-compose
+;;@param :key 
+;;@param scheme 
+;;@param userinfo 
+;;@param host 
+;;@param port 
+;;@param authority 
+;;@param path 
+;;@param path* 
+;;@param query 
+;;@param fragment 
+;;@param specific 
+
+;;;;;
+;;@type Function
+;;@name uri-decompose-authority
+;;@param authority 
+
+;;;;;
+;;@type Function
+;;@name uri-decompose-hierarchical
+;;@param specific 
+
+;;;;;
+;;@type Function
+;;@name uri-scheme&specific
+;;@param uri 
+
+;;;;;
+;;@type Function
+;;@name uri-parse
+;;@param uri 
+

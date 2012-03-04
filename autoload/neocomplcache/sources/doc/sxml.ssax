@@ -1,0 +1,211 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name ssax:xml->sxml
+;;@param port 
+;;@param namespace-prefix-assig 
+
+;;;;;
+;;@type Function
+;;@name ssax:reverse-collect-str-drop-ws
+;;@param fragments 
+
+;;;;;
+;;@type Function
+;;@name ssax:reverse-collect-str
+;;@param fragments 
+
+;;;;;
+;;@type Function
+;;@name ssax:make-parser
+;;@param user-handler-tag 
+;;@param user-handler-proc 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name ssax:make-elem-parser
+;;@param my-new-level-seed 
+;;@param my-finish-element 
+;;@param my-char-data-handler 
+;;@param my-pi-handlers 
+
+;;;;;
+;;@type Function
+;;@name ssax:make-pi-parser
+;;@param my-pi-handlers 
+
+;;;;;
+;;@type Function
+;;@name ssax:assert-token
+;;@param token 
+;;@param kind 
+;;@param gi 
+;;@param error-cont 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-char-data
+;;@param port 
+;;@param expect-eof? 
+;;@param str-handler 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name ssax:scan-Misc
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-external-id
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:complete-start-tag
+;;@param tag 
+;;@param port 
+;;@param elems 
+;;@param entities 
+;;@param namespaces 
+
+;;;;;
+;;@type Function
+;;@name ssax:uri-string->symbol
+;;@param uri-str 
+
+;;;;;
+;;@type Function
+;;@name ssax:resolve-name
+;;@param port 
+;;@param unres-name 
+;;@param namespaces 
+;;@param apply-default-ns? 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-attributes
+;;@param port 
+;;@param entities 
+
+;;;;;
+;;@type Function
+;;@name ssax:handle-parsed-entity
+;;@param port 
+;;@param name 
+;;@param entities 
+;;@param content-handler 
+;;@param str-handler 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-char-ref
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-cdata-body
+;;@param port 
+;;@param str-handler 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name ssax:skip-internal-dtd
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-pi-body-as-string
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:skip-pi
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-markup-token
+;;@param port 
+
+;;;;;
+;;@type var
+;;@name ssax:Prefix-XML
+
+;;;;;
+;;@type Function
+;;@name ssax:read-QName
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-NCName
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:ncname-starting-char?
+;;@param a-char 
+
+;;;;;
+;;@type Function
+;;@name ssax:skip-S
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name xml-token-head
+;;@param token 
+
+;;;;;
+;;@type Function
+;;@name xml-token-kind
+;;@param token 
+
+;;;;;
+;;@type Function
+;;@name xml-token?
+;;@param token 
+
+;;;;;
+;;@type Function
+;;@name make-xml-token
+;;@param kind 
+;;@param head 
+
+;;;;;
+;;@type Function
+;;@name attlist-fold
+
+;;;;;
+;;@type Function
+;;@name attlist->alist
+;;@param attlist 
+
+;;;;;
+;;@type Function
+;;@name attlist-remove-top
+;;@param attlist 
+
+;;;;;
+;;@type Function
+;;@name attlist-null?
+
+;;;;;
+;;@type Function
+;;@name attlist-add
+;;@param attlist 
+;;@param name-value 
+
+;;;;;
+;;@type Function
+;;@name make-empty-attlist
+

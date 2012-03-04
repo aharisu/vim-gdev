@@ -1,0 +1,4244 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@param gf 
+;;@param method 
+;;@param build-next 
+;;@param args 
+
+;;;;;
+;;@type Method
+;;@name apply-methods
+;;@param gf 
+;;@param methods 
+;;@param args 
+
+;;;;;
+;;@type Method
+;;@name method-more-specific?
+;;@param method1 
+;;@param method2 
+;;@param classes 
+
+;;;;;
+;;@type Method
+;;@name sort-applicable-methods
+;;@param gf 
+;;@param methods 
+;;@param args 
+
+;;;;;
+;;@type Method
+;;@name apply-generic
+;;@param gf 
+;;@param args 
+
+;;;;;
+;;@type Method
+;;@name make
+;;@param (class <method>) 
+;;@param :rest 
+;;@param initargs 
+
+;;;;;
+;;@type Function
+;;@name slot-initialize-using-accessor!
+;;@param obj 
+;;@param slot-accessor 
+;;@param initargs 
+
+;;;;;
+;;@type Function
+;;@name slot-bound-using-accessor?
+;;@param obj 
+;;@param slot-accessor 
+
+;;;;;
+;;@type Function
+;;@name slot-set-using-accessor!
+;;@param obj 
+;;@param slot-accessor 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name slot-ref-using-accessor
+;;@param obj 
+;;@param slot-accessor 
+
+;;;;;
+;;@type Method
+;;@name compute-get-n-set
+;;@param (class <class>) 
+;;@param slot 
+
+;;;;;
+;;@type Method
+;;@name compute-slots
+;;@param (class <class>) 
+
+;;;;;
+;;@type Method
+;;@name compute-slot-accessor
+;;@param (class <class>) 
+;;@param slot 
+;;@param access-specifier 
+
+;;;;;
+;;@type Method
+;;@name compute-slot-accessor
+
+;;;;;
+;;@type Method
+;;@name compute-get-n-set
+
+;;;;;
+;;@type Method
+;;@name compute-slots
+
+;;;;;
+;;@type Method
+;;@name make
+;;@param (class <class>) 
+;;@param :rest 
+;;@param initargs 
+
+;;;;;
+;;@type Class
+;;@name <class>
+
+;;;;;
+;;@type Function
+;;@name define-method
+;;@param name 
+;;@param specs 
+;;@param body 
+
+;;;;;
+;;@type Function
+;;@name define-generic
+;;@param name 
+;;@param :key 
+;;@param class 
+
+;;;;;
+;;@type Function
+;;@name change-object-class
+;;@param obj 
+;;@param orig-class 
+;;@param new-class 
+
+;;;;;
+;;@type Method
+;;@name change-class
+;;@param (obj <object>) 
+;;@param (new-class <class>) 
+
+;;;;;
+;;@type Method
+;;@name change-class
+
+;;;;;
+;;@type Method
+;;@name slot-bound-using-class?
+;;@param (class <class>) 
+;;@param (obj <object>) 
+;;@param slot-name 
+
+;;;;;
+;;@type Method
+;;@name slot-set-using-class!
+;;@param (class <class>) 
+;;@param (obj <object>) 
+;;@param slot-name 
+;;@param value 
+
+;;;;;
+;;@type Method
+;;@name slot-ref-using-class
+;;@param (class <class>) 
+;;@param (obj <object>) 
+;;@param slot-name 
+
+;;;;;
+;;@type Function
+;;@name class-slot-bound?
+;;@param class 
+;;@param slot-name 
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name class-slot-set!
+;;@param class 
+;;@param slot-name 
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name class-slot-ref
+;;@param class 
+;;@param slot-name 
+
+;;;;;
+;;@type Method
+;;@name slot-missing
+;;@param (class <class>) 
+;;@param obj 
+;;@param slot 
+;;@param :optional 
+;;@param value 
+
+;;;;;
+;;@type Method
+;;@name slot-missing
+
+;;;;;
+;;@type Method
+;;@name slot-unbound
+;;@param (class <class>) 
+;;@param obj 
+;;@param slot 
+
+;;;;;
+;;@type Method
+;;@name slot-unbound
+
+;;;;;
+;;@type Method
+;;@name ref
+;;@param (obj <object>) 
+;;@param (slot <symbol>) 
+
+;;;;;
+;;@type Function
+;;@name slot-pop!
+;;@param obj 
+;;@param slot 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name slot-push!
+;;@param obj 
+;;@param slot 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name slot-exists?
+;;@param obj 
+;;@param slot 
+
+;;;;;
+;;@type Function
+;;@name slot-bound?
+;;@param obj 
+;;@param slot 
+
+;;;;;
+;;@type Function
+;;@name slot-set!
+;;@param obj 
+;;@param slot 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name slot-ref
+;;@param obj 
+;;@param slot 
+
+;;;;;
+;;@type Method
+;;@name initialize
+;;@param (obj <object>) 
+;;@param initargs 
+
+;;;;;
+;;@type Method
+;;@name initialize
+
+;;;;;
+;;@type Method
+;;@name allocate-instance
+;;@param (class <class>) 
+;;@param initargs 
+
+;;;;;
+;;@type Method
+;;@name allocate-instance
+
+;;;;;
+;;@type Method
+;;@name make
+;;@param (class <class>) 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name make
+
+;;;;;
+;;@type Function
+;;@name slot-definition-option
+;;@param slot-def 
+;;@param option 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name slot-definition-accessor
+;;@param slot-def 
+
+;;;;;
+;;@type Function
+;;@name slot-definition-setter
+;;@param slot-def 
+
+;;;;;
+;;@type Function
+;;@name slot-definition-getter
+;;@param slot-def 
+
+;;;;;
+;;@type Function
+;;@name slot-definition-allocation
+;;@param slot-def 
+
+;;;;;
+;;@type Function
+;;@name slot-definition-options
+;;@param slot-def 
+
+;;;;;
+;;@type Function
+;;@name slot-definition-name
+;;@param slot-def 
+
+;;;;;
+;;@type Function
+;;@name class-slot-accessor
+;;@param class 
+;;@param slot-name 
+
+;;;;;
+;;@type Function
+;;@name class-direct-methods
+;;@param class 
+
+;;;;;
+;;@type Function
+;;@name class-direct-slots
+;;@param class 
+
+;;;;;
+;;@type Function
+;;@name class-slot-definition
+;;@param class 
+;;@param slot-name 
+
+;;;;;
+;;@type Function
+;;@name class-slots
+;;@param class 
+
+;;;;;
+;;@type Function
+;;@name class-direct-subclasses
+;;@param class 
+
+;;;;;
+;;@type Function
+;;@name class-direct-supers
+;;@param class 
+
+;;;;;
+;;@type Function
+;;@name class-precedence-list
+;;@param class 
+
+;;;;;
+;;@type Function
+;;@name class-name
+;;@param class 
+
+;;;;;
+;;@type Function
+;;@name define-class
+;;@param name 
+;;@param supers 
+;;@param (slot-spec ...) 
+;;@param option 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name current-class-of
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name is-a?
+;;@param obj 
+;;@param class 
+
+;;;;;
+;;@type Function
+;;@name class-of
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name ash
+;;@param n 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name copy-bit-field
+;;@param to 
+;;@param from 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name bit-field
+;;@param n 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name copy-bit
+;;@param index 
+;;@param n 
+;;@param bit 
+
+;;;;;
+;;@type Function
+;;@name logbit?
+;;@param index 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name integer-length
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name logcount
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name logtest
+;;@param mask 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name logxor
+;;@param n 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name logior
+;;@param n 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name logand
+;;@param n 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lognot
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name require-extension
+;;@param clause 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name format
+;;@param format-string 
+;;@param args 
+
+;;;;;
+;;@type Function
+;;@name current-time
+;;@param :optional 
+;;@param time-type 
+
+;;;;;
+;;@type Function
+;;@name every
+;;@param pred 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name any
+;;@param pred 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name find
+;;@param pred 
+;;@param clist 
+
+;;;;;
+;;@type Function
+;;@name fold-right
+;;@param kons 
+;;@param knil 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name fold
+;;@param kons 
+;;@param knil 
+;;@param clist1 
+;;@param clist2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name split-at
+;;@param x 
+;;@param i 
+
+;;;;;
+;;@type Function
+;;@name null-list?
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name dotted-list?
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name circular-list?
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name proper-list?
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name cond-expand
+;;@param (feature-requirement command-or-definition ...) 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name time
+;;@param expr 
+;;@param expr2 
+;;@param ... 
+
+;;;;;
+;;@type Class
+;;@name <uncaught-exception>
+
+;;;;;
+;;@type Class
+;;@name <terminated-thread-exception>
+
+;;;;;
+;;@type Class
+;;@name <abandoned-mutex-exception>
+
+;;;;;
+;;@type Class
+;;@name <join-timeout-exception>
+
+;;;;;
+;;@type Class
+;;@name <thread-exception>
+
+;;;;;
+;;@type Function
+;;@name current-thread
+
+;;;;;
+;;@type Class
+;;@name <thread>
+
+;;;;;
+;;@type Method
+;;@name fold-right
+;;@param kons 
+;;@param knil 
+;;@param (seq <sequence>) 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name ref
+;;@param (seq <sequence>) 
+;;@param index 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Method
+;;@name for-each$
+;;@param proc 
+
+;;;;;
+;;@type Method
+;;@name map$
+;;@param proc 
+
+;;;;;
+;;@type Method
+;;@name fold$
+;;@param proc 
+;;@param knil 
+
+;;;;;
+;;@type Method
+;;@name fold$
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name unwrap-syntax
+;;@param form 
+
+;;;;;
+;;@type Function
+;;@name syntax-errorf
+;;@param fmt 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name syntax-error
+;;@param msg 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name macroexpand-1
+;;@param form 
+
+;;;;;
+;;@type Function
+;;@name macroexpand
+;;@param form 
+
+;;;;;
+;;@type Function
+;;@name define-macro
+;;@param (name . formals) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name define-macro
+;;@param name 
+;;@param procedure 
+
+;;;;;
+;;@type Function
+;;@name path->module-name
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name module-name->path
+;;@param symbol 
+
+;;;;;
+;;@type Function
+;;@name global-variable-ref
+;;@param module 
+;;@param symbol 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name global-variable-bound?
+;;@param module 
+;;@param symbol 
+
+;;;;;
+;;@type Function
+;;@name module-precedence-list
+;;@param module 
+
+;;;;;
+;;@type Function
+;;@name module-parents
+;;@param module 
+
+;;;;;
+;;@type Function
+;;@name module-table
+;;@param module 
+
+;;;;;
+;;@type Function
+;;@name module-exports
+;;@param module 
+
+;;;;;
+;;@type Function
+;;@name module-imports
+;;@param module 
+
+;;;;;
+;;@type Function
+;;@name module-name
+;;@param module 
+
+;;;;;
+;;@type Function
+;;@name all-modules
+
+;;;;;
+;;@type Function
+;;@name make-module
+;;@param name 
+;;@param :key 
+;;@param if-exists 
+
+;;;;;
+;;@type Function
+;;@name find-module
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name module?
+;;@param obj 
+
+;;;;;
+;;@type Class
+;;@name <module>
+
+;;;;;
+;;@type Function
+;;@name extend
+;;@param module-name 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name use
+;;@param name 
+;;@param :key 
+;;@param only 
+;;@param except 
+;;@param rename 
+;;@param prefix 
+
+;;;;;
+;;@type Function
+;;@name import
+;;@param import-spec 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name export-all
+
+;;;;;
+;;@type Function
+;;@name export
+;;@param symbol 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name current-module
+
+;;;;;
+;;@type Function
+;;@name with-module
+;;@param name 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name select-module
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name define-module
+;;@param name 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name define-in-module
+;;@param module 
+;;@param (variable . formals) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name define-in-module
+;;@param module 
+;;@param variable 
+;;@param expression 
+
+;;;;;
+;;@type Function
+;;@name define-constant
+;;@param (variable . formals) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name define-constant
+;;@param variable 
+;;@param expression 
+
+;;;;;
+;;@type Function
+;;@name define-values
+;;@param (var ...) 
+;;@param expr 
+
+;;;;;
+;;@type Function
+;;@name until
+;;@param expr 
+;;@param guard 
+;;@param @code 
+;;@param (=>) 
+;;@param var 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name until
+;;@param expr 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name while
+;;@param expr 
+;;@param guard 
+;;@param @code 
+;;@param (=>) 
+;;@param var 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name while
+;;@param expr 
+;;@param @code 
+;;@param (=>) 
+;;@param var 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name while
+;;@param expr 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name dolist
+;;@param (variable lexpr (result)) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name dotimes
+;;@param (variable limit (result)) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name begin0
+;;@param exp0 
+;;@param exp1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name rec
+;;@param (name . vars) 
+;;@param expr 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name rec
+;;@param var 
+;;@param expr 
+
+;;;;;
+;;@type Function
+;;@name receive
+;;@param formals 
+;;@param expression 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name fluid-let
+;;@param ((var val) ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name and-let*
+;;@param (binding ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name rlet1
+;;@param var 
+;;@param expr 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name if-let1
+;;@param var 
+;;@param expr 
+;;@param then 
+;;@param else 
+
+;;;;;
+;;@type Function
+;;@name if-let1
+;;@param var 
+;;@param expr 
+;;@param then 
+
+;;;;;
+;;@type Function
+;;@name let1
+;;@param var 
+;;@param expr 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name unless
+;;@param test 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name when
+;;@param test 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name ecase
+;;@param key 
+;;@param clause1 
+;;@param clause2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name update!
+;;@param place 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name dec!
+;;@param place 
+;;@param :optional 
+;;@param delta 
+
+;;;;;
+;;@type Function
+;;@name inc!
+;;@param place 
+;;@param :optional 
+;;@param delta 
+
+;;;;;
+;;@type Function
+;;@name pop!
+;;@param place 
+
+;;;;;
+;;@type Function
+;;@name push!
+;;@param place 
+;;@param item 
+
+;;;;;
+;;@type Function
+;;@name getter-with-setter
+;;@param get 
+;;@param set 
+
+;;;;;
+;;@type Function
+;;@name has-setter?
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name setter
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name set!-values
+;;@param (var ...) 
+;;@param expr 
+
+;;;;;
+;;@type Function
+;;@name case-lambda
+;;@param clause 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name cute
+;;@param expr-or-slot 
+;;@param expr-or-slot2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name cut
+;;@param expr-or-slot 
+;;@param expr-or-slot2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name ^c
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name ^
+;;@param formals 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name profiler-show
+;;@param :key 
+;;@param sort-by 
+;;@param max-rows 
+
+;;;;;
+;;@type Function
+;;@name profiler-reset
+
+;;;;;
+;;@type Function
+;;@name profiler-stop
+
+;;;;;
+;;@type Function
+;;@name profiler-start
+
+;;;;;
+;;@type Function
+;;@name disasm
+;;@param closure 
+
+;;;;;
+;;@type Function
+;;@name debug-source-info
+;;@param obj 
+
+;;;;;
+;;@type Parameter
+;;@name debug-print-width
+
+;;;;;
+;;@type Function
+;;@name debug-print
+;;@param expr 
+
+;;;;;
+;;@type Function
+;;@name sys-srandom
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name sys-random
+
+;;;;;
+;;@type Function
+;;@name sys-nanosleep
+;;@param nanoseconds 
+
+;;;;;
+;;@type Function
+;;@name sys-sleep
+;;@param seconds 
+
+;;;;;
+;;@type Function
+;;@name sys-alarm
+;;@param seconds 
+
+;;;;;
+;;@type Function
+;;@name sys-pause
+
+;;;;;
+;;@type Function
+;;@name sys-select!
+;;@param readfds 
+;;@param writefds 
+;;@param exceptfds 
+;;@param :optional 
+;;@param timeout 
+
+;;;;;
+;;@type Function
+;;@name sys-select
+;;@param readfds 
+;;@param writefds 
+;;@param exceptfds 
+;;@param :optional 
+;;@param timeout 
+
+;;;;;
+;;@type Function
+;;@name sys-fdset-max-fd
+;;@param fdset 
+
+;;;;;
+;;@type Function
+;;@name list->sys-fdset
+;;@param fds 
+
+;;;;;
+;;@type Function
+;;@name sys-fdset->list
+;;@param fdset 
+
+;;;;;
+;;@type Function
+;;@name sys-fdset-clear!
+;;@param fdset 
+
+;;;;;
+;;@type Function
+;;@name sys-fdset-copy!
+;;@param dest-fdset 
+;;@param src-fdset 
+
+;;;;;
+;;@type Function
+;;@name sys-fdset-set!
+;;@param fdset 
+;;@param port-or-fd 
+;;@param flag 
+
+;;;;;
+;;@type Function
+;;@name sys-fdset-ref
+;;@param fdset 
+;;@param port-or-fd 
+
+;;;;;
+;;@type Function
+;;@name sys-fdset
+;;@param elt 
+;;@param ... 
+
+;;;;;
+;;@type Class
+;;@name <sys-fdset>
+
+;;;;;
+;;@type Function
+;;@name sys-wait-stopsig
+;;@param status 
+
+;;;;;
+;;@type Function
+;;@name sys-wait-stopped?
+;;@param status 
+
+;;;;;
+;;@type Function
+;;@name sys-wait-termsig
+;;@param status 
+
+;;;;;
+;;@type Function
+;;@name sys-wait-signaled?
+;;@param status 
+
+;;;;;
+;;@type Function
+;;@name sys-wait-exit-status
+;;@param status 
+
+;;;;;
+;;@type Function
+;;@name sys-wait-exited?
+;;@param status 
+
+;;;;;
+;;@type Function
+;;@name sys-waitpid
+;;@param pid 
+;;@param :key 
+;;@param nohang 
+;;@param untraced 
+
+;;;;;
+;;@type Function
+;;@name sys-wait
+
+;;;;;
+;;@type Function
+;;@name sys-fork-and-exec
+;;@param command 
+;;@param args 
+;;@param :key 
+;;@param directory 
+;;@param iomap 
+;;@param sigmask 
+;;@param detached 
+
+;;;;;
+;;@type Function
+;;@name sys-exec
+;;@param command 
+;;@param args 
+;;@param :key 
+;;@param directory 
+;;@param iomap 
+;;@param sigmask 
+
+;;;;;
+;;@type Function
+;;@name sys-fork
+
+;;;;;
+;;@type Function
+;;@name sys-system
+;;@param command 
+
+;;;;;
+;;@type Function
+;;@name seconds->time
+;;@param seconds 
+
+;;;;;
+;;@type Function
+;;@name time->seconds
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name time?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name current-time
+
+;;;;;
+;;@type Class
+;;@name <time>
+
+;;;;;
+;;@type Function
+;;@name sys-tm->alist
+;;@param tm 
+
+;;;;;
+;;@type Function
+;;@name sys-mktime
+;;@param tm 
+
+;;;;;
+;;@type Function
+;;@name sys-strftime
+;;@param format 
+;;@param tm 
+
+;;;;;
+;;@type Function
+;;@name sys-asctime
+;;@param tm 
+
+;;;;;
+;;@type Function
+;;@name sys-difftime
+;;@param time1 
+;;@param time0 
+
+;;;;;
+;;@type Function
+;;@name sys-ctime
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name sys-localtime
+;;@param time 
+
+;;;;;
+;;@type Function
+;;@name sys-gmtime
+;;@param time 
+
+;;;;;
+;;@type Class
+;;@name <sys-tm>
+
+;;;;;
+;;@type Function
+;;@name sys-gettimeofday
+
+;;;;;
+;;@type Function
+;;@name sys-time
+
+;;;;;
+;;@type Function
+;;@name sys-strerror
+;;@param errno 
+
+;;;;;
+;;@type Function
+;;@name sys-setrlimit
+;;@param resource 
+;;@param current 
+;;@param :optional 
+;;@param maximum 
+
+;;;;;
+;;@type Function
+;;@name sys-getrlimit
+;;@param resource 
+
+;;;;;
+;;@type Function
+;;@name sys-ctermid
+
+;;;;;
+;;@type Function
+;;@name sys-times
+
+;;;;;
+;;@type Function
+;;@name sys-getppid
+
+;;;;;
+;;@type Function
+;;@name sys-getpid
+
+;;;;;
+;;@type Function
+;;@name sys-setsid
+
+;;;;;
+;;@type Function
+;;@name sys-setpgid
+;;@param pid 
+;;@param pgid 
+
+;;;;;
+;;@type Function
+;;@name sys-getpgid
+;;@param pid 
+
+;;;;;
+;;@type Function
+;;@name sys-getpgrp
+
+;;;;;
+;;@type Function
+;;@name sys-getlogin
+
+;;;;;
+;;@type Function
+;;@name sys-getgroups
+
+;;;;;
+;;@type Function
+;;@name sys-setuid
+;;@param uid 
+
+;;;;;
+;;@type Function
+;;@name sys-geteuid
+
+;;;;;
+;;@type Function
+;;@name sys-getuid
+
+;;;;;
+;;@type Function
+;;@name sys-setgid
+;;@param gid 
+
+;;;;;
+;;@type Function
+;;@name sys-getegid
+
+;;;;;
+;;@type Function
+;;@name sys-getgid
+
+;;;;;
+;;@type Function
+;;@name sys-getcwd
+
+;;;;;
+;;@type Function
+;;@name sys-getdomainname
+
+;;;;;
+;;@type Function
+;;@name sys-gethostname
+
+;;;;;
+;;@type Function
+;;@name sys-uname
+
+;;;;;
+;;@type Function
+;;@name sys-sigwait
+;;@param mask 
+
+;;;;;
+;;@type Function
+;;@name sys-sigsuspend
+;;@param mask 
+
+;;;;;
+;;@type Function
+;;@name sys-sigmask
+;;@param how 
+;;@param mask 
+
+;;;;;
+;;@type Function
+;;@name with-signal-handlers
+;;@param (handler-clause ...) 
+;;@param thunk 
+
+;;;;;
+;;@type Function
+;;@name set-signal-pending-limit
+;;@param limit 
+
+;;;;;
+;;@type Function
+;;@name get-signal-pending-limit
+
+;;;;;
+;;@type Function
+;;@name get-signal-handlers
+
+;;;;;
+;;@type Function
+;;@name get-signal-handler-mask
+;;@param signum 
+
+;;;;;
+;;@type Function
+;;@name get-signal-handler
+;;@param signum 
+
+;;;;;
+;;@type Function
+;;@name set-signal-handler!
+;;@param signals 
+;;@param handler 
+;;@param :optional 
+;;@param sigmask 
+
+;;;;;
+;;@type Function
+;;@name sys-kill
+;;@param pid 
+;;@param sig 
+
+;;;;;
+;;@type Function
+;;@name sys-signal-name
+;;@param signal 
+
+;;;;;
+;;@type Function
+;;@name sys-sigset-empty!
+;;@param sigset 
+
+;;;;;
+;;@type Function
+;;@name sys-sigset-fill!
+;;@param sigset 
+
+;;;;;
+;;@type Function
+;;@name sys-sigset-delete!
+;;@param sigset 
+;;@param signal 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name sys-sigset-add!
+;;@param sigset 
+;;@param signal 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name sys-sigset
+;;@param signal 
+;;@param ... 
+
+;;;;;
+;;@type Class
+;;@name <sys-sigset>
+
+;;;;;
+;;@type Function
+;;@name sys-localeconv
+
+;;;;;
+;;@type Function
+;;@name sys-setlocale
+;;@param category 
+;;@param locale 
+
+;;;;;
+;;@type Function
+;;@name sys-crypt
+;;@param key 
+;;@param salt 
+
+;;;;;
+;;@type Function
+;;@name sys-user-name->uid
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name sys-uid->user-name
+;;@param uid 
+
+;;;;;
+;;@type Function
+;;@name sys-getpwnam
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name sys-getpwuid
+;;@param uid 
+
+;;;;;
+;;@type Class
+;;@name <sys-passwd>
+
+;;;;;
+;;@type Function
+;;@name sys-group-name->gid
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name sys-gid->group-name
+;;@param gid 
+
+;;;;;
+;;@type Function
+;;@name sys-getgrnam
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name sys-getgrgid
+;;@param gid 
+
+;;;;;
+;;@type Class
+;;@name <sys-group>
+
+;;;;;
+;;@type Function
+;;@name sys-ftruncate
+;;@param port-or-fd 
+;;@param length 
+
+;;;;;
+;;@type Function
+;;@name sys-truncate
+;;@param path 
+;;@param length 
+
+;;;;;
+;;@type Function
+;;@name sys-ttyname
+;;@param port-or-fd 
+
+;;;;;
+;;@type Function
+;;@name sys-isatty
+;;@param port-or-fd 
+
+;;;;;
+;;@type Function
+;;@name sys-mkfifo
+;;@param path 
+;;@param mode 
+
+;;;;;
+;;@type Function
+;;@name sys-pipe
+;;@param :key 
+;;@param (buffering line) 
+
+;;;;;
+;;@type Function
+;;@name sys-chdir
+;;@param dir 
+
+;;;;;
+;;@type Function
+;;@name sys-utime
+;;@param path 
+;;@param :optional 
+;;@param atime 
+;;@param mtime 
+
+;;;;;
+;;@type Function
+;;@name sys-chown
+;;@param path 
+;;@param owner-id 
+;;@param group-id 
+
+;;;;;
+;;@type Function
+;;@name sys-fchmod
+;;@param port-or-fd 
+;;@param mode 
+
+;;;;;
+;;@type Function
+;;@name sys-chmod
+;;@param path 
+;;@param mode 
+
+;;;;;
+;;@type Function
+;;@name sys-access
+;;@param pathname 
+;;@param amode 
+
+;;;;;
+;;@type Function
+;;@name sys-stat->file-type
+;;@param stat 
+
+;;;;;
+;;@type Function
+;;@name sys-stat->ctime
+;;@param stat 
+
+;;;;;
+;;@type Function
+;;@name sys-stat->mtime
+;;@param stat 
+
+;;;;;
+;;@type Function
+;;@name sys-stat->atime
+;;@param stat 
+
+;;;;;
+;;@type Function
+;;@name sys-stat->gid
+;;@param stat 
+
+;;;;;
+;;@type Function
+;;@name sys-stat->uid
+;;@param stat 
+
+;;;;;
+;;@type Function
+;;@name sys-stat->size
+;;@param stat 
+
+;;;;;
+;;@type Function
+;;@name sys-stat->nlink
+;;@param stat 
+
+;;;;;
+;;@type Function
+;;@name sys-stat->rdev
+;;@param stat 
+
+;;;;;
+;;@type Function
+;;@name sys-stat->dev
+;;@param stat 
+
+;;;;;
+;;@type Function
+;;@name sys-stat->ino
+;;@param stat 
+
+;;;;;
+;;@type Function
+;;@name sys-stat->mode
+;;@param stat 
+
+;;;;;
+;;@type Function
+;;@name sys-lstat
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name sys-fstat
+;;@param port-or-fd 
+
+;;;;;
+;;@type Function
+;;@name sys-stat
+;;@param path 
+
+;;;;;
+;;@type Class
+;;@name <sys-stat>
+
+;;;;;
+;;@type Function
+;;@name file-is-directory?
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name file-is-regular?
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name file-exists?
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name sys-tmpdir
+
+;;;;;
+;;@type Function
+;;@name sys-realpath
+;;@param pathname 
+
+;;;;;
+;;@type Function
+;;@name sys-dirname
+;;@param pathname 
+
+;;;;;
+;;@type Function
+;;@name sys-basename
+;;@param pathname 
+
+;;;;;
+;;@type Function
+;;@name sys-normalize-pathname
+;;@param pathname 
+;;@param :key 
+;;@param absolute 
+;;@param expand 
+;;@param canonicalize 
+
+;;;;;
+;;@type Function
+;;@name sys-umask
+;;@param :optional 
+;;@param mode 
+
+;;;;;
+;;@type Function
+;;@name sys-rmdir
+;;@param pathname 
+
+;;;;;
+;;@type Function
+;;@name sys-mkdir
+;;@param pathname 
+;;@param mode 
+
+;;;;;
+;;@type Function
+;;@name sys-readlink
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name sys-symlink
+;;@param existing 
+;;@param new 
+
+;;;;;
+;;@type Function
+;;@name sys-unlink
+;;@param pathname 
+
+;;;;;
+;;@type Function
+;;@name sys-link
+;;@param existing 
+;;@param new 
+
+;;;;;
+;;@type Function
+;;@name sys-mkstemp
+;;@param template 
+
+;;;;;
+;;@type Function
+;;@name sys-tmpnam
+
+;;;;;
+;;@type Function
+;;@name sys-rename
+;;@param old 
+;;@param new 
+
+;;;;;
+;;@type Function
+;;@name sys-remove
+;;@param filename 
+
+;;;;;
+;;@type Function
+;;@name make-glob-fs-fold
+;;@param :key 
+;;@param root-path 
+;;@param current-path 
+
+;;;;;
+;;@type Function
+;;@name glob-fold
+;;@param pattern 
+;;@param proc 
+;;@param seed 
+;;@param :key 
+;;@param separator 
+;;@param folder 
+
+;;;;;
+;;@type Function
+;;@name sys-glob
+;;@param pattern 
+;;@param :key 
+;;@param separator 
+;;@param folder 
+
+;;;;;
+;;@type Function
+;;@name glob
+;;@param pattern 
+;;@param :key 
+;;@param separator 
+;;@param folder 
+
+;;;;;
+;;@type Function
+;;@name sys-readdir
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name gauche-site-architecture-directory
+
+;;;;;
+;;@type Function
+;;@name gauche-site-library-directory
+
+;;;;;
+;;@type Function
+;;@name gauche-architecture-directory
+
+;;;;;
+;;@type Function
+;;@name gauche-library-directory
+
+;;;;;
+;;@type Function
+;;@name gauche-architecture
+
+;;;;;
+;;@type Function
+;;@name gauche-version
+
+;;;;;
+;;@type Function
+;;@name sys-clearenv
+
+;;;;;
+;;@type Function
+;;@name sys-unsetenv
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name sys-putenv
+;;@param name=value 
+
+;;;;;
+;;@type Function
+;;@name sys-setenv
+;;@param name 
+;;@param value 
+;;@param &optional 
+;;@param overwrite 
+
+;;;;;
+;;@type Function
+;;@name sys-environ->alist
+;;@param :optional 
+;;@param envlist 
+
+;;;;;
+;;@type Function
+;;@name sys-environ
+
+;;;;;
+;;@type Function
+;;@name sys-getenv
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name sys-abort
+
+;;;;;
+;;@type Function
+;;@name sys-exit
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name exit-handler
+;;@param :optional 
+;;@param new-handler 
+
+;;;;;
+;;@type Function
+;;@name exit
+;;@param :optional 
+;;@param (code 0) 
+;;@param (fmtstr #f) 
+;;@param args 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stable-sort-by!
+;;@param seq 
+;;@param key 
+;;@param :optional 
+;;@param cmpfn 
+
+;;;;;
+;;@type Function
+;;@name stable-sort-by
+;;@param seq 
+;;@param key 
+;;@param :optional 
+;;@param cmpfn 
+
+;;;;;
+;;@type Function
+;;@name sort-by!
+;;@param seq 
+;;@param key 
+;;@param :optional 
+;;@param cmpfn 
+
+;;;;;
+;;@type Function
+;;@name sort-by
+;;@param seq 
+;;@param key 
+;;@param :optional 
+;;@param cmpfn 
+
+;;;;;
+;;@type Function
+;;@name stable-sort!
+;;@param seq 
+;;@param :optional 
+;;@param cmpfn 
+
+;;;;;
+;;@type Function
+;;@name stable-sort
+;;@param seq 
+;;@param :optional 
+;;@param cmpfn 
+
+;;;;;
+;;@type Function
+;;@name sort!
+;;@param seq 
+;;@param :optional 
+;;@param cmpfn 
+
+;;;;;
+;;@type Function
+;;@name sort
+;;@param seq 
+;;@param :optional 
+;;@param cmpfn 
+
+;;;;;
+;;@type Method
+;;@name object-compare
+;;@param obj1 
+;;@param obj2 
+
+;;;;;
+;;@type Function
+;;@name compare
+;;@param obj1 
+;;@param obj2 
+
+;;;;;
+;;@type Function
+;;@name library-has-module?
+;;@param path 
+;;@param module 
+
+;;;;;
+;;@type Function
+;;@name library-exists?
+;;@param mod/path 
+;;@param :key 
+;;@param paths 
+;;@param force-search? 
+;;@param strict? 
+
+;;;;;
+;;@type Function
+;;@name library-for-each
+;;@param pattern 
+;;@param proc 
+;;@param :key 
+;;@param paths 
+;;@param allow-duplicates? 
+;;@param strict? 
+
+;;;;;
+;;@type Function
+;;@name library-map
+;;@param pattern 
+;;@param proc 
+;;@param :key 
+;;@param paths 
+;;@param allow-duplicates? 
+;;@param strict? 
+
+;;;;;
+;;@type Function
+;;@name library-fold
+;;@param pattern 
+;;@param proc 
+;;@param seed 
+;;@param :key 
+;;@param paths 
+;;@param strict? 
+;;@param allow-duplicates? 
+
+;;;;;
+;;@type Function
+;;@name autoload
+;;@param file/module 
+;;@param item 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name provided?
+;;@param feature 
+
+;;;;;
+;;@type Function
+;;@name provide
+;;@param feature 
+
+;;;;;
+;;@type Function
+;;@name require
+;;@param feature 
+
+;;;;;
+;;@type Function
+;;@name dynamic-load
+;;@param file 
+;;@param :key 
+;;@param init-function 
+;;@param export-symbols 
+
+;;;;;
+;;@type Function
+;;@name current-load-next
+
+;;;;;
+;;@type Function
+;;@name current-load-history
+
+;;;;;
+;;@type Function
+;;@name current-load-path
+
+;;;;;
+;;@type Function
+;;@name current-load-port
+
+;;;;;
+;;@type Function
+;;@name load-from-port
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name add-load-path
+;;@param path 
+;;@param :optional 
+;;@param (afterp #f) 
+
+;;;;;
+;;@type Function
+;;@name format
+;;@param string 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name format
+;;@param port 
+;;@param string 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name write-byte
+;;@param byte 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name flush-all-ports
+
+;;;;;
+;;@type Function
+;;@name flush
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Method
+;;@name write-object
+;;@param (obj <object>) 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name print
+;;@param expr 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name write*
+;;@param obj 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name write/ss
+;;@param obj 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name write-with-shared-structure
+;;@param obj 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name port-map
+;;@param fn 
+;;@param reader 
+
+;;;;;
+;;@type Function
+;;@name port-for-each
+;;@param fn 
+;;@param reader 
+
+;;;;;
+;;@type Function
+;;@name port-fold-right
+;;@param fn 
+;;@param knil 
+;;@param reader 
+
+;;;;;
+;;@type Function
+;;@name port-fold
+;;@param fn 
+;;@param knil 
+;;@param reader 
+
+;;;;;
+;;@type Function
+;;@name port->sexp-list
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name port->string-list
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name port->list
+;;@param reader 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name port->string
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name define-reader-ctor
+;;@param tag 
+;;@param procedure 
+
+;;;;;
+;;@type Function
+;;@name byte-ready?
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name eof-object
+
+;;;;;
+;;@type Function
+;;@name read-block
+;;@param nbytes 
+;;@param :optional 
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name read-line
+;;@param :optional 
+;;@param iport 
+;;@param allow-byte-string? 
+
+;;;;;
+;;@type Function
+;;@name peek-byte
+;;@param :optional 
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name read-byte
+;;@param :optional 
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name read/ss
+;;@param :optional 
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name read-with-shared-structure
+;;@param :optional 
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name open-coding-aware-port
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name read-from-string
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name write-to-string
+;;@param obj 
+;;@param :optional 
+;;@param writer 
+
+;;;;;
+;;@type Function
+;;@name with-string-io
+;;@param str 
+;;@param thunk 
+
+;;;;;
+;;@type Function
+;;@name call-with-string-io
+;;@param str 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name with-output-to-string
+;;@param thunk 
+
+;;;;;
+;;@type Function
+;;@name with-input-from-string
+;;@param string 
+;;@param thunk 
+
+;;;;;
+;;@type Function
+;;@name call-with-output-string
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name call-with-input-string
+;;@param string 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name get-output-string
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name open-output-string
+
+;;;;;
+;;@type Function
+;;@name get-remaining-input-string
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name open-input-string
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name port-fd-dup!
+;;@param toport 
+;;@param fromport 
+
+;;;;;
+;;@type Function
+;;@name open-output-fd-port
+;;@param fd 
+;;@param :key 
+;;@param buffering 
+;;@param name 
+;;@param owner? 
+
+;;;;;
+;;@type Function
+;;@name open-input-fd-port
+;;@param fd 
+;;@param :key 
+;;@param buffering 
+;;@param name 
+;;@param owner? 
+
+;;;;;
+;;@type Function
+;;@name copy-port
+;;@param src 
+;;@param dst 
+;;@param :key 
+;;@param (unit 0) 
+;;@param (size #f) 
+
+;;;;;
+;;@type Function
+;;@name port-tell
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name port-seek
+;;@param port 
+;;@param offset 
+;;@param :optional 
+;;@param whence 
+
+;;;;;
+;;@type Function
+;;@name port-file-number
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name port-current-line
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name port-buffering
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name port-name
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name port-type
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name with-ports
+;;@param iport 
+;;@param oport 
+;;@param eport 
+;;@param thunk 
+
+;;;;;
+;;@type Function
+;;@name with-error-to-port
+;;@param port 
+;;@param thunk 
+
+;;;;;
+;;@type Function
+;;@name with-output-to-port
+;;@param port 
+;;@param thunk 
+
+;;;;;
+;;@type Function
+;;@name with-input-from-port
+;;@param port 
+;;@param thunk 
+
+;;;;;
+;;@type Function
+;;@name standard-error-port
+;;@param :optional 
+;;@param new-port 
+
+;;;;;
+;;@type Function
+;;@name standard-output-port
+;;@param :optional 
+;;@param new-port 
+
+;;;;;
+;;@type Function
+;;@name standard-input-port
+;;@param :optional 
+;;@param new-port 
+
+;;;;;
+;;@type Function
+;;@name current-error-port
+
+;;;;;
+;;@type Function
+;;@name port-closed?
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name with-port-locking
+;;@param port 
+;;@param thunk 
+
+;;;;;
+;;@type Class
+;;@name <port>
+
+;;;;;
+;;@type Function
+;;@name read-eval-print-loop
+;;@param :optional 
+;;@param reader 
+;;@param evaluator 
+;;@param printer 
+;;@param prompter 
+
+;;;;;
+;;@type Function
+;;@name condition
+;;@param type-field-binding 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name extract-condition
+;;@param condition 
+;;@param condition-type 
+
+;;;;;
+;;@type Function
+;;@name make-compound-condition
+;;@param condition0 
+;;@param condition1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name condition-ref
+;;@param condition 
+;;@param field-name 
+
+;;;;;
+;;@type Function
+;;@name condition-has-type?
+;;@param obj 
+;;@param type 
+
+;;;;;
+;;@type Function
+;;@name condition?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name make-condition
+;;@param type 
+;;@param field-name 
+;;@param value 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name make-condition-type
+;;@param name 
+;;@param parent 
+;;@param field-names 
+
+;;;;;
+;;@type Function
+;;@name condition-type?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name define-condition-type
+;;@param name 
+;;@param supertype 
+;;@param predicate 
+;;@param field-spec 
+;;@param ... 
+
+;;;;;
+;;@type Class
+;;@name <io-unit-error>
+
+;;;;;
+;;@type Class
+;;@name <io-closed-error>
+
+;;;;;
+;;@type Class
+;;@name <io-write-error>
+
+;;;;;
+;;@type Class
+;;@name <io-read-error>
+
+;;;;;
+;;@type Class
+;;@name <port-error>
+
+;;;;;
+;;@type Class
+;;@name <io-error>
+
+;;;;;
+;;@type Class
+;;@name &read-error
+
+;;;;;
+;;@type Class
+;;@name <read-error>
+
+;;;;;
+;;@type Class
+;;@name <unhandled-signal-error>
+
+;;;;;
+;;@type Class
+;;@name <system-error>
+
+;;;;;
+;;@type Class
+;;@name &error
+
+;;;;;
+;;@type Class
+;;@name <error>
+
+;;;;;
+;;@type Class
+;;@name &message
+
+;;;;;
+;;@type Class
+;;@name <message-condition>
+
+;;;;;
+;;@type Class
+;;@name <serious-compound-condition>
+
+;;;;;
+;;@type Class
+;;@name &serious
+
+;;;;;
+;;@type Class
+;;@name <serious-condition>
+
+;;;;;
+;;@type Class
+;;@name <compound-condition>
+
+;;;;;
+;;@type Class
+;;@name &condition
+
+;;;;;
+;;@type Class
+;;@name <condition>
+
+;;;;;
+;;@type Class
+;;@name <condition-meta>
+
+;;;;;
+;;@type Function
+;;@name with-exception-handler
+;;@param handler 
+;;@param thunk 
+
+;;;;;
+;;@type Function
+;;@name current-exception-handler
+
+;;;;;
+;;@type Function
+;;@name with-error-handler
+;;@param handler 
+;;@param thunk 
+
+;;;;;
+;;@type Function
+;;@name unwind-protect
+;;@param body 
+;;@param cleanup 
+
+;;;;;
+;;@type Function
+;;@name guard
+;;@param (var clause ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name raise
+;;@param condition 
+
+;;;;;
+;;@type Function
+;;@name errorf
+;;@param condition-type 
+;;@param keyword-arg 
+;;@param ... 
+;;@param fmt-string 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name errorf
+;;@param fmt-string 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name error
+;;@param condition-type 
+;;@param keyword-arg 
+;;@param ... 
+;;@param string 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name error
+;;@param string 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name promise?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name lazy
+;;@param expression 
+
+;;;;;
+;;@type Function
+;;@name values-ref
+;;@param mv-expr 
+;;@param k 
+
+;;;;;
+;;@type Function
+;;@name let/cc
+;;@param var 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name procedure-arity-includes?
+;;@param proc 
+;;@param k 
+
+;;;;;
+;;@type Function
+;;@name arity-at-least-value
+;;@param arity-at-least 
+
+;;;;;
+;;@type Function
+;;@name arity-at-least?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name arity
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name let-keywords*
+;;@param restarg 
+;;@param (var-spec ... . restvar) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name let-keywords*
+;;@param restarg 
+;;@param (var-spec ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name let-keywords
+;;@param restarg 
+;;@param (var-spec ... . restvar) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name let-keywords
+;;@param restarg 
+;;@param (var-spec ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name get-optional
+;;@param restargs 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name let-optionals*
+;;@param restargs 
+;;@param (var-spec ... . restvar) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name let-optionals*
+;;@param restargs 
+;;@param (var-spec ...) 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name every-pred
+;;@param pred 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name any-pred
+;;@param pred 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name complement
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name compose
+;;@param f 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name .$
+;;@param f 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name assoc$
+;;@param item 
+
+;;;;;
+;;@type Function
+;;@name delete$
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name every$
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name any$
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name find-tail$
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name find$
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name member$
+;;@param item 
+
+;;;;;
+;;@type Function
+;;@name partition$
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name remove$
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name filter$
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name reduce-right$
+;;@param f 
+;;@param :optional 
+;;@param ridentity 
+
+;;;;;
+;;@type Function
+;;@name reduce$
+;;@param f 
+;;@param :optional 
+;;@param ridentity 
+
+;;;;;
+;;@type Function
+;;@name fold-right$
+;;@param kons 
+;;@param :optional 
+;;@param knil 
+
+;;;;;
+;;@type Function
+;;@name fold$
+;;@param kons 
+;;@param :optional 
+;;@param knil 
+
+;;;;;
+;;@type Function
+;;@name count$
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name for-each$
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name map$
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name apply$
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name pa$
+;;@param proc 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name map*
+;;@param proc 
+;;@param tail-proc 
+;;@param list1 
+;;@param list2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name ~
+;;@param obj 
+;;@param key 
+;;@param keys 
+;;@param ... 
+
+;;;;;
+;;@type Class
+;;@name <procedure>
+
+;;;;;
+;;@type Function
+;;@name weak-vector-set!
+;;@param wvec 
+;;@param k 
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name weak-vector-ref
+;;@param wvec 
+;;@param k 
+;;@param &optioal 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name weak-vector-length
+;;@param wvec 
+
+;;;;;
+;;@type Function
+;;@name make-weak-vector
+;;@param size 
+
+;;;;;
+;;@type Class
+;;@name <weak-vector>
+
+;;;;;
+;;@type Function
+;;@name alist->tree-map
+;;@param alist 
+;;@param key=? 
+;;@param key<? 
+
+;;;;;
+;;@type Function
+;;@name tree-map->alist
+;;@param tree-map 
+
+;;;;;
+;;@type Function
+;;@name tree-map-values
+;;@param tree-map 
+
+;;;;;
+;;@type Function
+;;@name tree-map-keys
+;;@param tree-map 
+
+;;;;;
+;;@type Function
+;;@name tree-map-successor-value
+;;@param tree-map 
+;;@param probe 
+;;@param optional 
+;;@param fallback-value 
+
+;;;;;
+;;@type Function
+;;@name tree-map-predecessor-value
+;;@param tree-map 
+;;@param probe 
+;;@param optional 
+;;@param fallback-value 
+
+;;;;;
+;;@type Function
+;;@name tree-map-ceiling-value
+;;@param tree-map 
+;;@param probe 
+;;@param optional 
+;;@param fallback-value 
+
+;;;;;
+;;@type Function
+;;@name tree-map-floor-value
+;;@param tree-map 
+;;@param probe 
+;;@param optional 
+;;@param fallback-value 
+
+;;;;;
+;;@type Function
+;;@name tree-map-successor-key
+;;@param tree-map 
+;;@param probe 
+;;@param optional 
+;;@param fallback-key 
+
+;;;;;
+;;@type Function
+;;@name tree-map-predecessor-key
+;;@param tree-map 
+;;@param probe 
+;;@param optional 
+;;@param fallback-key 
+
+;;;;;
+;;@type Function
+;;@name tree-map-ceiling-key
+;;@param tree-map 
+;;@param probe 
+;;@param optional 
+;;@param fallback-key 
+
+;;;;;
+;;@type Function
+;;@name tree-map-floor-key
+;;@param tree-map 
+;;@param probe 
+;;@param optional 
+;;@param fallback-key 
+
+;;;;;
+;;@type Function
+;;@name tree-map-successor
+;;@param tree-map 
+;;@param probe 
+;;@param :optional 
+;;@param fallback-key 
+;;@param fallback-value 
+
+;;;;;
+;;@type Function
+;;@name tree-map-predecessor
+;;@param tree-map 
+;;@param probe 
+;;@param :optional 
+;;@param fallback-key 
+;;@param fallback-value 
+
+;;;;;
+;;@type Function
+;;@name tree-map-ceiling
+;;@param tree-map 
+;;@param probe 
+;;@param :optional 
+;;@param fallback-key 
+;;@param fallback-value 
+
+;;;;;
+;;@type Function
+;;@name tree-map-floor
+;;@param tree-map 
+;;@param probe 
+;;@param :optional 
+;;@param fallback-key 
+;;@param fallback-value 
+
+;;;;;
+;;@type Function
+;;@name tree-map-for-each
+;;@param tree-map 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name tree-map-map
+;;@param tree-map 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name tree-map-fold-right
+;;@param tree-map 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name tree-map-fold
+;;@param tree-map 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name tree-map-pop-max!
+;;@param tree-map 
+
+;;;;;
+;;@type Function
+;;@name tree-map-pop-min!
+;;@param tree-map 
+
+;;;;;
+;;@type Function
+;;@name tree-map-max
+;;@param tree-map 
+
+;;;;;
+;;@type Function
+;;@name tree-map-min
+;;@param tree-map 
+
+;;;;;
+;;@type Function
+;;@name tree-map-pop!
+;;@param tree-map 
+;;@param key 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name tree-map-push!
+;;@param tree-map 
+;;@param key 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name tree-map-update!
+;;@param tree-map 
+;;@param key 
+;;@param proc 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name tree-map-clear!
+;;@param tree-map 
+
+;;;;;
+;;@type Function
+;;@name tree-map-delete!
+;;@param tree-map 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name tree-map-put!
+;;@param tree-map 
+;;@param key 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name tree-map-get
+;;@param tree-map 
+;;@param key 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name tree-map-exists?
+;;@param tree-map 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name tree-map-num-entries
+;;@param tree-map 
+
+;;;;;
+;;@type Function
+;;@name tree-map-empty?
+;;@param tree-map 
+
+;;;;;
+;;@type Function
+;;@name tree-map-copy
+;;@param tree-map 
+
+;;;;;
+;;@type Function
+;;@name make-tree-map
+;;@param key=? 
+;;@param key<? 
+
+;;;;;
+;;@type Class
+;;@name <tree-map>
+
+;;;;;
+;;@type Function
+;;@name hash-table-values
+;;@param ht 
+
+;;;;;
+;;@type Function
+;;@name hash-table-keys
+;;@param ht 
+
+;;;;;
+;;@type Function
+;;@name hash-table-fold
+;;@param ht 
+;;@param kons 
+;;@param knil 
+
+;;;;;
+;;@type Function
+;;@name hash-table-map
+;;@param ht 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name hash-table-for-each
+;;@param ht 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name hash-table-update!
+;;@param ht 
+;;@param key 
+;;@param proc 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name hash-table-pop!
+;;@param ht 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name hash-table-push!
+;;@param ht 
+;;@param key 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name hash-table-clear!
+;;@param ht 
+
+;;;;;
+;;@type Function
+;;@name hash-table-delete!
+;;@param ht 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name hash-table-exists?
+;;@param ht 
+;;@param key 
+
+;;;;;
+;;@type Method
+;;@name ref
+;;@param (ht <hash-table>) 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name hash-table-put!
+;;@param ht 
+;;@param key 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name hash-table-get
+;;@param ht 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name hash-table
+;;@param type 
+;;@param key&value 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name hash-table-num-entries
+;;@param ht 
+
+;;;;;
+;;@type Function
+;;@name hash-table-type
+;;@param ht 
+
+;;;;;
+;;@type Function
+;;@name hash-table?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name eqv-hash
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name eq-hash
+;;@param obj 
+
+;;;;;
+;;@type Method
+;;@name object-hash
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name hash
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name make-hash-table
+;;@param :optional 
+;;@param type 
+
+;;;;;
+;;@type Class
+;;@name <hash-table>
+
+;;;;;
+;;@type Function
+;;@name vector-copy
+;;@param vector 
+;;@param :optional 
+;;@param start 
+;;@param end 
+;;@param fill 
+
+;;;;;
+;;@type Class
+;;@name <vector>
+
+;;;;;
+;;@type Function
+;;@name regexp-unparse
+;;@param ast 
+;;@param :key 
+;;@param (on-error error) 
+
+;;;;;
+;;@type Function
+;;@name regexp-ast
+;;@param regexp 
+
+;;;;;
+;;@type Function
+;;@name regexp-compile
+;;@param ast 
+
+;;;;;
+;;@type Function
+;;@name regexp-optimize
+;;@param ast 
+
+;;;;;
+;;@type Function
+;;@name regexp-parse
+;;@param string 
+;;@param :key 
+;;@param case-fold 
+
+;;;;;
+;;@type Function
+;;@name rxmatch-case
+;;@param string-expr 
+;;@param clause 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name rxmatch-cond
+;;@param clause 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name rxmatch-if
+;;@param match-expr 
+;;@param (var ...) 
+;;@param then-form 
+;;@param else-form 
+
+;;;;;
+;;@type Function
+;;@name rxmatch-let
+;;@param match-expr 
+;;@param (var ...) 
+;;@param form 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name regexp-quote
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name regexp-replace-all*
+;;@param string 
+;;@param rx1 
+;;@param sub1 
+;;@param rx2 
+;;@param sub2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name regexp-replace*
+;;@param string 
+;;@param rx1 
+;;@param sub1 
+;;@param rx2 
+;;@param sub2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name regexp-replace-all
+;;@param regexp 
+;;@param string 
+;;@param substitution 
+
+;;;;;
+;;@type Function
+;;@name regexp-replace
+;;@param regexp 
+;;@param string 
+;;@param substitution 
+
+;;;;;
+;;@type Function
+;;@name rxmatch->string
+;;@param regexp 
+;;@param string 
+;;@param :optional 
+;;@param selector 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name rxmatch-before
+;;@param match 
+;;@param :optional 
+;;@param (i 0) 
+
+;;;;;
+;;@type Function
+;;@name rxmatch-after
+;;@param match 
+;;@param :optional 
+;;@param (i 0) 
+
+;;;;;
+;;@type Function
+;;@name rxmatch-num-matches
+;;@param match 
+
+;;;;;
+;;@type Function
+;;@name rxmatch-substring
+;;@param match 
+;;@param :optional 
+;;@param (i 0) 
+
+;;;;;
+;;@type Function
+;;@name rxmatch-end
+;;@param match 
+;;@param :optional 
+;;@param (i 0) 
+
+;;;;;
+;;@type Function
+;;@name rxmatch-start
+;;@param match 
+;;@param :optional 
+;;@param (i 0) 
+
+;;;;;
+;;@type Function
+;;@name rxmatch
+;;@param regexp 
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name regexp->string
+;;@param regexp 
+
+;;;;;
+;;@type Function
+;;@name regexp?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name string->regexp
+;;@param string 
+;;@param :key 
+;;@param case-fold 
+
+;;;;;
+;;@type Class
+;;@name <regmatch>
+
+;;;;;
+;;@type Class
+;;@name <regexp>
+
+;;;;;
+;;@type Function
+;;@name string-incomplete->complete
+;;@param str 
+;;@param :optional 
+;;@param handling 
+
+;;;;;
+;;@type Function
+;;@name string-split
+;;@param string 
+;;@param splitter 
+
+;;;;;
+;;@type Function
+;;@name string-scan
+;;@param string 
+;;@param item 
+;;@param :optional 
+;;@param return 
+
+;;;;;
+;;@type Function
+;;@name string-join
+;;@param strs 
+;;@param :optional 
+;;@param delim 
+;;@param grammer 
+
+;;;;;
+;;@type Function
+;;@name string-fill!
+;;@param string 
+;;@param char 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-byte-set!
+;;@param string 
+;;@param k 
+;;@param byte 
+
+;;;;;
+;;@type Function
+;;@name string-byte-ref
+;;@param string 
+;;@param k 
+
+;;;;;
+;;@type Function
+;;@name string-size
+;;@param string 
+
+;;;;;
+;;@type Method
+;;@name x->string
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name make-byte-string
+;;@param k 
+;;@param :optional 
+;;@param byte 
+
+;;;;;
+;;@type Function
+;;@name string-incomplete?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name string-immutable?
+;;@param obj 
+
+;;;;;
+;;@type Class
+;;@name <string>
+
+;;;;;
+;;@type Function
+;;@name char-set-copy
+;;@param char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set
+;;@param char 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-contains?
+;;@param char-set 
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-set?
+;;@param obj 
+
+;;;;;
+;;@type Class
+;;@name <char-set>
+
+;;;;;
+;;@type Function
+;;@name supported-character-encodings
+
+;;;;;
+;;@type Function
+;;@name gauche-character-encoding
+
+;;;;;
+;;@type Function
+;;@name integer->digit
+;;@param integer 
+;;@param :optional 
+;;@param (radix 10) 
+
+;;;;;
+;;@type Function
+;;@name digit->integer
+;;@param char 
+;;@param :optional 
+;;@param (radix 10) 
+
+;;;;;
+;;@type Function
+;;@name char-foldcase
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-titlecase
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name ucs->char
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name char->ucs
+;;@param char 
+
+;;;;;
+;;@type Class
+;;@name <char>
+
+;;;;;
+;;@type Function
+;;@name identifier->symbol
+;;@param identifier 
+
+;;;;;
+;;@type Function
+;;@name identifier?
+;;@param obj 
+
+;;;;;
+;;@type Class
+;;@name <identifier>
+
+;;;;;
+;;@type Function
+;;@name delete-keywords!
+;;@param keys 
+;;@param kv-list 
+
+;;;;;
+;;@type Function
+;;@name delete-keywords
+;;@param keys 
+;;@param kv-list 
+
+;;;;;
+;;@type Function
+;;@name delete-keyword!
+;;@param key 
+;;@param kv-list 
+
+;;;;;
+;;@type Function
+;;@name delete-keyword
+;;@param key 
+;;@param kv-list 
+
+;;;;;
+;;@type Function
+;;@name get-keyword*
+;;@param key 
+;;@param kv-list 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name get-keyword
+;;@param key 
+;;@param kv-list 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name keyword->string
+;;@param keyword 
+
+;;;;;
+;;@type Function
+;;@name make-keyword
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name keyword?
+;;@param obj 
+
+;;;;;
+;;@type Class
+;;@name <keyword>
+
+;;;;;
+;;@type Function
+;;@name symbol-sans-prefix
+;;@param symbol 
+;;@param prefix 
+
+;;;;;
+;;@type Function
+;;@name gensym
+;;@param :optional 
+;;@param prefix 
+
+;;;;;
+;;@type Function
+;;@name string->uninterned-symbol
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name symbol-interned?
+;;@param symbol 
+
+;;;;;
+;;@type Class
+;;@name <symbol>
+
+;;;;;
+;;@type Function
+;;@name reverse!
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name append!
+;;@param list 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name last-pair
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name list-copy
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name list*
+;;@param obj1 
+;;@param obj2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name make-list
+;;@param len 
+;;@param :optional 
+;;@param fill 
+
+;;;;;
+;;@type Function
+;;@name acons
+;;@param obj1 
+;;@param obj2 
+;;@param obj3 
+
+;;;;;
+;;@type Class
+;;@name <pair>
+
+;;;;;
+;;@type Class
+;;@name <null>
+
+;;;;;
+;;@type Class
+;;@name <list>
+
+;;;;;
+;;@type Function
+;;@name undefined
+
+;;;;;
+;;@type Function
+;;@name undefined?
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name boolean
+;;@param obj 
+
+;;;;;
+;;@type Class
+;;@name <boolean>
+
+;;;;;
+;;@type Function
+;;@name native-endian
+
+;;;;;
+;;@type Parameter
+;;@name default-endian
+
+;;;;;
+;;@type Function
+;;@name integer-length
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name logcount
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name copy-bit-field
+;;@param n 
+;;@param start 
+;;@param end 
+;;@param from 
+
+;;;;;
+;;@type Function
+;;@name copy-bit
+;;@param index 
+;;@param n 
+;;@param bit 
+
+;;;;;
+;;@type Function
+;;@name bit-field
+;;@param n 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name logbit?
+;;@param index 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name logtest
+;;@param n1 
+;;@param n2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name lognot
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name logxor
+;;@param n1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name logior
+;;@param n1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name logand
+;;@param n1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name ash
+;;@param n 
+;;@param count 
+
+;;;;;
+;;@type Method
+;;@name x->integer
+;;@param obj 
+
+;;;;;
+;;@type Method
+;;@name x->number
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name ldexp
+;;@param x 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name frexp
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name modf
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name fmod
+;;@param x 
+;;@param y 
+
+;;;;;
+;;@type Function
+;;@name decode-float
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name least-fixnum
+
+;;;;;
+;;@type Function
+;;@name greatest-fixnum
+
+;;;;;
+;;@type Function
+;;@name fixnum-width
+
+;;;;;
+;;@type Function
+;;@name atanh
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name acosh
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name asinh
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name tanh
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name cosh
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name sinh
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name clamp
+;;@param x 
+;;@param :optional 
+;;@param min 
+;;@param max 
+
+;;;;;
+;;@type Function
+;;@name round->exact
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name truncate->exact
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name ceiling->exact
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name floor->exact
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name quotient&remainder
+;;@param n1 
+;;@param n2 
+
+;;;;;
+;;@type Function
+;;@name /.
+;;@param z1 
+;;@param z2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name -.
+;;@param z1 
+;;@param z2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name +.
+;;@param z 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name min&max
+;;@param x1 
+;;@param x2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name bignum?
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name fixnum?
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name nan?
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name infinite?
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name finite?
+;;@param z 
+
+;;;;;
+;;@type Class
+;;@name <integer>
+
+;;;;;
+;;@type Class
+;;@name <rational>
+
+;;;;;
+;;@type Class
+;;@name <real>
+
+;;;;;
+;;@type Class
+;;@name <complex>
+
+;;;;;
+;;@type Class
+;;@name <number>
+
+;;;;;
+;;@type Method
+;;@name object-equal?
+;;@param obj1 
+;;@param obj2 
+

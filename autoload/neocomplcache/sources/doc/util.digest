@@ -1,0 +1,19 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name digest-hexify
+;;@param digest-result 
+
+;;;;;
+;;@type Class
+;;@name <message-digest-algorithm>
+
+;;;;;
+;;@type Class
+;;@name <message-digest-algorithm-meta>
+

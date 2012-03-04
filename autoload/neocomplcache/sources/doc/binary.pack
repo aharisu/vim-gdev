@@ -1,0 +1,35 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name make-packer
+;;@param template 
+
+;;;;;
+;;@type Function
+;;@name unpack-skip
+;;@param template 
+;;@param :key 
+;;@param :input 
+
+;;;;;
+;;@type Function
+;;@name unpack
+;;@param template 
+;;@param :key 
+;;@param :input 
+;;@param :from-string 
+
+;;;;;
+;;@type Function
+;;@name pack
+;;@param template 
+;;@param list 
+;;@param :key 
+;;@param :output 
+;;@param :to-string? 
+

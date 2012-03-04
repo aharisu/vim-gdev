@@ -1,0 +1,23 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name make-text-progress-bar
+;;@param :key 
+;;@param header 
+;;@param header-width 
+;;@param bar-char 
+;;@param bar-width 
+;;@param num-width 
+;;@param num-format 
+;;@param time-width 
+;;@param info 
+;;@param info-width 
+;;@param separator-char 
+;;@param max-value 
+;;@param port 
+

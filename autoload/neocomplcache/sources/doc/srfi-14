@@ -1,0 +1,368 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type var
+;;@name char-set:full
+
+;;;;;
+;;@type var
+;;@name char-set:empty
+
+;;;;;
+;;@type var
+;;@name char-set:ascii
+
+;;;;;
+;;@type var
+;;@name char-set:symbol
+
+;;;;;
+;;@type var
+;;@name char-set:whitespace
+
+;;;;;
+;;@type var
+;;@name char-set:punctuation
+
+;;;;;
+;;@type var
+;;@name char-set:printing
+
+;;;;;
+;;@type var
+;;@name char-set:title-case
+
+;;;;;
+;;@type var
+;;@name char-set:upper-case
+
+;;;;;
+;;@type var
+;;@name char-set:lower-case
+
+;;;;;
+;;@type var
+;;@name char-set:graphic
+
+;;;;;
+;;@type var
+;;@name char-set:hex-digit
+
+;;;;;
+;;@type var
+;;@name char-set:digit
+
+;;;;;
+;;@type var
+;;@name char-set:iso-control
+
+;;;;;
+;;@type var
+;;@name char-set:blank
+
+;;;;;
+;;@type var
+;;@name char-set:letter
+
+;;;;;
+;;@type Function
+;;@name char-set-diff+intersection!
+;;@param char-set1 
+;;@param char-set2 
+;;@param char-set3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-diff+intersection
+;;@param char-set1 
+;;@param char-set2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-xor!
+;;@param char-set1 
+;;@param char-set2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-xor
+;;@param char-set 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-difference!
+;;@param char-set1 
+;;@param char-set2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-difference
+;;@param char-set1 
+;;@param char-set2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-intersection!
+;;@param char-set1 
+;;@param char-set2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-intersection
+;;@param char-set 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-union!
+;;@param char-set1 
+;;@param char-set2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-union
+;;@param char-set 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-complement!
+;;@param char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set-complement
+;;@param char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set-delete!
+;;@param char-set 
+;;@param char1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-delete
+;;@param char-set 
+;;@param char1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-adjoin!
+;;@param char-set 
+;;@param char1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set-adjoin
+;;@param char-set 
+;;@param char1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set->string
+;;@param char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set->list
+;;@param char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set-count
+;;@param pred 
+;;@param char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set-any
+;;@param pred 
+;;@param char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set-every
+;;@param pred 
+;;@param char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set-size
+;;@param char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set-map
+;;@param proc 
+;;@param char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set-for-each
+;;@param proc 
+;;@param char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set-unfold!
+;;@param pred 
+;;@param fun 
+;;@param gen 
+;;@param seed 
+;;@param base-char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set-unfold
+;;@param pred 
+;;@param fun 
+;;@param gen 
+;;@param seed 
+;;@param :optional 
+;;@param base-char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set-fold
+;;@param kons 
+;;@param knil 
+;;@param char-set 
+
+;;;;;
+;;@type Function
+;;@name end-of-char-set?
+;;@param ccursor 
+
+;;;;;
+;;@type Function
+;;@name char-set-cursor-next
+;;@param char-set 
+;;@param cursor 
+
+;;;;;
+;;@type Function
+;;@name char-set-ref
+;;@param char-set 
+;;@param cursor 
+
+;;;;;
+;;@type Function
+;;@name char-set-cursor
+;;@param char-set 
+
+;;;;;
+;;@type Function
+;;@name char-set-hash
+;;@param char-set 
+;;@param :optional 
+;;@param bound 
+
+;;;;;
+;;@type Function
+;;@name char-set<=
+;;@param char-set1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-set=
+;;@param char-set1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name ->char-set
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name integer-range->char-set!
+;;@param lower 
+;;@param upper 
+;;@param error? 
+;;@param base-cs 
+
+;;;;;
+;;@type Function
+;;@name integer-range->char-set
+;;@param lower 
+;;@param upper 
+;;@param :optional 
+;;@param error? 
+;;@param base-cs 
+
+;;;;;
+;;@type Function
+;;@name ucs-range->char-set!
+;;@param lower 
+;;@param upper 
+;;@param error? 
+;;@param base-cs 
+
+;;;;;
+;;@type Function
+;;@name ucs-range->char-set
+;;@param lower 
+;;@param upper 
+;;@param :optional 
+;;@param error? 
+;;@param base-cs 
+
+;;;;;
+;;@type Function
+;;@name char-set-filter!
+;;@param pred 
+;;@param char-set 
+;;@param base-cs 
+
+;;;;;
+;;@type Function
+;;@name char-set-filter
+;;@param pred 
+;;@param char-set 
+;;@param :optional 
+;;@param base-cs 
+
+;;;;;
+;;@type Function
+;;@name string->char-set!
+;;@param s 
+;;@param base-cs 
+
+;;;;;
+;;@type Function
+;;@name string->char-set
+;;@param s 
+;;@param :optional 
+;;@param base-cs 
+
+;;;;;
+;;@type Function
+;;@name list->char-set!
+;;@param char-list 
+;;@param base-cs 
+
+;;;;;
+;;@type Function
+;;@name list->char-set
+;;@param char-list 
+;;@param :optional 
+;;@param base-cs 
+

@@ -1,0 +1,35 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+  
+;;;;;
+;;@type Function
+;;@name localized-template
+;;@param package-name 
+;;@param message-template-name 
+
+;;;;;
+;;@type Function
+;;@name load-bundle!
+;;@param bundle-specifier 
+
+;;;;;
+;;@type Function
+;;@name declare-bundle!
+;;@param bundle-specifier 
+;;@param association-list 
+
+;;;;;
+;;@type Parameter
+;;@name current-locale-details
+
+;;;;;
+;;@type Parameter
+;;@name current-country
+
+;;;;;
+;;@type Parameter
+;;@name current-language
+
