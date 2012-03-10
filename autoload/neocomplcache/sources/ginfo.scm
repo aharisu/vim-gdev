@@ -51,7 +51,7 @@
 (define ignore-geninfo-warning? (make-parameter #f))
 
 (define (guarded-read :optional (port (current-input-port)))
-  (guard (exc [(<read-error> exc) (guarded-read)])
+  (guard (exc [(or (<read-error> exc) (<error> exc)) (guarded-read)])
     (read port)))
 
 
@@ -1078,7 +1078,8 @@
 ;;ドキュメントと関連するものとして解析を行う
 (define (parse-expression config unit doc)
   (let1 org-fp (port-seek (current-input-port) 0 SEEK_CUR)
-    (guard (exc ([<read-error> exc] (return-from-read-exception org-fp)))
+    (guard (exc ((or [<read-error> exc] [<error> exc])
+                 (return-from-read-exception org-fp)))
       (let ([exp (read)])
         (unless (get-config config 'skip-relative) 
           (if (analyzable? exp)

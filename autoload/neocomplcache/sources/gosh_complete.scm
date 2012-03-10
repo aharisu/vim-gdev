@@ -111,7 +111,7 @@
 (define module-extend-table (make-hash-table 'equal?))
 
 (define (guarded-read :optional (port (current-input-port)))
-  (guard (exc [(<read-error> exc) (guarded-read)])
+  (guard (exc [(or (<read-error> exc) (<error> exc)) (guarded-read)])
     (read port)))
 
 (define (load-info loader name update?)
