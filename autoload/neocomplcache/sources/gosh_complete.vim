@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: gosh_complete.vim
 " AUTHOR:  aharisu <foo.yobina@gmail.com>
-" Last Modified: 04 Mar 2012.
+" Last Modified: 10 Mar 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -39,7 +39,7 @@ let s:gosh_generated_doc_path = escape(s:neocom_sources_directory . '/doc',  ' \
 let s:async_task_queue = []
 
 let s:default_module_order = []
-let s:docinfo_table = {}
+
 
 "5 seconds
 let s:async_task_timeout = 5
@@ -74,7 +74,9 @@ endfunction"}}}
 function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str)"{{{
   if s:check_buffer_init()
     "It is not necessary to copy?
-    return neocomplcache#keyword_filter(copy(b:word_list), a:cur_keyword_str)
+    return neocomplcache#keyword_filter(
+          \ copy(gosh_complete#get_buf_data(bufnr('%'), 'words', []))
+          \ ,a:cur_keyword_str)
   else
     return []
   endif
@@ -89,13 +91,6 @@ function! neocomplcache#sources#gosh_complete#define()"{{{
 endfunction "}}}
 
 function! s:check_buffer_init()"{{{
-  if !exists('b:word_list')
-    let b:word_list = []
-  endif
-
-  if !exists('b:buf_name')
-    let b:buf_name = s:cur_buf_filepath()
-  endif
 
   if !exists('b:prev_parse_tick')
     let b:prev_parse_tick = b:changedtick
@@ -138,51 +133,45 @@ function! s:initialize_buffer()"{{{
 
   call s:check_buffer_init()
 
-  if !has_key(s:docinfo_table, s:constract_docname(bufnr('%'), b:buf_name))
-    call s:parse_cur_buf(0)
-  endif
+  call s:parse_cur_buf(0)
 endfunction"}}}
 
 function! s:add_doc(docs)"{{{
   for doc in a:docs
-    "             doc[name]
-    let docname = doc['n']
-    let word_list = s:units_to_word_list(docname, get(doc, 'units', []))
-
-    if has_key(s:docinfo_table, docname)
-      let info = s:docinfo_table[docname]
-      let info['words'] = word_list
-      let info['extend'] = get(doc, 'extend', [])
-    else
-      let s:docinfo_table[docname] = {
-            \ 'words' : word_list,
-            \ 'extend' : get(doc, 'extend', [])
-            \ }
-    endif
+    call gosh_complete#add_doc(doc['n']
+          \ ,get(doc, 'units', [])
+          \ ,get(doc, 'extend', []))
   endfor
-endfunction
+endfunction "}}}
 
-function! s:units_to_word_list(docname, units) "{{{
+function! s:set_module_order(order)"{{{
+  let order = copy(s:default_module_order)
+  call extend(order, a:order)
+
+  call gosh_complete#set_module_order(bufnr('%'), order)
+endfunction"}}}
+
+function! s:constract_word_list()"{{{
+  " get all unit
+  let units = gosh_complete#match_unit_in_order(bufnr('%'), '', 0)
+
+  " unit to completion word
+  let word_list = s:units_to_word_list(units)
+
+  " register word list
+  call gosh_complete#set_buf_data(bufnr('%'), 'words', word_list)
+endfunction"}}}
+
+function! s:units_to_word_list(units) "{{{
   let table = {}
 
   for u in a:units
     "          u[name]
     let name = u['n']
 
-    if has_key(table, name)
-      let word = table[name]
-
-      if empty(word['info'])
-        let word['info'] = s:get_unit_info(u)
-      else
-        let word['info'] .= "\nAlt: " . s:get_unit_info(u)
-      endif
-    else
-      let table[name] = {'word' : name,
-            \ 'menu' : s:get_unit_menu(a:docname),
-            \ 'kind' : s:get_unit_type_kind(u['t']),
-            \ 'info' : s:get_unit_info(u)}
-    endif
+    let table[name] = {'word' : name,
+          \ 'menu' : s:get_unit_menu(u['docname']),
+          \ 'kind' : s:get_unit_type_kind(u['t'])}
   endfor
 
   return values(table)
@@ -214,51 +203,6 @@ function! s:get_unit_menu(module)"{{{
   return text
 endfunction"}}}
 
-function! s:get_unit_info(unit)"{{{
-  "          a:unit[type]
-  let type = a:unit["t"] 
-  if type ==# 'F' || type ==# 'Method' || type ==# 'Macro'
-    "                a:unit[name]
-    let info = "(" . a:unit["n"] 
-    "                     a:unit[params] v:val[name]
-    let params = join(map(get(a:unit, 'p', []), 'v:val["n"]'), ' ')
-    if !empty(params)
-      let info .= " " . params
-    endif
-    let info .= ")"
-  elseif type ==# 'Class'
-    "                                         a:unit[slot]
-    let info = a:unit["n"] . " :" . join(map(get(a:unit, 's', []), 'v:val["n"]'), ' :')
-  else
-    let info = a:unit["n"]
-  endif
-    
-  return info
-endfunction"}}}
-"}}}
-
-function! s:constract_word_list(order)"{{{
-  let table = {}
-
-  call s:add_word_list_in_order(table, s:default_module_order)
-  call s:add_word_list_in_order(table, a:order)
-
-  let b:word_list = values(table)
-endfunction"}}}
-
-function! s:add_word_list_in_order(table, order)"{{{
-
-  for docname in a:order
-    if !has_key(s:docinfo_table, docname)
-      continue
-    endif
-
-    let info = s:docinfo_table[docname]
-    for word in info['words']
-      let a:table[word['word']] = word
-    endfor
-  endfor
-endfunction"}}}
 
 "
 " Communicate to gosh-complete.scm
@@ -275,9 +219,9 @@ endfunction
 
 function s:get_loaded_module_text()"{{{
   let text = ''
-  for [name, doc] in items(s:docinfo_table)
+  for [name, extend] in items(gosh_complete#get_loaded_module())
     let text .= ' --loaded-module="' . s:get_loaded_module_name(name)
-    for module in doc['extend']
+    for module in extend
       let text .= ' ' . module
     endfor
     let text .= '"'
@@ -318,9 +262,7 @@ function! s:load_default_module_end_callback(out, err)
     let result = eval(a:out)
 
     let s:default_module_order = result['order']
-
     call s:add_doc(result['docs'])
-    call s:constract_word_list([])
   endif
 endfunction"}}}
 
@@ -388,8 +330,11 @@ function! s:parse_cur_buf_end_callback(out, err)
   if !empty(a:out)
     let result = eval(a:out)
 
+
     call s:add_doc(result['docs'])
-    call s:constract_word_list(result['order'])
+    call s:set_module_order(result['order'])
+
+    call s:constract_word_list()
   endif
 endfunction"}}}
 
