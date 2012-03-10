@@ -233,10 +233,6 @@ function! s:get_unit_info(unit)"{{{
     let info = a:unit["n"]
   endif
     
-  if !empty(get(a:unit, 'd', ''))
-    let info .= "\n" . get(a:unit, 'd', '')
-  endif
-
   return info
 endfunction"}}}
 "}}}
@@ -272,6 +268,7 @@ function! s:init_proc()"{{{
         \ . ' -I' . escape(s:neocom_sources_directory, ' \') . ' '
         \ . s:gosh_complete_path
         \ . " --generated-doc-directory=" . s:gosh_generated_doc_path
+        \ . " --output-api-only"
         \ . " --io-encoding=\"" . s:encoding() . "\""
         \ . s:get_loaded_module_text())
 endfunction

@@ -48,6 +48,8 @@
     [(_ text)
      (or output-full-member (not (string-null? text)))]))
 
+(define output-api-only #f)
+
 ;;---------------------
 ;;Functions related to print
 ;;---------------------
@@ -244,16 +246,20 @@
         (string-append
           ;; n is name
           "{\"n\":\"" (param-name p) "\""
-          (let1 desc (make-description (param-description p))
-            (if (output? desc)
-              ;; d is description
-              (string-append ",\"d\":\"" desc "\"")
-              ""))
-          (let1 accept (make-list-text (param-acceptable p))
-            (if (output? accept)
-              ;; a is accept
-              (string-append",\"a\":[" accept "]")
-              ""))
+          (if output-api-only
+            ""
+            (let1 desc (make-description (param-description p))
+              (if (output? desc)
+                ;; d is description
+                (string-append ",\"d\":\"" desc "\"")
+                "")))
+          (if output-api-only
+            ""
+            (let1 accept (make-list-text (param-acceptable p))
+              (if (output? accept)
+                ;; a is accept
+                (string-append",\"a\":[" accept "]")
+                "")))
           "}"))
       params)
     ","))
@@ -268,10 +274,12 @@
                  ;; n is name
                  ",\"n\":\"" (ref unit 'name) "\""
                  ;; d is description
-                 (let1 desc (make-description (ref unit 'description))
-                   (if (output? desc)
-                     (string-append ",\"d\":\"" desc "\"")
-                     ""))
+                 (if output-api-only
+                   ""
+                   (let1 desc (make-description (ref unit 'description))
+                     (if (output? desc)
+                       (string-append ",\"d\":\"" desc "\"")
+                       "")))
                  )))
 
 (define-method output ((c <json-context>) (unit <unit-proc>))
@@ -283,10 +291,12 @@
                      (string-append ",\"p\":[" param "]")
                      ""))
                  ;; r is return
-                 (let1 return (make-description (ref unit 'return))
-                   (if (output? return)
-                     (string-append ",\"r\":\"" return "\"")
-                     ""))))
+                 (if output-api-only
+                   ""
+                   (let1 return (make-description (ref unit 'return))
+                     (if (output? return)
+                       (string-append ",\"r\":\"" return "\"")
+                       "")))))
   )
 
 (define-method output ((c <json-context>) (unit <unit-class>))
@@ -464,6 +474,8 @@
                                    (map string->symbol (cdr modules)))))))]
      [#f "output-full-member"
       => (lambda () (set! output-full-member #t))]
+     [#f "output-api-only"
+      => (lambda () (set! output-api-only #t))]
      [#f "io-encoding=s"
       => (lambda (opt) 
            (let1 opt (string-downcase (string-trim-both opt))
