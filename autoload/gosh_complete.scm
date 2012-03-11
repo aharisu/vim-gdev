@@ -41,7 +41,7 @@
 (ignore-geninfo-warning? #t)
 
 (define-constant default-module '(gauche scheme null))
-(define generated-doc-directory #f)
+(define generated-doc-directory "./doc")
 (define output-full-member #f)
 (define-syntax output?
   (syntax-rules ()
@@ -107,8 +107,20 @@
 ;;---------------------
 ;;Functions related to load doccument
 ;;---------------------
-(define loaded-doc-names  '())
-(define module-extend-table (make-hash-table 'equal?))
+(define loaded-doc-table (make-hash-table 'equal?))
+
+(define (add-loaded-module module :optional name)
+  (let ([name (if (undefined? name) module name)]
+        [doc (geninfo (if (symbol? module)
+                        (alt-geninfo-file module)
+                        module))])
+    (slot-set! doc 'name name)
+    (hash-table-put! loaded-doc-table name doc)))
+
+(define (get-module-extend name)
+  (cond
+    [(hash-table-get loaded-doc-table name #f) => (cut ref <> 'extend)]
+    [else '()]))
 
 (define (guarded-read :optional (port (current-input-port)))
   (guard (exc [(or (<read-error> exc) (<error> exc)) (guarded-read)])
@@ -116,17 +128,12 @@
 
 (define (load-info loader name update?)
   (guard (e [else '()]) ;catch all error
-    (let1 loaded? (any (cut equal? <> name) loaded-doc-names)
+    (let1 loaded? (hash-table-exists? loaded-doc-table name)
       (if (or update? (not loaded?))
         (let1 doc (loader)
           ;;overwrite document name
           (slot-set! doc 'name name)
-          ;;store loaded document name
-          (when (not loaded?) 
-            (set! loaded-doc-names (cons name loaded-doc-names)))
-          ;;store module extend list
-          (unless (null? (ref doc 'extend))
-            (hash-table-put! module-extend-table name (ref doc 'extend)))
+          (hash-table-put! loaded-doc-table name doc)
           (cons
             (cons name doc)
             (fold
@@ -138,14 +145,14 @@
               (ref doc 'extend))))
         (cons
           (cons name #f)
-          (let loop ([extend (hash-table-get module-extend-table name '())]
+          (let loop ([extend (get-module-extend name)]
                      [acc '()])
             (if (null? extend)
               acc
               (loop (cdr extend)
                     (append
                       (cons (cons (car extend) #f) acc)
-                      (loop (hash-table-get module-extend-table (car extend) '())
+                      (loop (get-module-extend (car extend)) 
                             '()))))))
         ))))
 
@@ -315,14 +322,6 @@
 (define-method output ((c <json-context>) (doc <doc>))
   (display-std (string-append
                  "\"n\":\"" (x->string (ref doc 'name)) "\""
-                 (let1 extend (string-join 
-                                  (map 
-                                    (lambda (mod) (string-append "\"" (symbol->string mod) "\""))
-                                    (ref doc 'extend))
-                                  ",")
-                   (if (output? extend)
-                     (string-append ",\"extend\":[" extend "]")
-                     ""))
                  ",\"units\":"))
   (output-unit-list (ref doc 'units)))
 
@@ -461,17 +460,17 @@
 
 (define (main args)
   (let-args (cdr args)
-    ([gdd "generated-doc-directory=s" "./doc"]
-     [#f "loaded-module=s" 
+    ([#f "generated-doc-directory=s" 
+      (lambda (opt) (set! generated-doc-directory (string-trim-both opt)))]
+     [#f "load-module=s" 
       => (lambda (opt)
-           (let1 modules (string-split opt #[\s])
-             (when (null? modules) (errorf "invalid format.[~s]" opt))
-             (let1 module (convert-token (car modules))
-               (set! loaded-doc-names (cons  module loaded-doc-names))
-               (unless (null? (cdr modules))
-                 (hash-table-put!  module-extend-table
-                                   module
-                                   (map string->symbol (cdr modules)))))))]
+           (let1 opt (string-trim-both opt)
+             (unless (string-null? opt)
+               (let1 module (string-split opt #[\s])
+                 (add-loaded-module (convert-token (car module))
+                                    (if (null? (cdr module))
+                                      (undefined)
+                                      (cadr module)))))))]
      [#f "output-full-member"
       => (lambda () (set! output-full-member #t))]
      [#f "output-api-only"
@@ -486,7 +485,6 @@
                 (set! out-conv (lambda (s) (ces-convert s (gauche-character-encoding) opt)))]
                [else (errorf "invalid encoding.[~s]" opt)])))]
      . args)
-    (set! generated-doc-directory gdd) 
     (unwind-protect
       (begin
         (let loop ([line (in-conv (read-line))])

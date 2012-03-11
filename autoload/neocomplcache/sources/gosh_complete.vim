@@ -119,7 +119,7 @@ function! s:constract_docname(bufnum, bufname)"{{{
   if empty(a:bufname)
     return '#' . a:bufnum . '[No Name]'
   else
-    return a:bufname
+    return '#' . a:bufnum . a:bufname
   endif
 endfunction"}}}
 
@@ -136,8 +136,7 @@ endfunction"}}}
 function! s:add_doc(docs)"{{{
   for doc in a:docs
     call gosh_complete#add_doc(doc['n']
-          \ ,get(doc, 'units', [])
-          \ ,get(doc, 'extend', []))
+          \ ,get(doc, 'units', []))
   endfor
 endfunction "}}}
 

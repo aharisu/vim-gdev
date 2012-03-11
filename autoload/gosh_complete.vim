@@ -41,18 +41,16 @@ let s:async_task_timeout = 5
 
 let s:init_count = 0
 
-function! gosh_complete#add_doc(name, units, extend)
+function! gosh_complete#add_doc(name, units)
   for unit in a:units
     let unit['docname'] = a:name
   endfor
 
   if has_key(s:ginfo_table, a:name)
     let s:ginfo_table[a:name]['units'] = a:units
-    let s:ginfo_table[a:name]['extend'] = a:extend
   else
     let s:ginfo_table[a:name] = {
           \ 'units' : a:units,
-          \ 'extend' : a:extend
           \ }
   endif
 endfunction
@@ -203,21 +201,17 @@ function! gosh_complete#init_proc()"{{{
           \ . " --generated-doc-directory=" . s:gosh_generated_doc_path
           \ . " --output-api-only"
           \ . " --io-encoding=\"" . s:encoding() . "\""
-          \ . s:get_loaded_module_text())
+          \ . s:get_load_module_text())
   endif
 
   let s:init_count += 1
-endfunction
+endfunction }}}
 
-function s:get_loaded_module_text()"{{{
+function s:get_load_module_text()"{{{
   let text = ''
 
   for [name, doc] in items(s:ginfo_table)
-    let text .= ' --loaded-module="' . s:get_loaded_module_name(name)
-    for module in doc['extend']
-      let text .= ' ' . module
-    endfor
-    let text .= '"'
+    let text .= ' --load-module="' . s:get_loaded_module_name(name) . '"'
   endfor
 
   return text
@@ -230,6 +224,8 @@ function! s:get_loaded_module_name(docname)"{{{
     let name = 'f' . a:docname[2 :]
     if name ==# '[No Name]'
       let name = ''
+    else
+      let name .= ' ' . a:docname
     endif
   endif
 
