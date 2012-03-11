@@ -282,15 +282,20 @@ function! s:ginfo_list_to_text(units)"{{{
   for unit in a:units
     if is_first
       let text .= s:get_unit_type_kind(unit)
-      let text .= '    --- ' . s:get_unit_module(unit)
-      let text .= "\n\n"
-    else
+      let text .= '  --- ' . s:get_unit_module(unit)
       let text .= "\n"
+    else
+      if text !~# ".*\n\n$"
+        if text[strlen(text) - 1] ==# "\n"
+          let text .= "\n"
+        else
+          let text .= "\n\n"
+        endif
+      endif
     endif
 
-    let text .= "--interface--\n"
     let text .= s:get_unit_interface(unit)
-    let text .= "\n"
+    let text .= "\n\n"
     let text .= s:get_unit_description(unit)
   endfor
 
@@ -353,8 +358,10 @@ function! s:get_unit_description(unit)"{{{
 
     if type ==# 'Class'
       let name = 's'
+      let is_show_empty = 1
     else
       let name = 'p'
+      let is_show_empty = 0
     endif
 
     let is_first = 1
@@ -364,8 +371,12 @@ function! s:get_unit_description(unit)"{{{
         let description .= "\n"
       endif
 
-      let text = s:get_param_description(param)
+      let text = s:get_param_description(param, is_show_empty)
       if !empty(text)
+        if is_first
+          let description .= "--interface--\n"
+        endif
+
         let description .= ' ' . index . ':' . text
         let is_first = 0
       endif
@@ -375,9 +386,14 @@ function! s:get_unit_description(unit)"{{{
   endif
 
   if has_key(a:unit, 'd')
-    if !empty(description)
-      let description .= "\n"
+    if !empty(description) && description !~# ".*\n\n$"
+      if description[strlen(description) - 1] ==# "\n"
+        let description .= "\n"
+      else
+        let description .= "\n\n"
+      endif
     endif
+
     let description .= "--description--\n"
     let description .= a:unit['d']
   endif
@@ -385,20 +401,20 @@ function! s:get_unit_description(unit)"{{{
   return description
 endfunction
 
-function! s:get_param_description(param)
+function! s:get_param_description(param, is_show_empty)
   let text = a:param['n']
   let has_description = 0
 
   if has_key(a:param, 'a')
     let has_description = 1
-    let text .= "\n      Acceptable: " . join(a:param['a'], ' ')
+    let text .= "\n     Acceptable: " . join(a:param['a'], ' ')
   endif
   if has_key(a:param, 'd')
     let has_description = 1
-    let text .= "\n" . a:param['d']
+    let text .= "\n   " . a:param['d']
   endif
 
-  if has_description
+  if a:is_show_empty || has_description
     return text
   else
     return ""
