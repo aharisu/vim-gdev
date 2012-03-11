@@ -41,7 +41,7 @@ let s:async_task_timeout = 5
 
 let s:init_count = 0
 
-let s:open_cmd = 'split'
+let s:default_open_cmd = '6:split'
 
 function! gosh_complete#add_doc(name, units)
   for unit in a:units
@@ -592,7 +592,7 @@ function! s:open_preview(content, noenter)"{{{
   endfor
 
   if bufnr == 0
-    silent! execute s:open_cmd
+    silent! execute s:default_open_cmd
     enew
     call s:initialize_buffer()
   else
