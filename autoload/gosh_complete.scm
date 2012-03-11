@@ -482,7 +482,8 @@
 (define (main args)
   (let-args (cdr args)
     ([#f "generated-doc-directory=s" 
-      (lambda (opt) (set! generated-doc-directory (string-trim-both opt)))]
+      => (lambda (opt) 
+           (set! generated-doc-directory (string-trim-both opt)))]
      [#f "load-module=s" 
       => (lambda (opt)
            (let1 opt (string-trim-both opt)
