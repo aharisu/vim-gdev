@@ -39,6 +39,8 @@ let s:debug_out_err = 0
 "5 seconds
 let s:async_task_timeout = 5
 
+let s:init_count = 0
+
 function! gosh_complete#add_doc(name, units, extend)
   for unit in a:units
     let unit['docname'] = a:name
@@ -194,13 +196,17 @@ endfunction
 " Communicate to gosh-complete.scm
 
 function! gosh_complete#init_proc()"{{{
-  let s:gosh_comp = vimproc#popen3('gosh' 
-        \ . ' -I' . escape(s:neocom_sources_directory, ' \') . ' '
-        \ . s:gosh_complete_path
-        \ . " --generated-doc-directory=" . s:gosh_generated_doc_path
-        \ . " --output-api-only"
-        \ . " --io-encoding=\"" . s:encoding() . "\""
-        \ . s:get_loaded_module_text())
+  if s:init_count == 0
+    let s:gosh_comp = vimproc#popen3('gosh' 
+          \ . ' -I' . escape(s:neocom_sources_directory, ' \') . ' '
+          \ . s:gosh_complete_path
+          \ . " --generated-doc-directory=" . s:gosh_generated_doc_path
+          \ . " --output-api-only"
+          \ . " --io-encoding=\"" . s:encoding() . "\""
+          \ . s:get_loaded_module_text())
+  endif
+
+  let s:init_count += 1
 endfunction
 
 function s:get_loaded_module_text()"{{{
@@ -231,11 +237,18 @@ function! s:get_loaded_module_name(docname)"{{{
 endfunction"}}}"}}}
 
 function! gosh_complete#finale_proc()"{{{
-  call s:gosh_comp.stdin.write("#exit\n")
-  call s:gosh_comp.waitpid()
+  let s:init_count -= 1
+
+  if s:init_count <= 0
+    call s:gosh_comp.stdin.write("#exit\n")
+    call s:gosh_comp.waitpid()
+    let s:init_count = 0
+  endif
 endfunction"}}}
 
 function! s:restart_gosh_process()"{{{
+  let s:init_count = 0
+
   "signal 15 is SIGTERM
   call s:gosh_comp.kill(15)
   call s:init_proc()
