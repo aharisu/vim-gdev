@@ -41,9 +41,12 @@ let s:async_task_timeout = 5
 
 let s:init_count = 0
 
+let s:open_cmd = 'split'
+
 function! gosh_complete#add_doc(name, units)
   for unit in a:units
     let unit['docname'] = a:name
+    let unit['_loaded_doc'] = 0
   endfor
 
   if has_key(s:ginfo_table, a:name)
@@ -188,6 +191,219 @@ function! s:unit_name_head_filter(units, keyword)
 
   return filter(copy(a:units), expr)
 endfunction
+
+function! gosh_complete#show_ginfo(module, symbol)"{{{
+  if has_key(s:ginfo_table, a:module)
+    let units = s:find_ginfo_in_doc(s:ginfo_table[a:module], a:symbol)
+    let ginfo_list = s:get_unit_ginfo(units)
+
+    let text = s:ginfo_list_to_text(ginfo_list)
+    call s:open_preview(text, 1)
+  endif
+endfunction"}}}
+
+function! s:find_ginfo_in_doc(doc, symbol)"{{{
+  let unit_list = []
+
+  for unit in a:doc['units']
+    if unit['n'] ==# a:symbol
+      call add(unit_list, unit)
+    endif
+  endfor
+
+  return unit_list
+endfunction"}}}
+
+"s:get_unit_ginfo"{{{
+let s:get_unit_ginfo_complete = 1
+let s:unit_ginfo = []
+function! s:get_unit_ginfo(units)
+  if empty(a:units)
+    return a:units
+  endif
+
+
+  let loaded = 1
+  for unit in a:units 
+    if unit['_loaded_doc'] == 0
+      let loaded = 0
+      break
+    endif
+  endfor
+
+
+  if loaded
+    return a:units
+  else
+    let unit_name = a:units[0]['n']
+    let doc_name = a:units[0]['docname']
+
+    let s:get_unit_ginfo_complete = 0
+
+    "call gosh
+    call gosh_complete#add_async_task('#get-unit '
+          \ . doc_name . ' ' . unit_name . "\n",
+          \ function('s:get_unit_ginfo_callback'))
+
+    "wait until get unit
+    while !s:get_unit_ginfo_complete
+      call gosh_complete#check_async_task()
+
+      sleep 50m
+    endwhile
+
+    call filter(s:ginfo_table[doc_name]['units'],
+          \ 'v:val["n"] !=# unit_name')
+
+    for unit in s:unit_ginfo
+      let unit['docname'] = doc_name
+      let unit['_loaded_doc'] = 1
+    endfor
+
+    call extend(s:ginfo_table[doc_name]['units'], s:unit_ginfo)
+
+    let ret = s:unit_ginfo
+    let s:unit_ginfo = []
+    return ret
+  endif
+endfunction
+
+function! s:get_unit_ginfo_callback(out, err)
+  if !empty(a:out)
+    let s:unit_ginfo = eval(a:out)
+  endif
+  let s:get_unit_ginfo_complete = 1
+endfunction"}}}
+
+function! s:ginfo_list_to_text(units)"{{{
+  let text = ''
+  let is_first = 1
+
+  for unit in a:units
+    if is_first
+      let text .= s:get_unit_type_kind(unit)
+      let text .= '    --- ' . s:get_unit_module(unit)
+      let text .= "\n\n"
+    else
+      let text .= "\n"
+    endif
+
+    let text .= "--interface--\n"
+    let text .= s:get_unit_interface(unit)
+    let text .= "\n"
+    let text .= s:get_unit_description(unit)
+  endfor
+
+  return text
+endfunction"}}}
+
+function! s:get_unit_type_kind(unit)"{{{
+  let type = a:unit['t']
+
+  if type ==# 'F'
+    return 'Function'
+  elseif type ==# 'Method'
+    return 'Method'
+  elseif type ==# 'var'
+    return 'Variable'
+  elseif type ==# 'C' 
+    return 'Constant Variable'
+  elseif type ==# 'Parameter'
+    return 'Parameter'
+  elseif type ==# 'Class'
+    return 'Class'
+  elseif type ==# 'Macro'
+    return 'Macro'
+  else
+    return ''
+  endif
+endfunction"}}}
+
+function! s:get_unit_module(unit)"{{{
+  let module = a:unit['docname']
+
+  if match(module, '^#') == -1
+    return fnamemodify(module, ':t')
+  else
+    return fnamemodify(module[2 :], ':t:r')
+  endif
+endfunction"}}}
+
+function! s:get_unit_interface(unit)"{{{
+  let type = a:unit['t']
+  if type ==# 'F' || type ==# 'Method' || type ==# 'Macro'
+    let info = '(' . a:unit['n']
+    let params = join(map(copy(get(a:unit, 'p', [])), 'v:val["n"]'), ' ')
+    if !empty(params)
+      let info .= ' ' . params
+    endif
+    let info .= ')'
+  else
+    let info = a:unit['n']
+  endif
+
+  return info
+endfunction"}}}
+
+function! s:get_unit_description(unit)"{{{
+  let type = a:unit['t']
+  let description = ''
+
+  if type ==# 'F' || type ==# 'Method' || type ==# 'Macro' || type ==# 'Class'
+
+    if type ==# 'Class'
+      let name = 's'
+    else
+      let name = 'p'
+    endif
+
+    let is_first = 1
+    let index = 0
+    for param in get(a:unit, name, [])
+      if !is_first
+        let description .= "\n"
+      endif
+
+      let text = s:get_param_description(param)
+      if !empty(text)
+        let description .= ' ' . index . ':' . text
+        let is_first = 0
+      endif
+
+      let index += 1
+    endfor
+  endif
+
+  if has_key(a:unit, 'd')
+    if !empty(description)
+      let description .= "\n"
+    endif
+    let description .= "--description--\n"
+    let description .= a:unit['d']
+  endif
+
+  return description
+endfunction
+
+function! s:get_param_description(param)
+  let text = a:param['n']
+  let has_description = 0
+
+  if has_key(a:param, 'a')
+    let has_description = 1
+    let text .= "\n      Acceptable: " . join(a:param['a'], ' ')
+  endif
+  if has_key(a:param, 'd')
+    let has_description = 1
+    let text .= "\n" . a:param['d']
+  endif
+
+  if has_description
+    return text
+  else
+    return ""
+  endif
+endfunction"}}}
 
 
 "
@@ -336,6 +552,70 @@ function! s:read_output_one_try(port)
 
   return out
 endfunction"}}}
+
+
+"
+"open gosh info buffer
+
+function! s:open_preview(content, noenter)"{{{
+
+  if a:noenter
+    let w:ref_back = 1
+  endif
+
+  let bufnr = 0
+  for i in range(0, winnr('$'))
+    let n = winbufnr(i)
+    if getbufvar(n, '&filetype') ==# 'gosh-info'
+      if i != 0
+        execute i 'wincmd w'
+      endif
+      let bufnr = n
+      break
+    endif
+  endfor
+
+  if bufnr == 0
+    silent! execute s:open_cmd
+    enew
+    call s:initialize_buffer()
+  else
+    setlocal modifiable noreadonly
+    % delete _
+  endif
+
+  " put content to buffer
+  let s:content = a:content
+  silent :1 put = s:content | 1 delete _
+  unlet! s:content
+
+  setlocal nomodifiable readonly
+
+  if a:noenter
+    for t in range(1, tabpagenr('$'))
+      for w in range(1, winnr('$'))
+        if gettabwinvar(t, w, 'ref_back')
+          execute 'tabnext' t
+          execute w 'wincmd w'
+          unlet! w:ref_back
+        endif
+      endfor
+    endfor
+  endif
+
+endfunction"}}}
+
+function! s:initialize_buffer()"{{{
+  setlocal nobuflisted
+  setlocal buftype=nofile noswapfile
+  setlocal bufhidden=delete
+  setlocal nonumber
+  setlocal wrap
+
+  setlocal filetype=gosh-info
+endfunction"}}}
+
+
 "
 " util
 

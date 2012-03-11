@@ -156,6 +156,17 @@
                             '()))))))
         ))))
 
+(define (get-ginfo-unit module name)
+  (let1 sym-module (string->symbol module)
+    (cond
+      [(or (hash-table-get loaded-doc-table sym-module #f)
+         (hash-table-get loaded-doc-table module #f))
+       => (lambda (doc)
+            (filter
+              (lambda (u) (string=? (slot-ref u 'name) name))
+              (slot-ref doc 'units)))]
+      [else '()])))
+
 ;;If you have read the generated document
 (define (alt-geninfo-file module)
   (let1 generated-doc-path (build-path generated-doc-directory (symbol->string module))
@@ -391,6 +402,16 @@
                       (load-info (pa$ geninfo file) name #t)
                       (call-with-input-file file parse-related-module))))
                 (output-result '()))))
+
+(define-cmd get-unit
+            (lambda (num) (eq? 2 num))
+            (lambda (module symbol)
+              (let1 save output-api-only
+                (set! output-api-only #f)
+                (unwind-protect
+                  (output-unit-list (get-ginfo-unit module symbol))
+                  (set! output-api-only save))
+                (print-std))))
 
 ;;--------------------
 ;;definination of state
