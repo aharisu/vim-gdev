@@ -1,0 +1,398 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name assv-set!
+;;@description alistに(key . val)のペアが追加された連想リストを返します。
+;;alistがすでにkeyをキーとする要素を持っている場合、
+;;その要素のcdrは破壊的にvalに変更されます。
+;;alistがkeyをキーとする要素を持っていない場合は、
+;;新しいペアが作成され、alistの一番前に追加されます。
+;;したがって、key-valペアが追加されたことを保証するために
+;;その戻り値を使うべきです。
+;;
+;;assoc-set!は、そのデフォルトがequal?である、オプションの
+;;比較関数eq-fnを取ります。assq-set!はeq?を、
+;;assv-set!はeqv?を、それぞれ使います。
+;;
+;;@param alist 
+;;@param key 
+;;@param val 
+
+;;;;;
+;;@type Function
+;;@name assq-set!
+;;@description alistに(key . val)のペアが追加された連想リストを返します。
+;;alistがすでにkeyをキーとする要素を持っている場合、
+;;その要素のcdrは破壊的にvalに変更されます。
+;;alistがkeyをキーとする要素を持っていない場合は、
+;;新しいペアが作成され、alistの一番前に追加されます。
+;;したがって、key-valペアが追加されたことを保証するために
+;;その戻り値を使うべきです。
+;;
+;;assoc-set!は、そのデフォルトがequal?である、オプションの
+;;比較関数eq-fnを取ります。assq-set!はeq?を、
+;;assv-set!はeqv?を、それぞれ使います。
+;;
+;;@param alist 
+;;@param key 
+;;@param val 
+
+;;;;;
+;;@type Function
+;;@name assoc-set!
+;;@description alistに(key . val)のペアが追加された連想リストを返します。
+;;alistがすでにkeyをキーとする要素を持っている場合、
+;;その要素のcdrは破壊的にvalに変更されます。
+;;alistがkeyをキーとする要素を持っていない場合は、
+;;新しいペアが作成され、alistの一番前に追加されます。
+;;したがって、key-valペアが追加されたことを保証するために
+;;その戻り値を使うべきです。
+;;
+;;assoc-set!は、そのデフォルトがequal?である、オプションの
+;;比較関数eq-fnを取ります。assq-set!はeq?を、
+;;assv-set!はeqv?を、それぞれ使います。
+;;
+;;@param alist 
+;;@param key 
+;;@param val 
+;;@param :optional 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name rassv-ref
+;;@description assoc-refの逆連想リストバージョンです。
+;;example:
+;;  (rassoc-ref alist key default eq-fn)
+;;   ≡ 
+;;    (cond ((rassoc key alist eq-fn) => car)
+;;          (else default))))
+;;オプショナル引数の意味は、assoc-refと同じです。
+;;
+;;@param alist 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name rassq-ref
+;;@description assoc-refの逆連想リストバージョンです。
+;;example:
+;;  (rassoc-ref alist key default eq-fn)
+;;   ≡ 
+;;    (cond ((rassoc key alist eq-fn) => car)
+;;          (else default))))
+;;オプショナル引数の意味は、assoc-refと同じです。
+;;
+;;@param alist 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name rassoc-ref
+;;@description assoc-refの逆連想リストバージョンです。
+;;example:
+;;  (rassoc-ref alist key default eq-fn)
+;;   ≡ 
+;;    (cond ((rassoc key alist eq-fn) => car)
+;;          (else default))))
+;;オプショナル引数の意味は、assoc-refと同じです。
+;;
+;;@param alist 
+;;@param key 
+;;@param :optional 
+;;@param default 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name assv-ref
+;;@description これらの手続きは、他の*-ref手続きと対照的な連想リストへの
+;;アクセスを提供します。これは、一般的な連想リストアクセスのパターン
+;;です。
+;;example:
+;;  (assoc-ref alist key default eq-fn)
+;;   ≡ 
+;;    (cond ((assoc key alist eq-fn) => cdr)
+;;          (else default))))
+;;
+;;defaultが省略されると、#fが使われます。
+;;
+;;assoc-refは、そのデフォルトがequal?である、オプションの
+;;比較関数eq-fnを取ります。assq-refはeq?を、
+;;assv-refはeqv?をそれぞれ使います。
+;;
+;;@param alist 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name assq-ref
+;;@description これらの手続きは、他の*-ref手続きと対照的な連想リストへの
+;;アクセスを提供します。これは、一般的な連想リストアクセスのパターン
+;;です。
+;;example:
+;;  (assoc-ref alist key default eq-fn)
+;;   ≡ 
+;;    (cond ((assoc key alist eq-fn) => cdr)
+;;          (else default))))
+;;
+;;defaultが省略されると、#fが使われます。
+;;
+;;assoc-refは、そのデフォルトがequal?である、オプションの
+;;比較関数eq-fnを取ります。assq-refはeq?を、
+;;assv-refはeqv?をそれぞれ使います。
+;;
+;;@param alist 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name assoc-ref
+;;@description これらの手続きは、他の*-ref手続きと対照的な連想リストへの
+;;アクセスを提供します。これは、一般的な連想リストアクセスのパターン
+;;です。
+;;example:
+;;  (assoc-ref alist key default eq-fn)
+;;   ≡ 
+;;    (cond ((assoc key alist eq-fn) => cdr)
+;;          (else default))))
+;;
+;;defaultが省略されると、#fが使われます。
+;;
+;;assoc-refは、そのデフォルトがequal?である、オプションの
+;;比較関数eq-fnを取ります。assq-refはeq?を、
+;;assv-refはeqv?をそれぞれ使います。
+;;
+;;@param alist 
+;;@param key 
+;;@param :optional 
+;;@param default 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name rassv
+;;@description 与えられるkeyがalistのそれぞれの要素で、carの代わりに
+;;cdrにマッチするような逆になった連想リストです。
+;;両方向の連想リストと理解すると簡単です。
+;;rassocは、そのデフォルトがequal?である、オプションの
+;;比較関数を取ります。rassqはeq?、rassvはeqv?を
+;;使います。
+;;
+;;@param key 
+;;@param alist 
+
+;;;;;
+;;@type Function
+;;@name rassq
+;;@description 与えられるkeyがalistのそれぞれの要素で、carの代わりに
+;;cdrにマッチするような逆になった連想リストです。
+;;両方向の連想リストと理解すると簡単です。
+;;rassocは、そのデフォルトがequal?である、オプションの
+;;比較関数を取ります。rassqはeq?、rassvはeqv?を
+;;使います。
+;;
+;;@param key 
+;;@param alist 
+
+;;;;;
+;;@type Function
+;;@name rassoc
+;;@description 与えられるkeyがalistのそれぞれの要素で、carの代わりに
+;;cdrにマッチするような逆になった連想リストです。
+;;両方向の連想リストと理解すると簡単です。
+;;rassocは、そのデフォルトがequal?である、オプションの
+;;比較関数を取ります。rassqはeq?、rassvはeqv?を
+;;使います。
+;;
+;;@param key 
+;;@param alist 
+;;@param :optional 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name hash-table->alist
+;;@description example:
+;;    (hash-table-map h cons)
+;;
+;;@param hash-table 
+
+;;;;;
+;;@type Function
+;;@name alist->hash-table
+;;@description alistに含まれるそれぞれの要素をエントリとして持つハッシュテーブルを
+;;作成して返します。その時、要素のcarがキーとして、要素のcdrが値として
+;;使われます。cmpは作成されたハッシュテーブルの比較関数を
+;;指定するシンボルで、現在はeq?、eqv?、equal?、
+;;string=?がサポートされています。
+;;
+;;@param alist 
+;;@param :optional 
+;;@param cmp 
+
+;;;;;
+;;@type Macro
+;;@name cond-list
+;;@description 条件によりエントリを追加することによりリストを構築します。
+;;それぞれのclauseは条件と式を持ちます。
+;;条件が真であれば、関連する式の結果が結果のリストの構築に使われます。
+;;条件が偽であれば、何も挿入されません。
+;;
+;;clauseは、以下のフォームのうちの1つでなければなりません。
+;;(test expr ...) ------
+;;  testが評価され、それが真ならばexpr ...が評価され、
+;;  戻り値が結果の一部となります。exprが与えられなければ、
+;;  testの結果が偽でなければその結果が使われます。
+;;(test => proc) ------
+;;  testが評価され、それが真ならばprocがその値とともに
+;;  呼ばれ、その戻り値が結果を構築するために使われます。
+;;(test @@ expr ...) ------
+;;  (test expr ...)のように動作しますが、最後のexprの
+;;  値はリストでなければならず、それは結果のリストに(unquote-splicingのように)
+;;  スプライスされます。
+;;(test => @@ proc) ------
+;;  (test => proc)のように動作しますが、procの戻り値
+;;  はリストでなければならず、それは結果のリストに(unquote-splicingのように)
+;;  スプライスされます。
+;;
+;;example:
+;;  (let ((alist '((x 3) (y -1) (z 6))))
+;;   (cond-list ((assoc 'x alist) 'have-x)
+;;              ((assoc 'w alist) 'have-w)
+;;              ((assoc 'z alist) => cadr)))
+;;    ==> (have-x 6)
+;;  
+;;  (let ((x 2) (y #f) (z 5))
+;;    (cond-list (x @@ `(:x ,x))
+;;               (y @@ `(:y ,y))
+;;               (z @@ `(:z ,z))))
+;;    ==> (:x 2 :z 5)
+;;
+;;@param clause 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name intersperse
+;;@description listの要素の間にitemを挿入します。
+;;(引数の順番は、Haskellのintersperseと同じです。)
+;;
+;;example:
+;;  (intersperse '+ '(1 2 3))  ==> (1 + 2 + 3)
+;;  (intersperse '+ '(1))      ==> (1)
+;;  (intersperse '+ '())       ==> ()
+;;
+;;@param item 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name slices
+;;@description listを、それぞれの長さがkであるようなサブリスト(スライス)に
+;;分割します。
+;;listの長さがkの整数倍でない場合は、最後のスライスは
+;;take*と同じ方法で扱われます。つまり、デフォルトではkより
+;;短いもの、あるいはfill?が真ならばpaddingが追加されます。
+;;
+;;example:
+;;  (slices '(a b c d e f g) 3)
+;;    ==> ((a b c) (d e f) (g))
+;;  (slices '(a b c d e f g) 3 #t 'z)
+;;    ==> ((a b c) (d e f) (g z z))
+;;
+;;@param list 
+;;@param k 
+;;@param :optional 
+;;@param fill? 
+;;@param padding 
+
+;;;;;
+;;@type Function
+;;@name split-at*
+;;@description SRFI-1のsplit-atの寛容なバージョンです。
+;;take*とdrop*の結果を返します。
+;;
+;;example:
+;;  (split-at* '(a b c d) 6 #t 'z)
+;;    ==> (a b c d z z) and ()
+;;
+;;@param list 
+;;@param k 
+;;@param :optional 
+;;@param fill? 
+;;@param padding 
+
+;;;;;
+;;@type Function
+;;@name drop-right*
+;;@description drop*と同じですが、listの右端からカウントします。
+;;
+;;@param list 
+;;@param k 
+
+;;;;;
+;;@type Function
+;;@name take-right*
+;;@description take*と同じですが、listの右端からカウントします。
+;;必要ならば、結果の左にpaddingが追加されます。
+;;
+;;@param list 
+;;@param k 
+;;@param :optional 
+;;@param fill? 
+;;@param padding 
+
+;;;;;
+;;@type Function
+;;@name drop*
+;;@description listの最初のk個の要素が削除されたリストを返します。
+;;これは、SRFI-1のdropに似ていますが、この手続きのほうが
+;;寛容です。listがkよりも短い場合、空リストが返されます。
+;;
+;;example:
+;;  (drop* '(a b c d) 3)       ==> (d)
+;;  (drop* '(a b c d) 5)       ==> ()
+;;
+;;@param list 
+;;@param k 
+
+;;;;;
+;;@type Function
+;;@name take*
+;;@description listの最初のk個の要素で構成されるリストを返します。
+;;これは、SRFI-1のtakeに似ていますが、この手続きのほうが
+;;寛容です。つまり、listがkよりも短いとき、take*は
+;;エラーを通知しません。その代わり、デフォルトで(あるいは、オプショナル
+;;引数fill?が#fの場合)listのコピーを返します。
+;;fill?が真の場合、その長さをkにするために、paddingが
+;;その結果に追加されます。paddingのデフォルト値は#fです。
+;;
+;;example:
+;;  (take* '(a b c d) 3)       ==> (a b c)
+;;  (take* '(a b c d) 6)       ==> (a b c d)
+;;  (take* '(a b c d) 6 #t)    ==> (a b c d #f #f)
+;;  (take* '(a b c d) 6 #t 'z) ==> (a b c d z z)
+;;
+;;注意: 一般的な、いかなるシーケンスからのサブシーケンスの抽出については、
+;;Slicing sequenceのsubseqを見て下さい。
+;;
+;;@param list 
+;;@param k 
+;;@param :optional 
+;;@param fill? 
+;;@param padding 
+

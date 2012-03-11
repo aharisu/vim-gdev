@@ -1,0 +1,365 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name write-block
+;;@description ユニフォームベクタvecの内容を「そのまま」oportに書き出します。
+;;oportが省略された場合はカレント出力ポートが使われます。
+;;省略可能な引数startとendが与えられた場合は、
+;;それらのインデックスの範囲が示すvecの内容のみが出力されます。
+;;endに-1を渡してvecの最後を示すこともできます。
+;;この手続きの返す値は未定義です。
+;;
+;;s8vectorとu8vector以外のユニフォームベクタを与えた場合、
+;;read-block!と同じようにエンディアンの影響を受けることに注意して
+;;下さい。省略可能引数endianによって出力のエンディアンを
+;;指定できます。省略した場合はパラメータdefault-endianの値が
+;;使われます (@xref{Endianness}参照)。
+;;
+;;@param vec 
+;;@param :optional 
+;;@param oport 
+;;@param start 
+;;@param end 
+;;@param endian 
+
+;;;;;
+;;@type Function
+;;@name read-block!
+;;@description 与えられた入力ポートiportからデータの固まりを読みだし、それを
+;;ユニフォームベクタvecに格納します。
+;;どんな種類のユニフォームベクタでも与えることができます。
+;;省略可能な引数startとendが与えられた場合は、
+;;それらがvec中でデータが格納されるべき領域のインデックスの範囲を
+;;示します。endについては-1でvecの最後を示すこともできます。
+;;その範囲外のvecの値は変更されません。
+;;start、endが与えられなかった場合はvec全体が使われます。
+;;iportが省略された場合はカレント入力ポートが使われます。
+;;
+;;要求された領域を埋め終る前に入力がEOFに達した場合は、ベクタの残りの部分は
+;;変更されません。
+;;
+;;read-block!が呼ばれた時既にiportがEOFに達していた場合は
+;;EOFが、そうでなければ読まれた要素の数 (バイト数ではありません) が返されます。
+;;
+;;iportがバッファードポートであり、そのバッファリングモードが
+;;`modest' か `none' であった場合、read-block!はiportが
+;;EOFに達していなくても、vecを埋める前に戻ることがあります
+;;(バッファリングモードについてはFile ports)を参照して下さい。
+;;パイプやネットワークに接続されたポートはデフォルトでそのように振舞います。
+;;もし、十分なデータが到着することがわかっており、vecを確実に埋めたい場合は
+;;ポートのバッファリングモードを`full'に変更して下さい。
+;;
+;;データはバイトストリームとして読まれるので、
+;;s8vectorとu8vector以外のユニフォームベクタを与えた場合は
+;;結果がエンディアンに影響を受けることに注意して下さい。
+;;省略可能引数endianによって、入力データのエンディアンを指定
+;;することができます。省略した場合はパラメータdefault-endianの
+;;値が使われます。エンディアンの扱いについてより詳しくはEndiannessを参照して
+;;ください。
+;;
+;;@param vec 
+;;@param :optional 
+;;@param iport 
+;;@param start 
+;;@param end 
+;;@param endian 
+
+;;;;;
+;;@type Function
+;;@name uvector-alias
+;;@description この手続きは、クラスがuvector-classであり、
+;;ユニフォームベクタvecのメモリ領域を共有するような
+;;新しいユニフォームベクタを作成して返します。
+;;省略可能な引数startとendが与えられた場合は
+;;vecの内容のうちそれらのインデックスで指定される範囲のみが使われます。
+;;メモリ領域が共有されているので、vecに加える変更は
+;;新しいベクタから見えますし、その逆も可能です。
+;;
+;;クラスuvector-classはユニフォームベクタのクラスでなければなりませんが、
+;;vecのクラスと一致している必要はありません。
+;;そのような場合は、新しいベクタはvecと同じメモリ領域の値を
+;;異なる値と解釈するかもしれません。
+;;例えば、次のコードはGaucheが走っているマシンが
+;;リトルエンディアンであるかビッグエンディアンであるかを判定します。
+;;
+;;example:
+;;  (let ((u8v (uvector-alias <u8vector> #u32(1))))
+;;    (if (zero? (u8vector-ref u8v 0))
+;;        'big-endian 
+;;        'little-endian))
+;;
+;;uvector-classがs8vectorかu8vector以外の場合、
+;;新しいベクタが指す領域は、そのベクタの要素のアラインメントの要請に
+;;したがっていなければなりません。
+;;ユニフォームベクタの開始点は常に全てのユニフォームベクタのアラインメント要請を
+;;満たします。したがって、例えばu8vectorからu32vectorを作成する場合、
+;;startおよびendは4の倍数でなければなりません
+;;(あるいは、start/endが省略された場合、vecの長さが
+;;4の倍数でなければなりません)。
+;;与えられたパラメータでアラインメントの要請が満たせない場合はエラーが通知されます。
+;;
+;;@param uvector-class 
+;;@param vec 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name u32vector->string
+;;@description startとendを考えなければ、
+;;これらの手続きは次のコードのような動作をします：
+;;example:
+;;  (lambda (vec) (map-to <string> integer->char vec)))
+;;省略可能な範囲引数start、endは、
+;;vec中の変換されるべき範囲を指定します。
+;;
+;;@param vec 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name s32vector->string
+;;@description startとendを考えなければ、
+;;これらの手続きは次のコードのような動作をします：
+;;example:
+;;  (lambda (vec) (map-to <string> integer->char vec)))
+;;省略可能な範囲引数start、endは、
+;;vec中の変換されるべき範囲を指定します。
+;;
+;;@param vec 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string->u32vector
+;;@description 与えられた文字列stringの各文字の内部コードを値として持つ
+;;s32vectorもしくはu32vectorを返します。
+;;省略可能な範囲引数start、endは、
+;;変換される文字列中の文字位置を指定します。
+;;
+;;これらの手続きは、文字列中の文字をランダムにアクセスする場合に便利です。
+;;
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string->s32vector
+;;@description 与えられた文字列stringの各文字の内部コードを値として持つ
+;;s32vectorもしくはu32vectorを返します。
+;;省略可能な範囲引数start、endは、
+;;変換される文字列中の文字位置を指定します。
+;;
+;;これらの手続きは、文字列中の文字をランダムにアクセスする場合に便利です。
+;;
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name u8vector->string
+;;@description 与えられたs8vectorもしくはu8vector vecのバイト列と同じ内部バイト列を
+;;持つ文字列を作成して返します。省略可能な範囲引数start、endは、
+;;vec中の変換されるべき範囲をバイト位置で指定します。
+;;
+;;vec中のバイト列が文字列の内部表現として不正な値を持っていた場合は、
+;;不完全な文字列が返されます。
+;;
+;;@param vec 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name s8vector->string
+;;@description 与えられたs8vectorもしくはu8vector vecのバイト列と同じ内部バイト列を
+;;持つ文字列を作成して返します。省略可能な範囲引数start、endは、
+;;vec中の変換されるべき範囲をバイト位置で指定します。
+;;
+;;vec中のバイト列が文字列の内部表現として不正な値を持っていた場合は、
+;;不完全な文字列が返されます。
+;;
+;;@param vec 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string->u8vector!
+;;@description target は、それぞれ s8vector あるいは u8vector でなければなりません。
+;;target は、変更可能でなければなりません。
+;;string の生バイト表現を target へインデックス tstart
+;;からコピーします。
+;;
+;;target を返します。
+;;
+;;example:
+;;  (let ((target (make-u8vector 10 0)))
+;;    (string->u8vector! target 3 "abcde"))
+;;   ==> #u8(0 0 0 97 98 99 100 101 0 0)
+;;
+;;
+;;@param target 
+;;@param tstart 
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string->s8vector!
+;;@description target は、それぞれ s8vector あるいは u8vector でなければなりません。
+;;target は、変更可能でなければなりません。
+;;string の生バイト表現を target へインデックス tstart
+;;からコピーします。
+;;
+;;target を返します。
+;;
+;;example:
+;;  (let ((target (make-u8vector 10 0)))
+;;    (string->u8vector! target 3 "abcde"))
+;;   ==> #u8(0 0 0 97 98 99 100 101 0 0)
+;;
+;;
+;;@param target 
+;;@param tstart 
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string->u8vector
+;;@description 与えられた文字列の内部表現のバイト列と同じバイト列を持つs8vectorもしくは
+;;u8vectorを返します。省略可能な範囲引数start、endは、
+;;変換される文字列中の文字位置を指定します。
+;;
+;;これらの手続きは、文字を構成するバイト列をランダムにアクセスしたい場合などに
+;;有用です。
+;;
+;;example:
+;;  (string->u8vector "abc") ==> #u8(97 98 99)
+;;  
+;;  ;; 内部コードがEUCの場合
+;;  (string->u8vector "いろは") ==> #u8(164 164 164 237 164 207)
+;;
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string->s8vector
+;;@description 与えられた文字列の内部表現のバイト列と同じバイト列を持つs8vectorもしくは
+;;u8vectorを返します。省略可能な範囲引数start、endは、
+;;変換される文字列中の文字位置を指定します。
+;;
+;;これらの手続きは、文字を構成するバイト列をランダムにアクセスしたい場合などに
+;;有用です。
+;;
+;;example:
+;;  (string->u8vector "abc") ==> #u8(97 98 99)
+;;  
+;;  ;; 内部コードがEUCの場合
+;;  (string->u8vector "いろは") ==> #u8(164 164 164 237 164 207)
+;;
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name uvector-copy!
+;;@description これは@i{TAGvector-copy!}の汎用バージョンです。
+;;コピー元sourceとコピー先targetはユニフォームベクタであれば
+;;どの型でも許され、また両者の型が異なっていても構いません。
+;;ビット表現がそのままコピーされます。従って異なる型のユニフォームベクタ間で
+;;コピーした場合は、結果は数値の内部表現に依存します。
+;;そのような用法は、バイナリデータを扱う時には便利でしょう。
+;;
+;;tstartはtargetの型によって解釈され、
+;;sstartとsendはsourceの型によって解釈されます。
+;;
+;;example:
+;;  (rlet1 v (make-u8vector 6 0)
+;;    (uvector-copy! v 1 '#u32(0 #x01020304 0) 1 2))
+;;   ==> #u8(0 1 2 3 4 0) or #u8(0 4 3 2 1 0)
+;;
+;;@param target 
+;;@param tstart 
+;;@param source 
+;;@param :optional 
+;;@param sstart 
+;;@param send 
+
+;;;;;
+;;@type Function
+;;@name uvector-size
+;;@description この手続きは全てのユニフォームベクタに適用することができます。
+;;uvectorのバイナリデータとしてのサイズをオクテット数で返します。
+;;
+;;startおよび/またはendが与えられた場合は、
+;;これらのインデックスの間のデータについてのみサイズが計算されます。
+;;endには、ベクタ終端を示すために-1を与えることもできます。
+;;返される値は
+;;(write-block uvector port start end) によって
+;;出力されるオクテット数と一致します。
+;;
+;;example:
+;;  (uvector-size '#u8(1 2 3))        ==> 3
+;;  (uvector-size '#u64(1 2 3))       ==> 24
+;;  
+;;  (uvector-size '#u32(0 1 2 3) 2)   ==> 8
+;;  (uvector-size '#u32(0 1 2 3) 0 1) ==> 4
+;;
+;;@param uvector 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Method
+;;@name subseq
+;;@description シーケンスseqの、start番目の要素からend番目の要素の直前
+;;までの部分シーケンスを返します。endが省略された場合はシーケンスの
+;;最後までが取られます。返されるシーケンスの型はseqと同じになります。
+;;
+;;example:
+;;  (subseq '(a b c d e) 1 4)   ==> (b c d)
+;;  (subseq '#(a b c d e) 1 4)  ==> #(b c d)
+;;  (subseq "abcde" 1 4)        ==> "bcd"
+;;  
+;;  (subseq '(a b c d e) 3)     ==> (d e)
+;;
+;;@param (seq <sequence>) :optional start end 
+
+;;;;;
+;;@type Method
+;;@name modifier
+;;@param (seq <sequence>) 
+
+;;;;;
+;;@type Method
+;;@name referencer
+;;@param (seq <sequence>) 
+

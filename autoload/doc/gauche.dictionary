@@ -1,0 +1,159 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name bimap-right-delete!
+;;@description Deletes an relation with the given left key or right key from bimap.
+;;Both left and right maps are modified so that the consistency is maintained.
+;;If there's no relations with given key, these are noop.
+;;
+;;@param bimap 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name bimap-left-delete!
+;;@description Deletes an relation with the given left key or right key from bimap.
+;;Both left and right maps are modified so that the consistency is maintained.
+;;If there's no relations with given key, these are noop.
+;;
+;;@param bimap 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name bimap-put!
+;;@description Put a relation (x, y) into the bimap.
+;;After this, (bimap-left-get x) will return y,
+;;and (bimap-left-get y) will return x.
+;;
+;;If there's already a relation (x, _) and/or (_, y),
+;;the behavior depends on the value of the keyword argument on-conflit.
+;;
+;;:supersede ------
+;;  This is the default behavior.  Duplicate relations are silently
+;;  removed in order to maintain one-to-one mapping.  For example,
+;;  suppose a bimap between strings and numbers has had
+;;  ("foo", 1) and ("bar", 2).  When you try to
+;;  put ("bar", 2) with this option, the first two entries
+;;  are removed.  Returns #t.
+;;  
+;;:error ------
+;;  Raises an error when duplicate relations are found.
+;;  
+;;#f ------
+;;  When duplicate relations are found, does nothing and returns #f.
+;;
+;;
+;;@param bimap 
+;;@param x 
+;;@param y 
+;;@param &key 
+;;@param (on-conflict :supersede) 
+
+;;;;;
+;;@type Function
+;;@name bimap-right-exists?
+;;@description Returns #f if the left or right map of bimap has an entry of
+;;the key, #t otherwise.
+;;
+;;@param bimap 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name bimap-left-exists?
+;;@description Returns #f if the left or right map of bimap has an entry of
+;;the key, #t otherwise.
+;;
+;;@param bimap 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name bimap-right-get
+;;@description Lookup the value corresponding to the key in the left or right
+;;map of bimap.   If no entry is found for key, 
+;;default is returned if provided, otherwise an error is
+;;raised.
+;;
+;;@param bimap 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name bimap-left-get
+;;@description Lookup the value corresponding to the key in the left or right
+;;map of bimap.   If no entry is found for key, 
+;;default is returned if provided, otherwise an error is
+;;raised.
+;;
+;;@param bimap 
+;;@param key 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name bimap-right
+;;@description Returns the left or right map of bimap, respectively.
+;;Do not mutate the returned map, or you'll break
+;;the consistency of the bimap.
+;;
+;;@param bimap 
+
+;;;;;
+;;@type Function
+;;@name bimap-left
+;;@description Returns the left or right map of bimap, respectively.
+;;Do not mutate the returned map, or you'll break
+;;the consistency of the bimap.
+;;
+;;@param bimap 
+
+;;;;;
+;;@type Function
+;;@name make-bimap
+;;@description Creates a new bimap consists of two dictionaries, left-map
+;;and right-map.   It is the caller's responsibility to
+;;choose appropriate type of dictionaries; for example, if you want
+;;to create a relation between a string and a number, you man want
+;;to create it like this:
+;;
+;;example:
+;;  (make-bimap (make-hash-table 'string=?)  ; string -> number
+;;              (make-hash-table 'eqv?))     ; number -> string
+;;
+;;@param left-map 
+;;@param right-map 
+
+;;;;;
+;;@type Class
+;;@name <bimap>
+;;@description Provides a bidirectional map (bimap), a relation between two
+;;set of values, of which you can lookup both ways.
+;;
+;;Internally, a bimap consists of two dictionaries, left map
+;;and right map.  Think a bimap as a relation between xs
+;;and ys.  The left map takes an x as a key and returns
+;;corresponding y as its value.  The right map takes an y
+;;as a key and returns corresponding x as its value.
+;;
+;;Currently, <bimap> only supports strict one-to-one mapping.
+;;Mutating interface (bimap-*-put!, bimap-*-delete! etc)
+;;modifies both left and right maps to maintain this one-to-one mapping.
+;;(In future, we may provide an option to make many-to-one and
+;;many-to-many mappings).
+;;
+;;A bimap can be used as a dictionary, with the generic dictionary
+;;functions such as dict-get.  In such cases, the left map takes
+;;precedence; that is, the key given to dict-get etc. is 
+;;regarded as the key to the left map.
+;;
+

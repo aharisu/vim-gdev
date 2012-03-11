@@ -1,0 +1,70 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name diff-report
+;;@description 2つのテキストソースのdiffをとって、その結果をきれいに表示するための
+;;簡易手続きです。この手続きは、2つのテキストソースの相違点を計算する
+;;ためにlcs-foldを呼び出します。src-a、src-b、
+;;reader、eq-fnの意味は、diffの場合と同じです。
+;;
+;;writerは2つの引数、テキスト要素とタイプ(シンボル+、
+;;シンボル-、あるいは#fのいずれか)を取る手続きです。
+;;テキスト要素がsrc-aにしかない場合は、writerがそのテキスト要素と
+;;-とともに呼ばれます。テキスト要素がsrc-bにしかない場合は、
+;;writerはそのテキスト要素と+とともに呼ばれます。
+;;テキスト要素が両方のソースにある場合は、writerはそのテキスト要素と
+;;#fとともに呼ばれます。writerのデフォルトの手続きは、
+;;渡されたテキスト要素を現在の出力ポートにユニファイドdiffのようなフォーマットで
+;;出力します。
+;;example:
+;;  (diff-report "a\nb\nc\nd\n" "b\ne\nd\nf\n")
+;;displays: 
+;;example:
+;;  - a
+;;    b
+;;  - c
+;;  + e
+;;    d
+;;  + f
+;;
+;;@param src-a 
+;;@param src-b 
+;;@param :key 
+;;@param reader 
+;;@param eq-fn 
+;;@param writer 
+
+;;;;;
+;;@type Function
+;;@name diff
+;;@description テキストソースsrc-aとsrc-bから``編集リスト''を生成します。
+;;
+;;それぞれのテキストソース、src-aとsrc-bは入力ポートか文字列です。
+;;もし文字列であれば、それは内部的に文字列ポートに変換されます。
+;;そして、2つのソースからのテキストストリームは、それらに対してreaderを繰り返し
+;;呼ぶことによってシーケンスに変換されます。デフォルトのreaderはread-lineで、
+;;2つのシーケンスは編集リストを計算するためにlcs-edit-listに渡されます。
+;;lcs-edit-listには、等値を検査する関数eq-fnも渡されます。
+;;
+;;編集リストとは、src-aからsrc-bへテキストシーケンスを
+;;変更するためのコマンドのセットです。編集リストの詳細な説明は、
+;;lcs-edit-listを参照してください。
+;;
+;;example:
+;;  (diff "a\nb\nc\nd\n" "b\ne\nd\nf\n")
+;;  ==>
+;;    (((- 0 "a"))
+;;     ((- 2 "c") (+ 1 "e"))
+;;     ((+ 3 "f")))
+;;
+;;@param src-a 
+;;@param src-b 
+;;@param :key 
+;;@param reader 
+;;@param eq-fn 
+

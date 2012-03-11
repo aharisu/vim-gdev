@@ -1,0 +1,49 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name html-doctype
+;;@description HTML ドキュメントの文書型宣言を返します。
+;;type は、以下のいずれかを指定します (デフォルトは:html-4.01-strict
+;;です)。
+;;:html-4.01-strict, :html-4.01, :strict ------
+;;  HTML 4.01 Strict DTD
+;;:html-4.01-transitional, :transitional ------
+;;  HTML 4.01 Transitional DTD
+;;:html-4.01-frameset, :frameset ------
+;;  HTML 4.01 Frameset DTD
+;;:xhtml-1.0-strict, :xhtml-1.0 ------
+;;  XHTML 1.0 Strict DTD
+;;:xhtml-1.0-transitional ------
+;;  XHTML 1.0 Transitional DTD
+;;:xhtml-1.0-frameset ------
+;;  XHTML 1.0 Frameset DTD
+;;:xhtml-1.1 ------
+;;  XHTML 1.1 DTD
+;;
+;;@param :key 
+;;@param type 
+
+;;;;;
+;;@type Function
+;;@name html-escape-string
+;;@description HTML に含まれる"安全でない"文字をエスケープします。
+;;html-escape は、現在の入力ポートから文字列を読み込み、
+;;結果を現在の出力ポートへ書き出します。html-escape-string は
+;;string を入力とし、文字列を返します。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name html-escape
+;;@description HTML に含まれる"安全でない"文字をエスケープします。
+;;html-escape は、現在の入力ポートから文字列を読み込み、
+;;結果を現在の出力ポートへ書き出します。html-escape-string は
+;;string を入力とし、文字列を返します。
+;;
+

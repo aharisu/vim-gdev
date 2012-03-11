@@ -1,0 +1,25 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name topological-sort
+;;@description Graphは有向非循環グラフ(DAG)を表現するリストです。
+;;リストの各要素は次の形をしています。
+;;example:
+;;  (<node> <downstream> <downstream2> ...)
+;;これで、ノード<node>から別のノード<downstream>等への接続が
+;;あることを表現します。<node>はどんなオブジェクトであっても構いませんが、
+;;同一性の判定がeqprocで行えなければなりません。eqprocの既定値は
+;;eqv?です (Equivalence参照)。
+;;トポロジカルにソートされたノードのリストを返します。
+;;
+;;グラフに循環が検出された場合はエラーとなります。
+;;
+;;@param graph 
+;;@param :optional 
+;;@param eqproc 
+

@@ -1,0 +1,50 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name base64-decode-string
+;;@description Base64 でエンコードされた文字列 string をデコードして文字列を返します。
+;;変換は string の終わりか、終端文字 (=) で終了します。
+;;Base64 でエンコードされた文字として適当でない文字は沈黙のまま無視されます。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name base64-decode
+;;@description 現在の入力ポートから文字ストリームを読み込み、それを Base64 フォーマットとして
+;;デコードし、現在の出力ポートにバイトストリームとして書き出します。
+;;変換は EOF か、終端文字 (=) を読み込むと終了します。
+;;Base64 でエンコードされた文字として適当でない文字は沈黙のまま無視されます。
+;;
+
+;;;;;
+;;@type Function
+;;@name base64-encode-string
+;;@description string の内容を Base64 でエンコードされたフォーマットに変換します。
+;;入力となる文字列は、完全文字列でも不完全文字列でも良いです。
+;;常にバイト・シーケンスとして扱われます。
+;;
+;;@param string 
+;;@param :key 
+;;@param line-width 
+
+;;;;;
+;;@type Function
+;;@name base64-encode
+;;@description 現在の入力ポートからバイト・ストリームを読み込み、それを Base64 フォーマットに
+;;エンコードし、現在の出力ポートに文字ストリームとして書き出します。
+;;現在の入力ポートから EOF を読み込むと変換を終了します。
+;;
+;;一行あたりの文字数がline-widthに与えられた文字数を越えないように、
+;;改行文字が適切に出力に挿入されます。line-widthのデフォルト値は
+;;RFC2045に従い76となっています。line-widthに#fまたは0
+;;を与えることで改行を抑制することができます。
+;;
+;;@param :key 
+;;@param line-width 
+

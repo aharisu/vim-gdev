@@ -1,0 +1,248 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Method
+;;@name dbm-db-move
+;;@description fromで指定されたclassクラスのデータベースを
+;;toへ移動、あるいはリネームします。dbm-db-copyと同じく、
+;;classのdbm実装がロックをサポートしていれば
+;;データベースの一貫性は保証されます。移動先のtoが既に
+;;存在していた場合、その元の内容は失われます。
+;;
+;;@param class 
+;;@param from 
+;;@param to 
+
+;;;;;
+;;@type Method
+;;@name dbm-db-copy
+;;@description fromで指定されたclassクラスのデータベースを
+;;toへコピーします。
+;;classのdbm実装がロックをサポートしている限り、fromの一貫性は
+;;保たれます (つまり、コピー中に他のプロセスがfromを
+;;変更しようとした場合であっても、toが壊れたデータベースになることは
+;;ありません)。  もしコピー先のtoが既に存在するデータベースで
+;;あった場合、toの元の内容は失われます。
+;;コピーが中断された場合にtoが不完全な状態のままになるかどうかは
+;;dbm実装に依存します。dbm実装の多くはトランザクショナルな振る舞い、
+;;すなわち、コピーが失敗した場合に元のtoを復元することを試みます。
+;;しかし確実な操作のためには、コピーが失敗した場合には呼び出し側でtoの
+;;状態を確認することが必要です。
+;;
+;;example:
+;;  (dbm-db-copy <gdbm> "testdb.dbm" "backup.dbm")
+;;
+;;@param class 
+;;@param from 
+;;@param to 
+
+;;;;;
+;;@type Method
+;;@name dbm-db-remove
+;;@description nameで指定されるclassクラスのデータベース
+;;全体を削除します。
+;;
+;;@param class 
+;;@param name 
+
+;;;;;
+;;@type Method
+;;@name dbm-db-exists?
+;;@description nameで指定されたclassクラスのデータベースが
+;;存在する場合は#tを返します。
+;;
+;;example:
+;;  ;; Returns #t if testdb.dir and testdb.pag exist
+;;  (dbm-db-exists? <odbm> "testdb")
+;;
+;;@param class 
+;;@param name 
+
+;;;;;
+;;@type Method
+;;@name dbm-map
+;;@description データベース内の各キー／値のペアに関して、手続きprocedureを呼び出します。
+;;procedureにはキーと値が渡されます。procedureの戻り値はリストに
+;;集められてdbm-mapの戻り値となります。
+;;
+;;@param (dbm <dbm>) procedure 
+
+;;;;;
+;;@type Method
+;;@name dbm-for-each
+;;@description データベース内の各キー／値のペアに関して、手続きprocedureを呼び出します。
+;;procedureにはキーと値が渡されます。procedureの戻り値は捨てられます。
+;;
+;;@param (dbm <dbm>) procedure 
+
+;;;;;
+;;@type Method
+;;@name dbm-fold
+;;@description 基本的な繰り返し処理です。データベース内の各キー／値のペアに関して、手続き
+;;procedureが (procedure key value r),
+;;のように呼ばれます。ここでrは、最初のprocedureの呼び出しの時にはknil
+;;が、以降の呼び出しの時にはその直前のprocedureが返した値が渡されます。
+;;最後のprocedureの戻り値がdbm-foldの戻り値となります。
+;;データベース中にデータがひとつもなければknilがそのまま返されます。
+;;
+;;次の例は、データベース中の整数の値を全て加算します。
+;;example:
+;;  (dbm-fold dbm (lambda (k v r) (if (integer? v) (+ v r) r)) 0)
+;;
+;;@param (dbm <dbm>) procedure knil 
+
+;;;;;
+;;@type Method
+;;@name dbm-delete!
+;;@description キーkeyに関連付けられた値を消去します。値が存在しない場合は何もしません。
+;;
+;;@param (dbm <dbm>) key 
+
+;;;;;
+;;@type Method
+;;@name dbm-exists?
+;;@description キーkeyに関連付けられた値が存在すれば#tを返します。
+;;
+;;@param (dbm <dbm>) key 
+
+;;;;;
+;;@type Method
+;;@name dbm-get
+;;@description キーkeyに関連付けられた値を返します。もし値が存在しなければ、defaultが
+;;与えられていればそれを返し、そうでなければエラーを報告します。
+;;
+;;@param (dbm <dbm>) key :optional default 
+
+;;;;;
+;;@type Method
+;;@name dbm-put!
+;;@description 値valueをキーkeyと関連付けて保存します。
+;;
+;;@param (dbm <dbm>) key value 
+
+;;;;;
+;;@type Function
+;;@name dbm-type->class
+;;@description Sometimes you don't know which type of dbm implementation you
+;;need to use in your application beforehand, but rather you need to
+;;determine the type according to the information given at run-time.
+;;This procedure fulfills the need.
+;;
+;;The dbmtype argument is a symbol that names the type
+;;of dbm implementation; for example, gdbm for dbm.gdbm,
+;;and fsdbm for dbm.fsdbm.   We assume that the
+;;dbm implementation of type foo is provided as 
+;;a module dbm.foo, and its class is named
+;;as <foo>.
+;;
+;;This procedure first checks if the required module has been
+;;loaded, and if not, it tries to load it.   If the module
+;;loads successfully, it returns the class object of the
+;;named dbm implementation.   If it can't load the module,
+;;or can't find the dbm class, this procedure returns #f.
+;;
+;;example:
+;;  (use dbm)
+;;  
+;;  (dbm-type->class 'gdbm)
+;;    ==> #<class <gdbm>>
+;;  
+;;  (dbm-type->class 'nosuchdbm)
+;;    ==> #f
+;;
+;;@param dbmtype 
+
+;;;;;
+;;@type Method
+;;@name dbm-closed?
+;;@description データベースdbmが既にクローズされていたら#tを返します。
+;;
+;;@param (dbm <dbm>) 
+
+;;;;;
+;;@type Method
+;;@name dbm-close
+;;@description データベースdbmをクローズします。データベースがクローズされると、
+;;それ以降のアクセスオペレーションはエラーとなります。
+;;
+;;@param (dbm <dbm>) 
+
+;;;;;
+;;@type Method
+;;@name dbm-open
+;;@description DBMインスタンスを作成してオープンするための便利なメソッドです。
+;;次のように定義されます。
+;;example:
+;;  (define-method dbm-open ((class <class>) . initargs)
+;;    (dbm-open (apply make class initargs)))
+;;
+;;@param (dbm-class <dbm-meta>) options ... 
+
+;;;;;
+;;@type Method
+;;@name dbm-open
+;;@description DBMデータベースをオープンします。dbmは、<dbm>クラスを継承した
+;;具体クラスのインスタンスでなければなりません。また、そのスロットには適切な値が
+;;セットされている必要があります。オープンに成功したらdbm自身が返されます。
+;;失敗した場合はエラーが報告されます。
+;;
+;;@param (dbm <dbm>) 
+
+;;;;;
+;;@type Class
+;;@name <dbm-meta>
+;;@description <dbm>クラス及びそのサブクラスのメタクラスです。
+;;
+
+;;;;;
+;;@type Class
+;;@name <dbm>
+;;@description DBM系のデータベースのための抽象クラスです。データベースへの共通のオペレーションを
+;;定義します。以下のインスタンススロットを持ちます。これらのスロットの値は
+;;dbm-openによってデータベースがオープンされる前にセットされて
+;;いなければなりません。
+;;
+;;具体クラスは、データベースの操作をより細かく行うための追加のスロット(例えばロックを
+;;行うかどうか)を持つかもしれません。
+;;
+;;データベースファイルのパス名。dbmの実装によっては、このパスにサフィックスが追加されます。
+;;
+;;読み書きのモードを指定します。以下の値のいずれかを取ります。
+;;:read ------
+;;  データベースはdbm-openによって読みだし専用モードでオープンされます。
+;;  オープンされる時点でデータベースは存在していなければなりません。
+;;:write ------
+;;  データベースはdbm-openによって読み書き可能なモードでオープンされます。
+;;  データベースが存在しなければ、dbm-openは新しいデータベースを作成します。
+;;:create ------
+;;  dbm-openによって新しいデータベースが作成され、読み書き可能なモードでオープンされます。
+;;  既にデータベースが存在していた場合、その内容はクリアされます。
+;;
+;;データベースが作成されるときのファイルパーミッションを指定します。
+;;デフォルトは#o664です。
+;;
+;;デフォルトでは、dbmデータベースはキーにも値にも文字列しか使うことはできません。
+;;これらのスロットによって、それ以外のSchemeオブジェクトを取り扱う方法を指定することが
+;;できます。以下の値のいずれかが可能です。
+;;#f ------
+;;  デフォルトの値です。キーあるいは値は変換されません。それらは文字列でなければなりません。
+;;#t ------
+;;  キーあるいは値はwriteを使って文字列に変換されデータベースに格納されます。
+;;  そしてreadを使って文字列からSchemeオブジェクトへと変換されます。
+;;  後でreadで読みこめるようなキーあるいは値のみを扱うことができます。
+;;  (但し、dbmライブラリは書き込み時にそれが後で読み込めるかどうかのチェックは行いません)。
+;;  キーの比較は文字列に変換された後で行われるので、同じ値となるキーは同じ文字列表現を
+;;  持つ必要があります。
+;;二つの手続きのリスト ------
+;;  どちらの手続きも一つの引数を取ります。最初の手続きはSchemeオブジェクトを受け取り、
+;;  文字列を返します。キーあるいは値をデータベースに格納する時に呼ばれます。
+;;  二つ目の手続きは文字列を受け取りSchemeオブジェクトを返します。データベースから
+;;  キーあるいは値を取り出す時に呼ばれます。
+;;  キーの比較は文字列に変換された後で行われるので、同じ値となるキーは同じ文字列に
+;;  変換される必要があります。
+;;
+

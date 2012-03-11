@@ -1,0 +1,386 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name sparse-table-values
+;;@param st 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-keys
+;;@param st 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-map
+;;@param st 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-for-each
+;;@param st 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-fold
+;;@param st 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-pop!
+;;@param st 
+;;@param key 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-push!
+;;@param st 
+;;@param key 
+;;@param val 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-update!
+;;@param st 
+;;@param key 
+;;@param proc 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-clear!
+;;@description Empties st.
+;;
+;;@param st 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-delete!
+;;@description Deletes an entry with key in st if it exists.
+;;Returns #t if an entry is actually deleted, or #f
+;;if there hasn't been an entry with key.
+;;
+;;@param st 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-exists?
+;;@description Returns #t if an entry with key exists in st,
+;;#f otherwise.
+;;
+;;@param st 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-set!
+;;@description Sets value with key in st.
+;;
+;;@param st 
+;;@param key 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-ref
+;;@description Retrieves a value associated to the key in st.
+;;If no entry with key exists, fallback is returned
+;;when it is provided, or an error is signalled otherwise.
+;;
+;;@param st 
+;;@param key 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-num-entries
+;;@description Returns the number of entries in a sparse table st.
+;;
+;;@param st 
+
+;;;;;
+;;@type Function
+;;@name sparse-table-copy
+;;@description Returns a copy of a sparse table st.
+;;
+;;@param st 
+
+;;;;;
+;;@type Function
+;;@name make-sparse-table
+;;@description Creates and returns an empty sparse table.  The type argument
+;;specifies how to compare the elements; currently it can be
+;;one of the symbols eq?, eqv?, equal? and
+;;string=?, like hash tables (@xref{Hashtables}).
+;;
+;;@param type 
+
+;;;;;
+;;@type Class
+;;@name <sparse-table>
+;;@description A class for sparse table.  Inherits <dictionary> and
+;;<collection>.
+;;
+;;Operationally sparse tables are the same as hash tables, but
+;;the former consumes less memory in trade of slight slower access.
+;;(Roughly x1.5 to x2 access time when the table is small.
+;;As the table gets larger the difference becomes smaller.)
+;;
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-values
+;;@description Returns a list of all keys and all values in sv, respectively.
+;;
+;;@param sv 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-keys
+;;@description Returns a list of all keys and all values in sv, respectively.
+;;
+;;@param sv 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-map
+;;@description Calls proc with index and value, e.g. (proc k value),
+;;for each element of sv.
+;;
+;;The results of proc are discarded by sparse-vector-for-each,
+;;and gathered to a list and returned by sparse-vector-map.
+;;
+;;@param sv 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-for-each
+;;@description Calls proc with index and value, e.g. (proc k value),
+;;for each element of sv.
+;;
+;;The results of proc are discarded by sparse-vector-for-each,
+;;and gathered to a list and returned by sparse-vector-map.
+;;
+;;@param sv 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-fold
+;;@description For each entry in sv, calls proc as
+;;(proc k_n v_n seed_n), where 
+;;k_n is an index and v_n is a value for it,
+;;and seed_n is the returned value of the previous
+;;call to proc if n >= 1, and seed if n = 0.
+;;Returns the value of the last call of proc.
+;;
+;;@param sv 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-pop!
+;;@description Convenience routines to fetch-and-update an entry of
+;;a sparse vector.  Works just like hash-table-update!,
+;;hash-table-push! and hash-table-pop!; 
+;;(@xref{Hashtables}).
+;;
+;;@param sv 
+;;@param k 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-push!
+;;@description Convenience routines to fetch-and-update an entry of
+;;a sparse vector.  Works just like hash-table-update!,
+;;hash-table-push! and hash-table-pop!; 
+;;(@xref{Hashtables}).
+;;
+;;@param sv 
+;;@param k 
+;;@param val 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-update!
+;;@description Convenience routines to fetch-and-update an entry of
+;;a sparse vector.  Works just like hash-table-update!,
+;;hash-table-push! and hash-table-pop!; 
+;;(@xref{Hashtables}).
+;;
+;;@param sv 
+;;@param k 
+;;@param proc 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-inc!
+;;@description This is a shortcut of the following.  It is especially efficient
+;;for numeric sparse vectors.
+;;
+;;example:
+;;  (sparse-vector-set! sv k (+ (sparse-vector-ref sv k fallback) delta))
+;;
+;;If the result of addition exceeds the allowed value range of sv,
+;;an error is signalled.  In future we'll allow an option to clamp
+;;the result value within the range.
+;;
+;;@param sv 
+;;@param k 
+;;@param delta 
+;;@param :optional 
+;;@param (fallback 0) 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-clear!
+;;@description Empties a sparse vector.
+;;
+;;@param sv 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-delete!
+;;@description Deletes the k-th entry of sv.  If sv had the entry ,
+;;returns #t.  If sv didn't have the entry, returns #f.
+;;
+;;@param sv 
+;;@param k 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-exists?
+;;@description Returns #t if sv has an entry for index k,
+;;#f otherwise.
+;;
+;;@param sv 
+;;@param k 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-num-entries
+;;@description Returns the number of entries in sv.
+;;
+;;@param sv 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-set!
+;;@description Sets value for k-th element of a sparse vector sv.
+;;K must be a nonnegative exact integer, and below the maximum
+;;allowed index.
+;;
+;;If sv is a numeric sparse vector, value must also be
+;;within the allowed range, or an error is signalled.
+;;
+;;@param sv 
+;;@param k 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-ref
+;;@description Returns k-th element of a sparse vector sv, where
+;;k must be a nonnegative exact integer.  If k is
+;;equal to or greater than the allowed index range, an error
+;;is signalled.
+;;
+;;If k is within the allowed range but the sparse vector
+;;doesn't have a value for k, default is returned
+;;if it is provided, otherwise an error is signalled.
+;;
+;;@param sv 
+;;@param k 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-copy
+;;@description Returns a copy of a sparse vector sv.
+;;
+;;@param sv 
+
+;;;;;
+;;@type Function
+;;@name sparse-vector-max-index-bits
+;;@description Returns maximum number of bits of allowed integer.  If this 
+;;returns 32, the index up to (expt 2 32) is supported.
+;;It is guaranteed that this is at least 32.
+;;
+
+;;;;;
+;;@type Function
+;;@name make-sparse-vector
+;;@description Creates an empty sparse vector.  The type argument can be
+;;#f (default), one of subclasses of <sparse-vector-base>,
+;;or a symbol of either one of s8, u8,
+;;s16, u16, s32, u32,
+;;s64, u64, f16, f32, or f64.
+;;
+;;If type is omitted or #f, a <sparse-vector> is
+;;created.  If it is a class, an instance of the class is created
+;;(It is an error to pass a class that is not a subclass of
+;;<sparse-vector-base>.)
+;;If it is a symbol, an instance of corresponding <sparse-TAGvector>
+;;is created.
+;;
+;;@param :optional 
+;;@param type 
+
+;;;;;
+;;@type Class
+;;@name <sparse-vector>
+;;@description The actual sparse vector classes.  Inherits <sparse-vector-base>.
+;;An instance of <sparse-vector> can contain any Scheme objects.
+;;
+;;TAG either one of s8, u8,
+;;s16, u16, s32, u32,
+;;s64, u64, f16, f32, or f64.
+;;The range of values an instance of those classes can hold
+;;is the same as the corresponding <TAGvector> class
+;;in gauche.uvector (@xref{Uniform vectors}).  That is,
+;;<sparse-u8vector> can have exact integer values 
+;;between 0 and 255.
+;;
+
+;;;;;
+;;@type Class
+;;@name <sparse-vector-base>
+;;@description An abstract base class of sparse vectors. 
+;;Inherits <dictionary> and <collection>.
+;;Note that sparse vectors are not <sequence>; even
+;;they can be indexable by integers, they don't have
+;;means of ordered access.
+;;
+;;Sparse vector may be a general vector
+;;that can contain any Scheme objects (like <vector>), 
+;;or a specialized vector that can contain only certain
+;;types of numbers (like <s8vector> etc.).
+;;
+;;All of these sparse vectors can be accessed by the same API.
+;;
+;;Sparse vectors also implements the Collection API
+;;(@xref{Collection framework}) and the Dictionary API
+;;(@xref{Dictionary framework}).
+;;
+

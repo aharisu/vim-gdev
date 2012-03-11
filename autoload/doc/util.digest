@@ -1,0 +1,26 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name digest-hexify
+;;@description ユーティリティ手続きです。ダイジェストの結果、digest-resultを
+;;与えると、それを16進文字列に変換します。
+;;
+;;@param digest-result 
+
+;;;;;
+;;@type Class
+;;@name <message-digest-algorithm>
+;;@description メッセージダイジェストアルゴリズムの実装のベースクラスです。
+;;
+
+;;;;;
+;;@type Class
+;;@name <message-digest-algorithm-meta>
+;;@description メッセージダイジェストアルゴリズムの実装のメタクラスです。
+;;
+

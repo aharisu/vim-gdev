@@ -1,0 +1,79 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name relnum-compare
+;;@description これは version-compareの下位レベルの手続きです。
+;;ふたつのリリース番号 (relnum) rel1 と rel2 を比較し、
+;;rel1 が rel2 より前、rel1 と rel2 が同じ、
+;;rel1 が rel2 より後、の3つの場合によって、それぞれ、
+;;-1、0、1 を返します。
+;;
+;;@param rel1 
+;;@param rel2 
+
+;;;;;
+;;@type Function
+;;@name version-compare
+;;@description ふたつのバージョン番号文字列 ver1 と ver2 を比較し、
+;;ver1 のほうが ver2 より前、ver1 と ver2 は同じ、
+;;ver1 が ver2 の後、の3つの場合によって、それぞれ、
+;;-1、0、1 を返します。
+;;
+;;@param ver1 
+;;@param ver2 
+
+;;;;;
+;;@type Function
+;;@name version>=?
+;;@description ふたつのバージョン番号文字列 ver1 と ver2 の順序関係によって
+;;真偽値を返します。もし引数が、バージョン番号を定義するのに不正な文字列を
+;;含んでいたばあい、エラーが上ります。
+;;
+;;@param ver1 
+;;@param ver2 
+
+;;;;;
+;;@type Function
+;;@name version>?
+;;@description ふたつのバージョン番号文字列 ver1 と ver2 の順序関係によって
+;;真偽値を返します。もし引数が、バージョン番号を定義するのに不正な文字列を
+;;含んでいたばあい、エラーが上ります。
+;;
+;;@param ver1 
+;;@param ver2 
+
+;;;;;
+;;@type Function
+;;@name version<=?
+;;@description ふたつのバージョン番号文字列 ver1 と ver2 の順序関係によって
+;;真偽値を返します。もし引数が、バージョン番号を定義するのに不正な文字列を
+;;含んでいたばあい、エラーが上ります。
+;;
+;;@param ver1 
+;;@param ver2 
+
+;;;;;
+;;@type Function
+;;@name version<?
+;;@description ふたつのバージョン番号文字列 ver1 と ver2 の順序関係によって
+;;真偽値を返します。もし引数が、バージョン番号を定義するのに不正な文字列を
+;;含んでいたばあい、エラーが上ります。
+;;
+;;@param ver1 
+;;@param ver2 
+
+;;;;;
+;;@type Function
+;;@name version=?
+;;@description ふたつのバージョン番号文字列 ver1 と ver2 の順序関係によって
+;;真偽値を返します。もし引数が、バージョン番号を定義するのに不正な文字列を
+;;含んでいたばあい、エラーが上ります。
+;;
+;;@param ver1 
+;;@param ver2 
+

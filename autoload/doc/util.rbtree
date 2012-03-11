@@ -1,0 +1,268 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name alist->rbtree
+;;@description key=?, key<? によって新たな赤黒木を作成し、
+;;連想リストalistに含まれる要素を追加し、その木を返します。
+;;
+;;@param alist 
+;;@param key=? 
+;;@param key<? 
+
+;;;;;
+;;@type Function
+;;@name rbtree->alist
+;;@description 赤黒木rbtree含まれる要素を連想リストにして返します。返される連
+;;想リストのキーは昇順に並んでいます。
+;;
+;;@param rbtree 
+
+;;;;;
+;;@type Function
+;;@name rbtree-values
+;;@description それぞれ、赤黒木rbtree内の全てのキーまたは値をリストにして返しま
+;;す。返されるリストの要素はキーの昇順に並んでいます。
+;;
+;;@param rbtree 
+
+;;;;;
+;;@type Function
+;;@name rbtree-keys
+;;@description それぞれ、赤黒木rbtree内の全てのキーまたは値をリストにして返しま
+;;す。返されるリストの要素はキーの昇順に並んでいます。
+;;
+;;@param rbtree 
+
+;;;;;
+;;@type Function
+;;@name rbtree-fold-right
+;;@description rbtreeの各要素に対し、(key, value, seed) -> seed の型を持つ
+;;procを適用してゆきます。
+;;rbtree-foldとrbtree-fold-rightの違いは
+;;foldのfold-right違いと同じ、すなわち
+;;結合の方向にあります。
+;;example:
+;;  rbtree-fold:
+;;    (proc Kn Vn (proc Kn-1 Vn-1 ... (proc K0 V0 seed)))
+;;  
+;;  rbtree-fold-right
+;;    (proc K0 V0 (proc K1 V1 ... (proc Kn Vn seed)))
+;;
+;;例:
+;;example:
+;;  (define tree (alist->rbtree '((3 . a) (7 . b) (5 . c)) = <))
+;;  
+;;  (rbtree-fold tree list* '()) 
+;;     ==> (7 b 5 c 3 a)
+;;  (rbtree-fold-right tree list* '()) 
+;;     ==> (3 a 5 c 7 b)
+;;
+;;@param rbtree 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name rbtree-fold
+;;@description rbtreeの各要素に対し、(key, value, seed) -> seed の型を持つ
+;;procを適用してゆきます。
+;;rbtree-foldとrbtree-fold-rightの違いは
+;;foldのfold-right違いと同じ、すなわち
+;;結合の方向にあります。
+;;example:
+;;  rbtree-fold:
+;;    (proc Kn Vn (proc Kn-1 Vn-1 ... (proc K0 V0 seed)))
+;;  
+;;  rbtree-fold-right
+;;    (proc K0 V0 (proc K1 V1 ... (proc Kn Vn seed)))
+;;
+;;例:
+;;example:
+;;  (define tree (alist->rbtree '((3 . a) (7 . b) (5 . c)) = <))
+;;  
+;;  (rbtree-fold tree list* '()) 
+;;     ==> (7 b 5 c 3 a)
+;;  (rbtree-fold-right tree list* '()) 
+;;     ==> (3 a 5 c 7 b)
+;;
+;;@param rbtree 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name rbtree-extract-max!
+;;@description それぞれ、赤黒木rbtreeに含まれる最小および最大のキーを探索し、そ
+;;のエントリを赤黒木rbtreeから削除したうえで、そのキーと値のペアを
+;;返します。赤黒木rbtreeが空だった場合は、fallbackが指定されていれば
+;;それを返し、そうでなければエラーを報告します。
+;;
+;;@param rbtree 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-extract-min!
+;;@description それぞれ、赤黒木rbtreeに含まれる最小および最大のキーを探索し、そ
+;;のエントリを赤黒木rbtreeから削除したうえで、そのキーと値のペアを
+;;返します。赤黒木rbtreeが空だった場合は、fallbackが指定されていれば
+;;それを返し、そうでなければエラーを報告します。
+;;
+;;@param rbtree 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-max
+;;@description それぞれ、赤黒木rbtreeに含まれる最小および最大のキーを探索し、その
+;;キーと値のペアを返します。赤黒木rbtreeが空だった場合は、fallbackが
+;;指定されていればそれを返し、そうでなければエラーを報告します。
+;;
+;;@param rbtree 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-min
+;;@description それぞれ、赤黒木rbtreeに含まれる最小および最大のキーを探索し、その
+;;キーと値のペアを返します。赤黒木rbtreeが空だった場合は、fallbackが
+;;指定されていればそれを返し、そうでなければエラーを報告します。
+;;
+;;@param rbtree 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-pop!
+;;@description 赤黒木rbtree中のキーkeyに対応する値が存在し、かつペアであった場合
+;;に、そのエントリの値を元の値のcdrで置き換え、元の値のcarを返します。
+;;keyに対応する値が存在しないかペアではなかった場合、赤黒木rbtreeは
+;;変更されず、fallbackが与えられていればそれが返され、与えられていな
+;;ければエラーが報告されます。
+;;
+;;@param rbtree 
+;;@param key 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-push!
+;;@description 赤黒木rbtree中の、キーkeyに対応する値にvalueをコンスし、それをkey
+;;に対する新たな値とします。もしkeyに対応する値がまだ無ければ、新た
+;;なエントリが作成され、(list value)がその値となります。
+;;
+;;@param rbtree 
+;;@param key 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name rbtree-update!
+;;@description rbtree-push!等のより一般的なバージョンです。赤黒木の探索が一度
+;;しか行われないことを除いては、基本的に次のように動作します。
+;;example:
+;;  (let ((tmp (proc (rbtree-get rbtree key fallback))))
+;;    (rbtree-put! rbtree key tmp)
+;;    tmp)
+;;
+;;@param rbtree 
+;;@param key 
+;;@param proc 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-delete!
+;;@description 赤黒木rbtreeからキーkeyを持つエントリを削除します。keyを持つエン
+;;トリが実際に存在して削除された場合は#tを、エントリが存在しなかっ
+;;た場合は#fを返します。
+;;
+;;@param rbtree 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name rbtree-put!
+;;@description キーkeyと対応する値valueを赤黒木rbtreeに挿入します。もし、keyと、
+;;key=?における意味で同じキーがすでに存在する場合、キーに対応する値
+;;は新たな値に置き換えられます。
+;;
+;;@param rbtree 
+;;@param key 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name rbtree-get
+;;@description キーkeyを赤黒木rbtreeから探します。見つかればkeyに対応する値を返
+;;します。キーが見つからなかった場合、fallbackが与えられていればそれ
+;;を返し、そうでなければエラーを報告します。
+;;
+;;@param rbtree 
+;;@param key 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name rbtree-exists?
+;;@description 赤黒木rbtreeにキーkeyを持つエントリがあれば#tを、
+;;そうでなければ#fを返します。
+;;
+;;@param rbtree 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name rbtree-num-entries
+;;@description 赤黒木rbtree内の要素の個数を返します。
+;;
+;;@param rbtree 
+
+;;;;;
+;;@type Function
+;;@name rbtree-empty?
+;;@description 赤黒木rbtreeが要素を持たないなら#tを、そうでなければ#fを
+;;返します。
+;;
+;;@param rbtree 
+
+;;;;;
+;;@type Function
+;;@name rbtree-copy
+;;@description 赤黒木rbtreeのコピーを作り、それを返します。返された赤黒木に対す
+;;る破壊的操作は、元の赤黒木に影響を与えません。
+;;
+;;@param rbtree 
+
+;;;;;
+;;@type Function
+;;@name make-rbtree
+;;@description <rbtree>オブジェクトを作成して返します。key=?、key<?はそれぞれ引
+;;数を2つ受け取り真偽値を返す手続きであり、要素のキーが渡されます。
+;;key=?は、2つの引数a, b が同値の場合に真を、それ以外の場合に#fを
+;;返す手続きです。key<?は、a < bが成り立つ場合に真を、それ以外の
+;;場合に#fを返す手続きです。
+;;
+;;@param key=? 
+;;@param key<? 
+
+;;;;;
+;;@type Class
+;;@name <rbtree>
+;;@description 赤黒木のクラスです。<sequence>を継承しているので、
+;;gauche.sequenceで定義されるAPIを使うことができます。
+;;シーケンスとして扱うときの各要素は、キーと値のペアです。
+;;
+

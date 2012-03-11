@@ -1,0 +1,426 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name cgen-add!
+;;@description Submit cgen-node to the current cgen unit.
+;;If the current unit is not set, cgen-node is simply ignored.
+;;
+;;@param cgen-node 
+
+;;;;;
+;;@type Method
+;;@name cgen-emit-init
+;;@description These generic functions are called during writing out
+;;the C source within cgen-emit-c and cgen-emit-h.
+;;Inside these methods, anything written out to the
+;;current output port goes into the output file.
+;;
+;;While generating .h file by cgen-emit-h, 
+;;cgen-emit-xtrn method for all submitted nodes are
+;;called in order of submission.
+;;
+;;While generating .c file by cgen-emit-c,
+;;cgen-emit-decl method for all submitted nodes are
+;;called first, then cgen-emit-body method, then
+;;cgen-emit-init method.
+;;
+;;If you don't specialize any one of these method, it doesn't
+;;generate code in that part.
+;;
+;;@param cgen-node 
+
+;;;;;
+;;@type Method
+;;@name cgen-emit-body
+;;@description These generic functions are called during writing out
+;;the C source within cgen-emit-c and cgen-emit-h.
+;;Inside these methods, anything written out to the
+;;current output port goes into the output file.
+;;
+;;While generating .h file by cgen-emit-h, 
+;;cgen-emit-xtrn method for all submitted nodes are
+;;called in order of submission.
+;;
+;;While generating .c file by cgen-emit-c,
+;;cgen-emit-decl method for all submitted nodes are
+;;called first, then cgen-emit-body method, then
+;;cgen-emit-init method.
+;;
+;;If you don't specialize any one of these method, it doesn't
+;;generate code in that part.
+;;
+;;@param cgen-node 
+
+;;;;;
+;;@type Method
+;;@name cgen-emit-decl
+;;@description These generic functions are called during writing out
+;;the C source within cgen-emit-c and cgen-emit-h.
+;;Inside these methods, anything written out to the
+;;current output port goes into the output file.
+;;
+;;While generating .h file by cgen-emit-h, 
+;;cgen-emit-xtrn method for all submitted nodes are
+;;called in order of submission.
+;;
+;;While generating .c file by cgen-emit-c,
+;;cgen-emit-decl method for all submitted nodes are
+;;called first, then cgen-emit-body method, then
+;;cgen-emit-init method.
+;;
+;;If you don't specialize any one of these method, it doesn't
+;;generate code in that part.
+;;
+;;@param cgen-node 
+
+;;;;;
+;;@type Method
+;;@name cgen-emit-xtrn
+;;@description These generic functions are called during writing out
+;;the C source within cgen-emit-c and cgen-emit-h.
+;;Inside these methods, anything written out to the
+;;current output port goes into the output file.
+;;
+;;While generating .h file by cgen-emit-h, 
+;;cgen-emit-xtrn method for all submitted nodes are
+;;called in order of submission.
+;;
+;;While generating .c file by cgen-emit-c,
+;;cgen-emit-decl method for all submitted nodes are
+;;called first, then cgen-emit-body method, then
+;;cgen-emit-init method.
+;;
+;;If you don't specialize any one of these method, it doesn't
+;;generate code in that part.
+;;
+;;@param cgen-node 
+
+;;;;;
+;;@type Class
+;;@name <cgen-node>
+;;@description A base class to represent a set of code fragments.
+;;
+;;The state of C preprocessor condition (set by with-cgen-cpp-condition)
+;;is captured when an instance of the subclass of this class is
+;;created, so generating appropriate #ifs and #endifs are
+;;automatically handled.
+;;
+
+;;;;;
+;;@type Macro
+;;@name cgen-with-cpp-condition
+;;@description Code fragments submitted in body ... are protected
+;;by #if cpp-expr and #endif.
+;;
+;;If cpp-expr is a string, it is emitted literally:
+;;
+;;example:
+;;  (cgen-with-cpp-condition "defined(FOO)"
+;;    (cgen-init "foo();"))
+;;  
+;;  ;; will generate:
+;;  #if defined(FOO)
+;;  foo();
+;;  #endif /* defined(FOO) */
+;;
+;;You can also construct cpp-expr by S-expr.
+;;
+;;example:
+;;  <cpp-expr> : <string>
+;;             | (defined <cpp-expr>)
+;;             | (not <cpp-expr>)
+;;             | (<n-ary-op> <cpp-expr> <cpp-expr> ...)
+;;             | (<binary-op> <cpp-expr> <cpp-expr>)
+;;  
+;;  <n-ary-op> : and | or | + | * | - | /
+;;  
+;;  <binary-op> : > | >= | == | < | <= | !=
+;;              | logand | logior | lognot | >> | <<
+;;
+;;Example:
+;;
+;;example:
+;;  (cgen-with-cpp-condition '(and (defined FOO)
+;;                                 (defined BAR))
+;;    (cgen-init "foo();"))
+;;  
+;;  ;; will generate:
+;;  #if ((defined FOO)&&(defined BAR))
+;;  foo();
+;;  #endif /* ((defined FOO)&&(defined BAR)) */
+;;
+;;You can nest cgen-with-cpp-condition.
+;;
+;;@param cpp-expr 
+;;@param body 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name cgen-safe-comment
+;;@description Escapes characters invalid in C identifiers or C comments.
+;;
+;;With cgen-safe-name, characters other than ASCII alphabets
+;;and digits are converted to a form _XX, where XX is
+;;hexadecimal notation of the character code.  (Note that the character
+;;_ is also converted.)  So the returned string can be used
+;;safely as a C identifier.  The mapping is injective, that is,
+;;if the source strings differ, the result string always differ.
+;;
+;;On the other hand, cgen-safe-name-friendly convers
+;;the input string into more readable C identifier.  -> becomes
+;;_TO (e.g. char->integer becomes char_TOinteger),
+;;other - and _ become _,
+;;? becomes P (e.g. char? becomes charP),
+;;! becomes X (e.g. set! becomes setX),
+;;< and > become _LT and _GT respectively.
+;;Other special characters except _ are converted to _XX
+;;as in cgen-safe-name.  The mapping is not injective; e.g.
+;;both read-line and read_line map to read_line.
+;;Use this only when you think some human needs to read the generated
+;;C code (which is not recommended, by the way.)
+;;
+;;Much simpler is c-safe-comment, which just converts
+;;/* and */ into / * and * / (a space
+;;between those two characters), so that it won't terminate the
+;;comment inadvertently.  (Technically, escaping only */ suffice,
+;;but some simple-minded C parser might be confused by /* in the
+;;comments).   The conversion isn't injective as well.
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name cgen-safe-name-friendly
+;;@description Escapes characters invalid in C identifiers or C comments.
+;;
+;;With cgen-safe-name, characters other than ASCII alphabets
+;;and digits are converted to a form _XX, where XX is
+;;hexadecimal notation of the character code.  (Note that the character
+;;_ is also converted.)  So the returned string can be used
+;;safely as a C identifier.  The mapping is injective, that is,
+;;if the source strings differ, the result string always differ.
+;;
+;;On the other hand, cgen-safe-name-friendly convers
+;;the input string into more readable C identifier.  -> becomes
+;;_TO (e.g. char->integer becomes char_TOinteger),
+;;other - and _ become _,
+;;? becomes P (e.g. char? becomes charP),
+;;! becomes X (e.g. set! becomes setX),
+;;< and > become _LT and _GT respectively.
+;;Other special characters except _ are converted to _XX
+;;as in cgen-safe-name.  The mapping is not injective; e.g.
+;;both read-line and read_line map to read_line.
+;;Use this only when you think some human needs to read the generated
+;;C code (which is not recommended, by the way.)
+;;
+;;Much simpler is c-safe-comment, which just converts
+;;/* and */ into / * and * / (a space
+;;between those two characters), so that it won't terminate the
+;;comment inadvertently.  (Technically, escaping only */ suffice,
+;;but some simple-minded C parser might be confused by /* in the
+;;comments).   The conversion isn't injective as well.
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name cgen-safe-name
+;;@description Escapes characters invalid in C identifiers or C comments.
+;;
+;;With cgen-safe-name, characters other than ASCII alphabets
+;;and digits are converted to a form _XX, where XX is
+;;hexadecimal notation of the character code.  (Note that the character
+;;_ is also converted.)  So the returned string can be used
+;;safely as a C identifier.  The mapping is injective, that is,
+;;if the source strings differ, the result string always differ.
+;;
+;;On the other hand, cgen-safe-name-friendly convers
+;;the input string into more readable C identifier.  -> becomes
+;;_TO (e.g. char->integer becomes char_TOinteger),
+;;other - and _ become _,
+;;? becomes P (e.g. char? becomes charP),
+;;! becomes X (e.g. set! becomes setX),
+;;< and > become _LT and _GT respectively.
+;;Other special characters except _ are converted to _XX
+;;as in cgen-safe-name.  The mapping is not injective; e.g.
+;;both read-line and read_line map to read_line.
+;;Use this only when you think some human needs to read the generated
+;;C code (which is not recommended, by the way.)
+;;
+;;Much simpler is c-safe-comment, which just converts
+;;/* and */ into / * and * / (a space
+;;between those two characters), so that it won't terminate the
+;;comment inadvertently.  (Technically, escaping only */ suffice,
+;;but some simple-minded C parser might be confused by /* in the
+;;comments).   The conversion isn't injective as well.
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name cgen-init
+;;@description Put code fragments code ... to the appropriate parts.
+;;Each fragment must be a string.
+;;
+;;@param code 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name cgen-body
+;;@description Put code fragments code ... to the appropriate parts.
+;;Each fragment must be a string.
+;;
+;;@param code 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name cgen-decl
+;;@description Put code fragments code ... to the appropriate parts.
+;;Each fragment must be a string.
+;;
+;;@param code 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name cgen-extern
+;;@description Put code fragments code ... to the appropriate parts.
+;;Each fragment must be a string.
+;;
+;;@param code 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name cgen-unit-init-name
+;;@description Returns a string that names the initialization function
+;;generated to C.  It is used to create the default
+;;init-prologue value. 
+;;
+;;@param cgen-unit 
+
+;;;;;
+;;@type Method
+;;@name cgen-unit-h-file
+;;@description Returns a string that names C source and header file for
+;;cgen-unit, respectively.  The default method first
+;;looks at c-file or h-file slot of the
+;;cgen-unit, and if it is #f, use the value of name
+;;slot and appends an extension .c or .h.
+;;
+;;@param cgen-unit 
+
+;;;;;
+;;@type Method
+;;@name cgen-unit-c-file
+;;@description Returns a string that names C source and header file for
+;;cgen-unit, respectively.  The default method first
+;;looks at c-file or h-file slot of the
+;;cgen-unit, and if it is #f, use the value of name
+;;slot and appends an extension .c or .h.
+;;
+;;@param cgen-unit 
+
+;;;;;
+;;@type Method
+;;@name cgen-emit-h
+;;@description Write the accumulated code fragments in cgen-unit to a
+;;C source file and C header file.  The name of the files are
+;;determined by calling cgen-unit-c-file and cgen-unit-h-file,
+;;respectively.  If the files already exist, its content is overwritten;
+;;you can't gradually write to the files.
+;;So, usually these procedures are called at the last step of the code
+;;generation.
+;;
+;;We'll explain the details of how each file is organized under
+;;``Filling the content'' section below.
+;;
+;;@param cgen-unit 
+
+;;;;;
+;;@type Method
+;;@name cgen-emit-c
+;;@description Write the accumulated code fragments in cgen-unit to a
+;;C source file and C header file.  The name of the files are
+;;determined by calling cgen-unit-c-file and cgen-unit-h-file,
+;;respectively.  If the files already exist, its content is overwritten;
+;;you can't gradually write to the files.
+;;So, usually these procedures are called at the last step of the code
+;;generation.
+;;
+;;We'll explain the details of how each file is organized under
+;;``Filling the content'' section below.
+;;
+;;@param cgen-unit 
+
+;;;;;
+;;@type Parameter
+;;@name cgen-current-unit
+;;@description A parameter to keep the current cgen-unit.
+;;
+
+;;;;;
+;;@type Class
+;;@name <cgen-unit>
+;;@description A cgen-unit is a unit of C source generation.
+;;It corresponds to one .c file, and optionally one .h file.
+;;During the processing, a "current unit" is kept in a parameter
+;;cgen-current-unit, and most cgen APIs implicitly work to it.
+;;
+;;The following slot are for public use.  They are used to tailor
+;;the output.  Usually you set those slots at initializatoin time.
+;;The effect is undefined if you change them in the middle of
+;;code geneartion process.
+;;
+;;
+;;
+;;
+;;
+;;@slot name A string to name this unit.  This is used for the default name
+;;of the generated files (name.c and name.h)
+;;and the suffix of the default name of initialization function.
+;;Other cgen modules may use this to generate names.  Avoid using
+;;characters that are valid for C identifiers.
+;;
+;;You can override those default names by setting the other slots.
+;;
+;;@slot c-file @defivarx {<cgen-unit>} h-file
+;;The name of the C source file and header file, in strings.
+;;If they are #f (by default), the value of name slot
+;;is used as the file name, with extension .c or .h
+;;is attached, respectively.
+;;
+;;To get the file names to be generated, use cgen-unit-c-file
+;;and cugen-unit-h-file generic functions, instead of reading
+;;these slots.
+;;
+;;@slot preamble A list of strings to be inserted at the top of the generated sources.
+;;The default value is ("/* Generated by gauche.cgen */").
+;;Each string appears in its
+;;own line.  Usually you don't need anything
+;;
+;;@slot init-prologue @defivarx {<cgen-init>} init-epilogue
+;;A string to start or to end the initialization function, respectively.
+;;The default value of init-prologue is
+;;"void Scm_Init_NAME(void) @{" where NAME is the
+;;value of the name slot.  The default value of init-epilogue
+;;is just "@"}.  Each appears in its own line.
+;;
+;;To get the default initialization function name, use cgen-unit-init-name
+;;generic function.
+;;
+;;To customize initialization function name, arguments and/or return type,
+;;set init-prologue.
+;;
+;;The content of initialization function is filled by the code
+;;fragments registered by cgen-init.
+;;
+

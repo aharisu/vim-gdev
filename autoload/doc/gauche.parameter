@@ -1,0 +1,126 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Method
+;;@name parameter-post-observers
+;;@description ``before''か``after''オブザーバをそれぞれキープするフックオブジェクト
+;;(Hooks参照)を返します。
+;;
+;;注意: パラメータの値自身がスレッドローカルであっても、
+;;オブザーバのリストは全てのスレッドで共有されます。
+;;
+;;@param (p <parameter>) 
+
+;;;;;
+;;@type Method
+;;@name parameter-pre-observers
+;;@description ``before''か``after''オブザーバをそれぞれキープするフックオブジェクト
+;;(Hooks参照)を返します。
+;;
+;;注意: パラメータの値自身がスレッドローカルであっても、
+;;オブザーバのリストは全てのスレッドで共有されます。
+;;
+;;@param (p <parameter>) 
+
+;;;;;
+;;@type Method
+;;@name parameter-observer-delete!
+;;@description パラメータpのオブザーバ手続きのリストからprocを削除します。
+;;procがリストになければ、何も起こりません。
+;;when引数にシンボルbeforeかafterを与えて、
+;;procをどちらのリストから削除するかを指定することができます。
+;;when引数が省略されると、procは両方のリストから削除されます。
+;;
+;;@param (p <parameter>) proc :optional when 
+
+;;;;;
+;;@type Method
+;;@name parameter-observer-add!
+;;@description procをパラメータpの``オブザーバ''手続きに追加します。
+;;オブザーバ手続きは、(1)パラメータに新しい値がセットされる直前、
+;;あるいは(2)パラメータに新しい値がセットされた直後、に呼ばれます。
+;;(1)の場合、コールバックが呼ばれる前にフィルタ手続きがすでに適用
+;;されています。どちらの場合も、オブザーバ手続きは、古い値と新しい
+;;値の2引数を伴って呼ばれます。オブザーバ手続きの戻り値は無視されます。
+;;
+;;オプショナル引数whenは、シンボルbeforeかafterの
+;;いずれかでなければならず、値が変更された前と後のどちらでprocが
+;;呼ばれるかを指定します。省略されると、afterを指定したものと
+;;されます。
+;;
+;;オプショナル引数whereは、シンボルappendかprependの
+;;いずれかでなければならず、procが既存のオブザーバ手続きのリストの
+;;前に追加されるか後に追加されるかを指定します。省略されると、append
+;;を指定したものとされます。
+;;
+;;注意: パラメータの値自身がスレッドローカルであっても、
+;;オブザーバのリストは全てのスレッドで共有されます。
+;;
+;;@param (p <parameter>) proc :optional when where 
+
+;;;;;
+;;@type Macro
+;;@name parameterize
+;;@description [SRFI-39]
+;;body ...を評価します。
+;;但し、body ... の実行中のみ、パラメータparamの値を
+;;valueに変更します。最後bodyの返した値を返します。
+;;
+;;@param ((param value) 
+;;@param ...) body ... 
+
+;;;;;
+;;@type Function
+;;@name make-parameter
+;;@description [SRFI-39]
+;;初期値がvalueであるパラメータを作成します。
+;;もし省略可能な引数filterが与えられた場合、
+;;それは一つの引数を取る手続きでなければなりません。
+;;パラメータの値が変更されようとした時、filterは与えられた値を
+;;引数として呼ばれ、filterが返した値がパラメータの新しい値と
+;;なります。filterはエラーを報告したりパラメータの値を変えずに置くことも
+;;可能です。
+;;
+;;@param value 
+;;@param :optional 
+;;@param filter 
+
+;;;;;
+;;@type Class
+;;@name <parameter>
+;;@description パラメータのクラスです。object-applyメソッドが定義されているので、
+;;パラメータオブジェクトは普通の手続きと同様に使うことが出来ます。
+;;
+;;example:
+;;  ;; p is a parameter with initial value 2
+;;  (define p (make-parametre 2))
+;;  
+;;  ;; calling p with no arguments returns the current value
+;;  (p) ==> 2
+;;  
+;;  ;; modify p's value to 3
+;;  (p 3)
+;;  
+;;  (p) ==> 3
+;;  
+;;  ;; you can also use generalized set (srfi-17)
+;;  (set! (p) 5)
+;;  
+;;  (p) ==> 5
+;;  
+;;  ;; using parameterize dynamically changes p's value.
+;;  
+;;  (define (get-p) (p))
+;;  
+;;  (parameterize ([p 7])
+;;    (get-p)) ==> 7
+;;  
+;;  (get-p)    ==> 5
+;;
+;;
+;;
+

@@ -1,0 +1,670 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name ssax:xml->sxml
+;;@description これは、上のSSAXパーザのインスタンスで、portから読み込まれる
+;;XMLドキュメントのSXML表現を返します。
+;;namespace-prefix-assigは、(USER-PREFIX . URI-STRING)
+;;のリストで、特定のURI-STRINGで識別されるある名前空間を
+;;USER-PREFIXに割り当てます。これは空リストでも構いません。
+;;この手続きは、SXMLツリーを返します。
+;;ポートでの位置は、ルート要素の後の最初の文字を指します。
+;;
+;;@param port 
+;;@param namespace-prefix-assig 
+
+;;;;;
+;;@type Function
+;;@name ssax:reverse-collect-str-drop-ws
+;;@description fragments(そのいくつかはテキスト文字列)のリストを渡すと、
+;;そのリストを逆順にして隣り合ったテキスト文字列を連結します。
+;;``重要でない''空白文字、つまり、最初や最後、要素の間にある空白文字を
+;;削除します。文字データに含まれる空白文字には影響を与えません。
+;;この手続きは、パーズされたSXMLにある``重要でない''空白文字を
+;;``知的に''削除するために使います。空白文字に関して、厳密に
+;;XML勧告に準拠したい場合は、代わりに手続き
+;;ssax:reverse-collect-strを使って下さい。
+;;
+;;@param fragments 
+
+;;;;;
+;;@type Function
+;;@name ssax:reverse-collect-str
+;;@description fragments(そのいくつかはテキスト文字列)のリストを渡すと、
+;;そのリストを逆順にして隣り合ったテキスト文字列を連結します。
+;;
+;;@param fragments 
+
+;;;;;
+;;@type Macro
+;;@name ssax:make-parser
+;;@description XMLパージングフレームワークのインスタンスである、XMLパーザを作ります。
+;;これは、提供されるユーザハンドラによって、SAX、DOM、あるいは特化された
+;;パーザになります。
+;;
+;;user-handler-tagはシンボルで、タグに続く手続き的な式を識別します。
+;;以下にタグと対応する手続きのシグネチャを示します。
+;;全てのタグが指定される必要はありません。
+;;いくつかが省略されると、合理的なデフォルトのものが適用されます。
+;;
+;;tag: DOCTYPE ------
+;;  ハンドラ手続きの引数: port docname systemid internal-subset? seed
+;;  
+;;  internal-subset?が#tなら、ポートでの現在の位置は内部DTDサブセットの
+;;  開始となる#\[を読んだ直後です。
+;;  手続きから戻る前に、このサブセットの残りの読み込みを完了しなければなりません
+;;  (あるいは、それを読むことに興味がなければ、skip-internal-subsetを呼ばなければなりません)。
+;;  終了時のポートでの位置は、DOCTYPE宣言全体のあとの最初のシンボルでなければなりません。
+;;  
+;;  ハンドラ手続きは4つの値: @*
+;;  elems entities namespaces seed @*
+;;  を生成しなければなりません。
+;;  elemsについては、xml-decl::elemsを参照して下さい。
+;;  妥当性検査をオフにするためには、#fになるでしょう。
+;;  namespacesは、通常、選択されたURI-SYMBに対してUSER-PREFIXを含む
+;;  でしょう。
+;;  デフォルトのハンドラ手続きは、内部サブセットがあってもそれをスキップし、
+;;  (values #f '() '() seed)を返します。
+;;  
+;;tag: UNDECL-ROOT ------
+;;  ハンドラ手続きの引数: elem-gi seed @*
+;;  elem-giはルート要素のUNRES-NAMEです。
+;;  この手続きは、パージング中のXML文書がDOCTYPE宣言を含まない時に
+;;  呼ばれます。
+;;  ハンドラ手続きは、上ではDOCTYPEハンドラですが、4つの値: @*
+;;  elems entities namespaces seed@*
+;;  を生成しなければなりません。
+;;  デフォルトのハンドラ手続きは、(values #f '() '() seed)を返します。
+;;  
+;;tag: DECL-ROOT ------
+;;  ハンドラ手続きの引数: elem-gi seed @*
+;;  elem-giは、ルート要素のUNRES-NAMEです。
+;;  この手続きは、パージング中のXML文書がDOCTYPE宣言を含む場合に呼ばれます。
+;;  このハンドラ手続きは、新しいseedを生成しなければなりません
+;;  (そして、ハンドラが望めば、ルート要素の名前がDOCTYPEにマッチするかを
+;;  検証します)。
+;;  デフォルトのハンドラ手続きは、それ自身を返す手続きです。
+;;  
+;;tag: NEW-LEVEL-SEED ------
+;;  ハンドラ手続きの引数: ssax:make-elem-parserとmy-new-level-seedを参照して下さい。
+;;  
+;;tag: FINISH-ELEMENT ------
+;;  ハンドラ手続きの引数: ssax:make-elem-parserとmy-finish-elementを参照して下さい。
+;;  
+;;tag: CHAR-DATA-HANDLER ------
+;;  ハンドラ手続きの引数: ssax:make-elem-parserとmy-char-data-handlerを参照して下さい。
+;;  
+;;tag: PI ------
+;;  ハンドラ手続きの引数: ssax:make-pi-parserを参照して下さい。@*
+;;  デフォルトの値は、'()です。
+;;
+;;生成されるパーザは、@*
+;;PORT SEEDを取る手続き、@*
+;;です。
+;;
+;;この手続きは、ドキュメントのプロローグをパーズして、
+;;その残りを処理するために(ssax:make-elem-parserで作られた)パーザへ
+;;引き継いで終了します。
+;;
+;;example:
+;;   [1]  document ::=  prolog element Misc*
+;;   [22] prolog ::= XMLDecl? Misc* (doctypedec | Misc*)?
+;;   [27] Misc ::= Comment | PI |  S
+;;  
+;;   [28] doctypedecl ::=  '<!DOCTYPE' S Name (S ExternalID)? S? 
+;;                          ('[' (markupdecl | PEReference | S)* ']' S?)? '>'
+;;   [29] markupdecl ::= elementdecl | AttlistDecl
+;;                        | EntityDecl
+;;                        | NotationDecl | PI
+;;                        | Comment 
+;;
+;;@param user-handler-tag 
+;;@param user-handler-proc 
+;;@param ... 
+
+;;;;;
+;;@type Macro
+;;@name ssax:make-elem-parser
+;;@description その文字内容や子要素をも含む１つの要素をパーズし処理するパーザを作ります。
+;;このパーザは通常、ドキュメントのルート要素の適用されます。
+;;
+;;my-new-level-seed ------
+;;  elem-gi attributes namespaces expected-content seed @*
+;;  を引数に取る手続きで、elem-giは処理されようとしている要素のRES-NAMEです。
+;;  この手続きは、要素の内容を処理するハンドラに渡されるseedを生成します。
+;;  @c This is the function identified as 'fdown' in the denotational
+;;  @c semantics of the XML parser given in the title comments to this
+;;  @c file.
+;;  
+;;my-finish-element ------
+;;  elem-gi attributes namespaces parent-seed seed @*
+;;  を引数に取る手続きです。この手続きは、elem-giのパージングが完了した時に
+;;  呼ばれます。
+;;  seedは、最後に呼ばれたパーザからの(あるいは、
+;;  要素が空要素であった場合は、my-new-level-seedからの)結果です。
+;;  parent-seedは、my-new-level-seedへ渡されたのと同じseedです。
+;;  この手続きは、パーザの結果となるseedを生成するためのものです。
+;;  @c This is the function identified as 'fup' in the denotational
+;;  @c semantics of the XML parser given in the title comments to this
+;;  @c file.
+;;  
+;;my-char-data-handler ------
+;;  STR-HANDLER。
+;;  
+;;my-pi-handlers ------
+;;  ssax:make-pi-handlerを参照して下さい。
+;;
+;;生成されたパーザは:
+;;start-tag-head port elems entities namespaces
+;;preserve-ws? seed @*
+;;を引数に取る手続きです。
+;;この手続きは、開始タグのトークンが読み込まれた後に呼ばれなければなりません。
+;;start-tag-headは要素の開始タグのUNRES-NAMEです。
+;;elemsはxml-decl::elemsのインスタンスです。
+;;ssax:complete-start-tag::preserve-ws?も参照して下さい。
+;;
+;;こちらも参照のこと。
+;;example:
+;;   VC: XML-Spec.html#elementvalid 
+;;   WFC: XML-Spec.html#GIMatch
+;;
+;;@param my-new-level-seed 
+;;@param my-finish-element 
+;;@param my-char-data-handler 
+;;@param my-pi-handlers 
+
+;;;;;
+;;@type Macro
+;;@name ssax:make-pi-parser
+;;@description 1つの処理命令(PI)をパーズして処理するパーザを作ります。
+;;
+;;my-pi-handlers:
+;;(PI-TAG . PI-HANDLER)のペアの連想リスト。
+;;PI-TAGはNCNameのシンボル、PIターゲット。
+;;PI-HANDLERはport pi-tag seedを引数とする手続きで、
+;;portではPIターゲットの後の最初のシンボルを指しています。
+;;ハンドラは、PIを終了する組み合わせとなる'?>'を含む、
+;;PIの残りを読み込みます。ハンドラは新しいseedを返します。
+;;PI-TAGの1つは、シンボル*DEFAULT*でしょう。
+;;これに対応するハンドラは、他のハンドラが扱わないPIを処理します。
+;;*DEFAULT* PI-TAGが指定されていない場合は、
+;;ssax:make-pi-parserは、PIのボディをスキップするパーザを
+;;作ります。
+;;
+;;ssax:make-pi-parserが返すのは、port pi-tag seedを
+;;取る手続きで、ユーザ指定のハンドラに従い現在のPIをパーズします。
+;;
+;;@param my-pi-handlers 
+
+;;;;;
+;;@type Function
+;;@name ssax:assert-token
+;;@description tokenが、予想されたkindのもので、予想されたgiを
+;;持つことを確認します。gi引数は、実際には2つのシンボル、
+;;名前空間URIかその接頭辞と、そのローカル名のペアでしょう。
+;;アサーションが失敗したら、error-contに3つの引数、token kind gi
+;;を渡されて評価されます。
+;;error-contの結果が返されます。
+;;
+;;@param token 
+;;@param kind 
+;;@param gi 
+;;@param error-cont 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-char-data
+;;@description この手続きは、XML文書かXML要素の文字内容を読むためのものです。
+;;example:
+;;   [43] content ::= 
+;;          (element | CharData | Reference | CDSect | PI
+;;           | Comment)*
+;;具体的には、この手続きはCharDataを読み込み、CDSectと
+;;文字実体を展開し、コメントをスキップします。
+;;この手続きは、名前付き参照、EOF、PIあるいは開始/終了タグの開始地点で
+;;停止します。
+;;
+;;port ------
+;;  読み込むポート。
+;;expect-eof? ------
+;;  EOFがノーマルかどうか、つまり、文字データがEOFで終わるかどうかを
+;;  表す真偽値。解析済み実体を処理している間はEOFはノーマル。
+;;str-handler ------
+;;  STR-HANDLER。
+;;seed ------
+;;  STR-HANDLERの最初の呼び出し時に渡される引数。
+;;
+;;この手続きは2つの結果、seedとtokenを返します。
+;;
+;;seedはstr-handlerの最後の呼び出しの結果、あるいは
+;;str-handlerが一度も呼ばれなかった場合はオリジナルのseedです。
+;;
+;;tokenはEOFオブジェクト(これはexpect-eof?が#tの場合のみ)か、
+;;  STARTタグかENDタグを表すxml-token。
+;;  開始トークンの場合は、呼び出し側が読み込みを完了する必要がある。
+;;  PIの開始を表すxml-token。
+;;  このPIの残りを読み込むかスキップするかはアプリケーションに
+;;  任される。
+;;  名前付き実体参照を表すxml-token。
+;;
+;;CDATAセクションと文字参照はインラインで展開され返されません。
+;;コメントは無視されます。
+;;
+;;XML勧告が要求するように、文字データ中の全ての空白文字は保存されなければなりません。
+;;しかし、CR文字(#xD)は、LF文字(#A)の前に現れるか
+;;#xA文字で置き換えられた場合は、無視されなければなりません。
+;;XML勧告のセクション2.10と2.11を参照して下さい。
+;;また、正規のXML勧告も参照して下さい。
+;;
+;;@param port 
+;;@param expect-eof? 
+;;@param str-handler 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name ssax:scan-Misc
+;;@description そのコンテキストでのMiscをスキャンします。
+;;example:
+;;  [1]  document ::=  prolog element Misc*
+;;  [22] prolog ::= XMLDecl? Misc* (doctypedec l Misc*)?
+;;  [27] Misc ::= Comment | PI |  S
+;;以下の関数は、プロローグかエピローグのコンテキストで呼ばれます。
+;;これらのコンテキストでは、空白文字は完全に無視されます。
+;;ssax:scan-Miscからの戻り値は、PIトークンかDECLトークン、
+;;STARTトークン、EOFのいずれかです。
+;;コメントは無視され報告されません。
+;;
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-external-id
+;;@description この手続きは、ExternalIDをパーズします。
+;;example:
+;;   [75] ExternalID ::= 'SYSTEM' S SystemLiteral
+;;                   | 'PUBLIC' S PubidLiteral S SystemLiteral
+;;   [11] SystemLiteral ::= ('"' [^"]* '"') | ("'" [^']* "'") 
+;;   [12] PubidLiteral ::=  '"' PubidChar* '"' | "'" (PubidChar - "'")* "'"
+;;   [13] PubidChar ::=  #x20 | #xD | #xA | [a-zA-Z0-9]
+;;                  | [-'()+,./:=?;!*#@@$_%]
+;;この手続きは、ExternalIDが期待されるところで呼ばれます。
+;;つまり、現在の文字は、それぞれSYSTEMかPUBLICトークンを開始する
+;;#\Sか#\Pでなければなりません。
+;;この手続きは、SystemLiteralを文字列として返します。
+;;PubidLiteralは、存在したとしても無視されます。
+;;
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:complete-start-tag
+;;@description この手続きは、開始タグのマークアップのパージングを完了するためのものです。
+;;この手続きは、開始タグトークンが読み込まれた後に呼ばれなければなりません。
+;;tagはUNRES-NAMEです。
+;;elemsはxml-decl::elemsのインスタンスで、
+;;手続きに、要素とそれらの属性の妥当性検査を行わないように
+;;指示するために、#fを指定することができます。
+;;
+;;この手続きはいくつかの値を返します。
+;;elem-gi ------
+;;  RES-NAME。
+;;attributes ------
+;;  要素の属性。(res-name . string)というペアのATTLIST。
+;;  このリストは、xmlns属性を含みません。
+;;namespaces ------
+;;  パージング中の開始タグに含まれる名前空間(再)宣言により修正された後の
+;;  名前空間の入力リスト。
+;;
+;;終了時のportでの現在の位置は、開始タグのマークアップを終了する
+;;#\>の後になります。
+;;
+;;こちらも参照のこと。
+;;example:
+;;   VC: XML-Spec.html#enum 
+;;   VC: XML-Spec.html#RequiredAttr
+;;   VC: XML-Spec.html#FixedAttr
+;;   VC: XML-Spec.html#ValueType
+;;   WFC: XML-Spec.html#uniqattspec (after namespaces prefixes are resolved)
+;;   VC: XML-Spec.html#elementvalid 
+;;   WFC: REC-xml-names/#dt-NSName
+;;
+;;XML勧告では明示されていませんが、xmlnsとxmlns:属性は、
+;;(そのデフォルト値を指定するために宣言されることが出来ますが)
+;;宣言される必要がないことに注意して下さい。
+;;
+;;@param tag 
+;;@param port 
+;;@param elems 
+;;@param entities 
+;;@param namespaces 
+
+;;;;;
+;;@type Function
+;;@name ssax:uri-string->symbol
+;;@description uri-strを適切なシンボルに変換します。
+;;
+;;@param uri-str 
+
+;;;;;
+;;@type Function
+;;@name ssax:resolve-name
+;;@description 与えられた適切なnamespacesの宣言を用いて、unres-nameを
+;;res-nameに変換する。
+;;最後の引数apply-default-ns?は、デフォルト名前空間の適用を行うか
+;;どうかを決めます(例えば、属性名には適用しないなど)。
+;;
+;;REC-xml-names/#nsc-NSDeclaredによれば、接頭辞``xml''は
+;;名前空間名``@url{http://www.w3.org/XML/1998/namespace}''に定義済みで束縛されていると
+;;されます。
+;;
+;;この手続きは、名前空間の制約をテストします:
+;;
+;;@param port 
+;;@param unres-name 
+;;@param namespaces 
+;;@param apply-default-ns? 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-attributes
+;;@description この手続きは、Attribute*を読み込みパーズします。
+;;example:
+;;   [41] Attribute ::= Name Eq AttValue
+;;   [10] AttValue ::=  '"' ([^<&"] | Reference)* '"' 
+;;                   | "'" ([^<&'] | Reference)* "'"
+;;   [25] Eq ::= S? '=' S?
+;;この手続きは、Name(UNRES-NAME)とValue(文字列)のペアである
+;;ATTLISTを返します。
+;;portでの現在の文字は、NCNameの開始文字ではなく、空白ではない文字です。
+;;
+;;'AttValue'を読み込むときには、以下のルールに留意して下さい。
+;;``属性の値がアプリケーションに渡されるか妥当性が検査される前に、
+;;XMLプロセッサはそれを以下のように正規化しなければならない:
+;;  文字参照は、属性値に参照された文字を追加することで処理される。
+;;  実体参照は、その実体のテキストの置換を再帰的に行うことにより
+;;  処理される。[ENTITIES参照] [名前付きのエンティティ、amp lt gt
+;;  quot aposは定義済みと想定される]
+;;  空白文字(#x20、#xD、#xA、#x9)は、
+;;  外部解析済み実体か内部解析済み実体のリテラルの実体の値の一部である
+;;  ``#xD#xA''のシーケンスにただ1つの#x20が追加されることを
+;;  除いて、正規化された値に#x20を追加することで処理される。
+;;  他の文字は、正規化された値をそれらに追加することにより処理される''
+;;
+;;こちらも参照のこと。
+;;example:
+;;   WFC: XML-Spec.html#CleanAttrVals
+;;   WFC: XML-Spec.html#uniqattspec
+;;
+;;@param port 
+;;@param entities 
+
+;;;;;
+;;@type Function
+;;@name ssax:handle-parsed-entity
+;;@description 解析済み実体参照を展開し処理します。
+;;  port - ポート
+;;  name - 展開する解析済み実体の名前。シンボル。
+;;  entities - ENTITIESを参照。
+;;  content-handler - port entities seedを取る手続きで、
+;;  seedを返す。
+;;  str-handler - STR-HANDLER。対象となる実体が宣言済み実体となった
+;;  場合に呼ばれる。
+;;戻り値は、content-handlerかstr-handlerから返された値です。
+;;
+;;こちらも参照のこと。
+;;example:
+;;    WFC: XML-Spec.html#wf-entdeclared
+;;    WFC: XML-Spec.html#norecursion
+;;
+;;@param port 
+;;@param name 
+;;@param entities 
+;;@param content-handler 
+;;@param str-handler 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-char-ref
+;;@description example:
+;;   [66]  CharRef ::=  '&#' [0-9]+ ';' 
+;;                    | '&#x' [0-9a-fA-F]+ ';'
+;;この手続きは、文字参照を表す``&#''を読み込んだ後に呼ばれなければ
+;;なりません。
+;;この手続きは、この参照を読み込んで対応する文字を返します。
+;;portでの現在の位置は、文字参照の終わりとなる``;''の後と
+;;なります。
+;;WFC: XML-Spec.html#wf-Legalcharも参照のこと。
+;;
+;;XML勧告のセクション``4.1 文字と実体参照''によると、
+;;``[定義: 文字参照は、ISO/IEC 10646文字セットにある特定の文字を参照する。
+;;例えば、利用できる入力デバイスからは直接アクセスできないものなど。]''
+;;したがって、入力ストリームの現在の文字エンコーディングに関係なく、
+;;文字コードを文字に変換するために関数ucscode->charを使います。
+;;
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-cdata-body
+;;@description この手続きは、CDATAセクションを開始する文字列、"<![CDATA["を
+;;読み込んだ後に呼ばれなければなりません。
+;;現在の位置は、CDATAのボディの最初の位置です。
+;;この手続きは、CDATAのボディのデータを読み込み、それらを
+;;STR-HANDLER(文字データのコンシューマ)へ渡します。
+;;
+;;str-handlerは、string1 string2 seedを取る手続き
+;;STR-HANDLERです。
+;;STR-HANDLERの最初の引数string1は、改行を含みません。
+;;2番目の引数string2は、改行を含むことがよくあります。
+;;STR-HANDLERの最初の呼び出しでは、seedはssax:read-cdata-bodyの
+;;第3引数として渡されるものです。
+;;この最初の呼び出しの結果は、文字データのコンシューマの引数seedとして渡され、
+;;以降同じように続きます。
+;;STR-HANDLERの最後の呼び出しの結果は、ssax:read-cdata-body
+;;から返されるものです。
+;;基本的な'fold'イテレータに似ています。
+;;
+;;CDATAセクションでは、以下の3つだけの例外を除いて、全ての文字は
+;;その表面上の値を持ちます。
+;;  CR、LF、CRLFは行区切りとして扱われ、STR-HANDLERへは
+;;  1つの#\newlineとして渡されます。
+;;  組み合わせとなる``]]>''は、CDATAセクションの終わりであると
+;;  されます。
+;;  &gt;は、#\>文字の埋め込みとして扱われます。
+;;  &lt;と&amp;は特別なものとして認識されない(よって展開されない)ことに
+;;  注意が必要です!
+;;
+;;@param port 
+;;@param str-handler 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name ssax:skip-internal-dtd
+;;@description ポートでの現在の位置は、内部DTDサブセットの内側です
+;;(例えば、内部DTDサブセットの始まりである#\[ を読み込んだところ)。
+;;このDTDを終了する、組み合わせとなる``]>''までをスキップします。
+;;
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-pi-body-as-string
+;;@description 現在の位置は、PITargetを読み込んだ直後です。
+;;PIのボディを読み込んで、それを文字列として返します。
+;;ポートでは、PIを終了する'?>'の直後の文字を指します。
+;;example:
+;;   [16] PI ::= '<?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'
+;;
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:skip-pi
+;;@description 現在の位置は、PIの内側です。
+;;PIの残りをスキップします。
+;;
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-markup-token
+;;@description この手続きは、マークアップトークンのパージングを開始します。
+;;ストリームの現在の位置は、#\<でなければなりません。
+;;この手続きは、見ているマークアップトークンがどの種類のものか見当を
+;;つけるに十分な程度、入力ストリームをスキャンします。
+;;この手続きは、そのトークンを表現するxml-token構造を返します。
+;;通常、その時点のマークアップの読み込みは完了していないことに注意して下さい。
+;;特に、開始タグトークンの属性はスキャンされていません。
+;;
+;;特定の値が返されたときの戻り値とportでの位置を詳細に説明します。
+;;PI-token ------
+;;  PIターゲットのみが読み込まれました。
+;;  処理命令の読み込みを完了してそれを無視するためには、ssax:skip-piを呼びます。
+;;  (PIの内容が、属性-値のペアの場合は、)ssax:read-attributesも
+;;  便利です。
+;;END-token ------
+;;  終了タグが完全に読み込まれました。
+;;  現在の位置は、終了の#\>文字の直後です。
+;;COMMENT ------
+;;  コメントが完全に読み込まれスキップされました。
+;;  現在の位置は、コメントが終了する``-->''の直後です。
+;;CDSECT ------
+;;  現在の位置は、"<!CDATA["の直後です。
+;;  残りを読むためには、ssax:read-cdata-bodyを使います。
+;;DECL ------
+;;  この宣言マークアップを識別するキーワード(``<!''に続くもの)を
+;;  読み込んだところです。現在の位置は、(通常は空白文字である)
+;;  そのキーワードの直後です。
+;;START-token ------
+;;  この開始タグのキーワード(GI)を読み込んだところです。
+;;  属性はまだスキャンされていません。
+;;  また、このタグが空の要素を持つかどうかも分かりません。
+;;  このトークンのパージングを終了するためには、
+;;  ssax:complete-start-tagを使います。
+;;
+;;@param port 
+
+;;;;;
+;;@type var
+;;@name ssax:Prefix-XML
+;;@description 定義済みのXML名前空間の接頭辞、つまり、'xmlです。
+;;
+
+;;;;;
+;;@type Function
+;;@name ssax:read-QName
+;;@description (名前空間)完全修飾名、QNameをportの現在の位置から読み込みます。
+;;
+;;REC-xml-namesは、
+;;example:
+;;   [6] QName ::= (Prefix ':')? LocalPart
+;;   [7] Prefix ::= NCName
+;;   [8] LocalPart ::= NCName
+;;
+;;戻り値は、UNRES-NAMEです。
+;;
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:read-NCName
+;;@description portで現在の位置から始まるNCNameを読み込み、それをシンボルとして
+;;返します。
+;;
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name ssax:ncname-starting-char?
+;;@description NCNameがa-charで始まるかどうかを検査します。
+;;
+;;@param a-char 
+
+;;;;;
+;;@type Function
+;;@name ssax:skip-S
+;;@description 次のように定義されるS(空白)をスキップします。
+;;example:
+;;   [3] S ::= (#x20 | #x9 | #xD | #xA)
+;;この手続きは、portのスキャン中に遭遇した最初の空白ではない文字を
+;;返します。この文字は、入力ストリームに残されます。
+;;
+;;@param port 
+
+;;;;;
+;;@type Macro
+;;@name xml-token-head
+;;@description XML-TOKENレコードのアクセッサマクロです。
+;;
+;;@param token 
+
+;;;;;
+;;@type Macro
+;;@name xml-token-kind
+;;@description XML-TOKENレコードのアクセッサマクロです。
+;;
+;;@param token 
+
+;;;;;
+;;@type Function
+;;@name xml-token?
+;;@description XML-TOKENレコードのコンストラクタと述語です。
+;;
+;;@param token 
+
+;;;;;
+;;@type Function
+;;@name make-xml-token
+;;@description XML-TOKENレコードのコンストラクタと述語です。
+;;
+;;@param kind 
+;;@param head 
+
+;;;;;
+;;@type Function
+;;@name attlist-fold
+;;@description 名前-値の属性リストを扱うユーティリティ手続きです。
+;;
+
+;;;;;
+;;@type Function
+;;@name attlist->alist
+;;@description 名前-値の属性リストを扱うユーティリティ手続きです。
+;;
+;;@param attlist 
+
+;;;;;
+;;@type Function
+;;@name attlist-remove-top
+;;@description 名前-値の属性リストを扱うユーティリティ手続きです。
+;;
+;;@param attlist 
+
+;;;;;
+;;@type Function
+;;@name attlist-null?
+;;@description 名前-値の属性リストを扱うユーティリティ手続きです。
+;;
+
+;;;;;
+;;@type Function
+;;@name attlist-add
+;;@description 名前-値の属性リストを扱うユーティリティ手続きです。
+;;
+;;@param attlist 
+;;@param name-value 
+
+;;;;;
+;;@type Function
+;;@name make-empty-attlist
+;;@description 名前-値の属性リストを扱うユーティリティ手続きです。
+;;
+

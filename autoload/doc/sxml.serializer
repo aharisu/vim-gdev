@@ -1,0 +1,182 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name srl:display-sxml
+;;@description 
+;;srl:parameterizableと同様ですが、結果を
+;;port-or-filenameに書き出します。パラメータ解析のオーバーヘッドはありません。
+;;この関数のインタフェースはこの
+;;ライブラリの将来のバージョンでは変更されるかもしれません。
+;;
+;;@param sxml->obj 
+;;@param port-or-filename 
+;;@param cdata-section-elements 
+;;@param indent 
+;;@param method 
+;;@param ns-prefix-assig 
+;;@param omit-xml-declaration? 
+;;@param standalone 
+;;@param version 
+
+;;;;;
+;;@type Function
+;;@name srl:sxml->string
+;;@description srl:parameterizableと同様ですが、文字列を返し、パラメータ解析のオーバヘッ
+;;ドはありません。この関数のインタフェースはこのライブラリの将来のバージョ
+;;ンでは変更されるかもしれません。
+;;
+;;@param sxml-obj 
+;;@param cdata-section-elements 
+;;@param indent 
+;;@param method 
+;;@param ns-prefix-assig 
+;;@param omit-xml-declaration? 
+;;@param standalone 
+;;@param version 
+
+;;;;;
+;;@type Function
+;;@name srl:parameterizable
+;;@description 汎用シリアライズ手続、この実装でサポートするすべてのシリアライズパラメー
+;;タのパラメータ化。
+;;
+;;sxml-obj - シリアライズするSXMLオブジェクト。
+;;
+;;port-or-filename - #fあるいはポートあるいは文字列のどれか。
+;;srl:sxml->xmlのものと同じ働きをします(Simple SXML serializing)。
+;;
+;;params - 各パラメータはパラメータ名(シンボル)とパラメータ値との
+;;コンス対。利用可能なパラメータ名とその値については後述。
+;;
+;;method - シンボルxmlかhtmlのどちらか。XMLメソッド
+;;とHTMLメソッドの相違についての詳しい説明は、XSLT 2.0 と XQuery
+;;Serialization 
+;;(@uref{http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/})
+;;を参照してください。
+;;
+;;indent - 出力の XML が読みやすさのために空白を含むかどうか
+;;(#tあるいは#f)。文字列を設定することもでき、その場合
+;;インデント単位に使われます。
+;;
+;;omit-xml-declaration? - XML宣言を省略するかどうか。デフォルトは
+;;#t。
+;;
+;;standalone - XML ドキュメントを XML 宣言でスタンドアローンとし
+;;て定義するかどうか。yes、no、omitのうちいづれかの
+;;シンボルでなければならない。デフォルトは omit
+;;
+;;version - XML宣言中のXMLバージョン。文字列または数。デフォルト
+;;は"1.0"。
+;;
+;;cdata-section-elements - SXML要素の名前(シンボル)のリスト。これ
+;;らの要素の中身はCDATAセクションと同様にエスケープされる。
+;;
+;;ns-prefix-assig - (cons prefix namespace-uri)のリスト。
+;;各prefixはシンボルで、namespace-uriは文字列。
+;;対応する接頭辞をつけて与えられた名前空間をシリアライズする。
+;;注意： パラメータ名が期待された名前ではない場合、あるいはパラメータ値
+;;が不正な形式である場合にはそのようなパラメータは警告なしで無視されます。
+;;
+;;使用実例：
+;;example:
+;;  (srl:parameterizable
+;;    '(tag (@@ (attr "value")) (nested "text node") (empty))
+;;    (current-output-port)
+;;    '(method . xml)  ; XML出力をデフォールト
+;;    '(indent . "\t")  ; インデントは一つのタブ
+;;    '(omit-xml-declaration . #f)  ; XML宣言をつける
+;;    '(standalone . yes)  ; 「standalone」宣言もつける
+;;    '(version . "1.0"))  ; XMLのバージョン
+;;
+;;example:
+;;  param ::= (cons param-name param-value)
+;;  param-name ::= symbol
+;;  
+;;  cdata-section-elements
+;;  value ::= (listof sxml-elem-name)
+;;  sxml-elem-name ::= symbol
+;;  
+;;  indent
+;;  value ::= 'yes | #t | 'no | #f | whitespace-string
+;;  
+;;  method
+;;  value ::= 'xml | 'html
+;;  
+;;  ns-prefix-assig
+;;  value ::= (listof (cons prefix namespace-uri))
+;;  prefix ::= symbol
+;;  namespace-uri ::= string
+;;  
+;;  omit-xml-declaration?
+;;  value ::= 'yes | #t | 'no | #f
+;;  
+;;  standalone
+;;  value ::= 'yes | #t | 'no | #f | 'omit
+;;  
+;;  version
+;;  value ::= string | number
+;;
+;;@param sxml-obj 
+;;@param :optional 
+;;@param port-or-filename 
+;;@param params* 
+
+;;;;;
+;;@type Function
+;;@name srl:sxml->html-noindent
+;;@description srl:sxml->htmlと同じように動作しますが、インデントを行いません。
+;;
+;;引数port-or-filenameはsrl:sxml->xmlと同様に動作します。
+;;
+;;@param sxml-obj 
+;;@param :optional 
+;;@param port-or-filename 
+
+;;;;;
+;;@type Function
+;;@name srl:sxml->html
+;;@description sxml-objをHTMLへと変換します。出力は人間が読みやすいように
+;;インデントされます。
+;;
+;;引数port-or-filenameはsrl:sxml->xmlと同様に動作します。
+;;
+;;@param sxml-obj 
+;;@param :optional 
+;;@param port-or-filename 
+
+;;;;;
+;;@type Function
+;;@name srl:sxml->xml-noindent
+;;@description srl:sxml->xmlと同じように動作しますが、インデントを行いません。
+;;
+;;引数port-or-filenameはsrl:sxml->xmlと同様に動作します。
+;;
+;;@param sxml-obj 
+;;@param :optional 
+;;@param port-or-filename 
+
+;;;;;
+;;@type Function
+;;@name srl:sxml->xml
+;;@description sxml-objをXMLへと変換します。出力は人間が読みやすいように
+;;インデントされます。
+;;
+;;port-or-filenameが与えられなければ、
+;;戻り値はsxml-objの変換結果の文字列になります。
+;;
+;;port-or-filenameがポートならば、そのポートにXMLを書き出します。
+;;戻り値は不定です。
+;;
+;;port-or-filenameが文字列ならば、その名のファイルにXMLを書き出し
+;;ます。戻り値は不定です。そのようなファイルが既に存在する場合、
+;;結果は不定です。
+;;
+;;@param sxml-obj 
+;;@param :optional 
+;;@param port-or-filename 
+

@@ -1,0 +1,605 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name shell-escape-string
+;;@description argがシェルのコマンドライン引数解析に影響を与える文字を含んでいる場合、
+;;それらがシェルによって解釈されないようにエスケープされた文字列を返します。
+;;そうでなければarg自体を返します。
+;;
+;;自分でコマンドライン文字列を組み立てる必要がある場合に使ってください。
+;;(単一のコマンドライン文字列でなく、コマンドライン引数のリストを渡す場合は
+;;エスケープの必要はありません。引数はシェルを通さずに子プロセスに渡される
+;;からです。)
+;;
+;;Windowsネイティブビルドの場合、この手続きはWindowsの標準Cランタイムの
+;;引数解析に合わせてあります。
+;;
+;;@param arg 
+
+;;;;;
+;;@type Function
+;;@name process-output->string-list
+;;@description command を実行し、その(標準出力への)出力を回収して返します。
+;;process-output->string は command からの全ての出力を連結し
+;;1つの文字列とします。その際、空白文字からなるシーケンスは1つの空白に
+;;置換されます。このアクションは、シェルスクリプトにおける「コマンド置換」
+;;に似たものです。
+;;process-output->string-list は command からの出力を行ごとに
+;;回収し、それらをリストにしたものを返します。改行文字は削除されます。
+;;
+;;内部的には、command は call-with-input-process により
+;;実行されます。キーワード引数はcall-with-input-processに
+;;そのまま渡されます。
+;;example:
+;;  (process-output->string '(uname -smp))
+;;    ==> "Linux i686 unknown"
+;;  
+;;  (process-output->string '(ls))
+;;    ==> "a.out foo.c foo.c~ foo.o"
+;;  
+;;  (process-output->string-list '(ls))
+;;    ==> ("a.out" "foo.c" "foo.c~" "foo.o")
+;;
+;;
+;;@param command 
+;;@param :key 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name process-output->string
+;;@description command を実行し、その(標準出力への)出力を回収して返します。
+;;process-output->string は command からの全ての出力を連結し
+;;1つの文字列とします。その際、空白文字からなるシーケンスは1つの空白に
+;;置換されます。このアクションは、シェルスクリプトにおける「コマンド置換」
+;;に似たものです。
+;;process-output->string-list は command からの出力を行ごとに
+;;回収し、それらをリストにしたものを返します。改行文字は削除されます。
+;;
+;;内部的には、command は call-with-input-process により
+;;実行されます。キーワード引数はcall-with-input-processに
+;;そのまま渡されます。
+;;example:
+;;  (process-output->string '(uname -smp))
+;;    ==> "Linux i686 unknown"
+;;  
+;;  (process-output->string '(ls))
+;;    ==> "a.out foo.c foo.c~ foo.o"
+;;  
+;;  (process-output->string-list '(ls))
+;;    ==> ("a.out" "foo.c" "foo.c~" "foo.o")
+;;
+;;
+;;@param command 
+;;@param :key 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name call-with-process-io
+;;@description command をサブプロセスで実行し、proc を2つの引数と
+;;ともに呼び出します。最初の引数は入力ポートで、コマンドの標準出力に
+;;接続されたものです。2番目の引数は出力ポートでコマンドの標準入力に
+;;接続されたものです。コマンドからのエラー出力は、errorキーワード
+;;引数でパス名が指定されない限り、呼び出したプロセスのエラー出力が共有されます。
+;;
+;;コマンドの終了ステータスは、procが戻るかエラーを投げた場合に
+;;回収されます。
+;;
+;;@param command 
+;;@param proc 
+;;@param :key 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name with-output-to-process
+;;@description コマンドの標準入力に接続された出力ポートが、thunk の実行中は
+;;現在の出力ポートにセットされることを除いて、call-with-output-process
+;;と同じです。
+;;
+;;@param command 
+;;@param thunk 
+;;@param :key 
+;;@param output 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name call-with-output-process
+;;@description command を子プロセスで実行し、コマンドの標準入力に
+;;接続された出力ポートとともに proc を呼び出します。
+;;コマンドの終了ステータスは、proc が返るかエラーを通知した
+;;後に回収されます。
+;;
+;;キーワード引数の意味はopen-output-process-portと同じです。
+;;ただしon-abnormal-exitについてはcall-with-input-process
+;;で説明したのと同じ意味です。
+;;example:
+;;  (call-with-output-process "/usr/sbin/sendmail"
+;;    (lambda (out) (display mail-body out)))
+;;
+;;@param command 
+;;@param proc 
+;;@param :key 
+;;@param output 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name open-output-process-port
+;;@description 子プロセスで command を非同期に実行します。
+;;子プロセスの標準入力に接続された出力ポートと、
+;;プロセスオブジェクトの二つの値を返します。
+;;
+;;command引数、およびencodingとconversion-buffer-sizeの
+;;意味は、open-input-process-portと同じです。
+;;
+;;デフォルトでは、子プロセスの標準出力は/dev/nullにリダイレクトされ、
+;;標準エラー出力は呼び出したプロセスと共有されます。
+;;outputとerrorキーワード引数にパス名を与えることで、
+;;これらの出力をリダイレクトすることができます。
+;;
+;;サブプロセスの終了ステータスは自動的には回収されません。
+;;適切なタイミングで、サブプロセスに対して process-wait を呼ぶ
+;;必要があります。
+;;
+;;@param command 
+;;@param :key 
+;;@param output 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name with-input-from-process
+;;@description 子プロセスで command を実行し、コマンドの標準出力に
+;;接続された現在の入力ポートとともに thunk を呼び出します。
+;;thunkが終了するかエラーを投げた後に、コマンドの終了ステータスが
+;;回収されます。
+;;
+;;commandおよびキーワード引数の意味はcall-with-input-processと
+;;同じです。
+;;example:
+;;  (with-input-from-process "ls -l *" read-line)
+;;
+;;@param command 
+;;@param thunk 
+;;@param :key 
+;;@param input 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name call-with-input-process
+;;@description 子プロセスでcommand を実行し、その標準出力と入力ポートを
+;;パイプで繋ぎ、そのポートを引数として proc を呼び出します。
+;;proc が返るとその終了ステータスを回収し、proc が返した
+;;結果を返します。proc がエラーを通知しても、クリーンアップは
+;;行われます。
+;;
+;;キーワード引数on-abnormal-exitは子プロセスが0以外の終了ステータス
+;;を返した場合の振舞いを指定します。その値は:error(デフォルト)、
+;;:ignore、もしくは一引数の手続きでなければなりません。
+;;値が:errorの場合、0以外の終了ステータスは
+;;<process-abnormal-exit>エラーコンディションを発生させます。
+;;コンディションオブジェクトのprocessスロットには子プロセスオブジェクトが
+;;保持されます。値が:ignoreの場合、0以外の終了ステータスに対して
+;;特別なアクションは取られません。値が手続きの場合、0以外の終了ステータスに対して
+;;子プロセスオブジェクトを引数にしてその手続きが呼ばれます。その手続きが
+;;戻れば、call-with-input-processは正常動作と同じように戻ります。
+;;
+;;commandおよび他のキーワード引数の意味はopen-input-process-portと
+;;同じです。
+;;example:
+;;  (call-with-input-process "ls -l *"
+;;    (lambda (p) (read-line p)))
+;;
+;;@param command 
+;;@param proc 
+;;@param :key 
+;;@param input 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+;;@param on-abnormal-exit 
+
+;;;;;
+;;@type Function
+;;@name open-input-process-port
+;;@description command を子プロセスで非同期に実行します。
+;;走らせた子プロセスの標準出力につながれた入力ポートと、
+;;プロセスオブジェクトの二つの値を返します。
+;;
+;;commandは文字列かリストです。
+;;
+;;文字列の場合、それは/bin/shに渡されます。
+;;環境変数の置換やグロブパターン、リダイレクトなどのシェルの機能が
+;;文字列中で使えます。
+;;文字列をつなぎ合わせてコマンドラインを作成する場合、
+;;特殊文字をシェルに解釈してほしくなければ、それを正しくエスケープするのは
+;;呼び出し元の責任です。下で説明するshell-escape-stringは
+;;助けになるかもしれません。
+;;
+;;commandがリストの場合は、各要素がx->stringで文字列に
+;;変換された後に、sys-execを使って直接コマンドを起動します
+;;(リストのcarがコマンドのパス名とargv[0]の両方に使われます)。
+;;シェルの介入を避けたい場合はこの形式を使うと良いでしょう。
+;;特殊文字をエスケープする必要はありません。
+;;
+;;デフォルトでは、子プロセスの標準入力は/dev/nullにリダイレクトされ、
+;;標準エラー出力は呼び出したプロセスと共有されます。
+;;inputとerrorキーワード引数にパス名を与えることで、
+;;これらの出力をリダイレクトすることができます。
+;;
+;;また、プロセスの出力の文字エンコーディングを指定するために
+;;encodingキーワード引数を与えることもできます。
+;;それがGaucheの内部エンコーディングと異なっていた場合、
+;;open-input-process-portは文字コード変換ポートを挿入します。
+;;encodingが与えられた場合、conversion-buffer-sizeキーワード引数で
+;;変換バッファの大きさを指定することも可能です。文字コード変換の詳細については
+;;Character code conversionを参照して下さい。
+;;example:
+;;  (receive (port process) (open-input-process-port "ls -l Makefile")
+;;    (begin0 (read-line port)
+;;            (process-wait process)))
+;;   ==> "-rw-r--r--   1 shiro    users        1013 Jun 22 21:09 Makefile"
+;;  
+;;  (receive (port process) (open-input-process-port '(ls -l "Makefile"))
+;;    (begin0 (read-line port)
+;;            (process-wait process)))
+;;   ==> "-rw-r--r--   1 shiro    users        1013 Jun 22 21:09 Makefile"
+;;  
+;;  (open-input-process-port "command 2>&1")
+;;   ==> ;@r{the port reads both stdout and stderr}
+;;  
+;;  (open-input-process-port "command 2>&1 1>/dev/null")
+;;   ==> ;@r{the port reads stderr}
+;;サブプロセスの終了ステータスは自動的に回収されません。
+;;process-wait を呼ぶことは呼び出し側の責任であり、これを怠ると
+;;サブプロセスはゾンビプロセスになります。それが面倒であれば、以下の
+;;手続きを使うことができます。
+;;
+;;@param command 
+;;@param :key 
+;;@param input 
+;;@param error 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name process-continue
+;;@description それぞれ、process に、SIGKILL、SIGSTOP、SIGCONT を送ります。
+;;
+;;@param process 
+
+;;;;;
+;;@type Function
+;;@name process-stop
+;;@description それぞれ、process に、SIGKILL、SIGSTOP、SIGCONT を送ります。
+;;
+;;@param process 
+
+;;;;;
+;;@type Function
+;;@name process-kill
+;;@description それぞれ、process に、SIGKILL、SIGSTOP、SIGCONT を送ります。
+;;
+;;@param process 
+
+;;;;;
+;;@type Function
+;;@name process-send-signal
+;;@description サブプロセス process にシグナル signal を送ります。
+;;signal は正確整数のシグナルナンバーでなければなりません。
+;;シグナルの定義済み変数については、Signalを参照して下さい。
+;;
+;;@param process 
+;;@param signal 
+
+;;;;;
+;;@type Function
+;;@name process-exit-status
+;;@description process-waitによって取得されたprocessの終了ステータスを
+;;返します。processに対してprocess-waitを呼ぶ前にこの手続きを
+;;呼んだ場合の結果は未定義です。
+;;
+;;終了ステータスの解釈はプラットフォームに依存します。プロセスが自発的に
+;;(exitを呼んで)終了したか、それともシグナルによって終了させられたかを
+;;確かめるにはsys-wait-exited?かsys-wait-signaled?を
+;;使ってください。また、終了コードもしくは終了と原因となったシグナルを
+;;知るにはsys-wait-exit-statusをsys-wait-termsig
+;;使ってください (Process management参照)。
+;;
+;;@param process 
+
+;;;;;
+;;@type Function
+;;@name process-wait-any
+;;@description run-processで作られたサブプロセスのどれかの終了ステータスを取得します。
+;;終了ステータスが取得できたプロセスのプロセスオブジェクトを返します。
+;;
+;;真の値がnohangに与えられた場合は、どの子プロセスも終了していない場合は
+;;直ちに#fを返します。そうでなければ、この手続きはいずれかの子プロセスが
+;;終了するまで待ちます。
+;;
+;;子プロセスが存在しない場合は、この手続きは直ちに#fを返します。
+;;
+;;@param :optional 
+;;@param nohang 
+
+;;;;;
+;;@type Function
+;;@name process-wait
+;;@description サブプロセス process の終了ステータスを取得し、process
+;;のstatusスロットに値を格納します。statusスロットの値は
+;;process-exit-statusで得ることができます。
+;;
+;;デフォルトでは、この手続きはprocess が終了するまで実行を一時停止します。
+;;しかし、nohangに真の値が与えられた場合は、processが終了して
+;;いない場合にも直ちに返ります。
+;;
+;;オプショナル引数error-on-nonzero-statusに真の値が与えられた場合、
+;;この手続きは得られた終了ステータスが0で無い場合に
+;;<process-abnormal-exit>エラーを投げます。
+;;
+;;この呼び出しによってprocessの終了ステータスが実際に取得された場合は
+;;#tを、そうでなければ#fを返します。
+;;
+;;@param process 
+;;@param :optional 
+;;@param nohang 
+;;@param error-on-nonzero-status 
+
+;;;;;
+;;@type Function
+;;@name process-list
+;;@description アクティブなプロセスのリストを返します。プロセスは、その終了ステータスが
+;;process-wait によって明示的に回収されない場合は、アクティブなまま
+;;残ります。
+;;ひとたび終了ステータスが回収され、プロセスの状態がインアクティブに
+;;変更されると、そのプロセスはprocess-listが返すリストからは除かれます。
+;;
+
+;;;;;
+;;@type Function
+;;@name process-alive?
+;;@description process が生きている場合は真を返します。process-wait によって
+;;明示的にチェックされない限り、Gauche はサブプロセスのステータスを知ることが
+;;できないことに注意してください。
+;;
+;;@param process 
+
+;;;;;
+;;@type Method
+;;@name process-error
+;;@description これは(process-output process 'stderr)と等価です。
+;;
+;;@param (process <process>) 
+
+;;;;;
+;;@type Method
+;;@name process-output
+;;@description プロセスの入力もしくは出力に一方の端がつながれたパイプの、もう一方の端を取り出します。
+;;nameはrun-processのredirects引数に与えた
+;;識別用の名前です。次の例を見てください。
+;;
+;;example:
+;;  (let1 p (run-process '(command arg)
+;;                       :redirects '((< 3 aux-in)
+;;                                    (> 4 aux-out)))
+;;    (let ([auxin  (process-input p 'aux-in)]
+;;          [auxout (process-output p 'aux-out)])
+;;      ;; feed something to the child's input
+;;      (display 'something auxin)
+;;      ;; read data from the child's output
+;;      (read-line auxout)
+;;      ...
+;;      )
+;;    (process-wait p))
+;;
+;;シンボルaux-inとaux-outがパイプを識別するのに
+;;使われています。process-inputが返すのは出力ポートであり、
+;;process-outputが返すのは入力ポートであることに注意してください。
+;;
+;;nameが省略された場合、process-inputはstdinを、
+;;process-outputはstdoutを使います。これらは
+;;子プロセスの標準入力/出力をそれぞれ:input :pipe/:output :pipeで
+;;リダイレクトした場合に使われる名前です。
+;;
+;;名前に対応するパイプが無い場合は#fが返ります。
+;;
+;;example:
+;;  (let* ((process (run-process '("date") :output :pipe))
+;;         (line (read-line (process-output process))))
+;;    (process-wait process)
+;;    line)
+;;   ==> "Fri Jun 22 22:22:22 HST 2001"
+;;
+;;@param (process <process>) :optional name 
+
+;;;;;
+;;@type Method
+;;@name process-input
+;;@description プロセスの入力もしくは出力に一方の端がつながれたパイプの、もう一方の端を取り出します。
+;;nameはrun-processのredirects引数に与えた
+;;識別用の名前です。次の例を見てください。
+;;
+;;example:
+;;  (let1 p (run-process '(command arg)
+;;                       :redirects '((< 3 aux-in)
+;;                                    (> 4 aux-out)))
+;;    (let ([auxin  (process-input p 'aux-in)]
+;;          [auxout (process-output p 'aux-out)])
+;;      ;; feed something to the child's input
+;;      (display 'something auxin)
+;;      ;; read data from the child's output
+;;      (read-line auxout)
+;;      ...
+;;      )
+;;    (process-wait p))
+;;
+;;シンボルaux-inとaux-outがパイプを識別するのに
+;;使われています。process-inputが返すのは出力ポートであり、
+;;process-outputが返すのは入力ポートであることに注意してください。
+;;
+;;nameが省略された場合、process-inputはstdinを、
+;;process-outputはstdoutを使います。これらは
+;;子プロセスの標準入力/出力をそれぞれ:input :pipe/:output :pipeで
+;;リダイレクトした場合に使われる名前です。
+;;
+;;名前に対応するパイプが無い場合は#fが返ります。
+;;
+;;example:
+;;  (let* ((process (run-process '("date") :output :pipe))
+;;         (line (read-line (process-output process))))
+;;    (process-wait process)
+;;    line)
+;;   ==> "Fri Jun 22 22:22:22 HST 2001"
+;;
+;;@param (process <process>) :optional name 
+
+;;;;;
+;;@type Method
+;;@name process-command
+;;@description サブプロセス process 内で起動されたコマンドを返します。
+;;
+;;@param (process <process>) 
+
+;;;;;
+;;@type Method
+;;@name process-pid
+;;@description サブプロセス process のプロセスIDを返します。
+;;
+;;@param (process <process>) 
+
+;;;;;
+;;@type Function
+;;@name process?
+;;@description ≡  (is-a? obj <process>)
+;;
+;;@param obj 
+
+;;;;;
+;;@type Class
+;;@name <process-abnormal-exit>
+;;@description 主にプロセスポートユーティリティ関数で使われるコンディション型。
+;;<error>を継承。このコンディション型は高レベルプロセスポートユーティ
+;;リティが子プロセスが非ゼロのexitステータスで終了したことを検知したとき
+;;に投げられます。
+;;
+;;
+;;注: Unix用語では，exitステータスにかかわらず，プロセスがcalling
+;;exit(2)を呼ぶか，main()から帰った場合を「正常な終了」と
+;;しています。コマンドによっては非ゼロのexitステータスで何らかの正常な実行結果を
+;;示すものもあります(grep(1)など)。しかし，ほとんどのコマ
+;;ンドでは，非ゼロの exit ステータスは要求された操作が実行できなかったこ
+;;とを表わします。それゆえ上のような場合を例外的な場合として扱います。
+;;
+;;@slot process プロセスオブジェクト。
+;;
+
+;;;;;
+;;@type Class
+;;@name <process>
+;;@description 子プロセスの状態を保持するためのオブジェクト。以下で説明される
+;;run-process 手続きにより、プロセスを作ることができます。
+;;次章で説明するプロセスポートもプロセスオブジェクトを用いています。
+;;
+;;<process>クラスは、run-processやopen-input-process
+;;といった高レベルAPIで作られた子プロセスの状態を管理しています。
+;;それらの子プロセスの終了ステータスをとるには、
+;;process-waitやprocess-wait-anyといった
+;;高レベルAPIを利用してください。これらの手続きはシステムコール以外の情報管理も
+;;行います。sys-waitやsys-waitpidといった低レベルAPIで
+;;直接子プロセスの終了ステータスを取ると、<process>クラスの
+;;内部状態に矛盾が生じます。
+;;
+
+;;;;;
+;;@type Function
+;;@name run-process
+;;@description                    fork wait directory host sigmask
+;;サブプロセスで、cmd/argsに与えられたコマンドと引数を実行し、
+;;<process>オブジェクトを返します。
+;;<process>オブジェクトについては次節で説明します。
+;;
+;;cmd/args引数はリストで、そのcarがコマンド名を、
+;;cdrがコマンドラインに渡す引数を指定します。
+;;
+;;コマンド名がスラッシュを含んでいた場合、それは実行可能ファイルへの
+;;パス名と解釈されます。そうでなければ、コマンド名がPATH環境変数
+;;にあるディレクトリから探されます。
+;;
+;;cmd/argsの各要素は、x->stringで文字列に変換されます。
+;;
+;;例えば、次の式はls -alを実行します。
+;;
+;;example:
+;;  (run-process '(ls -al))
+;;
+;;上の式をREPLで実行したなら、おそらく戻り値がlsの出力より先に表示されるでしょう。
+;;デフォルトでは、run-processは子プロセスの
+;;終了を待たずに、直ちに戻ります。子プロセスの終了を待ちたい場合はwaitキーワード
+;;引数を使います。
+;;
+;;example:
+;;  (run-process '(ls -al) :wait #t)
+;;
+;;あるいは戻り値の<process>オブジェクトを保持しておいて、後で
+;;process-waitを呼ぶことによって子プロセスの終了を待つこともできます。
+;;process-waitについてはProcess objectで説明します。
+;;
+;;example:
+;;  (let1 p (run-process '(ls -al))
+;;    ... do some other work ...
+;;    (process-wait p))
+;;
+;;ところで、-iは虚数として読まれることに注意してください。
+;;-iを引数として渡したい場合は文字列にするか、|-i|のように
+;;エスケープしてシンボルにする必要があります。
+;;
+;;example:
+;;  (run-process '(ls "-i"))
+;;
+;;注：以前のバージョンのこの手続きは引数の取りかたが若干異なっており、
+;;例えば(run-process "ls" "-al" :wait #t)のように呼び出しました。
+;;これはSTkとの互換性によるものです。現在でもこの呼び出しはサポートされていますが、
+;;非推奨です。
+;;
+;;子プロセスの実行を細かく制御するために、run-processはたくさんの
+;;キーワード引数を取ります。以下でそれらをいくつかのカテゴリに分類して説明します。
+;;
+;;@param cmd/args 
+;;@param :key 
+;;@param redirects 
+;;@param input 
+;;@param output 
+;;@param error 
+;;@param @ 
+

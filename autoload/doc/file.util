@@ -1,0 +1,1247 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name with-lock-file
+;;@description                       retry-limit secondary-lock-name retry2-interval @
+;;                      retry2-limit perms abandon-timeout
+;;
+;;Exclusively creates a file or a directory (lock file)
+;;with lock-name, then executes thunk.
+;;After thunk returns, or an error is thrown in it,
+;;the lock file is removed.  When thunk returns normally,
+;;its return values become the return values of with-lock-file.
+;;
+;;If the lock file already exists, with-lock-file waits and retries
+;;getting the lock until timeout reaches.  It can be configured by
+;;the keyword arguments.
+;;
+;;There's a chance that with-lock-file leaves the lock file
+;;when it gets a serious error situation and doesn't have the opportunity
+;;to clean up.  You can allow with-lock-file to steal
+;;the lock if its timestamp is too old; say, if you know that the
+;;applications usually locks just for seconds, and you find the lock
+;;file is 10 minutes old, then it's likely that the previous
+;;process was terminated abruptly and couldn't clean it up.
+;;You can also configure this behavior by the keyword arguments.
+;;
+;;Internally, two lock files are used to implement this
+;;stealing behavior safely.  The creation and removal of the primary
+;;lock file (named by lock-name argument) are guarded by
+;;the secondary lock file (named by secondary-lock-file argument,
+;;defaulted by .2 suffix attached to lock-name).
+;;The secondary lock is aquired for a very short period so there's
+;;much less chance to be left behind by abnormal terminations.
+;;If it happens, however, we just give up; we don't steal the
+;;secondary lock.
+;;
+;;If with-lock-file couldn't get a lock before timeout,
+;;a <lock-file-failure> condition is thrown.
+;;
+;;Here's a list of keyword arguments.
+;;
+;;type ------
+;;  
+;;  It can be either one of the symbols file or directory.
+;;  
+;;  If it is file, we use a lock file, relying on the O_EXCL
+;;  exclusive creation flag of open(2).  It works for most platforms;
+;;  however, some NFS implementation may not implement the exclusive
+;;  semantics properly.   This is the default value.
+;;  
+;;  If it is directory, we use a lock directory, relying on the
+;;  atomicity of mkdir(2).  It should work for any platforms,
+;;  but it may be slower than file.
+;;  
+;;retry-interval ------
+;;retry-limit ------
+;;  
+;;  Accepts a nonnegative real number that specifies either
+;;  the interval to attempt to acquire the primary lock, or the maximum
+;;  time we should keep retrying, respecively, in seconds.
+;;  The default value is 1 second interval and 10 second limit.
+;;  To prevent retrying, give 0 to retry-limit.
+;;  
+;;secondary-lock-name ------
+;;  
+;;  The name of the secondary lock file (or directory).  If omitted,
+;;  lock-name with a suffix .2 attached is used.
+;;  
+;;retry2-interval ------
+;;retry2-limit ------
+;;  
+;;  Like retry-interval and retry-limit, but these specify
+;;  interval and timeout for the secondary lock file.  The possibility
+;;  of secondary lock file collision is usually pretty low, so
+;;  you would hardly need to tweak these.  The default values are
+;;  1 second interval and 10 second limit.
+;;  
+;;perms ------
+;;  
+;;  Specify the permission bitmask of the lock file or directory,
+;;  in a nonnegative exact integer.  The default is #o644 for
+;;  a lock file and #o755 for a lock directory.
+;;  
+;;  Note that to control who can acquire/release/steal the lock,
+;;  what matters is
+;;  the permission of the directory in which the lock file/directory,
+;;  not the permission of the lock file/directory itself.
+;;  
+;;abandon-timeout ------
+;;  
+;;  Specifies the period in seconds.  If the primary lock file is
+;;  older than that, with-lock-file steals the lock.
+;;  To prevent stealing, give #f to this argument.
+;;  The default value is 600 seconds.
+;;  
+;;
+;;
+;;@param lock-name 
+;;@param thunk 
+;;@param :key 
+;;@param type 
+;;@param retry-interval 
+;;@param @ 
+
+;;;;;
+;;@type Function
+;;@name file->sexp-list
+;;@description ファイル filename から読み込むための便利手続き。
+;;これらの手続きは、まず、指定された名前のファイルをオープンし、その
+;;オープンしたファイルに対してそれぞれ port->string、
+;;port->list、port->string-list および port->sexp-list
+;;を呼びます(Input utility functions参照)。すべての内容が読み込まれる
+;;かまたは読み込み中にエラーシグナルがあがれば、ファイルはクローズされます。
+;;
+;;これらの手続きはcall-with-input-fileと同じキーワード引数を取ります。
+;;ファイルが見つからなかった場合の振舞いは
+;;キーワード引数:if-does-not-existによって指定できます。
+;;それが:errorならエラーが報告され、
+;;#fなら#fが返されます。
+;;
+;;@param filename 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name file->string-list
+;;@description ファイル filename から読み込むための便利手続き。
+;;これらの手続きは、まず、指定された名前のファイルをオープンし、その
+;;オープンしたファイルに対してそれぞれ port->string、
+;;port->list、port->string-list および port->sexp-list
+;;を呼びます(Input utility functions参照)。すべての内容が読み込まれる
+;;かまたは読み込み中にエラーシグナルがあがれば、ファイルはクローズされます。
+;;
+;;これらの手続きはcall-with-input-fileと同じキーワード引数を取ります。
+;;ファイルが見つからなかった場合の振舞いは
+;;キーワード引数:if-does-not-existによって指定できます。
+;;それが:errorならエラーが報告され、
+;;#fなら#fが返されます。
+;;
+;;@param filename 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name file->list
+;;@description ファイル filename から読み込むための便利手続き。
+;;これらの手続きは、まず、指定された名前のファイルをオープンし、その
+;;オープンしたファイルに対してそれぞれ port->string、
+;;port->list、port->string-list および port->sexp-list
+;;を呼びます(Input utility functions参照)。すべての内容が読み込まれる
+;;かまたは読み込み中にエラーシグナルがあがれば、ファイルはクローズされます。
+;;
+;;これらの手続きはcall-with-input-fileと同じキーワード引数を取ります。
+;;ファイルが見つからなかった場合の振舞いは
+;;キーワード引数:if-does-not-existによって指定できます。
+;;それが:errorならエラーが報告され、
+;;#fなら#fが返されます。
+;;
+;;@param reader 
+;;@param filename 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name file->string
+;;@description ファイル filename から読み込むための便利手続き。
+;;これらの手続きは、まず、指定された名前のファイルをオープンし、その
+;;オープンしたファイルに対してそれぞれ port->string、
+;;port->list、port->string-list および port->sexp-list
+;;を呼びます(Input utility functions参照)。すべての内容が読み込まれる
+;;かまたは読み込み中にエラーシグナルがあがれば、ファイルはクローズされます。
+;;
+;;これらの手続きはcall-with-input-fileと同じキーワード引数を取ります。
+;;ファイルが見つからなかった場合の振舞いは
+;;キーワード引数:if-does-not-existによって指定できます。
+;;それが:errorならエラーが報告され、
+;;#fなら#fが返されます。
+;;
+;;@param filename 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name delete-files
+;;@description リストpaths中の各パスを削除します。パスがファイルの場合は
+;;unlinkし、ディレクトリの場合はremove-directory*を
+;;使って再帰的にその内容を消去します。存在しないパスは単に無視されます。
+;;
+;;delete-filesはremove-filesの別名です。
+;;
+;;@param paths 
+
+;;;;;
+;;@type Function
+;;@name remove-files
+;;@description リストpaths中の各パスを削除します。パスがファイルの場合は
+;;unlinkし、ディレクトリの場合はremove-directory*を
+;;使って再帰的にその内容を消去します。存在しないパスは単に無視されます。
+;;
+;;delete-filesはremove-filesの別名です。
+;;
+;;@param paths 
+
+;;;;;
+;;@type Function
+;;@name move-file
+;;@description ファイルsrcをdstへ移動します。移動元ファイルsrcは
+;;存在していなければなりません。移動先ファイルdstが存在した場合の
+;;ふるまいはキーワード引数if-existsによって以下のように指定されます。
+;;:error ------
+;;  (デフォルト) dstが存在していたらエラーを通知する。
+;;:supersede ------
+;;  dstをsrcで置き換える。
+;;:backup ------
+;;  dstの名前を変えてキープする。
+;;#f ------
+;;  dstが存在していたら移動をせず#fを返す。
+;;
+;;move-fileは移動が完了したら#tを返します。
+;;
+;;if-existsが:backupである場合、dstがリネームされる
+;;名前はdstにキーワード引数backup-suffixで指定されるサフィックスを
+;;付けたものとなります。デフォルト値は".orig"です。
+;;
+;;ファイルsrcとdstは別のファイルシステム上にあっても構いません。
+;;その場合、move-fileはまずsrcをdstと同じディレクトリの
+;;一時ファイルにコピーし、それをdstにリネームし、それから
+;;srcを消去します。
+;;
+;;@param src 
+;;@param dst 
+;;@param :key 
+;;@param if-exists 
+;;@param backup-suffix 
+
+;;;;;
+;;@type Function
+;;@name copy-file
+;;@description ファイルsrcをdstへコピーします。コピー元ファイルsrcは
+;;存在していなければなりません。コピー先ファイルdstが存在していた場合の
+;;ふるまいはキーワード引数if-existsによって以下のように指定されます。
+;;
+;;:error ------
+;;  (デフォルト) dstが存在していたらエラーを通知する。
+;;:supersede ------
+;;  dstをsrcのコピーで置き換える。
+;;:backup ------
+;;  dstの名前を変えてキープする。
+;;#f ------
+;;  dstが存在していたらコピーをせず#fを返す。
+;;
+;;copy-fileはコピーが完了したら#tを返します。
+;;
+;;srcがシンボリックリンクであった場合、copy-fileは
+;;デフォルトでリンクを辿ります。つまり、ファイルの実体がコピーされます。
+;;srcが存在しないパスを指すシンボリックリンクであった場合は
+;;エラーが通知されます。
+;;
+;;キーワード引数follow-link?に#fを与えることで、
+;;copy-linkにシンボリックリンクそのものをコピーさせることも
+;;できます。この場合、srcが存在しないパスを指すシンボリックリンクで
+;;あっても構いません。
+;;
+;;if-existsが:backupである場合、
+;;dstがリネームされる名前は
+;;dstにキーワード引数backup-suffixで指定されるサフィックスを
+;;付けたものとなります。デフォルト値は".orig"です。
+;;
+;;デフォルトではcopy-fileは直接dstにコピーを行いますが、
+;;キーワード引数safeに真の値が与えられた場合は、dstと同じディレクトリ
+;;内の一時ファイルにまずコピーし、それが完了した時点でdstへとリネームします。
+;;コピーが何らかの理由で中断された場合、ファイルシステムはコピー前の状態へと
+;;「ロールバック」されます。
+;;
+;;キーワード引数keep-timestampに真の値が与えられた場合は、
+;;copy-fileはコピー後にコピー先のファイルのタイムスタンプを
+;;コピー元のタイムスタンプに合わせます。
+;;
+;;キーワード引数keep-modeに真の値が与えられた場合は、
+;;コピー先のファイルのパーミッションビットはコピー元のそれに合わせられます。
+;;keep-modeが偽の場合(デフォルト)は、コピー先が既に存在して
+;;safe引数が偽の場合にコピー先のもとのパーミッションが保持され、
+;;そうでなければ#o666がumaskセッティングによってマスクされた
+;;値となります。
+;;
+;;@param src 
+;;@param dst 
+;;@param :key 
+;;@param if-exists 
+;;@param backup-suffix 
+;;@param safe 
+;;@param keep-timestamp 
+;;@param keep-mode 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name touch-file
+;;@description pathもしくはリストpaths中の各パスの
+;;タイムスタンプを現在の時刻に更新します。
+;;指定されたパスが存在しなかった場合はその名前で大きさゼロのファイルが作成されます。
+;;File statsのsys-utimeも参照して下さい。
+;;
+;;@param path 
+
+;;;;;
+;;@type Method
+;;@name file-atime=?
+;;@description file-mtime=?と同じですが、ファイルの属性変更時間とアクセス時間に
+;;関して比較します。
+;;<, <=, >, >=を使う関数も同様に定義されています。
+;;
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Method
+;;@name file-ctime=?
+;;@description file-mtime=?と同じですが、ファイルの属性変更時間とアクセス時間に
+;;関して比較します。
+;;<, <=, >, >=を使う関数も同様に定義されています。
+;;
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Method
+;;@name file-mtime>=?
+;;@description 二つのファイルの変更時間を比較します。それぞれの引数に対して、
+;;次のような型のオブジェクトが渡せるようなメソッドが定義されています。
+;;
+;;  文字列のパス名。そのパス名で示されるファイルから変更時間が取られます。
+;;  <sys-stat>オブジェクト (@xref{File stats})。
+;;  stat構造体から変更時間が取られます。
+;;  <time>オブジェクト。その示す時間が変更時間と考えられます。
+;;  数値。変更時間をUnix Epochからの秒数で表したものと見なされます。
+;;
+;;example:
+;;  ;; @r{"foo.c" より "foo.o" が新しいかどうか調べる}
+;;  (file-mtime>? "foo.c" "foo.o")
+;;  
+;;  ;; "foo.log"が過去24時間以内に更新されたかどうかを調べる
+;;  (file-mtime>? "foo.c" (- (sys-time) 86400))
+;;
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Method
+;;@name file-mtime>?
+;;@description 二つのファイルの変更時間を比較します。それぞれの引数に対して、
+;;次のような型のオブジェクトが渡せるようなメソッドが定義されています。
+;;
+;;  文字列のパス名。そのパス名で示されるファイルから変更時間が取られます。
+;;  <sys-stat>オブジェクト (@xref{File stats})。
+;;  stat構造体から変更時間が取られます。
+;;  <time>オブジェクト。その示す時間が変更時間と考えられます。
+;;  数値。変更時間をUnix Epochからの秒数で表したものと見なされます。
+;;
+;;example:
+;;  ;; @r{"foo.c" より "foo.o" が新しいかどうか調べる}
+;;  (file-mtime>? "foo.c" "foo.o")
+;;  
+;;  ;; "foo.log"が過去24時間以内に更新されたかどうかを調べる
+;;  (file-mtime>? "foo.c" (- (sys-time) 86400))
+;;
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Method
+;;@name file-mtime<=?
+;;@description 二つのファイルの変更時間を比較します。それぞれの引数に対して、
+;;次のような型のオブジェクトが渡せるようなメソッドが定義されています。
+;;
+;;  文字列のパス名。そのパス名で示されるファイルから変更時間が取られます。
+;;  <sys-stat>オブジェクト (@xref{File stats})。
+;;  stat構造体から変更時間が取られます。
+;;  <time>オブジェクト。その示す時間が変更時間と考えられます。
+;;  数値。変更時間をUnix Epochからの秒数で表したものと見なされます。
+;;
+;;example:
+;;  ;; @r{"foo.c" より "foo.o" が新しいかどうか調べる}
+;;  (file-mtime>? "foo.c" "foo.o")
+;;  
+;;  ;; "foo.log"が過去24時間以内に更新されたかどうかを調べる
+;;  (file-mtime>? "foo.c" (- (sys-time) 86400))
+;;
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Method
+;;@name file-mtime<?
+;;@description 二つのファイルの変更時間を比較します。それぞれの引数に対して、
+;;次のような型のオブジェクトが渡せるようなメソッドが定義されています。
+;;
+;;  文字列のパス名。そのパス名で示されるファイルから変更時間が取られます。
+;;  <sys-stat>オブジェクト (@xref{File stats})。
+;;  stat構造体から変更時間が取られます。
+;;  <time>オブジェクト。その示す時間が変更時間と考えられます。
+;;  数値。変更時間をUnix Epochからの秒数で表したものと見なされます。
+;;
+;;example:
+;;  ;; @r{"foo.c" より "foo.o" が新しいかどうか調べる}
+;;  (file-mtime>? "foo.c" "foo.o")
+;;  
+;;  ;; "foo.log"が過去24時間以内に更新されたかどうかを調べる
+;;  (file-mtime>? "foo.c" (- (sys-time) 86400))
+;;
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Method
+;;@name file-mtime=?
+;;@description 二つのファイルの変更時間を比較します。それぞれの引数に対して、
+;;次のような型のオブジェクトが渡せるようなメソッドが定義されています。
+;;
+;;  文字列のパス名。そのパス名で示されるファイルから変更時間が取られます。
+;;  <sys-stat>オブジェクト (@xref{File stats})。
+;;  stat構造体から変更時間が取られます。
+;;  <time>オブジェクト。その示す時間が変更時間と考えられます。
+;;  数値。変更時間をUnix Epochからの秒数で表したものと見なされます。
+;;
+;;example:
+;;  ;; @r{"foo.c" より "foo.o" が新しいかどうか調べる}
+;;  (file-mtime>? "foo.c" "foo.o")
+;;  
+;;  ;; "foo.log"が過去24時間以内に更新されたかどうかを調べる
+;;  (file-mtime>? "foo.c" (- (sys-time) 86400))
+;;
+;;@param f1 
+;;@param f2 
+
+;;;;;
+;;@type Function
+;;@name file-equal?
+;;@description path1とpath2で示されるファイルを比較します。
+;;file-eq?とfile-eqv?はpath1とpath2が
+;;全く同一のファイルを参照しているかどうか、すなわち、同じデバイス上にあり同じ
+;;inode番号を持つかどうかをチェックします。二つの手続きの違いは、
+;;path1やpath2の最後のコンポーネントがシンボリックリンクで
+;;あった場合に、file-eq?はリンクそのものの比較をするが
+;;file-eqv?はリンクを辿った先のファイルの比較をする、という点です。
+;;
+;;file-equal?はpath1とpath2をその内容まで考慮して比較します。
+;;すなわち、二つのファイルがfile-eqv?の意味で同一でなかった場合、
+;;file-equal?はファイルの内容を比較し、全てが一致した場合に#tを返します。
+;;
+;;path1とpath2ともにディレクトリが与えられた場合の
+;;file-equal?の動作は未定義です。将来、ディレクトリ内容を
+;;スキャンするような拡張が加えられるかもしれません。
+;;
+;;@param path1 
+;;@param path2 
+
+;;;;;
+;;@type Function
+;;@name file-eqv?
+;;@description path1とpath2で示されるファイルを比較します。
+;;file-eq?とfile-eqv?はpath1とpath2が
+;;全く同一のファイルを参照しているかどうか、すなわち、同じデバイス上にあり同じ
+;;inode番号を持つかどうかをチェックします。二つの手続きの違いは、
+;;path1やpath2の最後のコンポーネントがシンボリックリンクで
+;;あった場合に、file-eq?はリンクそのものの比較をするが
+;;file-eqv?はリンクを辿った先のファイルの比較をする、という点です。
+;;
+;;file-equal?はpath1とpath2をその内容まで考慮して比較します。
+;;すなわち、二つのファイルがfile-eqv?の意味で同一でなかった場合、
+;;file-equal?はファイルの内容を比較し、全てが一致した場合に#tを返します。
+;;
+;;path1とpath2ともにディレクトリが与えられた場合の
+;;file-equal?の動作は未定義です。将来、ディレクトリ内容を
+;;スキャンするような拡張が加えられるかもしれません。
+;;
+;;@param path1 
+;;@param path2 
+
+;;;;;
+;;@type Function
+;;@name file-eq?
+;;@description path1とpath2で示されるファイルを比較します。
+;;file-eq?とfile-eqv?はpath1とpath2が
+;;全く同一のファイルを参照しているかどうか、すなわち、同じデバイス上にあり同じ
+;;inode番号を持つかどうかをチェックします。二つの手続きの違いは、
+;;path1やpath2の最後のコンポーネントがシンボリックリンクで
+;;あった場合に、file-eq?はリンクそのものの比較をするが
+;;file-eqv?はリンクを辿った先のファイルの比較をする、という点です。
+;;
+;;file-equal?はpath1とpath2をその内容まで考慮して比較します。
+;;すなわち、二つのファイルがfile-eqv?の意味で同一でなかった場合、
+;;file-equal?はファイルの内容を比較し、全てが一致した場合に#tを返します。
+;;
+;;path1とpath2ともにディレクトリが与えられた場合の
+;;file-equal?の動作は未定義です。将来、ディレクトリ内容を
+;;スキャンするような拡張が加えられるかもしれません。
+;;
+;;@param path1 
+;;@param path2 
+
+;;;;;
+;;@type Function
+;;@name file-is-symlink?
+;;@description pathが存在して、それがシンボリックリンクなら#tを返します。
+;;(参照：File statsのfile-is-regular?, file-is-directory?).
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name file-ctime
+;;@description これらの手続きはpathで示されるファイルやディレクトリのアトリビュートを
+;;返します。アトリビュート名は<sys-stat>のスロット名に対応しています。
+;;File statsを参照して下さい。pathで示されるファイルが
+;;存在しなければ#fが返されます。
+;;
+;;pathがシンボリックリンクだった場合、オプショナルな引数
+;;follow-link? に偽の値が与えられていない限り、これらの手続きは
+;;リンクの指す先のファイルに関する情報を返します。
+;;
+;;MzSchemeとChickenにはfile-sizeがあります。
+;;Chickenにはfile-modification-timeがあり、これはfile-mtimeと
+;;同じです。
+;;
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-mtime
+;;@description これらの手続きはpathで示されるファイルやディレクトリのアトリビュートを
+;;返します。アトリビュート名は<sys-stat>のスロット名に対応しています。
+;;File statsを参照して下さい。pathで示されるファイルが
+;;存在しなければ#fが返されます。
+;;
+;;pathがシンボリックリンクだった場合、オプショナルな引数
+;;follow-link? に偽の値が与えられていない限り、これらの手続きは
+;;リンクの指す先のファイルに関する情報を返します。
+;;
+;;MzSchemeとChickenにはfile-sizeがあります。
+;;Chickenにはfile-modification-timeがあり、これはfile-mtimeと
+;;同じです。
+;;
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-atime
+;;@description これらの手続きはpathで示されるファイルやディレクトリのアトリビュートを
+;;返します。アトリビュート名は<sys-stat>のスロット名に対応しています。
+;;File statsを参照して下さい。pathで示されるファイルが
+;;存在しなければ#fが返されます。
+;;
+;;pathがシンボリックリンクだった場合、オプショナルな引数
+;;follow-link? に偽の値が与えられていない限り、これらの手続きは
+;;リンクの指す先のファイルに関する情報を返します。
+;;
+;;MzSchemeとChickenにはfile-sizeがあります。
+;;Chickenにはfile-modification-timeがあり、これはfile-mtimeと
+;;同じです。
+;;
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-size
+;;@description これらの手続きはpathで示されるファイルやディレクトリのアトリビュートを
+;;返します。アトリビュート名は<sys-stat>のスロット名に対応しています。
+;;File statsを参照して下さい。pathで示されるファイルが
+;;存在しなければ#fが返されます。
+;;
+;;pathがシンボリックリンクだった場合、オプショナルな引数
+;;follow-link? に偽の値が与えられていない限り、これらの手続きは
+;;リンクの指す先のファイルに関する情報を返します。
+;;
+;;MzSchemeとChickenにはfile-sizeがあります。
+;;Chickenにはfile-modification-timeがあり、これはfile-mtimeと
+;;同じです。
+;;
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-gid
+;;@description これらの手続きはpathで示されるファイルやディレクトリのアトリビュートを
+;;返します。アトリビュート名は<sys-stat>のスロット名に対応しています。
+;;File statsを参照して下さい。pathで示されるファイルが
+;;存在しなければ#fが返されます。
+;;
+;;pathがシンボリックリンクだった場合、オプショナルな引数
+;;follow-link? に偽の値が与えられていない限り、これらの手続きは
+;;リンクの指す先のファイルに関する情報を返します。
+;;
+;;MzSchemeとChickenにはfile-sizeがあります。
+;;Chickenにはfile-modification-timeがあり、これはfile-mtimeと
+;;同じです。
+;;
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-uid
+;;@description これらの手続きはpathで示されるファイルやディレクトリのアトリビュートを
+;;返します。アトリビュート名は<sys-stat>のスロット名に対応しています。
+;;File statsを参照して下さい。pathで示されるファイルが
+;;存在しなければ#fが返されます。
+;;
+;;pathがシンボリックリンクだった場合、オプショナルな引数
+;;follow-link? に偽の値が与えられていない限り、これらの手続きは
+;;リンクの指す先のファイルに関する情報を返します。
+;;
+;;MzSchemeとChickenにはfile-sizeがあります。
+;;Chickenにはfile-modification-timeがあり、これはfile-mtimeと
+;;同じです。
+;;
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-nlink
+;;@description これらの手続きはpathで示されるファイルやディレクトリのアトリビュートを
+;;返します。アトリビュート名は<sys-stat>のスロット名に対応しています。
+;;File statsを参照して下さい。pathで示されるファイルが
+;;存在しなければ#fが返されます。
+;;
+;;pathがシンボリックリンクだった場合、オプショナルな引数
+;;follow-link? に偽の値が与えられていない限り、これらの手続きは
+;;リンクの指す先のファイルに関する情報を返します。
+;;
+;;MzSchemeとChickenにはfile-sizeがあります。
+;;Chickenにはfile-modification-timeがあり、これはfile-mtimeと
+;;同じです。
+;;
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-rdev
+;;@description これらの手続きはpathで示されるファイルやディレクトリのアトリビュートを
+;;返します。アトリビュート名は<sys-stat>のスロット名に対応しています。
+;;File statsを参照して下さい。pathで示されるファイルが
+;;存在しなければ#fが返されます。
+;;
+;;pathがシンボリックリンクだった場合、オプショナルな引数
+;;follow-link? に偽の値が与えられていない限り、これらの手続きは
+;;リンクの指す先のファイルに関する情報を返します。
+;;
+;;MzSchemeとChickenにはfile-sizeがあります。
+;;Chickenにはfile-modification-timeがあり、これはfile-mtimeと
+;;同じです。
+;;
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-dev
+;;@description これらの手続きはpathで示されるファイルやディレクトリのアトリビュートを
+;;返します。アトリビュート名は<sys-stat>のスロット名に対応しています。
+;;File statsを参照して下さい。pathで示されるファイルが
+;;存在しなければ#fが返されます。
+;;
+;;pathがシンボリックリンクだった場合、オプショナルな引数
+;;follow-link? に偽の値が与えられていない限り、これらの手続きは
+;;リンクの指す先のファイルに関する情報を返します。
+;;
+;;MzSchemeとChickenにはfile-sizeがあります。
+;;Chickenにはfile-modification-timeがあり、これはfile-mtimeと
+;;同じです。
+;;
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-ino
+;;@description これらの手続きはpathで示されるファイルやディレクトリのアトリビュートを
+;;返します。アトリビュート名は<sys-stat>のスロット名に対応しています。
+;;File statsを参照して下さい。pathで示されるファイルが
+;;存在しなければ#fが返されます。
+;;
+;;pathがシンボリックリンクだった場合、オプショナルな引数
+;;follow-link? に偽の値が与えられていない限り、これらの手続きは
+;;リンクの指す先のファイルに関する情報を返します。
+;;
+;;MzSchemeとChickenにはfile-sizeがあります。
+;;Chickenにはfile-modification-timeがあり、これはfile-mtimeと
+;;同じです。
+;;
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-mode
+;;@description これらの手続きはpathで示されるファイルやディレクトリのアトリビュートを
+;;返します。アトリビュート名は<sys-stat>のスロット名に対応しています。
+;;File statsを参照して下さい。pathで示されるファイルが
+;;存在しなければ#fが返されます。
+;;
+;;pathがシンボリックリンクだった場合、オプショナルな引数
+;;follow-link? に偽の値が与えられていない限り、これらの手続きは
+;;リンクの指す先のファイルに関する情報を返します。
+;;
+;;MzSchemeとChickenにはfile-sizeがあります。
+;;Chickenにはfile-modification-timeがあり、これはfile-mtimeと
+;;同じです。
+;;
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-perm
+;;@description これらの手続きはpathで示されるファイルやディレクトリのアトリビュートを
+;;返します。アトリビュート名は<sys-stat>のスロット名に対応しています。
+;;File statsを参照して下さい。pathで示されるファイルが
+;;存在しなければ#fが返されます。
+;;
+;;pathがシンボリックリンクだった場合、オプショナルな引数
+;;follow-link? に偽の値が与えられていない限り、これらの手続きは
+;;リンクの指す先のファイルに関する情報を返します。
+;;
+;;MzSchemeとChickenにはfile-sizeがあります。
+;;Chickenにはfile-modification-timeがあり、これはfile-mtimeと
+;;同じです。
+;;
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name file-type
+;;@description これらの手続きはpathで示されるファイルやディレクトリのアトリビュートを
+;;返します。アトリビュート名は<sys-stat>のスロット名に対応しています。
+;;File statsを参照して下さい。pathで示されるファイルが
+;;存在しなければ#fが返されます。
+;;
+;;pathがシンボリックリンクだった場合、オプショナルな引数
+;;follow-link? に偽の値が与えられていない限り、これらの手続きは
+;;リンクの指す先のファイルに関する情報を返します。
+;;
+;;MzSchemeとChickenにはfile-sizeがあります。
+;;Chickenにはfile-modification-timeがあり、これはfile-mtimeと
+;;同じです。
+;;
+;;@param path 
+;;@param :key 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name console-device
+;;@description コンソールデバイス名を返します。cygwinを含むunixプラットフォームでは
+;;"/dev/tty"、mingwを含むWindowsネイティブプラットフォームでは
+;;"CON"が返されます。
+;;
+;;そのデバイスが実際に現在のプロセスから利用可能であるかどうかはチェックされません。
+;;
+
+;;;;;
+;;@type Function
+;;@name null-device
+;;@description nullデバイス名を返します。cygwinを含むunixプラットフォームでは
+;;"/dev/null"、mingwを含むWindowsネイティブプラットフォームでは
+;;"NUL"が返されます。
+;;
+
+;;;;;
+;;@type Function
+;;@name find-file-in-paths
+;;@description 名前nameを持ち、述語predを満たすファイルをパス名のリストpaths
+;;から探します。見つかった場合はファイルの絶対パス名を、見つからなかった場合は
+;;#fを返します。
+;;
+;;nameが絶対パス名で与えられた場合はそれが存在するかどうかと
+;;predを満たすかどうかのみがチェックされます。
+;;
+;;pathsのデフォルト値は環境変数PATHから取られます。また、
+;;predのデフォルト値はfile-is-executable?
+;;(File attribute utilities参照)です。すなわち、デフォルトでは
+;;この手続きはコマンドサーチパスから実行可能ファイルを探すのに使えます。
+;;
+;;example:
+;;  (find-file-in-paths "ls")
+;;    ==> "/bin/ls"
+;;  
+;;  ;; アプリケーション"myapp"のユーザプレファレンスファイルを探す例
+;;  (find-file-in-paths "userpref"
+;;    :paths `(,(expand-path "~/.myapp")
+;;             "/usr/local/share/myapp"
+;;             "/usr/share/myapp")
+;;    :pred  file-is-readable?)
+;;
+;;@param name 
+;;@param :key 
+;;@param paths 
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name path-swap-extension
+;;@description pathの拡張子がnewextに置換されたものが返されます。pathが
+;;拡張子を持たない場合は、pathに "." とnewextが追加されます。
+;;
+;;newextが#fの場合は、pathの拡張子が除かれたものが
+;;返されます。すなわち、
+;;
+;;example:
+;;  (path-swap-extension "/foo/bar.c" "o")  ==> "/foo/bar.o"
+;;  (path-swap-extension "/foo/bar.c" #f)   ==> "/foo/bar"
+;;
+;;@param path 
+;;@param newext 
+
+;;;;;
+;;@type Function
+;;@name path-sans-extension
+;;@description それぞれ、pathの拡張子と、pathから拡張子を除いたものを返します。
+;;pathが拡張子を持っていない場合はそれぞれ#fとpathが返されます。
+;;
+;;example:
+;;  (path-extension "/foo/bar.c")       ==> "c"
+;;  (path-sans-extension "/foo/bar.c")  ==> "/foo/bar"
+;;  
+;;  (path-extension "/foo/bar")         ==> #f
+;;  (path-sans-extension "/foo/bar")    ==> "/foo/bar"
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name path-extension
+;;@description それぞれ、pathの拡張子と、pathから拡張子を除いたものを返します。
+;;pathが拡張子を持っていない場合はそれぞれ#fとpathが返されます。
+;;
+;;example:
+;;  (path-extension "/foo/bar.c")       ==> "c"
+;;  (path-sans-extension "/foo/bar.c")  ==> "/foo/bar"
+;;  
+;;  (path-extension "/foo/bar")         ==> #f
+;;  (path-sans-extension "/foo/bar")    ==> "/foo/bar"
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name decompose-path
+;;@description パス名pathのディレクトリ部、拡張子を除いたファイル名、
+;;そして拡張子の3つの値を返します。パス名が拡張子を持たない場合、
+;;最後の値は#fになります。パス名がディレクトリセパレータで
+;;終わっている場合は2番目と3番目の値が#fになります。
+;;(後置されたディレクトリセパレータに関するこの取扱いは、
+;;sys-dirname/sys-basenameと異なることに注意して下さい。
+;;sys-dirname等は後置されたディレクトリセパレータを無視するという
+;;シェル等の慣習に従っています。)
+;;example:
+;;  (decompose-path "/foo/bar/baz.scm")
+;;    ==> "/foo/bar", "baz", "scm"
+;;  (decompose-path "/foo/bar/baz")
+;;    ==> "/foo/bar", "baz", #f
+;;  
+;;  (decompose-path "baz.scm")
+;;    ==> ".", "baz", "scm"
+;;  (decompose-path "/baz.scm")
+;;    ==> "/", "baz", "scm"
+;;  
+;;  ;; Boundary cases
+;;  (decompose-path "/foo/bar/baz.")
+;;    ==> "/foo/bar", "baz", ""
+;;  (decompose-path "/foo/bar/.baz")
+;;    ==> "/foo/bar", ".baz", #f
+;;  (decompose-path "/foo/bar.baz/")
+;;    ==> "/foo/bar.baz", #f, #f
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name simplify-path
+;;@description pathから、親ディレクトリへの参照("..")と自分自身への参照(".")を
+;;出来る限り取り除きます。この手続きはファイルシステムへはアクセスしません。
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name resolve-path
+;;@description pathをexpand-pathと同様に展開し、
+;;続いてpathの各コンポーネントに対してそれがシンボリックリンクであればリンク先の
+;;ものに置き換えてゆきます。pathが存在しないパスを指していたり、
+;;シンボリックリンクの先が存在しなかったり、読み出せないディレクトリがあった場合は
+;;エラーとなります。
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name expand-path
+;;@description pathがチルダ表記を含んでいたらそれを展開したものを返します。
+;;そうでなければpathそのものを返します。この手続きはpathが
+;;存在しアクセス可能であるかどうかはチェックしません。
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name relative-path?
+;;@description pathがそれぞれ絶対パスまたは相対パスならば#tを返します。
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name absolute-path?
+;;@description pathがそれぞれ絶対パスまたは相対パスならば#tを返します。
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name build-path
+;;@description パス名のコンポーネントcomponentをbase-pathに追加します。
+;;Componentはシンボルupまたはsameであっても
+;;構いません; Unixではそれらは".."または"."と等価です。
+;;このAPIはMzSchemeから採られました。
+;;
+;;@param base-path 
+;;@param component 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name check-directory-tree
+;;@description specで記述されるディレクトリ階層がdirの下に存在するかどうかを
+;;調べ、存在すれば#t、そうでなければ#fを返します。
+;;
+;;specの形式は上で説明したcreate-directory-treeと同じです。
+;;
+;;specがオプションを含んでいる場合、該当するファイル/ディレクトリの
+;;属性もそのオプションに合致するかどうかチェックされます。
+;;
+;;@param dir 
+;;@param spec 
+
+;;;;;
+;;@type Function
+;;@name create-directory-tree
+;;@description specで指定されるディレクトリツリーをdirの下に作成します。
+;;特定のディレクトリ構造を一気にセットアップする際に便利です。
+;;
+;;spec引数は次に示される構造をもつS式です。
+;;
+;;example:
+;;  <spec> : <name>                             ; 空のファイル
+;;         | (<name> <option> ...)              ; 空のファイル
+;;         | (<name> <option> ... <string>)     ; 固定内容のファイル
+;;         | (<name> <option> ... <procedure>)  ; 内容を生成するファイル
+;;         | (<name> <option> ... (<spec> ...)) ; ディレクトリ
+;;  
+;;  <name> : 文字列かシンボル
+;;  
+;;  <option> ... : キーワードと値の交代リスト
+;;
+;;specの最初と2番目の形式では、名前nameを持つ空のファイルが作られます。
+;;3番目の形式では与えられた文字列がファイルの内容となります。
+;;
+;;4番目の形式では、手続きがファイルのパス名を引数として呼び出され、
+;;その手続きがcurrent output portに出力した内容がファイルの内容となります。
+;;引数に渡されるパス名はdir引数からの相対パスです。
+;;手続きが呼ばれる時、その親ディレクトリは既につくられています。
+;;
+;;最後の形式は、名前nameを持つディレクトリを作成し、
+;;その子供として再帰的に指定されたspecによるファイル/ディレクトリを作成します。
+;;
+;;optionによって、作られるファイル/ディレクトリの属性を細かく指定できます。
+;;今のところ、次のオプションが認識されます。
+;;
+;;:mode mode ------
+;;  整数modeでパーミッションのモードビットを指定します。
+;;:owner uid ------
+;;:group gid ------
+;;  整数uid/gidで作成されるエントリのオーナー/グループを指定します。
+;;  作成されるエントリのオーナー/グループを変更するには、
+;;  呼び出すプロセスに特権が必要かもしれません。
+;;:symlink path ------
+;;  ファイルを作成するspecでのみ有効なオプションで、
+;;  pathを指すシンボリックリンクを作成します。
+;;
+;;@param dir 
+;;@param spec 
+
+;;;;;
+;;@type Function
+;;@name copy-directory*
+;;@description srcが通常のファイルであれば、copy-fileと同じように
+;;その内容をdstにコピーします。しかしsrcがディレクトリの場合は、
+;;再帰的にディレクトリを辿り、その全てをdstへとコピーします。
+;;cp -rコマンドに相当するものだと考えて良いでしょう。
+;;
+;;srcがディレクトリの場合、デフォルトではその下にあるシンボリックリンクは
+;;辿られず、リンクそのものがコピーされます。リンク先の内容をもコピーしたい
+;;場合はfollow-link?キーワード引数に真の値を与えてください。
+;;つまり、follow-link?キーワード引数のデフォルト値は#fです。
+;;(このデフォルト値はcopy-fileと逆であることに注意してください。
+;;copy-fileではfollow-link?はデフォルトで真であり、
+;;リンクそのものをコピーしたい場合に明示的に#fを与える必要があります。)
+;;
+;;他のキーワード引数の意味はcopy-fileと同じです。
+;;詳細はcopy-fileを参照してください。
+;;
+;;@param src 
+;;@param dst 
+;;@param :key 
+;;@param if-exists 
+;;@param backup-suffix 
+;;@param safe 
+;;@param keep-timestamp 
+;;@param keep-mode 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name delete-directory*
+;;@description ディレクトリnameとその内容を再帰的に消去します
+;;(Unixのrm -rコマンドと同様です)。シンボリックリンクは辿られません。
+;;
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name remove-directory*
+;;@description ディレクトリnameとその内容を再帰的に消去します
+;;(Unixのrm -rコマンドと同様です)。シンボリックリンクは辿られません。
+;;
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name create-directory*
+;;@description ディレクトリnameを作成します。nameに至るパスが存在しない
+;;場合は必要なディレクトリが作成されます (Unixのmkdir -pコマンドと
+;;同様です)。ディレクトリnameが既に存在していた場合は何もしません。
+;;permは作成されるディレクトリのパーミッションビットを指定します。
+;;
+;;@param name 
+;;@param :optional 
+;;@param perm 
+
+;;;;;
+;;@type Function
+;;@name make-directory*
+;;@description ディレクトリnameを作成します。nameに至るパスが存在しない
+;;場合は必要なディレクトリが作成されます (Unixのmkdir -pコマンドと
+;;同様です)。ディレクトリnameが既に存在していた場合は何もしません。
+;;permは作成されるディレクトリのパーミッションビットを指定します。
+;;
+;;@param name 
+;;@param :optional 
+;;@param perm 
+
+;;;;;
+;;@type Function
+;;@name directory-fold
+;;@description ディレクトリ探索の最も基本的な手続きです。基本的な動作は以下に示すような再帰的なものです。
+;;
+;;  pathがディレクトリでない場合は(proc path seed) を
+;;  評価し、結果を返します。
+;;  pathがディレクトリであった場合、まず
+;;  (@var{lister path seed)} を評価します。
+;;  手続きlisterは2つの値、パス名のリストと次のseedとなる値を
+;;  返さなければなりません。
+;;  続いて、directory-foldが各パス名に対して再帰的に呼ばれます。
+;;  各呼び出しの結果が次の再帰呼び出しのseedの値に使われます。
+;;
+;;デフォルトのlisterはdirectory-listを次のように呼び出すものです。
+;;example:
+;;  (lambda (path seed)
+;;    (values (directory-list path :add-path? #t :children? #t)
+;;            seed))
+;;
+;;listerはpath自身への参照 (".") やその親ディレクトリへの参照を
+;;返してはなりません。また、listerの戻り値は現在のディレクトリからアクセス可能な
+;;パス名でなければなりません。例えばpathが"/usr/lib/foo"であり、
+;;そのディレクトリが"libfoo.a"と"libfoo.so"を含んでいた場合、
+;;listerは'("/usr/lib/foo/libfoo.a" "/usr/lib/foo/libfoo.so")
+;;のようなリストを返す必要があります。
+;;
+;;キーワード引数follow-link?はディレクトリを指しているシンボリックリンクに対して
+;;listerを呼ぶかどうかを決定します。follow-link?が真(デフォルト値)である
+;;場合はそのようなシンボリックリンクに対してもlisterが呼ばれます。
+;;一方、follow-link?が偽であればシンボリックリンクに対してはprocが呼ばれます。
+;;
+;;次の例は、与えられたpath以下からemacsのバックアップファイル ("~"で終る名を持つファイル)
+;;のリストを返します。
+;;example:
+;;  (use srfi-13) ;; for string-suffix?
+;;  (directory-fold path
+;;                  (lambda (entry result) 
+;;                    (if (string-suffix? "~" entry)
+;;                        (cons entry result)
+;;                        result))
+;;                  '())
+;;
+;;次の例は与えられたpath以下全てのファイルとディレクトリ名をリストにして
+;;返します。lister引数を使ってディレクトリ名そのものを結果に
+;;含めていることに注目して下さい。
+;;example:
+;;  (directory-fold path cons '()
+;;    :lister (lambda (path seed)
+;;              (values (directory-list path :add-path? #t :children? #t)
+;;                      (cons path seed))))
+;;
+;;
+;;@param path 
+;;@param proc 
+;;@param seed 
+;;@param :key 
+;;@param lister 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name directory-list2
+;;@description directory-listに似ていますが、ふたつの値を返します。最初の値は
+;;path内にあるサブディレクトリのリストで、次の値はそれ以外のエントリのリストです。
+;;キーワード引数children?、add-path?、filterは
+;;directory-listと同じ意味をもちます。
+;;
+;;偽の値をfollow-link?に与えると、path内のシンボリックリンクを
+;;辿りません；すなわち、path内にディレクトリへのシンボリックリンクがあった場合、
+;;デフォルト、もしくはfollow-link?に真の値が与えられた場合は
+;;それは最初のリスト(サブディレクトリ)に入りますが、follow-link?
+;;に偽の値が与えられた場合は後者のリスト(その他のエントリ)に入ります。
+;;
+;;@param path 
+;;@param :key 
+;;@param children? 
+;;@param add-path? 
+;;@param filter 
+;;@param follow-link? 
+
+;;;;;
+;;@type Function
+;;@name directory-list
+;;@description ディレクトリpath中のエントリのリストを返します。
+;;リストは文字列順にソートされます。
+;;
+;;デフォルトではエントリのベースネーム(パスの最後のコンポーネント)のみが
+;;返されますが、キーワード引数add-path?に真の値が与えられた時は
+;;pathが各エントリの前に追加されます。
+;;children?に真の値が与えられた時は、カレントディレクトリと親ディレクトリが
+;;リストから除かれます。
+;;
+;;filter引数は、もし与えられれば、一つの引数を取る
+;;手続きでなければなりません。ディレクトリ中の各エントリを引数としてその手続きが呼ばれ、
+;;真を返したエントリのみが結果に含まれます。
+;;filterに与えられるエントリはデフォルトではベース名のみですが、
+;;引数filter-add-path?が真ならばpathが前に追加された名前となります。
+;;
+;;pathがディレクトリでない場合はエラーが報告されます。
+;;
+;;example:
+;;  (directory-list "test")
+;;   ==> ("." ".." "test.scm" "test.scm~")
+;;  
+;;  (directory-list "test" :add-path? #t)
+;;   ==> ("test/." "test/.." "test/test.scm" "test/test.scm~")
+;;  
+;;  (directory-list "test" :children? #t)
+;;   ==> ("test.scm" "test.scm~")
+;;  
+;;  (directory-list "test" :children? #t :add-path? #t
+;;     :filter (lambda (e) (not (string-suffix? "~" e))))
+;;   ==> ("test/test.scm")
+;;
+;;@param path 
+;;@param :key 
+;;@param children? 
+;;@param add-path? 
+;;@param filter 
+;;@param filter-add-path? 
+
+;;;;;
+;;@type Parameter
+;;@name temporary-directory
+;;@description 一時ファイルを作るのに適したディレクトリ名を保持しているパラメータです。
+;;デフォルトの値はsys-tmpdirの戻り値です (Pathnames参照)。
+;;sys-tmpdirとの違いは、これはパラメータなので
+;;アプリケーションが実行時に変更できることです。
+;;ライブラリは柔軟性を高めるためにできるだけsys-tmpdirよりは
+;;こちらを利用するのが良いでしょう。
+;;
+
+;;;;;
+;;@type Function
+;;@name home-directory
+;;@description 名前または整数のユーザidで与えられたユーザuserのホームディレクトリを
+;;返します。userが省略された場合はカレントユーザが使われます。
+;;与えられたユーザが見付けられないか、ホームディレクトリを決定できなかった場合は
+;;#fが返されます。
+;;
+;;Windowsネイティブ環境では、この関数はカレントユーザに対してのみ動作します。
+;;
+;;@param :optional 
+;;@param user 
+
+;;;;;
+;;@type Function
+;;@name current-directory
+;;@description 引数無しで呼ばれた場合、カレントディレクトリを返します。
+;;文字列new-directoryが与えられた場合はプロセスのカレントディレクトリを
+;;new-directoryに変更します。変更が出来なかった場合はエラーとなります。
+;;
+;;この関数はChezSchemeやMzSchemeなどいくつかのScheme処理系に見られます。
+;;
+;;@param :optional 
+;;@param new-directory 
+

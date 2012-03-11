@@ -1,0 +1,74 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Class
+;;@name <validator-meta>
+;;@description このメタクラスは、スロットの値がセットされる前後に呼ばれるコールバックを
+;;指定する機能を提供します。例えば、あるスロットに常に文字列のみが
+;;セットされているようにしたい場合、そのスロットに、slot-ref経由であれ
+;;アクセサメソッド経由であれ値がセットされようとした時に指定の手続きが呼ばれるように
+;;し、その手続きの中で、値が文字列でなかったらエラーとするか、強制的に値を
+;;文字列に変換してしまうことができます。その手続きが返した値が実際にスロットに
+;;セットされます。
+;;
+;;スロットに値がセットされる前に呼ばれるvalidator手続きは、
+;;:validatorスロットオプションによって指定できます。
+;;手続きは、インスタンスとセットされようとしている値の二つを引数に取ります。
+;;その手続きが返した値が実際にスロットにセットされる値となります。
+;;
+;;スロットに値がセットされた後に呼ばれるobserver手続きは
+;;:observerスロットオプションによって指定できます。
+;;手続きは、インスタンスとセットされた値の二つを引数に取ります。
+;;戻り値は捨てられます。
+;;
+;;下の例を参照して下さい。
+;;
+;;example:
+;;  (define-class <v> ()
+;;    ((a :accessor a-of
+;;        :validator (lambda (obj value) (x->string value)))
+;;     (b :accessor b-of
+;;        :validator (lambda (obj value)
+;;                     (if (integer? value)
+;;                         value
+;;                         (error "integer required for slot b")))))
+;;    :metaclass <validator-meta>)
+;;  
+;;  (define v (make <v>))
+;;  (slot-set! v 'a 'foo)
+;;  (slot-ref v 'a) ==> "foo"
+;;  
+;;  (set! (a-of v) 1234)
+;;  (a-of v) ==> "1234"
+;;  
+;;  (slot-set! v 'b 55)
+;;  (slot-ref v 'b) ==> 55
+;;  
+;;  (slot-set! v 'b 3.4) ==> error
+;;  (set! (b-of v) 3.4)  ==> error
+;;
+;;:validator が指定されたスロットにも、:init-value等を
+;;使って既定の初期値を指定しておくことができます。
+;;その場合、インスタンスの初期化ルーチンは、
+;;init-keywordによる初期値指定が無ければ既定の初期値を引数としてvalidator手続きを
+;;呼び出します。
+;;
+;;example:
+;;  (define-class <v> ()
+;;    ((a :initform 'foo :init-keyword :a
+;;        :validator (lambda (obj value) (x->string value)))))
+;;  
+;;  (slot-ref (make <v>) 'a)        ==> "foo"
+;;  (slot-ref (make <v> :a 555) 'a) ==> "555"
+;;
+;;仮想スロットに似ていますが、validatorを持つスロットはインスタンス内に実際に
+;;値を格納している点が異なります。
+;;
+;;このモジュールはまた、スロットのアクセスをメタオブジェクトプロトコルを使って
+;;カスタマイズする例でもあります。この機能は20行ほどのコードで実現されています。
+;;
+

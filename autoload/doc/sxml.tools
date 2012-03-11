@@ -1,0 +1,569 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name sxml:sxml->html
+;;@description SXML->HTML変換に対して特化され最適化されたバージョンのノードディスパッチ
+;;です。
+;;
+;;@param tree 
+
+;;;;;
+;;@type Function
+;;@name sxml:non-terminated-html-tag?
+;;@description この述語は、``終了タグのない''HTML 4.0のタグに対して#tを
+;;返します。
+;;
+;;@param tag 
+
+;;;;;
+;;@type Function
+;;@name sxml:string->html
+;;@description 与えられた文字列で、それがエンコーディングを必要とする文字、
+;;<、>、&、``を含まないことをチェックします。
+;;Simple HTML document constructionの
+;;html-escape-stringも参照して下さい。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr->html
+;;@description 属性のHTMLマークアップを作ります。
+;;
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:sxml->xml
+;;@description SXML->XML変換に特化され最適化されたバージョンのノードディスパッチです。
+;;
+;;@param tree 
+
+;;;;;
+;;@type Function
+;;@name sxml:string->xml
+;;@description 与えられた文字列中の全ての<、>、&、``、
+;;'を対応する文字実体参照に置き換えた、文字列あるいは
+;;文字列のリストを返します。
+;;sxml:string->htmlも参照して下さい。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr->xml
+;;@description 属性のXMLマークアップを作ります。
+;;
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:clean-feed
+;;@description 'fragments'をフィルタします。
+;;fragmentsは、文字列、文字、数値、手続き、#f、他のフラグメントの
+;;リストです。
+;;この関数はツリーを深さ優先でトラバースし、
+;;文字列、文字、実行された手続きのリストを返し、
+;;#fと'()を無視します。
+;;
+;;全ての意味のあるフラグメントは文字列で、
+;;この関数の結果に@var{(apply string-append ... )}を
+;;適用すると、そのstring-valueを返します。
+;;
+;;これは、Oleg KiselyovのSRV:send-replyの変種であるとみなすことが
+;;できるでしょう。
+;;SRV:send-replyはフラグメントを印字(display)しますが、
+;;この関数は意味のあるフラグメントのリストを返し、ごみをふるい落とします。
+;;
+;;@param . 
+;;@param fragments 
+
+;;;;;
+;;@type Function
+;;@name sxml:lookup
+;;@description 要素をそのIDを使って探します。
+;;
+;;@param id 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name sxml:node-parent
+;;@description 高速な'node-parent'関数を返します。
+;;すなわち、SXML要素を1引数として取り、補助リストで
+;;*PARENT*ポインタを使ってその親ノードを返す関数を返します。
+;;'*TOP-PTR*はルートノードへのポインタとして使われます。
+;;ルートノードに対して適用されると空リストを返します。
+;;
+;;@param rootnode 
+
+;;;;;
+;;@type Function
+;;@name sxml:add-parents
+;;@description SXMLノードセットに'親へのポインタ'を追加したものを返します。
+;;親へのポインタは、(*PARENT* thunk)というフォームを持つ
+;;補助ノードです。thunkは親要素を返します。
+;;
+;;@param obj 
+;;@param . 
+;;@param top-ptr 
+
+;;;;;
+;;@type Function
+;;@name sxml:clean
+;;@description 与えられたSXML要素objとその子孫について、空リストである属性と、
+;;全ての補助リストを削除します。
+;;最小化され、正規化されたSXML要素が返されます。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:squeeze!
+;;@description 与えられたSXML要素objとその子孫について、空のリストである属性
+;;および補助リストを排除します(最小化)。
+;;最小化され、正規化されたSXML要素が返されます。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:squeeze
+;;@description 与えられたSXML要素objとその子孫について、空のリストである属性
+;;および補助リストを排除します(最小化)。
+;;最小化され、正規化されたSXML要素が返されます。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:add-aux!
+;;@description 要素objに補助ノードaux-nodeを追加します。
+;;
+;;@param obj 
+;;@param aux-node 
+
+;;;;;
+;;@type Function
+;;@name sxml:add-aux
+;;@description 補助ノードaux-nodeが追加されたSXML要素objを返します。
+;;
+;;@param obj 
+;;@param aux-node 
+
+;;;;;
+;;@type Function
+;;@name sxml:set-attr!
+;;@description 要素objの属性attrをセットします。
+;;そのような属性がない場合は新しい属性として追加されます。
+;;
+;;@param obj 
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:set-attr
+;;@description 要素objの属性attrをセットします。
+;;そのような属性がない場合は新しい属性として追加されます。
+;;
+;;@param obj 
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-attr!
+;;@description 要素objの属性の値を変更します。
+;;attrは(attr-name attr-value)です。
+;;そのような属性がない場合は#fを返します。
+;;
+;;@param obj 
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-attr
+;;@description 属性attrの値が変更されたSXML要素objを返します。
+;;与えられた名前の属性がない場合は#fを返します。
+;;attrは(attr-name attr-value)です。
+;;
+;;@param obj 
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:add-attr!
+;;@description 要素objに属性attrを追加します。
+;;与えられた名前の属性がすでに存在する場合は#fを返します。
+;;結果のSXMLノードは正規化されています。
+;;sxml:add-attrに対応するその場で更新する関数です。
+;;
+;;@param obj 
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:add-attr
+;;@description 属性attrが追加されたSXML要素objを返します。
+;;与えられた名前の属性がすでに存在する場合は#fを返します。
+;;attrは(attr-name attr-value)です。
+;;sxml:add-attr!に対応する純粋関数的な関数です。
+;;
+;;@param obj 
+;;@param attr 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-name!
+;;@description SXML要素の名前を破壊的に変更します。
+;;
+;;@param obj 
+;;@param new-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-name
+;;@description SXML要素の名前を破壊的に変更します。
+;;
+;;@param obj 
+;;@param new-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-attrlist!
+;;@description 結果のSXML要素は正規化されています。
+;;new-attrlistが空の場合は、objのcadrは(@@)になります。
+;;
+;;@param obj 
+;;@param new-attrlist 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-attrlist
+;;@description 結果のSXML要素は正規化されています。
+;;new-attrlistが空の場合は、objのcadrは(@@)になります。
+;;
+;;@param obj 
+;;@param new-attrlist 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-content!
+;;@description 与えられたSXML要素の内容を、new-contentに変更します。
+;;new-contentが空リストの場合は、objは空要素に変更されます。
+;;結果のSXML要素は正規化されています。
+;;
+;;@param obj 
+;;@param new-content 
+
+;;;;;
+;;@type Function
+;;@name sxml:change-content
+;;@description 与えられたSXML要素の内容を、new-contentに変更します。
+;;new-contentが空リストの場合は、objは空要素に変更されます。
+;;結果のSXML要素は正規化されています。
+;;
+;;@param obj 
+;;@param new-content 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-prefix
+;;@description 与えられた名前空間連想リストに対応する名前空間接頭辞を返します。
+;;与えられた名前空間IDの(XML文書における)オリジナルの接頭辞は、
+;;それが名前空間IDと異なる場合は、名前空間連想リストの3番目の要素として
+;;格納されなければなりません。
+;;名前空間連想リストでオリジナルの接頭辞が省略されている場合は、
+;;代わりに名前空間IDが使われます。
+;;
+;;@param ns-assoc 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-uri
+;;@description 与えられた名前空間連想リストに対応するURIを返します。
+;;
+;;@param ns-assoc 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-id
+;;@description 与えられた名前空間連想リストに対応する名前空間IDを返します。
+;;
+;;@param ns-assoc 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-uri->id
+;;@description 与えられた名前空間URIに対応する名前空間IDを返します。
+;;
+;;@param obj 
+;;@param uri 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-id->uri
+;;@description 与えられたnamespace-idに対応するURIを返します。
+;;与えられたnamespace-idに対応する名前空間の連想リストがない場合は
+;;#fを返します。
+;;
+;;@param obj 
+;;@param namespace-id 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-id->nodes
+;;@description SXML要素objで、与えられたnamespace-idに対応する名前空間の
+;;連想リストのリストを返します。
+;;((sxpath '(@@@@ *NAMESPACES* namespace-id)) obj)と類似です。
+;;与えられたnamespace-idに対応する名前空間の連想リストがない場合は
+;;空リストが返されます。
+;;
+;;@param obj 
+;;@param namespace-id 
+
+;;;;;
+;;@type Function
+;;@name sxml:ns-list
+;;@description 与えられた要素の名前空間のリストを返します。
+;;((sxpath '(@@@@ *NAMESPACES* *)) obj)と類似です。
+;;名前空間のリストがない場合は空リストが返されます。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr-u
+;;@description 与えられたSXML要素objのattr-nameという名前の属性への
+;;アクセッサです。objは、(通常はSXML要素の内容である)
+;;属性リストやノードセットでも構いません。
+;;
+;;戻り値は、その属性が存在すればその属性の値、与えられた要素に
+;;そのような属性がない場合は#fです。
+;;
+;;-uが付くものは、正規化されていないSXMLノードに対しても
+;;使えるということを示しています。('u'は'universal'の意味です。)
+;;
+;;@param obj 
+;;@param attr-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:num-attr
+;;@description 与えられたSXML要素objのattr-nameという数値の属性への
+;;アクセッサです。
+;;戻り値は、その属性が存在してその値がstring->numberにより数値へ
+;;変換できる場合はその属性を数値としてその属性の値、
+;;与えられた要素にそのような属性がないかその値が数値へ変換できない場合は
+;;#fです。
+;;
+;;@param obj 
+;;@param attr-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr
+;;@description 与えられたSXML要素objのattr-nameという属性へのアクセッサです。
+;;戻り値は、その属性が存在すればその属性の値、与えられた要素に
+;;そのような属性がなければ#fです。
+;;
+;;@param obj 
+;;@param attr-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:aux-nodes
+;;@description 与えられたSXML要素objでaux-nameとうい名前の付いている補助ノードの
+;;リストを返します。そのようなノードがなければ'()を返します。
+;;
+;;@param obj 
+;;@param aux-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:aux-node
+;;@description 与えられたSXML要素objでaux-nameという名前の付いている最初の
+;;補助ノードを返します。そのようなノードがない場合は#fを返します。
+;;注意: 複数のノードがあっても最初に見つかったノードのみを
+;;返します。したがって、ユニークな名前を持っているノード群に対して
+;;使われることを意図しています。
+;;
+;;@param obj 
+;;@param aux-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:aux-list-u
+;;@description 与えられた要素かノードセットの補助ノードのリストを返します。
+;;((sxpath '(@@@@ *)) obj)と類似です。
+;;補助ノードのリストがない場合は空リストが返されます。
+;;
+;;-uが付くものは、正規化されていないSXMLノードに対しても
+;;使えるということを示しています。('u'は'universal'の意味です。)
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:aux-list
+;;@description 与えられた要素かノードセットの補助ノードのリストを返します。
+;;((sxpath '(@@@@ *)) obj)と類似です。
+;;補助ノードのリストがない場合は空リストが返されます。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr-list-u
+;;@description 与えられた要素かノードセットの属性のリストを返します。
+;;((sxpath '(@@ *)) obj)と類似です。
+;;属性のリストがない場合は空リストが返されます。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:aux-as-list
+;;@description aux-listをリストにラップして返します。
+;;aux-listが存在しなければ'()を返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:aux-list-node
+;;@description 与えられたobjのaux-listを返します。
+;;attr-listが存在しなければ#fを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr-as-list
+;;@description attr-listをリストにラップして返します。
+;;attr-listが存在せずaun-listがある場合は'((@@))を返します。
+;;両方とも存在しない場合には'()を返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr-list-node
+;;@description 与えられたobjのattr-listを返します。
+;;attr-listが存在しなければ#fを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:content-raw
+;;@description 正規化されたSXML要素の全ての内容を、attr-listとaux-listを除いて
+;;返します。
+;;したがってそれは、PI、COMMENT、ENTITY
+;;ノードとともに、sxml:contentによって返されるTEXTやELEMENTも含みます。
+;;戻り値は、ドキュメントオーダーにしたがったノードのリストか、
+;;objが空要素や空リストの場合は空リストになります。
+;;この関数は、sxml:contentよりも高速です。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:content
+;;@description 与えられたSXML要素かノードセット(テキストノードと要素ノードのみ)の内容を、
+;;ドキュメントオーダーにしたがった文字列のリストとネストした要素として
+;;返します。このリストは、objが空要素や空リストの場合は空です。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:name->ns-id
+;;@description 与えられた名前の名前空間ID部分を返します。与えられた名前がLocalNameの
+;;場合は#fを返します。
+;;
+;;@param sxml-name 
+
+;;;;;
+;;@type Function
+;;@name sxml:ncname
+;;@description 与えられたobjの完全修飾名(Namespaces in XML production [6])のローカルパート、
+;;つまりその完全修飾名を``:''で分割した後ろの部分を返します。
+;;与えられたノードの名前がNCName(Namespaces in XML production [4])であれば、
+;;それをそのまま返します。
+;;SXMLの名前はシンボルですが、この関数は文字列を返すことに注意して下さい。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:node-name
+;;@description sxml:nameの、与えられたobjがSXMLノードでない場合は#fを返す、
+;;安全なバージョンです。objがSXMLノードであれば、その名前を返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:element-name
+;;@description sxml:nameの、与えられたobjがSXML要素ではない場合は#fを返す
+;;バージョンです。objがSXML要素であれば、その名前を返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:name
+;;@description 与えられたSXMLノードの名前を返します。
+;;これは単にcarのエイリアスに過ぎませんが、カプセル化のために導入されています。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:minimized?
+;;@description 与えられたobjが最小化されたSXML要素であれば#tが返されます。
+;;要素それ自体とその全てのネストした要素が最小化されていなければなりません。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:shallow-minimized?
+;;@description 与えられたobjが浅く最小化されたSXML要素であれば#tを返します。
+;;要素それ自体は最小化されていなければなりませんが、そのネストした要素は
+;;テストされません。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:normalized?
+;;@description 与えられたobjが正規化されたSXML要素であれば#tを返します。
+;;要素それ自体とその全てのネストした要素が正規化されていなければなりません。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:shallow-normalized?
+;;@description 与えられたobjが浅く正規化されたSXML要素であれば#tを返します。
+;;要素それ自体は正規化されていなければなりませんが、ネストした要素は
+;;テストされません。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:empty-element?
+;;@description 与えられた要素objが空なら#tを返す述語です。
+;;空要素は、ネストした要素、テキストノード、PI、コメントや実体を
+;;持ちませんが、属性や名前空間IDは持つかもしれません。
+;;それは、XMLのempty-elementのSXML版です。
+;;
+;;@param obj 
+

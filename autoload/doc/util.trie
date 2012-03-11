@@ -1,0 +1,338 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name trie-for-each
+;;@description これらの手続きはcommon-prefix版とおなじような働きをしますが、
+;;trie全体をトラバースします。
+;;
+;;@param trie 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name trie-map
+;;@description これらの手続きはcommon-prefix版とおなじような働きをしますが、
+;;trie全体をトラバースします。
+;;
+;;@param trie 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name trie-fold
+;;@description これらの手続きはcommon-prefix版とおなじような働きをしますが、
+;;trie全体をトラバースします。
+;;
+;;@param trie 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name trie-common-prefix-for-each
+;;@description mapやfor-eachをfoldを合せたのと同じように、
+;;trie-common-prefix-foldに合せたものです。
+;;trie-common-prefix-mapはprocをマッチするエントリのキーと
+;;値に適用し結果をリストにあつめます。
+;;trie-common-prefix-for-eachも同じくprocを適用しますが
+;;結果は捨てます。
+;;
+;;@param trie 
+;;@param prefix 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name trie-common-prefix-map
+;;@description mapやfor-eachをfoldを合せたのと同じように、
+;;trie-common-prefix-foldに合せたものです。
+;;trie-common-prefix-mapはprocをマッチするエントリのキーと
+;;値に適用し結果をリストにあつめます。
+;;trie-common-prefix-for-eachも同じくprocを適用しますが
+;;結果は捨てます。
+;;
+;;@param trie 
+;;@param prefix 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name trie-common-prefix-fold
+;;@description prefixではじまるキーをもつ各エントリに対して、procを3つの
+;;引数、エントリのキー、値、現在のシード値で呼びます。seedは最初の
+;;シード値として使われ、procが返す値は次のprocの呼び出しのシー
+;;ド値として使われます。procが返した最後の値が
+;;trie-common-prefix-foldから返ります。
+;;procが適用される順序は未定義です。trieがprefixを持つ
+;;キーのエントリを含まない場合にはprocが呼ばれることはなく、
+;;seedが返ります。
+;;
+;;@param trie 
+;;@param prefix 
+;;@param proc 
+;;@param seed 
+
+;;;;;
+;;@type Function
+;;@name trie-common-prefix-values
+;;@description prefixではじまるキーをもつエントリをすべて集め、
+;;trie-common-prefixはその各エントリを(key . value)の対にし
+;;たリストを返します。trie-common-prefix-keysは、キーのリストを
+;;trie-common-prefix-valuesは値のリストを返します。返されるリスト
+;;のエントリの順序は未定義です。
+;;trieに指定したprefixをもつキーのエントリがなければ、
+;;空リストが返されます。
+;;
+;;接頭辞照合ではシーケンスの型を考慮しないことに注意してください。
+;;trieのなかに"foo"と(#\f #\o #\o)に対応するエントリ
+;;があれば、(trie-common-prefix trie "foo")はその両方を返します。
+;;
+;;@param trie 
+;;@param prefix 
+
+;;;;;
+;;@type Function
+;;@name trie-common-prefix-keys
+;;@description prefixではじまるキーをもつエントリをすべて集め、
+;;trie-common-prefixはその各エントリを(key . value)の対にし
+;;たリストを返します。trie-common-prefix-keysは、キーのリストを
+;;trie-common-prefix-valuesは値のリストを返します。返されるリスト
+;;のエントリの順序は未定義です。
+;;trieに指定したprefixをもつキーのエントリがなければ、
+;;空リストが返されます。
+;;
+;;接頭辞照合ではシーケンスの型を考慮しないことに注意してください。
+;;trieのなかに"foo"と(#\f #\o #\o)に対応するエントリ
+;;があれば、(trie-common-prefix trie "foo")はその両方を返します。
+;;
+;;@param trie 
+;;@param prefix 
+
+;;;;;
+;;@type Function
+;;@name trie-common-prefix
+;;@description prefixではじまるキーをもつエントリをすべて集め、
+;;trie-common-prefixはその各エントリを(key . value)の対にし
+;;たリストを返します。trie-common-prefix-keysは、キーのリストを
+;;trie-common-prefix-valuesは値のリストを返します。返されるリスト
+;;のエントリの順序は未定義です。
+;;trieに指定したprefixをもつキーのエントリがなければ、
+;;空リストが返されます。
+;;
+;;接頭辞照合ではシーケンスの型を考慮しないことに注意してください。
+;;trieのなかに"foo"と(#\f #\o #\o)に対応するエントリ
+;;があれば、(trie-common-prefix trie "foo")はその両方を返します。
+;;
+;;@param trie 
+;;@param prefix 
+
+;;;;;
+;;@type Function
+;;@name trie->hash-table
+;;@description ht-typeタイプのハッシュテーブル(ハッシュテーブルのタイプについて
+;;はHashtablesを参照)を作成し、trieのすべてのキーと値の対を
+;;セットします。
+;;
+;;@param trie 
+;;@param ht-type 
+
+;;;;;
+;;@type Function
+;;@name trie-values
+;;@description それぞれ、trieのすべてのキーのリスト、すべての値のリストを返しま
+;;す。順序は未定義です。
+;;
+;;@param trie 
+
+;;;;;
+;;@type Function
+;;@name trie-keys
+;;@description それぞれ、trieのすべてのキーのリスト、すべての値のリストを返しま
+;;す。順序は未定義です。
+;;
+;;@param trie 
+
+;;;;;
+;;@type Function
+;;@name trie->list
+;;@description trieの各エントリを(key . value)という対にして
+;;すべてのエントリの対のリストを返します。エントリの順序は未定義です。
+;;
+;;@param trie 
+
+;;;;;
+;;@type Function
+;;@name trie-delete!
+;;@description trieからkeyに関連するエントリを削除します。
+;;そのようなエントリがない場合にはこの手続きはなにもしません。
+;;
+;;@param trie 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name trie-update!
+;;@description trie中のエントリの検索が一度きりしか起らないことをのぞけば以下の
+;;コードのように動きます。
+;;
+;;example:
+;;  (let ((val (trie-get trie key fallback)))
+;;    (trie-put! trie key (proc val)))
+;;
+;;@param trie 
+;;@param key 
+;;@param proc 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name trie-put!
+;;@description keyに結びついたvalueをtrieに挿入します。
+;;
+;;@param trie 
+;;@param key 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name trie-get
+;;@description trie中のkeyをもつエントリがあれば、それにむすびついている
+;;値を返します。そのようなエントリがない場合、fallbackが与えられて
+;;いればそれを返し、さもなければ、エラーシグナルがあがります。
+;;
+;;@param trie 
+;;@param key 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name trie-exists?
+;;@description trieがkeyというキーのエントリを含む場合には#tを返し、
+;;さもなければ、#fを返します。
+;;
+;;@param trie 
+;;@param key 
+
+;;;;;
+;;@type Function
+;;@name trie-num-entries
+;;@description trie中のエントリの数を返します。
+;;
+;;@param trie 
+
+;;;;;
+;;@type Function
+;;@name trie?
+;;@description objがtrieなら#tを返し、さもなければ#fを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name trie-with-keys
+;;@description キーにだけ関心がある場合には便利なtrie。各値はキーと同じ。以下
+;;の例では2つのエントリとデフォルトのテーブル手続をもつtrieを生成します。
+;;
+;;example:
+;;  (trie-with-keys '() "foo" "bar")
+;;
+;;@param params 
+;;@param key 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name trie
+;;@description 初期の内容がkv ... であるようなtrieを構成します。ここで、
+;;kvはキーと値の対です。paramsはtrieを生成するときに
+;;make-trieに渡される引数のリストです。以下の例は2つのエントリ
+;;とデフォルトのテーブル手続をもつtrieを生成します。
+;;
+;;example:
+;;  (trie '() '("foo" . a) '("bar" . b))
+;;
+;;@param params 
+;;@param kv 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name make-trie
+;;@description 空のtrieを生成し返します。4つのオプション引数があり、これらは、
+;;内部木のノードをどのようにマージするかをカスタマイズする手続きです。
+;;
+;;それぞれのノードは子のノードを格納するテーブルを持つことができます。
+;;キーシーケンスの要素でインデックスできます。(たとえば、trieがキーとし
+;;え文字列を使っているとすると、ノードのテーブルは文字でインデックスされ
+;;ています。)
+;;
+;;tab-make ------
+;;  引数なしの手続き。呼ばれるとノード用の空テーブルを生成し返します。
+;;tab-get tab elt ------
+;;  eltでインデックスされた子ノードを返すか、あるいはeltに対応
+;;  する子がテーブルにない場合には #fを返します。
+;;tab-put! tab elt child-node ------
+;;  child-nodeが#fでなければ、child-nodeにeltとい
+;;  うインデックスをつけて保存します。child-nodeが#fなら
+;;  eltのインデックスをもつエントリを削除します。どちらの場合にも
+;;  この手続きは更新されたテーブルを返します。
+;;tab-fold tab proc seed ------
+;;  tab内の各インデックスと要素ごとにprocを呼びます。シード値
+;;  が順に渡されていきます。シード値の初期値はseedです。すなわち、
+;;  procの型は(index, node, seed) -> seed のような型というこ
+;;  とになります。返り値は最後のprocの適用結果です。
+;;
+;;デフォルトではeqv?-ハッシュ可能であることが仮定されます。すなわ
+;;ち、以下の手続きが使われます。
+;;
+;;example:
+;;  tab-make: (lambda () (make-hash-table 'eqv?))
+;;  
+;;  tab-get:  (lambda (tab k) (hash-table-get tab k #f))
+;;  
+;;  tab-put!: (lambda (tab k v)
+;;              (if v
+;;                (hash-table-put! tab k v)
+;;                (hash-table-delete! tab k))
+;;              tab)
+;;  
+;;  tab-fold: hash-table-fold
+;;
+;;以下の例では子を管理するのに連想リストを用いるtrieを作成しています。
+;;文字列キーの比較は大文字小文字を無視する方法で行っています。
+;;
+;;example:
+;;  (make-trie list
+;;             (cut assoc-ref <> <> #f char-ci=?)
+;;             (lambda (t k v)
+;;               (if v
+;;                 (assoc-set! t k v char-ci=?)
+;;                 (alist-delete! k t char-ci=?)))
+;;             (lambda (t f s) (fold f s t)))
+;;
+;;tab-put!が更新されたテーブルを返すというのは重要で、これのおか
+;;げで、テーブル構造をおてがるに置き換えることができます。たとえば、
+;;子の数が少い場合にはテーブルに連想リストを使い、いったん子の数がある閾
+;;値を越えたら、(文字コードでインデックスされた)ベクタを使うように設計す
+;;ることができます。
+;;
+;;@param :optional 
+;;@param tab-make 
+;;@param tab-get 
+;;@param tab-put! 
+;;@param tab-fold 
+
+;;;;;
+;;@type Class
+;;@name <trie>
+;;@description Trieクラス。パブリックなスロットはありません。trieを操作するには以下の
+;;手続きを使ってください。
+;;
+

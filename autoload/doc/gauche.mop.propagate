@@ -1,0 +1,42 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Class
+;;@name <propagate-mixin>
+;;@description This is a convenience mixin class.   Instead of giving 
+;;:metaclass <propagate-meta>, you can just inherit
+;;this calss to make propagated slots available.
+;;
+
+;;;;;
+;;@type Class
+;;@name <propagate-meta>
+;;@description Adds :propagated slot allocation.  
+;;The propagated slot has to have :propagate slot option
+;;which specifies the name of the slot that points to an object
+;;that actually holds the value of the slot.
+;;If a slot has :propagated slot allocation but
+;;does not have :propagate slot option, an error is signalled.
+;;
+;;The :propagate slot option should have a value
+;;of either a symbol, or a list of two symbols.
+;;
+;;If it is a symbol, it names the slot that contains an
+;;object, whose slot with the same name of the propagate slot
+;;holds the value.
+;;
+;;If it is a list of two symbols as (X Y), then 
+;;the access to this propagated slot actually works as
+;;(slot-ref (slot-ref obj X) Y).
+;;
+;;If you want to make a propagated slot initializable by
+;;init-keywords, make sure the slot holding the actual object
+;;comes before the propagated slots.  Slot initialization proceeds
+;;in the order of appearance by default, and you want the
+;;actual object is created before setting values.
+;;
+

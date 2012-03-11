@@ -1,0 +1,136 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name make-gettext
+;;@description アクセサ手続き を生成して返します。返された手続きは、
+;;地域化されたメッセージを検索するメソッドをカプセル化しています。
+;;
+;;引数の意味は上述の textdomain と同じです。
+;;実際は、textdomain は make-gettext を呼び、その後、
+;;それは、結果をこのグローバルパラメータに束縛します。make-gettext
+;;を直接呼んで、自分自身で、アクセサ手続きを管理することもできます。
+;;
+;;example:
+;;  (define my-gettext (make-gettext "myapp"))
+;;  (define _ (my-gettext 'getter))
+;;  (_ "Hello, World!")
+;;
+;;@param :optional 
+;;@param domain 
+;;@param locale 
+;;@param dirs 
+;;@param gettext-cached? 
+;;@param lookup-cached? 
+
+;;;;;
+;;@type Function
+;;@name dcgettext
+;;@description domain 中の msg-id の翻訳されたメッセージを返します。
+;;dcgettext は locale も引数としてとります。
+;;
+;;@param domain 
+;;@param msg-id 
+;;@param locale 
+
+;;;;;
+;;@type Function
+;;@name dgettext
+;;@description domain 中の msg-id の翻訳されたメッセージを返します。
+;;dcgettext は locale も引数としてとります。
+;;
+;;@param domain 
+;;@param msg-id 
+
+;;;;;
+;;@type Function
+;;@name bindtextdomain
+;;@description ドメイン domain のサーチパスを dirs に設定します。
+;;単一のディレクトリ名であったり、ディレクトリのリストであったりします。
+;;
+;;@param domain 
+;;@param dirs 
+
+;;;;;
+;;@type Function
+;;@name ngettext
+;;@description gettextと似ていますが、複数形を処理するのに使うことが
+;;できます。単数形のメッセージを msg-id へ、複数形のメッセージを
+;;msg-id2 に渡します。num 引数は、複数形を決定
+;;するのに使われます。もし、メッセージカタログが見つからなければ、
+;;num が 1 のときは、msg-id が返り、そうでなければ、
+;;msg-id2 が返ります。
+;;
+;;@param msg-id 
+;;@param :optional 
+;;@param msg-id2 
+;;@param num 
+
+;;;;;
+;;@type Function
+;;@name gettext
+;;@description msg-id の翻訳されたメッセージを返します。もし、翻訳された
+;;メッセージがなければ、msg-id それ自身を返します。
+;;
+;;@param msg-id 
+
+;;;;;
+;;@type Function
+;;@name textdomain
+;;@description アプリケーション用に、デフォルトのドメインとそのほかのパラメータを
+;;設定します。この設定は、以降の gettext の呼出しに影響を与えます。
+;;
+;;domain は文字列または文字列のリストで、ドメイン(.mo あるいは
+;;.po ファイル名)を C の gettext と同じように指定します。
+;;#f を domain-name として渡すと、デフォルトのドメインアクセサ
+;;手続きが得られます。また、複数のドメインを domain-nameにあたえる
+;;ことができます。
+;;example:
+;;  (textdomain '("myapp" "gimp"))  ; search 1st myapp, then gimp
+;;  (gettext "/File/Close")         ; "Close" from gimp unless overridden
+;;
+;;locale は文字列または文字列のリストで、標準的なUnixのフォーマット
+;;LANG[_REGION][.ENCODING] です。フォールバックを指定するロケール
+;;のリストを渡すこともできます。
+;;
+;;example:
+;;  (textdomain "myapp" '("ru" "uk"))  ; search 1st Russian then Ukranian,
+;;  (gettext "Hello, World!")          ; which are somewhat similar
+;;
+;;dirs は実際のメッセージカタログを含む LOCALE/CDIR/
+;;ディレクトリのサーチパスです。これは常にシステムのデフォルト(たとえば、
+;;"/usr/share/locale")に追加されます。そして、コロンで区切られた
+;;GETTEXT_PATH 環境変数を継承します。
+;;
+;;cdir はカテゴリーディレクトリで、既定値を LC_CATEGORY
+;;環境変数または、適当なシステム既定値(たとえば LC_MESSAGES)に
+;;設定します。一般にはこれを指定する必要はありません。
+;;
+;;cached? は個別のメッセージをキャッシュするかを意味し、デフォルトは
+;;#t です。
+;;
+;;lookup-cached?
+;;は、これらのパラメータで生成されるディスパッチをキャッシュするかどうか
+;;を意味し、デフォルトは #t です。
+;;
+;;textdomain はこれらのパラメータを内部の make-gettext に
+;;渡し、その結果を、gettext で使われるグローバルなディスパッチに
+;;束縛します。これらのクロージャを複数の別々のドメインやロケールを一度に
+;;扱うのに便利なように、手で構築することができます。(これらは
+;;サーバ環境で便利です。) 後述の make-gettext を参照してください。
+;;
+;;textdomain はそのドメインの情報をもつ アクセサ手続きを
+;;返します。詳細については、後述の make-gettext を参照してください。
+;;
+;;@param domain-name 
+;;@param :optional 
+;;@param locale 
+;;@param dirs 
+;;@param cdir 
+;;@param cached? 
+;;@param lookup-cached? 
+

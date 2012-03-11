@@ -1,0 +1,85 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name sys-logmask
+;;@description [POSIX]
+;;ログレベル level から sys-setlogmask に対する
+;;ビットマスク整数を返します。
+;;
+;;@param level 
+
+;;;;;
+;;@type Function
+;;@name sys-setlogmask
+;;@description [POSIX]
+;;どの sys-syslogへの呼び出しを記録できるかを決める、プロセスのログ
+;;優先度マスクを設定します。
+;;優先度マスクmaskはsys-syslogのlevel引数に
+;;対応するビットマスクをlogiorすることで作成できます。
+;;レベルに対応するビットマスクは下のsys-logmaskから
+;;取得することができます。
+;;
+;;@param mask 
+
+;;;;;
+;;@type Function
+;;@name sys-closelog
+;;@description [POSIX]
+;;ロギングシステムとのコネクションをクローズします。
+;;
+
+;;;;;
+;;@type Function
+;;@name sys-syslog
+;;@description [POSIX]
+;;文字列 message をログに記録します。syslog(3) とは違って、この手続きは
+;;フォーマットを行いません。フォーマットされた文字列を生成するなら
+;;format (Output参照)が使えます。あるいは、より高水準の
+;;ルーチン log-format (User-level logging参照)
+;;を使うこともできます。
+;;
+;;整数の引数 priority は上述の facility 定数のどれかひとつ
+;;と、以下のlevel定数とlogiorして、合成することができます：
+;;LOG_EMERG、LOG_ALERT、LOG_CRIT、LOG_ERR、
+;;LOG_WARNING、LOG_NOTICE、LOG_INFO、LOG_DEBUG
+;;
+;;
+;;@param priority 
+;;@param message 
+
+;;;;;
+;;@type Function
+;;@name sys-openlog
+;;@description [POSIX]
+;;システムロガーへのコネクションをオープンします。文字列の引数 ident
+;;はログの接頭辞に使われます。通常はプログラムを名前にします。option
+;;は整数のフラグで、ログの振舞いを制御します。facility はプログラムの
+;;タイプを指定する整数です。
+;;
+;;optionのフラグは以下の整数定数の1つまたは複数を logior で
+;;合成することができます：
+;;LOG_CONS、LOG_NDELAY、LOG_NOWAIT、
+;;LOG_ODELAY、LOG_PERROR および LOG_PID です
+;;(これらの定数のいくつかは基盤となるシステムがサポートしていなければ
+;;定義されません)。
+;;
+;;facility 引数は以下の整数定数のどれかひとつです。
+;;LOG_AUTH、LOG_AUTHPRIV、LOG_CRON,
+;;LOG_DAEMON、LOG_FTP、LOG_KERN、LOG_LOCAL0、
+;;から LOG_LOCAL7、LOG_LPR、LOG_MAIL、LOG_NEWS,
+;;LOG_SYSLOG、LOG_USER、LOG_UUCP までです。
+;;(これらの定数のいくつかは基盤となるシステムがサポートしていなければ
+;;定義されません)。
+;;
+;;これらの定数の詳しい説明については、システムの openlog(3) の
+;;マニュアル・ページを見てください。
+;;
+;;@param ident 
+;;@param option 
+;;@param facility 
+

@@ -1,0 +1,43 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Class
+;;@name <singleton-mixin>
+;;@description <singleton-meta>のインスタンスです。<singleton-meta>
+;;を define-class の :metaclass 引数として指定せずに、
+;;このクラスを継承することで、定義しようとするクラスにシングルトンの
+;;性質を与えることができます。
+;;
+
+;;;;;
+;;@type Method
+;;@name instance-of
+;;@description このメソッドは渡された引数とともに make を呼んでいるだけです。
+;;シングルトンを扱うプログラム中ではこちらの方が分りやすいでしょう。
+;;
+;;@param (class <singleton-meta>) :rest initargs 
+
+;;;;;
+;;@type Class
+;;@name <singleton-meta>
+;;@description シングルトンクラスを生成します。シングルトンクラスはそのインスタンスが
+;;ただ一つしかないことを保証するクラスです。 make の
+;;最初の呼び出しで、唯一のインスタンスを生成し、その後の呼出しでは
+;;最初に生成したものと同一のインスタンスを返します。
+;;example:
+;;  (define-class single () () :metaclass <singleton-meta>)
+;;  
+;;  (define a (make single))
+;;  (define b (make single))
+;;  
+;;  (eq? a b) ==> #t
+;;
+;;インスタンスのスロットは最初の make の呼び出し時に
+;;初期化されます。makeへの初期引数は最初の呼び出しのときに
+;;だけ効果があり、それ以降の呼び出しでは無視されます。
+;;
+

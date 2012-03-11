@@ -1,0 +1,291 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name pseudo-rtd
+;;@description Returns a pseudo rtd suitable to use instance-class as
+;;a pseudo record.
+;;
+;;@param instance-class 
+
+;;;;;
+;;@type Function
+;;@name rtd-mutator
+;;@description [SRFI-99]
+;;Returns a procedure that takes two arguments, an instance of rtd
+;;and a value, and sets the latter as the value of the field-name
+;;of the instance.
+;;
+;;An error is signalled if the record type doesn't have the field
+;;of name field-name, or the named field is immutable.
+;;
+;;Like rtd-accessor, if the record has a field with the same
+;;name as inherited one, the modifier returned by this procedure
+;;only modifies the field of the derived record.
+;;
+;;@param rtd 
+;;@param field-name 
+
+;;;;;
+;;@type Function
+;;@name rtd-accessor
+;;@description [SRFI-99]
+;;Returns a procedure that takes one argument, an instance of rtd,
+;;and returns the value of the field-name of the instance.
+;;
+;;An error is signalled if the record type doesn't have the field
+;;of name field-name.
+;;
+;;If rtd is inherits other record types, and it defines a field
+;;of the same name as inherited ones, then the accessor returned by
+;;this procedure retrieves the value of the field of the derived record.
+;;
+;;@param rtd 
+;;@param field-name 
+
+;;;;;
+;;@type Function
+;;@name rtd-predicate
+;;@description [SRFI-99]
+;;Returns a predicate to test an object is an instance of rtd.
+;;
+;;If rtd is a pseudo record type, the predicate merely tests
+;;the given object is in an appropriate type and has enough size
+;;to hold the contents.   See Pseudo record types for the details.
+;;
+;;@param rtd 
+
+;;;;;
+;;@type Function
+;;@name rtd-constructor
+;;@description [SRFI-99]
+;;Returns a procedure that creates an instance record of
+;;the record type represented by rtd.
+;;Without field-specs, it returns the default constructor,
+;;which takes as many arguments as the number of fields of
+;;the record to initialize them.  
+;;
+;;You can give a vector of symbols as field-specs.  The n-th
+;;symbol specifies which field of the instance should be initialized
+;;by the n-th argument.   The field-specs vector cannot
+;;contain duplicate names.  If the record type defines a field with
+;;the same name as the one in the parent record type, the custom constructor
+;;can only initialize the field of the derived type's instance.
+;;
+;;@param rtd 
+;;@param :optional 
+;;@param field-specs 
+
+;;;;;
+;;@type Function
+;;@name rtd?
+;;@description [SRFI-99]
+;;Returns #t if obj is a record type descriptor,
+;;#f otherwise.
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name make-rtd
+;;@description [SRFI-99]
+;;Creates and returns a new record type descriptor with name name and
+;;having fields specified by field-specs.  If parent
+;;is given, it must be a record type descriptor or #f.
+;;If it is a record type descriptor, the created record type
+;;inherits from it.
+;;
+;;The field-specs argument must be a vector, each
+;;element of which is a field specifier.  A field
+;;specifier can be a symbol, a list (mutable symbol),
+;;or a list (immutable symbol).  The symbol names
+;;the field.  A single symbol or (mutable symbol) format
+;;makes the field mutable, and (immutable symbol) format
+;;makes the field immutable.
+;;
+;;Note: Gauche does not implement the extension suggested in
+;;SRFI-99 yet, which is sealed, opaque and uid
+;;arguments.
+;;
+;;@param name 
+;;@param field-specs 
+;;@param :optional 
+;;@param parent 
+
+;;;;;
+;;@type Function
+;;@name rtd-field-mutable?
+;;@description [SRFI-99]
+;;Returns #t iff the field with the name field-name
+;;of a record represened by rtd is mutable.
+;;
+;;@param rtd 
+;;@param field-name 
+
+;;;;;
+;;@type Function
+;;@name rtd-all-field-names
+;;@description [SRFI-99]
+;;Returns a vector of symbols, each of which is the names of the
+;;fields of the record represented by rtd.   The result includes
+;;all inherited fields.
+;;
+;;@param rtd 
+
+;;;;;
+;;@type Function
+;;@name rtd-field-names
+;;@description [SRFI-99]
+;;Returns a vector of symbols, each of which is the names of the direct
+;;fields of the record represented by rtd.   The result doesn't
+;;include inherited fields.
+;;
+;;@param rtd 
+
+;;;;;
+;;@type Function
+;;@name rtd-parent
+;;@description [SRFI-99]
+;;Returns the parent type of the record type descriptor rtd.
+;;If rtd doesn't have a parent, #f is returned.
+;;
+;;@param rtd 
+
+;;;;;
+;;@type Function
+;;@name rtd-name
+;;@description [SRFI-99]
+;;Returns the name of the record type descriptor rtd.
+;;
+;;@param rtd 
+
+;;;;;
+;;@type Function
+;;@name record-rtd
+;;@description [SRFI-99][R6RS]
+;;Returns the record type descriptor of the record instance.
+;;
+;;@param record 
+
+;;;;;
+;;@type Function
+;;@name record?
+;;@description [SRFI-99][R6RS]
+;;Returns #t iff obj is an instance of record type,
+;;#f otherwise.
+;;
+;;@param obj 
+
+;;;;;
+;;@type Macro
+;;@name define-record-type
+;;@description [SRFI-9][SRFI-99+]
+;;Defines a record type, and optionally defines
+;;a constructor, a predicate, and field accessors and modifiers.
+;;
+;;The type-spec argument names the record type,
+;;and optionally specifies the supertype (parent).
+;;
+;;example:
+;;  type-spec : type-name | (type-name parent)
+;;  
+;;  type-name : identifier
+;;  parent : expression
+;;
+;;The type-name identifier will be bound to a
+;;record type descriptor, or rtd,
+;;which can be used for introspection and reflection.
+;;See Record types inspection layer and Record types procedural layer
+;;for possible operations for record types.
+;;In Gauche, a record type descriptor is a <class> with a metaclass
+;;<record-meta>.
+;;
+;;The parent expression should evaluate to a record type descriptor.
+;;If given, the defined record type inherits it; that is, all the
+;;slots defined in the parent type are available to the type-name
+;;as well, and the instance of type-name answers #t to the
+;;predicate of the parent type.
+;;
+;;Since a record type is also a class, parent type is also a superclass
+;;of the defined record type.  However, record types are limited to
+;;have single inheritance.
+;;
+;;You can give a pseudo record base type as parent to define a
+;;pseudo record type, which allows you to access ordinary aggregates
+;;like vectors as records.  See Pseudo record types for more details.
+;;
+;;The ctor-spec defines the constructor of the record instance.
+;;
+;;example:
+;;  ctor-spec : #f | #t | ctor-name
+;;            | (ctor-name field-name ...)
+;;  
+;;  ctor-name : identifier
+;;  field-name : identifier
+;;
+;;If it is #f, no constructor is created.
+;;If it is #t, a default constructor is created with a name
+;;make-type-name.  If it is a single identifier 
+;;ctor-name, a default constructor is created with the name.
+;;The default constructor takes as many arguments as
+;;the number of fields of the record, including inherited ones if any.
+;;When called, it allocates an instance of the record, and initialize its
+;;fields with the given arguments in the order (inhertied fields comes
+;;first), and returns the record.
+;;
+;;The last variation of ctor-spec creates a custom
+;;constructor with the name ctor-name.  The custom constructor
+;;takes as many arguments as the given field-names, and initializes
+;;the named fields.  If the inherited record type has a field of the same name
+;;as the ancestor record type, only the inherited ones are initialized.
+;;In Gauche, uninitialized fields remains unbound until some value is
+;;set to it.
+;;
+;;The pred-spec defines the predicate of the record instance,
+;;which takes one argument and returns #t iff it is an instance
+;;of the defined record type or its descendants.
+;;
+;;example:
+;;  pred-spec : #f | #t | pred-name
+;;  
+;;  pred-name : identifier
+;;
+;;If it is #f, no predicate is created.
+;;If it is #t, a predicate is created with a name
+;;type-name?.  If it is a single identifier,
+;;a predicate is created with the given name.
+;;
+;;The rest of the arguments specify fields (slots) of the record.
+;;
+;;example:
+;;  field-spec
+;;   : field-name   ; @r{immutable, with default accessor}
+;;   | (field-name) ; @r{mutable, with default accessor/modifier}
+;;   | (field-name accessor-name); immutable
+;;   | (field-name accessor-name modifier-name); mutable
+;;  
+;;  field-name    : identifier
+;;  accessor-name : identifier
+;;  modifier-name : identifier
+;;
+;;The first and the third forms define immutable fields, which can only
+;;be intialized by the constructor but cannot be modified afterwards
+;;(thus such fields don't have modifiers).
+;;The second and the fourth forms define multable fields.
+;;
+;;The third and fourth forms explicitly name the accessor and modifier.
+;;With the first and second forms, on the other hand,
+;;the accessor is named as
+;;type-name-field-name, and the modifier is named
+;;as type-name-field-name-set!.
+;;
+;;@param type-spec 
+;;@param ctor-spec 
+;;@param pred-spec 
+;;@param field-spec 
+;;@param ... 
+

@@ -1,0 +1,38 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Method
+;;@name cgen-cexpr
+;;@description Returns a C code expression fragment of type ScmObj,
+;;which represents the Scheme literal value.
+;;
+;;The following example creates a C function printabc that prints
+;;the literal value (a b c), created by cgen-literal.
+;;
+;;example:
+;;  (define *unit* (make <cgen-unit> :name "foo"))
+;;  (parameterize ((cgen-current-unit *unit*))
+;;    (let1 lit (cgen-literal '(a b c))
+;;      (cgen-body 
+;;       (format "void printabc() @{ Scm_Printf(SCM_CUROUT, \"%S\", ~a); @}"
+;;               (cgen-c-name lit)))))
+;;  (cgen-emit-c *unit*)
+;;
+;;If you examine the generated file foo.c, you'll get a
+;;general idea of how it is handled.
+;;
+;;@param cgen-literal 
+
+;;;;;
+;;@type Function
+;;@name cgen-literal
+;;@description Returns an <cgen-literal> object for a Scheme object obj,
+;;and submit necessary declarations and initialization code to the
+;;current cgen unit.
+;;
+;;@param obj 
+

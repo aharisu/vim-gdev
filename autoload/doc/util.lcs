@@ -1,0 +1,123 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name lcs-edit-list
+;;@description 2つのリストaとbから``編集リスト''を計算します。それは、
+;;aをbに変更するためのコマンド(追加と削除)の最小セットです。
+;;この手続きは、上のlcs-foldの上に構築されています。
+;;example:
+;;  (+|- position element)
+;;
+;;例を挙げます。aとbがそれぞれ以下のようなリストだとします。
+;;
+;;example:
+;;  a ≡  ("A" "B" "C" "E" "H" "J" "L" "M" "N" "P")
+;;  b ≡  ("B" "C" "D" "E" "F" "J" "K" "L" "M" "R" "S" "T")
+;;
+;;すると、(lcs-edit-list a b equal?)は以下のリストを返します。
+;;example:
+;;  (((- 0 "A"))
+;;   ((+ 2 "D"))
+;;   ((- 4 "H") (+ 4 "F"))
+;;   ((+ 6 "K"))
+;;   ((- 8 "N") (- 9 "P") (+ 9 "R") (+ 10 "S") (+ 11 "T"))
+;;  )
+;;結果は5つの片からなります。最初のものは1つのディレクティブ、(- 0 ``A'')から
+;;なり、これはリストaの位置0にある要素``A''が削除されることを意味します。
+;;2番目のものはまた1つのディレクティブ、(+ 2 ``D'')からなり、これは
+;;リストbの位置2にある要素``D''が追加されることを意味します。
+;;3番目のものは、リストaの位置4にある``H''は削除され、リストbの
+;;位置4にある``F''が追加される、などとなります。
+;;
+;;もしあなたがPerlのAlgorithm::Diffモジュールを良く知っていれば、
+;;そのdiff手続きが返すものと同じ構造だということが分かるでしょう。
+;;
+;;@param a 
+;;@param b 
+;;@param :optional 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name lcs-fold
+;;@description 2つのリストaとbから引き出された``編集リスト''に対する
+;;基本的なイテレータです。
+;;
+;;a-proc、b-proc、both-procは全て2引数を取る手続きです。
+;;2番目の引数は、計算の中間の値です。最初の値は、a-procではaにしかない要素、
+;;b-procではbにしかない要素、both-procではaとbの両方に
+;;ある要素となります。それぞれの手続きが返す値は、次に呼び出される手続きのうちの1つの
+;;状態を表す値として使われます。seedは、状態を表す値の初期値として使われます。
+;;lcs-foldが返す値は、最後の状態を表す値です。
+;;
+;;これらの3つの手続きは、以下の順番で呼ばれます。ここでは、シーケンスaは
+;;a'ca''、bはb'cb''となっているとすると、
+;;ここではa'、b'、a''、b''はサブシーケンスで、
+;;cはaとbのLCSの先頭になります。そして、a-procはまず
+;;a'のそれぞれの要素に対して呼ばれ、b-procがb'のそれぞれの
+;;要素に対して呼ばれ、both-procがcに対して呼ばれます。
+;;その後、このプロセスはa''とb''を使って繰り返されます。
+;;
+;;@param a-proc 
+;;@param b-proc 
+;;@param both-proc 
+;;@param seed 
+;;@param a 
+;;@param b 
+;;@param :optional 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name lcs-with-positions
+;;@description lcsの詳細バージョンです。引数は同じです。
+;;
+;;以下の構造のリストを返します。
+;;
+;;example:
+;;  (length ((elt a-pos b-pos) ...))
+;;
+;;lengthは、見つかったLCS(最長共通サブシーケンス)の長さを表す整数です。
+;;それに続くのは、LCSの要素のリストで、その要素を構成するそれぞれのサブリスト、
+;;seq-aの中での要素の位置(整数)、seq-bの中での要素の位置(整数)
+;;となります。
+;;
+;;example:
+;;  (lcs-with-positions '(a) '(a))
+;;   ==> (1 ((a 0 0)))
+;;  
+;;  (lcs-with-positions '(x a b y) '(p q a b))
+;;   ==> (2 ((a 1 2) (b 2 3)))
+;;  
+;;  (lcs-with-positions '(x a b y) '(p a q b))
+;;   ==> (2 ((a 1 1) (b 2 3)))
+;;  
+;;  (lcs-with-positions '(x y) '(p q))
+;;   ==> (0 ())
+;;
+;;@param seq-a 
+;;@param seq-b 
+;;@param :optional 
+;;@param eq-fn 
+
+;;;;;
+;;@type Function
+;;@name lcs
+;;@description 2つのリスト、seq-aとseq-bの最長共通シーケンスを計算して
+;;返します。オプションのeq-fnでは、比較を行う述語を指定します。
+;;省略されると、equal?が使われます。
+;;
+;;example:
+;;  (lcs '(x a b y) '(p a q b))
+;;   ==> (a b)
+;;
+;;@param seq-a 
+;;@param seq-b 
+;;@param :optional 
+;;@param eq-fn 
+

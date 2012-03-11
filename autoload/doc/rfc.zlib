@@ -1,0 +1,441 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name adler32
+;;@description 文字列stringのAdler32チェックサムを計算して返します。checksum
+;;引数が与えられた場合は、それをstringによるチェックサムで更新した
+;;値が返されます。
+;;
+;;Adler32はCRC32と比較して高速に計算することが可能なアルゴリズムです
+;;が、小さなデータのチェックサムの信頼性にいくらか問題があることがわ
+;;かっています。詳しくはRFC3309を見てください。これが問題になる場合
+;;はCRC32を使用してください。
+;;
+;;@param string 
+;;@param :optional 
+;;@param checksum 
+
+;;;;;
+;;@type Function
+;;@name crc32
+;;@description 文字列stringのCRC32チェックサムを計算して返します。checksum
+;;引数が与えられた場合は、それをstringによるチェックサムで更新した
+;;値が返されます。
+;;
+;;@param string 
+;;@param :optional 
+;;@param checksum 
+
+;;;;;
+;;@type Function
+;;@name gzip-decode-string
+;;@description deflate-stringおよびinflate-stringと似ていますが、
+;;GZIPフォーマットを使います。これは
+;;deflate-stringおよびinflate-stringの
+;;window-bitsに15以上の値指定するのと同じです。
+;;
+;;@param string 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name gzip-encode-string
+;;@description deflate-stringおよびinflate-stringと似ていますが、
+;;GZIPフォーマットを使います。これは
+;;deflate-stringおよびinflate-stringの
+;;window-bitsに15以上の値指定するのと同じです。
+;;
+;;@param string 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name inflate-string
+;;@description Zlib圧縮されたデータを文字列で受け取り、展開されたデータを文字列で
+;;返します。
+;;すべてのオプション引数はそのままopen-deflating-portに渡されます。
+;;
+;;@param string 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name deflate-string
+;;@description 与えられた文字列を圧縮し、zlib圧縮されたデータを文字列で返します。
+;;すべてのオプション引数はそのままopen-deflating-portに渡されます。
+;;
+;;@param string 
+;;@param options 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name zlib-version
+;;@description Zlibのバージョンを文字列で返します。
+;;
+
+;;;;;
+;;@type Function
+;;@name inflate-sync
+;;@description 圧縮データを、deflating-port-full-flushによって
+;;フルフラッシュしたポイントまで読み飛ばします。
+;;<zlib-data-error>が投げられたときに使用するとよいでしょう。
+;;フルフラッシュポイントに達したときは読み飛ばしたバイトの数を、EOFまで達
+;;したときは#fを返します。
+;;
+;;@param inflating-port 
+
+;;;;;
+;;@type Function
+;;@name deflating-port-full-flush
+;;@description ポートのデータをフルフラッシュし、圧縮状態をリセットします。
+;;展開ルーチンはinflate-sync手続きを使って
+;;入力をこの地点までスキップすることができます。
+;;
+;;@param deflating-port 
+
+;;;;;
+;;@type Function
+;;@name zstream-dictionary-adler32
+;;@description deflating portの作成時に辞書を指定すると、辞書のAdler32チェックサム
+;;が計算されます。この手続きはそのチェックサムを返します。
+;;open-deflating-portに辞書を与えなかったなら、#fが返ります。
+;;
+;;@param deflating-port 
+
+;;;;;
+;;@type Function
+;;@name zstream-params-set!
+;;@description 圧縮率とストラテジを動的に変更するための手続きです。
+;;
+;;@param deflating-port 
+;;@param :key 
+;;@param compression-level 
+;;@param strategy 
+
+;;;;;
+;;@type Function
+;;@name zstream-data-type
+;;@description xflating-portはinflating portかdeflating portでなければ
+;;なりません。さもなくばエラーが通知されます。
+;;
+;;z_stream構造体のtotal_in、total_out、
+;;adlre32およびdata_typeフィールドの値を返します。
+;;
+;;data_typeフィールドの値は以下の定数のうちのいずれかです。
+;;
+;;
+;;
+;;@param xflating-port 
+
+;;;;;
+;;@type Function
+;;@name zstream-adler32
+;;@description xflating-portはinflating portかdeflating portでなければ
+;;なりません。さもなくばエラーが通知されます。
+;;
+;;z_stream構造体のtotal_in、total_out、
+;;adlre32およびdata_typeフィールドの値を返します。
+;;
+;;data_typeフィールドの値は以下の定数のうちのいずれかです。
+;;
+;;
+;;
+;;@param xflating-port 
+
+;;;;;
+;;@type Function
+;;@name zstream-total-out
+;;@description xflating-portはinflating portかdeflating portでなければ
+;;なりません。さもなくばエラーが通知されます。
+;;
+;;z_stream構造体のtotal_in、total_out、
+;;adlre32およびdata_typeフィールドの値を返します。
+;;
+;;data_typeフィールドの値は以下の定数のうちのいずれかです。
+;;
+;;
+;;
+;;@param xflating-port 
+
+;;;;;
+;;@type Function
+;;@name zstream-total-in
+;;@description xflating-portはinflating portかdeflating portでなければ
+;;なりません。さもなくばエラーが通知されます。
+;;
+;;z_stream構造体のtotal_in、total_out、
+;;adlre32およびdata_typeフィールドの値を返します。
+;;
+;;data_typeフィールドの値は以下の定数のうちのいずれかです。
+;;
+;;
+;;
+;;@param xflating-port 
+
+;;;;;
+;;@type Function
+;;@name open-inflating-port
+;;@description 圧縮データを読み出せる入力ポートsourceを取り、
+;;新たな<inflating-port>のインスタンス、すなわち
+;;展開されたデータを読み出すことのできる入力ポートを作成し、そのポートを返します。
+;;これはZlibの関数inflateInit2()、inflateSetDictionary()
+;;を合わせた手続きです。
+;;
+;;buffer-size、owner?の意味は
+;;open-deflating-portと同じです。
+;;
+;;window-bitsの意味もほぼ同じですが、
+;;32が足された値が与えられた場合にはZLIBとGZIPのヘッダ自動判定が有効になります。
+;;
+;;dictionaryは圧縮時の辞書と同じものを指定しなければなりません。
+;;辞書を使って圧縮されたデータを展開する際に、dictionary引数
+;;を指定しなかったり、異なる辞書を与えた場合は
+;;<io-read-error>と<zlib-need-dict-error>の
+;;合成コンディションが投げられます。
+;;
+;;@param source 
+;;@param :key 
+;;@param buffer-size 
+;;@param window-bits 
+;;@param dictionary 
+;;@param owner? 
+
+;;;;;
+;;@type Function
+;;@name open-deflating-port
+;;@description 新たな<deflating-port>のインスタンス、
+;;すなわち書き込まれたデータを圧縮し出力ポートdrainに書き出す出力ポートを作成して、
+;;そのポートを返します。Zlibの関数deflateInit2()と
+;;deflateSetDictionary()とを合わせた手続きです。
+;;
+;;compression-levelには1から9の整数を指定することができ、
+;;大きい数が高い圧縮率を意味します。引数が省略された場合は、
+;;デフォルトの圧縮レベルと見なされます。これは通常6です。
+;;
+;;compression-levelをわかりやすく指定するために以下の定数が定義されています。
+;;
+;;
+;;buffer-sizeは、ポートのバッファサイズを指定します。デフォルトは4096バイトです。
+;;
+;;window-bitsはウィンドウサイズを指定します。
+;;通常この値は8から15までの整数で、圧縮に使われるウィンドウサイズの
+;;2を底とするlogをとった値です。
+;;大きい数であるだけ圧縮率が高くなりますが、
+;;そのぶんメモリの使用量が増加します。デフォルトは15です。
+;;
+;;window-bitsよって、2つばかり特別なモードを指定することができます。
+;;window-bitsに-8から-15の整数を指定された場合は、
+;;ZLIBヘッダとトレイラのない生のdeflateデータを作成します。
+;;この場合Adler32チェックサムも計算されません。
+;;実際のウィンドウサイズはwindow-bitsの絶対値によって計算されます。
+;;
+;;window-bitsが24から31の間である場合、
+;;ポートはgzipエンコーディングを使うようになります。すなわち、
+;;zlibラッパの代わりに、シンプルなgzipヘッダとトレイラが圧縮データの前後に書き出されます。
+;;gzipヘッダはファイル名やその他のデータ、コメントを持たず、変更時刻は0、
+;;ヘッダCRCはなし、OS名は不明を意味する255になります。gzipストリームが書き出
+;;されるときは、zstream-adler32で取得できるチェックサムはAdler32
+;;ではなくCRC32になります。
+;;実際のウィンドウサイズは window-bits-16 で決定されます。
+;;
+;;memory-levelは、圧縮の内部状態のためにどれだけのメモリを割り当て
+;;るかを指定するパラメータです。1ではメモリの使用量は最小ですが、遅
+;;くなり圧縮率が低下します。9では高速な処理のためにメモリが最も多く
+;;使われます。デフォルトは8です。
+;;
+;;strategyで圧縮アルゴリズムをチューンできます。
+;;以下の定数がstrategyに有効な値として定義されています。
+;;
+;;通常のデータに適する、デフォルトのアルゴリズムを使います。
+;;
+;;フィルタにより生成されたデータに適したアルゴリズムを使います。
+;;このようなデータは小さな値とランダムな分散を持つことが多いため、
+;;このアルゴリズムではハフマンエンコーディングをより優先し、
+;;文字列一致の使用をやや抑えます。
+;;
+;;ハフマンエンコーディングのみを使います (文字列一致を使いません)。
+;;
+;;マッチ距離を1に制限します (ランレングスエンコーディングを強制することになります)。
+;;Z_HUFFMAN_ONLYと同じくらい高速で、かつpngイメージデータに対して
+;;良い圧縮率が得られます。
+;;
+;;動的ハフマンエンコーディングを禁止します。特殊なアプリケーションで、
+;;単純なデコーダを使いたい場合に便利です。
+;;
+;;strategyの選択は圧縮率と速度にのみ影響を与えます。
+;;どの値を選んでも圧縮されたデータは正しく展開できます。
+;;
+;;dictionaryには圧縮に使う辞書を文字列で与えます。辞書を与える場合、
+;;圧縮と展開で全く同じものを使う必要があります。
+;;辞書の詳細についてはzlibのドキュメントを参照してください。
+;;
+;;デフォルトでは、deflating portはそれ自身がクローズされても
+;;drainをクローズしません。drainの後始末を気にしたくない
+;;場合はowner?引数に真の値を与えてください。
+;;その場合、deflating portがクローズされすべてのデータが書き出されたのちに
+;;drainは自動的にクローズされます。
+;;
+;;注意: deflating portは必ず明示的にクローズしてください。
+;;そうしなければ圧縮データの終わりの部分(バッファされているデータおよびトレイラ)が
+;;drainに書き出されないかもしれません。
+;;ポートを明示的にクローズせずにガベージ・コレクタに任せた場合、
+;;出力ポートのクローズ手続きはファイナラザから呼び出されることになります。
+;;複数のごみに対してファイナライザの呼ばれる順番は不定なので、
+;;deflating portより先にdrainのファイナライザが呼ばれて
+;;そのポートがクローズされてしまうことがあります。
+;;こうなると、圧縮データの終わりの部分の出力がエラーになってしまいます。
+;;
+;;@param drain 
+;;@param :key 
+;;@param compression-level 
+;;@param buffer-size 
+;;@param window-bits 
+;;@param memory-level 
+;;@param strategy 
+;;@param dictionary 
+;;@param owner? 
+
+;;;;;
+;;@type Class
+;;@name <inflating-port>
+;;@description 圧縮と展開の機能はポートを通じて提供されます。
+;;deflating portは出力されたデータを圧縮する出力ポートです。
+;;inflating portは圧縮されたデータソースからデータを展開しつつ
+;;読み込む入力ポートです。
+;;
+;;inflating portが読み出す圧縮データが壊れていた場合、読み出し時に
+;;<io-read-error>と<zlib-data-error>の
+;;合成コンディションが投げられます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <deflating-port>
+;;@description 圧縮と展開の機能はポートを通じて提供されます。
+;;deflating portは出力されたデータを圧縮する出力ポートです。
+;;inflating portは圧縮されたデータソースからデータを展開しつつ
+;;読み込む入力ポートです。
+;;
+;;inflating portが読み出す圧縮データが壊れていた場合、読み出し時に
+;;<io-read-error>と<zlib-data-error>の
+;;合成コンディションが投げられます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <zlib-version-error>
+;;@description <zlib-error>のサブクラスです。それぞれ、Zlibの
+;;Z_NEED_DICT_ERROR、
+;;Z_STREAM_ERROR、
+;;Z_DATA_ERROR、
+;;Z_MEMORY_ERROR、
+;;Z_VERSION_ERROR
+;;に対応します。
+;;
+;;データの読み出し時にエラーが発生した場合、
+;;<zlib-error>のサブクラスと
+;;<io-read-error>の合成コンディションが投げられます。入力が伴わ
+;;ない場合、例えば圧縮ストリームの初期化エラーのときには、合成され
+;;ていない<zlib-error>のサブクラスが投げられます。ただの引数の型の
+;;エラーのように、Zlibの関数が呼び出されない場合は、ただの<error>が
+;;投げられるかもしれません。
+;;
+
+;;;;;
+;;@type Class
+;;@name <zlib-memory-error>
+;;@description <zlib-error>のサブクラスです。それぞれ、Zlibの
+;;Z_NEED_DICT_ERROR、
+;;Z_STREAM_ERROR、
+;;Z_DATA_ERROR、
+;;Z_MEMORY_ERROR、
+;;Z_VERSION_ERROR
+;;に対応します。
+;;
+;;データの読み出し時にエラーが発生した場合、
+;;<zlib-error>のサブクラスと
+;;<io-read-error>の合成コンディションが投げられます。入力が伴わ
+;;ない場合、例えば圧縮ストリームの初期化エラーのときには、合成され
+;;ていない<zlib-error>のサブクラスが投げられます。ただの引数の型の
+;;エラーのように、Zlibの関数が呼び出されない場合は、ただの<error>が
+;;投げられるかもしれません。
+;;
+
+;;;;;
+;;@type Class
+;;@name <zlib-data-error>
+;;@description <zlib-error>のサブクラスです。それぞれ、Zlibの
+;;Z_NEED_DICT_ERROR、
+;;Z_STREAM_ERROR、
+;;Z_DATA_ERROR、
+;;Z_MEMORY_ERROR、
+;;Z_VERSION_ERROR
+;;に対応します。
+;;
+;;データの読み出し時にエラーが発生した場合、
+;;<zlib-error>のサブクラスと
+;;<io-read-error>の合成コンディションが投げられます。入力が伴わ
+;;ない場合、例えば圧縮ストリームの初期化エラーのときには、合成され
+;;ていない<zlib-error>のサブクラスが投げられます。ただの引数の型の
+;;エラーのように、Zlibの関数が呼び出されない場合は、ただの<error>が
+;;投げられるかもしれません。
+;;
+
+;;;;;
+;;@type Class
+;;@name <zlib-stream-error>
+;;@description <zlib-error>のサブクラスです。それぞれ、Zlibの
+;;Z_NEED_DICT_ERROR、
+;;Z_STREAM_ERROR、
+;;Z_DATA_ERROR、
+;;Z_MEMORY_ERROR、
+;;Z_VERSION_ERROR
+;;に対応します。
+;;
+;;データの読み出し時にエラーが発生した場合、
+;;<zlib-error>のサブクラスと
+;;<io-read-error>の合成コンディションが投げられます。入力が伴わ
+;;ない場合、例えば圧縮ストリームの初期化エラーのときには、合成され
+;;ていない<zlib-error>のサブクラスが投げられます。ただの引数の型の
+;;エラーのように、Zlibの関数が呼び出されない場合は、ただの<error>が
+;;投げられるかもしれません。
+;;
+
+;;;;;
+;;@type Class
+;;@name <zlib-need-dict-error>
+;;@description <zlib-error>のサブクラスです。それぞれ、Zlibの
+;;Z_NEED_DICT_ERROR、
+;;Z_STREAM_ERROR、
+;;Z_DATA_ERROR、
+;;Z_MEMORY_ERROR、
+;;Z_VERSION_ERROR
+;;に対応します。
+;;
+;;データの読み出し時にエラーが発生した場合、
+;;<zlib-error>のサブクラスと
+;;<io-read-error>の合成コンディションが投げられます。入力が伴わ
+;;ない場合、例えば圧縮ストリームの初期化エラーのときには、合成され
+;;ていない<zlib-error>のサブクラスが投げられます。ただの引数の型の
+;;エラーのように、Zlibの関数が呼び出されない場合は、ただの<error>が
+;;投げられるかもしれません。
+;;
+
+;;;;;
+;;@type Class
+;;@name <zlib-error>
+;;@description <error>のサブクラスで、以下のコンディションタイプのスーパークラスです。
+;;このクラスはzlib特有のエラーをまとめて捕捉するための抽象クラスとして設けられています。
+;;rfc.zlibが投げるZlib固有のエラーは常に以下の特定のクラスのインスタンス、
+;;もしくはそのインスタンスを含む複合コンディションです。
+;;
+

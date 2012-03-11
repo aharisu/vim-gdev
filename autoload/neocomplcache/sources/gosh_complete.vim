@@ -41,11 +41,8 @@ let s:async_task_queue = []
 let s:default_module_order = []
 
 
-"5 seconds
-let s:async_task_timeout = 5
-
 function! s:source.initialize()"{{{
-  call s:init_proc()
+  call gosh_complete#init_proc()
 
   augroup neocomplcache
     autocmd FileType scheme call s:initialize_buffer()
@@ -54,7 +51,7 @@ function! s:source.initialize()"{{{
     autocmd CursorHoldI * call s:cursor_hold('holdi')
     autocmd CursorMoved * call s:cursor_moved('move')
     autocmd CursorMovedI * call s:cursor_moved('movei')
-    autocmd VimLeave * call s:finale_proc()
+    autocmd VimLeave * call gosh_complete#finale_proc()
   augroup END
 
   call s:load_default_module()
@@ -62,7 +59,7 @@ function! s:source.initialize()"{{{
 endfunction"}}}
 
 function! s:source.finalize()"{{{
-  call s:finale_proc()
+  call gosh_complete#finale_proc()
 endfunction"}}}
 
 function! s:source.get_keyword_pos(cur_text)"{{{
@@ -108,14 +105,14 @@ function! s:cursor_hold(type)"{{{
 
   "wait until all tasks
   while !empty(s:async_task_queue)
-    call s:check_async_task()
+    call gosh_complete#check_async_task()
 
     sleep 150m
   endwhile
 endfunction"}}}
 
 function! s:cursor_moved(type)"{{{
-  call s:check_async_task()
+  call gosh_complete#check_async_task() 
 endfunction"}}}
 
 function! s:constract_docname(bufnum, bufname)"{{{
@@ -207,53 +204,12 @@ endfunction"}}}
 "
 " Communicate to gosh-complete.scm
 
-function! s:init_proc()"{{{
-  let s:gosh_comp = vimproc#popen3('gosh' 
-        \ . ' -I' . escape(s:neocom_sources_directory, ' \') . ' '
-        \ . s:gosh_complete_path
-        \ . " --generated-doc-directory=" . s:gosh_generated_doc_path
-        \ . " --output-api-only"
-        \ . " --io-encoding=\"" . s:encoding() . "\""
-        \ . s:get_loaded_module_text())
-endfunction
-
-function s:get_loaded_module_text()"{{{
-  let text = ''
-  for [name, extend] in items(gosh_complete#get_loaded_module())
-    let text .= ' --loaded-module="' . s:get_loaded_module_name(name)
-    for module in extend
-      let text .= ' ' . module
-    endfor
-    let text .= '"'
-  endfor
-
-  return text
-endfunction"}}}
-
-function! s:get_loaded_module_name(docname)"{{{
-  if match(a:docname, '^#') == -1
-    let name = 'm' . a:docname
-  else
-    let name = 'f' . a:docname[2 :]
-    if name ==# '[No Name]'
-      let name = ''
-    endif
-  endif
-
-  return name
-endfunction"}}}"}}}
-
-function! s:finale_proc()"{{{
-  call s:gosh_comp.stdin.write("#exit\n")
-  call s:gosh_comp.waitpid()
-endfunction"}}}
-
 function! s:load_default_module()"{{{
-  call s:add_async_task("#load-default-module\n", 
-        \ function('s:load_default_module_end_callback'))
+  call gosh_complete#add_async_task("#load-default-module\n", 
+        \ function('neocomplcache#sources#gosh_complete#load_default_module_end_callback'))
 endfunction
 
-function! s:load_default_module_end_callback(out, err)
+function! neocomplcache#sources#gosh_complete#load_default_module_end_callback(out, err)
   if s:debug
     call neocomplcache#print_warning("end default parse")
   endif
@@ -309,20 +265,20 @@ function! s:parse_cur_buf(parse_tick)"{{{
     let b:prev_parse_tick = b:changedtick
 
     "parse from buffer
-    call s:add_async_task('#stdin ' . docname . "\n" .
+    call gosh_complete#add_async_task('#stdin ' . docname . "\n" .
           \ join(getbufline('%', 1, '$'), "\n") . "\n" .
           \ "#stdin-eof\n", 
-          \ function('s:parse_cur_buf_end_callback'))
+          \ function('neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback'))
   else
 
     "parse from file
-    call s:add_async_task('#load-file ' . filename . ' ' . docname . "\n",
-          \ function('s:parse_cur_buf_end_callback'))
+    call gosh_complete#add_async_task('#load-file ' . filename . ' ' . docname . "\n",
+          \ function('neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback'))
   endif
 
 endfunction
 
-function! s:parse_cur_buf_end_callback(out, err)
+function! neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback(out, err)
   if s:debug
     call neocomplcache#print_warning("end parse")
   endif
@@ -338,114 +294,9 @@ function! s:parse_cur_buf_end_callback(out, err)
   endif
 endfunction"}}}
 
-function! s:restart_gosh_process()"{{{
-  "signal 15 is SIGTERM
-  call s:gosh_comp.kill(15)
-  call s:init_proc()
-endfunction"}}}
-
-function! s:add_async_task(text, callback)"{{{
-  if empty(s:async_task_queue)
-    call s:gosh_comp.stdin.write(a:text)
-    call add(s:async_task_queue, {'callback':a:callback, 'time' : localtime()})
-  else
-    call add(s:async_task_queue, {'text' : a:text, 'callback': a:callback})
-  endif
-endfunction
-
-function! s:check_async_task()
-  if empty(s:async_task_queue)
-    return
-  endif
-
-  let out = s:read_output_one_try(s:gosh_comp.stdout)
-
-  let err = ""
-  if empty(out)
-    let err = s:read_output_one_try(s:gosh_comp.stderr)
-  endif
-
-  let is_exec_next_task = 0
-  if !empty(out) || !empty(err)
-    let finish_task = remove(s:async_task_queue, 0)
-    let Callback = finish_task['callback']
-    call Callback(out, err)
-
-    if s:debug_out_err
-      if !empty(out)
-        call neocomplcache#print_warning('out:' . out)
-      endif
-      if !empty(err)
-        call neocomplcache#print_warning('err:' . err)
-      endif
-    endif
-
-    let is_exec_next_task = 1
-  else
-    let cur_task = get(s:async_task_queue, 0)
-    if s:async_task_timeout < (localtime() - cur_task['time'])
-      if s:debug
-        call neocomplcache#print_warning('timeout')
-      endif
-
-      "timeout: task failure
-      call remove(s:async_task_queue, 0)
-
-      "kill current process and restart gosh_complete
-      call s:restart_gosh_process()
-
-      let is_exec_next_task = 1
-    endif
-  endif
-
-  if is_exec_next_task
-    "execution next task
-    let task = get(s:async_task_queue, 0)
-    if task isnot 0
-      call s:gosh_comp.stdin.write(task['text'])
-      let task['text'] = 0
-      let task['time'] = localtime()
-    endif
-  endif
-
-endfunction
-
-function! s:read_output_one_try(port)
-  let out = ""
-
-  let res = a:port.read()
-  if !empty(res)
-    while 1
-      let len = strlen(res)
-      if res[len - 1] ==# "\n"
-        let out .= strpart(res, 0, len - 1)
-        break
-      else
-        let out .= res
-      endif
-
-      let res = a:port.read()
-    endwhile
-  endif
-
-  return out
-endfunction"}}}
 
 "
 " util
-
-function! s:encoding()"{{{
-  let enc = &encoding
-  if enc == 'utf-8'
-    return 'utf-8'
-  elseif enc == 'cp932'
-    return 'shift_jis'
-  elseif enc == 'euc-jp'
-    return 'euc_jp'
-  elseif enc == 'iso-2022-jp'
-    return 'iso2022jp'
-  endif
-endfunction"}}}
 
 function! s:cur_buf_filepath() "{{{
   return escape(expand('%:p'),  ' \')

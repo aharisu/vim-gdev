@@ -1,0 +1,286 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name without-echoing
+;;@description If iport is an input port connected to a terminal, 
+;;sets the terminal mode non-echoing and call proc with
+;;iport as an argument.  Before returning from
+;;without-echoing, or throwing an error,
+;;the terminal mode is reset to the original state when this
+;;procedure is called.  The procedure returns whatever value(s)
+;;proc returns.
+;;
+;;You can also pass #f to iport.  In that case,
+;;this procedure tries to open a console (/dev/tty on Unix,
+;;CON on Windows) and set the console mode, then calls
+;;proc with the opened input port.  An error is thrown
+;;if the procedure can not open a console.
+;;
+;;If iport is other than above, this procedure
+;;simply calls proc with iport.  This allows
+;;the caller to read password from redirected input, 
+;;for example.
+;;
+;;Note: Because of an implementation issue, on Windows native
+;;platforms this procedure always changes console mode
+;;of the standard input handle when iport is either
+;;#f or a terminal input port.
+;;
+;;@param iport 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name sys-forkpty-and-exec
+;;@description sys-forkptyして、ただちに指定したcommandを引数
+;;argsで子プロセスでexecします。この関数にはマルチスレッド
+;;環境でもハザードを起こしません。
+;;
+;;引数command、args、iomap、sigmaskの意味は
+;;sys-execのものと同じです。(Process managementを見て
+;;ください)。キーワード引数termが与えられれば、スレーブptyの初期化
+;;に使われます。
+;;
+;;@param command 
+;;@param args 
+;;@param :key 
+;;@param iomap 
+;;@param term 
+;;@param sigmask 
+
+;;;;;
+;;@type Function
+;;@name sys-forkpty
+;;@description 擬似 ttyのペア、マスターとスレーブをオープンし、スレーブ sty を
+;;ログイン端末になるよう設定し、fork(2) します。
+;;
+;;二つの整数、最初の値は親プロセスに対しては子の pid の値で、0ならば
+;;子プロセスです。ふたつ目の値はマスター pty のファイルディスクリプタの
+;;値です。
+;;
+;;オプション引数 termが渡される場合は、それは<sys-termios>オブジェクト
+;;でなければなりません。これはスレーブ pty のパラメータを設定します。
+;;
+;;この関数はシステムが forkpty(3) をサポートしている場合にのみ利用
+;;可能です。
+;;
+;;注意: sys-forkptyにはsys-forkと同様のマルチスレッドハザー
+;;ドの危険性があります。(詳細についてはProcess management参照
+;;してください)。マルチスレッドプログラムでは後述の
+;;sys-forkpty-and-execを利用してください。
+;;
+;;@param :optional 
+;;@param term 
+
+;;;;;
+;;@type Function
+;;@name sys-openpty
+;;@description 擬似 tty のペア、マスターとスレーブをオープンし、2つの
+;;ファイルディスクリプタの整数を返します。オプション引数 term 
+;;が渡される場合は、<sys-termios>オブジェクトでなければなりません。
+;;これは、pty パラメータを設定します。
+;;
+;;open-input-fd-portとopen-output-fd-portの両方またはどちらか
+;;を返されたファイルディスクリプタに対するポートを生成するために使うことが
+;;できます(File ports参照)。擬似端末の名前を得るには sys-ttyname
+;;を使います(Other file operations参照)。
+;;
+;;この関数はシステムが openpty(3) をサポートしている場合にのみ利用
+;;可能です。
+;;
+;;@param :optional 
+;;@param term 
+
+;;;;;
+;;@type Function
+;;@name sys-cfsetospeed
+;;@description termios内の入出力スピード(ボーレート)を取得/設定します。スピードは
+;;以下の定義ずみの数値で表現されてます：
+;;B0、B50、B75、B110、B134、
+;;B150、B200、B300、B600、B1200、
+;;B1800、B2400、B4800、B9600、
+;;B19200、B38400。
+;;
+;;もっと速いボーレート、たとえば、B57600、
+;;B115200 あるいは B230400 をサポートしている
+;;システムもあります。symbol-bound?をつかえば、これらの
+;;オプションが定義されているかどうかをチェックできます。B0
+;;はコネクションを終了するのに使われます。
+;;
+;;@param termios 
+;;@param speed 
+
+;;;;;
+;;@type Function
+;;@name sys-cfgetospeed
+;;@description termios内の入出力スピード(ボーレート)を取得/設定します。スピードは
+;;以下の定義ずみの数値で表現されてます：
+;;B0、B50、B75、B110、B134、
+;;B150、B200、B300、B600、B1200、
+;;B1800、B2400、B4800、B9600、
+;;B19200、B38400。
+;;
+;;もっと速いボーレート、たとえば、B57600、
+;;B115200 あるいは B230400 をサポートしている
+;;システムもあります。symbol-bound?をつかえば、これらの
+;;オプションが定義されているかどうかをチェックできます。B0
+;;はコネクションを終了するのに使われます。
+;;
+;;@param termios 
+
+;;;;;
+;;@type Function
+;;@name sys-cfsetispeed
+;;@description termios内の入出力スピード(ボーレート)を取得/設定します。スピードは
+;;以下の定義ずみの数値で表現されてます：
+;;B0、B50、B75、B110、B134、
+;;B150、B200、B300、B600、B1200、
+;;B1800、B2400、B4800、B9600、
+;;B19200、B38400。
+;;
+;;もっと速いボーレート、たとえば、B57600、
+;;B115200 あるいは B230400 をサポートしている
+;;システムもあります。symbol-bound?をつかえば、これらの
+;;オプションが定義されているかどうかをチェックできます。B0
+;;はコネクションを終了するのに使われます。
+;;
+;;@param termios 
+;;@param speed 
+
+;;;;;
+;;@type Function
+;;@name sys-cfgetispeed
+;;@description termios内の入出力スピード(ボーレート)を取得/設定します。スピードは
+;;以下の定義ずみの数値で表現されてます：
+;;B0、B50、B75、B110、B134、
+;;B150、B200、B300、B600、B1200、
+;;B1800、B2400、B4800、B9600、
+;;B19200、B38400。
+;;
+;;もっと速いボーレート、たとえば、B57600、
+;;B115200 あるいは B230400 をサポートしている
+;;システムもあります。symbol-bound?をつかえば、これらの
+;;オプションが定義されているかどうかをチェックできます。B0
+;;はコネクションを終了するのに使われます。
+;;
+;;@param termios 
+
+;;;;;
+;;@type Function
+;;@name sys-tcsetpgrp
+;;@description port-or-fdの結びついている端末のプロセスのグループIDをpgrpに
+;;設定します。
+;;
+;;@param port-or-fd 
+;;@param pgrp 
+
+;;;;;
+;;@type Function
+;;@name sys-tcgetpgrp
+;;@description port-or-fdの結びついている端末のプロセスのグループIDを返します。
+;;
+;;@param port-or-fd 
+
+;;;;;
+;;@type Function
+;;@name sys-tcflow
+;;@description port-or-fdのデータフローをactionで制御します。actionは
+;;以下の値のうちどれかです。
+;;TCOOFF ------
+;;  出力の送出をサスペンドします。
+;;TCOON ------
+;;  出力の送出を再開します。
+;;TCIOFF ------
+;;  端末デバイスがシステムへの送出を止めるよう STOP 文字を送出する。
+;;TCION ------
+;;  端末デバイスがシステムへの送出を再開するよう START 文字を送出する。
+;;
+;;@param port-or-fd 
+;;@param action 
+
+;;;;;
+;;@type Function
+;;@name sys-tcflush
+;;@description port-or-fdのバッファ内のデータを破棄します。queueには以下の値の
+;;どれかを指定します。
+;;TCIFLUSH ------
+;;  受信データしたが読み込んではいないデータを破棄します。
+;;TCOFLUSH ------
+;;  書き出したが送出していないデータを破棄します。
+;;TCIOFLUSH ------
+;;  TCIFLUSH と TCOFLUSH の両方の動作をします。
+;;
+;;@param port-or-fd 
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name sys-tcdrain
+;;@description port-or-fdへのすべての出力が送出されるまで待ちます。
+;;
+;;@param port-or-fd 
+
+;;;;;
+;;@type Function
+;;@name sys-tcsendbreak
+;;@description ゼロストリームを指定した時間、port-or-fdと結びついている端末に
+;;送出します。時間の単位はシステム依存です。詳しくは、お使いの
+;;システムのマニュアルページ tcsendbreak(3)を参照してください。
+;;
+;;@param port-or-fd 
+;;@param duration 
+
+;;;;;
+;;@type Function
+;;@name sys-tcsetattr
+;;@description port-or-fdと結びついている端末のパラメータを termios に設定します。
+;;termios は <sys-termios> のインスタンスでなければなりません。
+;;
+;;整数の引数whenはいつ変更を有効にするかを指定します。
+;;この引数用に3つの変数があらかじめ定義されています。
+;;TCSANOW ------
+;;  変更を直ちに反映します。
+;;TCSADRAIN ------
+;;  変更を、すべてのペンディングになっている出力がフラッシュされた後に反映します。
+;;TCSAFLUSH ------
+;;  変更を、すべてのペンディングになっている出力がフラッシュされ、かつ、
+;;  すべてのペンディングになっている入力が破棄されたあとに反映します。
+;;
+;;@param port-or-fd 
+;;@param when 
+;;@param termios 
+
+;;;;;
+;;@type Function
+;;@name sys-tcgetattr
+;;@description port-or-fd と結びついている <sys-termios>オブジェクトの
+;;端末パラメータを返します。
+;;
+;;@param port-or-fd 
+
+;;;;;
+;;@type Class
+;;@name <sys-termios>
+;;@description POSIX termios(7) の構造体です。
+;;
+;;
+;;iflag、oflag、cflag、lflagの各スロットは、
+;;対応するビットマスクを非負の整数で表現した値を保持しています。
+;;
+;;また、ccスロットはstruct termiosのc_cc配列の
+;;コピーを返します。
+;;c_cc配列の値を変えたい場合は、変更したu8vectorを明示的に
+;;ccスロットにset!して下さい。
+;;
+;;
+;;@slot iflag 
+;;@slot oflag 
+;;@slot cflag 
+;;@slot lflag 
+;;@slot cc 
+

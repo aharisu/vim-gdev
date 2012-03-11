@@ -1,0 +1,64 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name record-modifier
+;;@description rtd 型の field-name によって名付けられたフィールドへの
+;;モディファイア手続きを返します。このモディファイア手続きは、
+;;rtd のインスタンスと値のふたつの引数をとり、その引数を
+;;指定されたフィールドに設定します。
+;;
+;;@param rtd 
+;;@param field-name 
+
+;;;;;
+;;@type Function
+;;@name record-accessor
+;;@description rtd 型の field-name によって名付けられたフィールドへの
+;;アクセサ手続きを返します。このアクセサ手続きは、rtd のインスタンスを
+;;一つとり、そのフィールドの値を返します。
+;;
+;;@param rtd 
+;;@param field-name 
+
+;;;;;
+;;@type Function
+;;@name record-predicate
+;;@description 一つの引数をとり、与えられた引数が rtd と同じ型であり、その場合に
+;;限り #t を返す手続きを返します。
+;;
+;;@param rtd 
+
+;;;;;
+;;@type Function
+;;@name record-constructor
+;;@description 与えられた rtd レコード型のインスタンスを構築する手続きを
+;;返します。返された手続きは field-names とちょうど同じ数の
+;;引数をとります。field-names のデフォルトは '() です。
+;;それぞれの引数は field-names の対応するフィールドの初期値を
+;;設定します。
+;;
+;;@param rtd 
+;;@param :optional 
+;;@param field-names 
+
+;;;;;
+;;@type Function
+;;@name make-record-type
+;;@description あらしいレコード型を表わす新しいクラスを返します。
+;;(これは SLIB では レコード型記述子とよばれているものです。)
+;;Gauche では、この新しいクラスは <record> のサブクラスです
+;;(Record types 参照)。
+;;
+;;type-name はデバッグの目的で使われる文字列です。
+;;これは、シンボルに変換され、この新しいクラスの名前として設定されます。
+;;field-names はフィールド名のシンボルのリストです。
+;;各々のフィールドはこの新しいクラスのスロットとして実装されます。
+;;
+;;@param type-name 
+;;@param field-names 
+

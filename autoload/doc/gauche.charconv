@@ -1,0 +1,343 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name wrap-with-output-conversion
+;;@description 不要な変換ポートを作らないようにする便利な手続きです。
+;;各手続きはそれぞれopen-input-conversion-portと
+;;open-output-conversion-portのように動作します。
+;;但し、指定されたCES間の変換が必要でないとシステムが知っている場合は、
+;;変換ポートは作られず、portがそのまま返されます。
+;;
+;;変換ポートが作られた場合、portは常に変換ポートに所有されます
+;;(:owner #tとなる)。ポートを閉じる場合はportではなく
+;;常にwrap-with-*-conversionが返したポートを閉じるようにして下さい。
+;;元のportが先に閉じられた場合、変換中の結果が書き出されない可能性があります。
+;;(変換によっては、ポートが閉じられる時点で終了シーケンスを書き出すものがあるので、
+;;単にポートをflushするだけでは不十分です)。
+;;
+;;:buffer-size 引数はそのまま
+;;変換ポート作成手続きに渡されます。
+;;
+;;@param port 
+;;@param to-code 
+;;@param :key 
+;;@param from-code 
+;;@param owner? 
+;;@param buffer-size 
+
+;;;;;
+;;@type Function
+;;@name wrap-with-input-conversion
+;;@description 不要な変換ポートを作らないようにする便利な手続きです。
+;;各手続きはそれぞれopen-input-conversion-portと
+;;open-output-conversion-portのように動作します。
+;;但し、指定されたCES間の変換が必要でないとシステムが知っている場合は、
+;;変換ポートは作られず、portがそのまま返されます。
+;;
+;;変換ポートが作られた場合、portは常に変換ポートに所有されます
+;;(:owner #tとなる)。ポートを閉じる場合はportではなく
+;;常にwrap-with-*-conversionが返したポートを閉じるようにして下さい。
+;;元のportが先に閉じられた場合、変換中の結果が書き出されない可能性があります。
+;;(変換によっては、ポートが閉じられる時点で終了シーケンスを書き出すものがあるので、
+;;単にポートをflushするだけでは不十分です)。
+;;
+;;:buffer-size 引数はそのまま
+;;変換ポート作成手続きに渡されます。
+;;
+;;@param port 
+;;@param from-code 
+;;@param :key 
+;;@param to-code 
+;;@param owner? 
+;;@param buffer-size 
+
+;;;;;
+;;@type Function
+;;@name with-output-conversion
+;;@description call-with-*-conversion と似ていますが、この2つの手続きは、
+;;thunk を引数なしで呼びます、また、変換ポートはそれぞれ標準入力、標準
+;;出力のポートにセットされます。
+;;キーワード引数の意味は call-with-*-conversion と同じです。
+;;
+;;@param oport 
+;;@param thunk 
+;;@param :key 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name with-input-conversion
+;;@description call-with-*-conversion と似ていますが、この2つの手続きは、
+;;thunk を引数なしで呼びます、また、変換ポートはそれぞれ標準入力、標準
+;;出力のポートにセットされます。
+;;キーワード引数の意味は call-with-*-conversion と同じです。
+;;
+;;@param iport 
+;;@param thunk 
+;;@param :key 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name call-with-output-conversion
+;;@description この2つの手続きを使うと、元のポートのエンコーディングとは異る一時的な
+;;エンコーディングをもつ文字I/Oを行うことが可能です。
+;;
+;;call-with-input-conversion は、文字エンコードencoding を
+;;もつ入力ポート iport をとり、procを一つの引数、すなわち、
+;;変換入力ポートとともに呼びだします。このポートから、proc は文字を
+;;Gauche の内部エンコーディングで読み込むことができます。いったん、
+;;procが呼ばれたら、EOFまでのすべての文字を読み込まなくてはなりません。
+;;後述の注意を参照してください。
+;;
+;;call-with-output-conversion は、文字エンコーディング encoding
+;;を期待する出力ポート oport をとり、procを一つの引数、すなわち、
+;;一時的な変換出力ポートとともに呼びだします。このポートへ、procは
+;;Gauche の内部エンコーディングをもつ文字を書き込むことができます。
+;;proc が戻るか、エラーで抜けると、この一時的な変換出力ポートは
+;;フラッシュされて、クローズされます。call-with-output-conversion
+;;の呼出し側は、その後、元のエンコーディングのポートoportを使い
+;;続けること可能です。
+;;
+;;どちらの手続きも proc が返す値を返します。encoding
+;;のデフォルト値は Gauche の内部エンコーディングです。この2つの手続きは
+;;必要がなければ、変換ポートを作成しません。もし
+;;conversion-buffer-size が与えられていれば、変換ポートがオープン
+;;されるときに、buffer-size 引数として使われます。
+;;
+;;proc がアクティブであるあいだは、iport/oport を直接
+;;使うべきではありません。文字のエンコーディングはステートフルなプロセスで
+;;変換ポート(から/へ)の入出力を混在させると元にあるポートの状態がおかしく
+;;なってしまいます。
+;;
+;;注意: call-with-input-conversion については、
+;;proc が EOF を読むまでは、iport を再度利用することはできません。
+;;これは、変換ポートがバッファを必要とし、proc がもどったときに
+;;iportへのバッファ付き入力をアンドゥする方法がないからです。
+;;
+;;@param oport 
+;;@param proc 
+;;@param :key 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name call-with-input-conversion
+;;@description この2つの手続きを使うと、元のポートのエンコーディングとは異る一時的な
+;;エンコーディングをもつ文字I/Oを行うことが可能です。
+;;
+;;call-with-input-conversion は、文字エンコードencoding を
+;;もつ入力ポート iport をとり、procを一つの引数、すなわち、
+;;変換入力ポートとともに呼びだします。このポートから、proc は文字を
+;;Gauche の内部エンコーディングで読み込むことができます。いったん、
+;;procが呼ばれたら、EOFまでのすべての文字を読み込まなくてはなりません。
+;;後述の注意を参照してください。
+;;
+;;call-with-output-conversion は、文字エンコーディング encoding
+;;を期待する出力ポート oport をとり、procを一つの引数、すなわち、
+;;一時的な変換出力ポートとともに呼びだします。このポートへ、procは
+;;Gauche の内部エンコーディングをもつ文字を書き込むことができます。
+;;proc が戻るか、エラーで抜けると、この一時的な変換出力ポートは
+;;フラッシュされて、クローズされます。call-with-output-conversion
+;;の呼出し側は、その後、元のエンコーディングのポートoportを使い
+;;続けること可能です。
+;;
+;;どちらの手続きも proc が返す値を返します。encoding
+;;のデフォルト値は Gauche の内部エンコーディングです。この2つの手続きは
+;;必要がなければ、変換ポートを作成しません。もし
+;;conversion-buffer-size が与えられていれば、変換ポートがオープン
+;;されるときに、buffer-size 引数として使われます。
+;;
+;;proc がアクティブであるあいだは、iport/oport を直接
+;;使うべきではありません。文字のエンコーディングはステートフルなプロセスで
+;;変換ポート(から/へ)の入出力を混在させると元にあるポートの状態がおかしく
+;;なってしまいます。
+;;
+;;注意: call-with-input-conversion については、
+;;proc が EOF を読むまでは、iport を再度利用することはできません。
+;;これは、変換ポートがバッファを必要とし、proc がもどったときに
+;;iportへのバッファ付き入力をアンドゥする方法がないからです。
+;;
+;;@param iport 
+;;@param proc 
+;;@param :key 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name ces-convert
+;;@description from-codeでエンコーディングされた文字列stringを
+;;to-codeでエンコーディングされた文字列に変換します。
+;;to-codeがネイティブエンコーディングで無い場合、返される文字列は
+;;バイト文字列(不完全な文字列)であるかもしれません。
+;;
+;;from-codeにはCES推測アルゴリズム名("*JP"など)を与えることができます。
+;;to-codeが省略された場合はネイティブエンコーディングと見なされます。
+;;
+;;@param string 
+;;@param from-code 
+;;@param :optional 
+;;@param to-code 
+
+;;;;;
+;;@type Function
+;;@name open-output-conversion-port
+;;@description 文字のエンコーディングをfrom-codeからto-codeに変換して
+;;出力ポートsinkに書き出すような出力変換ポートを作成して返します。
+;;from-codeが省略された場合はネイティブのCESと見なされます。
+;;from-codeにもto-codeにも、CES推測アルゴリズム名を
+;;使用することはできません。
+;;
+;;buffer-sizeは内部で変換に使われるバッファサイズを指定します。
+;;出力変換ポートに書き出された文字は、flushを使って明示的に
+;;フラッシュするか出力変換ポートが閉じられるまで、バッファ内に残っている可能性があります。
+;;
+;;通常、出力変換ポートがクローズされてもsinkはクローズされません。
+;;owner?に真の値を与えれば、出力変換ポートのクローズ時にsinkを
+;;クローズするようにできます。
+;;
+;;@param sink 
+;;@param to-code 
+;;@param :key 
+;;@param from-code 
+;;@param buffer-size 
+;;@param owner? 
+
+;;;;;
+;;@type Function
+;;@name open-input-conversion-port
+;;@description 文字が符号化方法from-codeで符号化されているデータを読み出せる
+;;入力ポートsourceを取り、符号化方法to-codeで符号化されたデータを
+;;読み出せるポートを作成して返します。
+;;
+;;to-codeが省略された場合はネイティブのCESと見なされます。
+;;
+;;buffer-sizeは変換のための内部バッファのサイズを指定します。
+;;省略時のサイズは1Kバイト程で、通常の使用には問題ないサイズです。
+;;
+;;入力のCESが不明な場合、"*JP"などのCES推測アルゴリズム名をfrom-code
+;;として指定することができます。変換ポートは最高でバッファサイズまでのデータを先読みし、
+;;CESを推測しようとします。そのアルゴリズムで推測されるどのCESにも該当しないデータが
+;;検出された場合はエラーが報告されます。もし複数のCESが可能であるようなデータであった
+;;場合は、Gaucheのネイティブエンコーディングが可能なCESに含まれていればそれが選ばれ、
+;;そうでなければいずれかのCESが適当に選ばれます。従って、バッファサイズが小さすぎると
+;;誤った判定をする可能性が高くなります。大抵のテキストドキュメントに対して、
+;;既定のバッファサイズは十分ですが、大きなテキストのほとんどがASCII文字で最後だけ
+;;マルチバイト文字が現われるようなテキストでは誤判定の可能性があります。
+;;最悪の場合でも結果を保証するには、テキスト全体が格納できるバッファサイズを指定すると
+;;良いでしょう。
+;;
+;;通常、open-input-conversion-portは変換が全て終了した後でもsource
+;;はオープンしたままにします。キーワード引数owner?に真の値を指定すると、
+;;EOFが読まれた後でsourceはクローズされます。
+;;
+;;例を示しましょう。以下のコードは未知のCES(但しEUC-JP, SJIS, ISO2022-JP, UTF8の
+;;いずれかであることは分かっている)で書かれたテキストファイルunknown.txtを
+;;読みだし、文字エンコーディングをEUC-JPに変換してeucjp.txtに書き出します。
+;;example:
+;;  (call-with-output-file "eucjp.txt"
+;;    (lambda (out)
+;;      (copy-port (open-input-conversion-port
+;;                   (open-input-file "unknown.txt")
+;;                   "*jp"             ;@r{guess code}
+;;                   :to-code "eucjp"
+;;                   :owner? #t)       ;@r{close unknown.txt afterwards}
+;;                 out)))
+;;
+;;@param source 
+;;@param from-code 
+;;@param :key 
+;;@param to-code 
+;;@param buffer-size 
+;;@param owner? 
+
+;;;;;
+;;@type Function
+;;@name ces-guess-from-string
+;;@description 文字列stringのCESを、CES推測アルゴリズムscheme ("*JP"など)
+;;を使って推測し、結果のCES名を返します。もしどのCESにも該当しないデータが
+;;含まれていれば#fが返されます。複数のCESが可能である場合、
+;;ネイティブエンコーディングが含まれていればそれを、
+;;そうでなければ可能なCESからどれかひとつが選んで返されます。
+;;
+;;@param string 
+;;@param scheme 
+
+;;;;;
+;;@type Function
+;;@name ces-upper-compatible?
+;;@description CES ces-bでエンコードされた文字列が、システムの知る限りで
+;;変換無しにces-aでエンコードされたものと見倣せる場合に#tを
+;;返します。見倣せない場合は#fを返します。
+;;システムが判断できない場合はunknown-valueに与えられた
+;;値を返します。そのデフォルトは#fです。
+;;
+;;ces-equivalent?と同様に、CES名 "none" はワイルドカードとして
+;;働きます。ces-a か ces-b が "none" であれば、
+;;常に#tが返されます。
+;;
+;;example:
+;;  (ces-upper-compatible? "eucjp" "ASCII")             ==> #t
+;;  (ces-upper-compatible? "eucjp" "utf-8")             ==> #f
+;;  (ces-upper-compatible? "utf-8" "NoSuchEncoding" '?) ==> ?
+;;
+;;@param ces-a 
+;;@param ces-b 
+;;@param :optional 
+;;@param unknown-value 
+
+;;;;;
+;;@type Function
+;;@name ces-equivalent?
+;;@description CES ces-aとces-bがシステムの知る限りで等価だった場合に
+;;#tを、等価でない場合に#fを返します。
+;;システムがその等価性を判断出来ない場合はunknown-valueに与えられた
+;;値を返します。そのデフォルトは#fです。
+;;
+;;CES名 "none" はワイルドカードのように動作します。それはどんなCESとも
+;;等価と見倣されます。(従って、ces-equivalent? は遷移的ではありません。
+;;この手続きは、二つのCESを知った時に相互の変換が
+;;必要かどうかを判断するためのものです)。
+;;
+;;example:
+;;  (ces-equivalent? 'eucjp "EUC-JP")            ==> #t
+;;  (ces-equivalent? 'shift_jis "EUC-JP")        ==> #f
+;;  (ces-equivalent? "NoSuchEncoding" 'utf-8 '?) ==> ?
+;;
+;;@param ces-a 
+;;@param ces-b 
+;;@param :optional 
+;;@param unknown-value 
+
+;;;;;
+;;@type Function
+;;@name ces-conversion-supported?
+;;@description CES from-cesからto-cesへの変換がサポートされていれば#tを、
+;;そうでなければ#fを返します。
+;;
+;;システムがfrom-cesからto-cesへの変換を部分的にしか
+;;サポートしていない場合でもこの手続きは#tを返すことに注意して下さい。
+;;そのような場合、実際の変換作業はfrom-cesにあってto-cesにない
+;;コードを置換文字に置き換える等で情報を失うかもしれません
+;;(例えば、UnicodeからEUC-JPへの変換はサポートされていますが、
+;;UnicodeにはEUC-JPにない文字も含まれています)。
+;;
+;;from-cesかto-cesが "none" ならばこの手続きは常に#tを
+;;返します。なぜならそのような変換は常に成功するからです(何も変換しないわけですが)。
+;;
+;;example:
+;;  ;; 内部エンコーディングからEUC-JPに変換できるか?
+;;  (ces-conversion-supported? (gauche-character-encoding) "euc-jp")
+;;
+;;@param from-ces 
+;;@param to-ces 
+

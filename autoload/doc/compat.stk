@@ -1,0 +1,33 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name file-is-executable?
+;;@description pathが存在して、現在の実効ユーザがそれぞれ読み取り/書き込み/実行可能なら#tを
+;;返します。
+;;このAPIはSTkから取られました。
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name file-is-writable?
+;;@description pathが存在して、現在の実効ユーザがそれぞれ読み取り/書き込み/実行可能なら#tを
+;;返します。
+;;このAPIはSTkから取られました。
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name file-is-readable?
+;;@description pathが存在して、現在の実効ユーザがそれぞれ読み取り/書き込み/実行可能なら#tを
+;;返します。
+;;このAPIはSTkから取られました。
+;;
+;;@param path 
+

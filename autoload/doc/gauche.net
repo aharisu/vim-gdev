@@ -1,0 +1,1182 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name sys-htonl
+;;@description 16bit (s)もしくは32bit (l) の整数を
+;;ネットワークバイト順 (n) とホストバイト順 (h) の間で
+;;相互変換するユーティリティ関数です。
+;;
+;;netdbインタフェースのScheme APIは必要な箇所ではこれらの関数を内部的に
+;;呼んでいるので、Cでプログラミングしている時ほどこれらの関数を必要とする
+;;ことはないでしょう。ただ、バイナリデータパケットを構築したり解析したり
+;;する際は便利かもしれません。バイナリデータの扱いについては
+;;Packing Binary Dataも参照して下さい。
+;;
+;;@param integer 
+
+;;;;;
+;;@type Function
+;;@name sys-htons
+;;@description 16bit (s)もしくは32bit (l) の整数を
+;;ネットワークバイト順 (n) とホストバイト順 (h) の間で
+;;相互変換するユーティリティ関数です。
+;;
+;;netdbインタフェースのScheme APIは必要な箇所ではこれらの関数を内部的に
+;;呼んでいるので、Cでプログラミングしている時ほどこれらの関数を必要とする
+;;ことはないでしょう。ただ、バイナリデータパケットを構築したり解析したり
+;;する際は便利かもしれません。バイナリデータの扱いについては
+;;Packing Binary Dataも参照して下さい。
+;;
+;;@param integer 
+
+;;;;;
+;;@type Function
+;;@name sys-ntohl
+;;@description 16bit (s)もしくは32bit (l) の整数を
+;;ネットワークバイト順 (n) とホストバイト順 (h) の間で
+;;相互変換するユーティリティ関数です。
+;;
+;;netdbインタフェースのScheme APIは必要な箇所ではこれらの関数を内部的に
+;;呼んでいるので、Cでプログラミングしている時ほどこれらの関数を必要とする
+;;ことはないでしょう。ただ、バイナリデータパケットを構築したり解析したり
+;;する際は便利かもしれません。バイナリデータの扱いについては
+;;Packing Binary Dataも参照して下さい。
+;;
+;;@param integer 
+
+;;;;;
+;;@type Function
+;;@name sys-ntohs
+;;@description 16bit (s)もしくは32bit (l) の整数を
+;;ネットワークバイト順 (n) とホストバイト順 (h) の間で
+;;相互変換するユーティリティ関数です。
+;;
+;;netdbインタフェースのScheme APIは必要な箇所ではこれらの関数を内部的に
+;;呼んでいるので、Cでプログラミングしている時ほどこれらの関数を必要とする
+;;ことはないでしょう。ただ、バイナリデータパケットを構築したり解析したり
+;;する際は便利かもしれません。バイナリデータの扱いについては
+;;Packing Binary Dataも参照して下さい。
+;;
+;;@param integer 
+
+;;;;;
+;;@type Function
+;;@name sys-getaddrinfo
+;;@description 与えられた nodename、servname および hints から
+;;<sys-addrinfo> のインスタンスのリストを返します。
+;;これは gauche が --enable-ipv6 オプションで設定され、
+;;ビルドされた場合にのみ利用可能です。
+;;
+;;@param nodename 
+;;@param servname 
+;;@param hints 
+
+;;;;;
+;;@type Class
+;;@name <sys-addrinfo>
+;;@description アドレス情報を保持する新しいインタフェースです。C の struct addrinfo
+;;に対応しています。これは gauche が --enable-ipv6 オプションで設定され、
+;;ビルドされた場合にのみ利用可能です。以下のスロットが提供されます。
+;;
+;;
+;;@slot flags 
+;;@slot family 
+;;@slot socktype 
+;;@slot protocol 
+;;@slot addrlen 
+;;@slot addr 
+
+;;;;;
+;;@type Function
+;;@name sys-getprotobynumber
+;;@description プロトコル番号 number でネットワークプロトコルデータベースを検索
+;;する。プロトコル番号 number は正確な整数でなければなりません。
+;;プロトコルが見つかれば、<sys-protoent>
+;;のインスタンスを返します。見つからなければ、#f を返します。
+;;example:
+;;  (let ((proto (sys-getprotobynumber 17)))
+;;    (list (slot-ref proto 'name)
+;;          (slot-ref proto 'aliases)
+;;          (slot-ref proto 'proto)))
+;;    ==> ("udp" ("UDP") 17)
+;;
+;;@param number 
+
+;;;;;
+;;@type Function
+;;@name sys-getprotobyname
+;;@description 名前 name でネットワークプロトコルデータベースを検索します。
+;;名前 name は文字列でなければなりません。
+;;プロトコルが見つかれば、<sys-protoent>
+;;のインスタンスを返します。見つからなければ、#f を返します。
+;;example:
+;;  (let ((proto (sys-getprotobyname "icmp")))
+;;    (list (slot-ref proto 'name)
+;;          (slot-ref proto 'aliases)
+;;          (slot-ref proto 'proto)))
+;;    ==> ("icmp" ("ICMP") 1)
+;;
+;;@param name 
+
+;;;;;
+;;@type Class
+;;@name <sys-protoent>
+;;@description プロトコルデータベースのエントリです。C の struct protoentに
+;;対応しています。以下のスロットは読み込み専用です。
+;;
+;;
+;;@slot name プロトコルの正式名(文字列)
+;;
+;;@slot aliases プロトコルの別名のリスト(文字列のリスト)
+;;
+;;@slot proto プロトコル番号(正確な整数)
+;;
+
+;;;;;
+;;@type Function
+;;@name sys-getservbyport
+;;@description ネットワークサービスデータベースをサービス名 port および
+;;プロトコル proto で検索します。port は正確な整数でなければ
+;;なりません。また、proto は文字列でなければなりません。
+;;サービスが見つかれば、<sys-servent>
+;;のインスタンスを返します。見つからなければ、#f を返します。
+;;example:
+;;  (let ((serv (sys-getservbyport 6000 "tcp")))
+;;    (list (slot-ref serv 'name)
+;;          (slot-ref serv 'aliases)
+;;          (slot-ref serv 'port)
+;;          (slot-ref serv 'proto)))
+;;    ==> ("x-server" () 6000 "tcp")
+;;
+;;@param port 
+;;@param proto 
+
+;;;;;
+;;@type Function
+;;@name sys-getservbyname
+;;@description ネットワークサービスデータベースをサービス名 name および
+;;プロトコル proto で検索します。name および proto
+;;は文字列でなければなりません。サービスが見つかれば、<sys-servent>
+;;のインスタンスを返します。見つからなければ、#f を返します。
+;;example:
+;;  (let ((serv (sys-getservbyname "http" "tcp")))
+;;    (list (slot-ref serv 'name)
+;;          (slot-ref serv 'aliases)
+;;          (slot-ref serv 'port)
+;;          (slot-ref serv 'proto)))
+;;    ==> ("http" () 80 "tcp")
+;;
+;;@param name 
+;;@param proto 
+
+;;;;;
+;;@type Class
+;;@name <sys-servent>
+;;@description ネットワークサービスデータベースのエントリです。
+;;C の struct serventに対応しています。
+;;以下のスロットは読み込み専用です。
+;;
+;;
+;;@slot name サービスの正式名(文字列)
+;;
+;;@slot aliases サービスの別名リスト(文字列のリスト)
+;;
+;;@slot port サービスに割り当てられたポート番号(正確な整数)
+;;
+;;@slot proto このサービス用のプロトコル名(文字列)
+;;
+
+;;;;;
+;;@type Function
+;;@name sys-gethostbyaddr
+;;@description protoというプロトコルの、addrというアドレスを持つホストを
+;;探します。addrはアドレスの自然な文字列表現で、IPv4 については、
+;;ドットつき十進記法です。protoはプロトコル番号で、現時点では
+;;AF_INETのみサポートされています。ホストが見つかれば、
+;;<sys-hostent>オブジェクトを返します。
+;;見つからなければ、#f を返します。
+;;example:
+;;  (let ((host (sys-gethostbyaddr "127.0.0.1" AF_INET)))
+;;    (list (slot-ref host 'name)
+;;          (slot-ref host 'aliases)
+;;          (slot-ref host 'addresses))
+;;    ==> ("localhost" ("localhost.localdomain") ("127.0.0.1"))
+;;
+;;@param addr 
+;;@param proto 
+
+;;;;;
+;;@type Function
+;;@name sys-gethostbyname
+;;@description nameという名前のホストを探し、見つかれば、<sys-hostent>
+;;オブジェクトを返します。見つからなければ、#f を返します。
+;;example:
+;;  (let ((host (sys-gethostbyname "www.w3c.org")))
+;;    (list (slot-ref host 'name)
+;;          (slot-ref host 'aliases)
+;;          (slot-ref host 'addresses)))
+;;    ==> ("www.w3.org" ("www.w3c.org") ("18.29.1.34" "18.29.1.35"))
+;;
+;;@param name 
+
+;;;;;
+;;@type Class
+;;@name <sys-hostent>
+;;@description このクラスはネットワークホストのオブジェクト用で、
+;;C の struct hostent
+;;に対応しています。以下のスロットは読み込み専用です。
+;;
+;;
+;;@slot name ホストの正式名(文字列)
+;;
+;;@slot aliases ホストの別名リスト(文字列のリスト)
+;;
+;;@slot addresses アドレスのリスト(文字列のリスト)。現時点では IPv4 のアドレスのみサポート
+;;しています。それぞれのアドレスは、ドットつき十進記法で表記されています。
+;;
+
+;;;;;
+;;@type Function
+;;@name inet-checksum
+;;@description ユニフォームベクタで与えられるpacketのインターネットチェックサム(RFC1071)
+;;の1の補数を計算して返します。packetの最初のsizeバイトのみが
+;;計算の対象となります。返される値はネットワークバイトオーダ (ビッグエンディアン)
+;;です。packetより大きな値をsizeに指定するとエラーとなります。
+;;
+;;註: 使われているアルゴリズムは、packetがそれほど大きくないこと (< 64K) を
+;;仮定しています。
+;;
+;;@param packet 
+;;@param size 
+
+;;;;;
+;;@type var
+;;@name SO_ERROR
+;;@description 保留状態のソケットエラー(整数値)を取得し、それをクリアします。
+;;socket-getsockoptでのみ使用可能です。
+;;
+
+;;;;;
+;;@type var
+;;@name SO_PRIORITY
+;;@description 整数が期待されています。このソケットで送信されるすべてのパケットに
+;;ついてプロトコル定義の優先順位を指定します。
+;;
+
+;;;;;
+;;@type var
+;;@name SO_BROADCAST
+;;@description 整数が期待されています。0でなければ、データグラムソケットは
+;;ブロードキャストパケットを送受信することを許されます。
+;;
+
+;;;;;
+;;@type var
+;;@name SO_TYPE
+;;@description ソケットの型(sock_streamなど)を整数として取得します。
+;;socket-getsockoptでのみ使用可能です。
+;;
+
+;;;;;
+;;@type var
+;;@name SO_REUSEADDR
+;;@description 整数が期待されています。0ではない場合、socket-bindは、
+;;ローカル・アドレスが、アクティブソケットにリッスンされていない
+;;場合にかぎり、そのアドレスを再利用することを許可されます。
+;;
+;;
+
+;;;;;
+;;@type var
+;;@name SO_OOBINLINE
+;;@description 整数が期待されています。0でなければ、帯域外データは直接
+;;受信データストリームに乗ります。さもなければ、帯域外データは、受信中に
+;;MSG_OOBフラグが設定されてたときにのみ渡されます。
+;;
+
+;;;;;
+;;@type var
+;;@name SO_KEEPALIVE
+;;@description 整数が期待されています。0でなければ、コネクション指向ソケットに
+;;キープアライブ(keep-alive)メッセージを送ることができます。
+;;
+
+;;;;;
+;;@type var
+;;@name SOL_IP
+;;@description これらの変数は、それぞれ、SOL_SOCKET、SOL_TCP および
+;;SOL_IP に束縛されています。
+;;
+
+;;;;;
+;;@type var
+;;@name SOL_TCP
+;;@description これらの変数は、それぞれ、SOL_SOCKET、SOL_TCP および
+;;SOL_IP に束縛されています。
+;;
+
+;;;;;
+;;@type var
+;;@name SOL_SOCKET
+;;@description これらの変数は、それぞれ、SOL_SOCKET、SOL_TCP および
+;;SOL_IP に束縛されています。
+;;
+
+;;;;;
+;;@type Function
+;;@name socket-getsockopt
+;;@description これらは、setsockopt() および getsockopt() を呼ぶための
+;;インタフェースです。このインタフェースが少々ぎこちないのは、
+;;低レベルの呼び出しすべてにアクセスできるようにしているためです。
+;;
+;;socket および option は、処理する対象の
+;;プロトコルスタックのレベルおよびオプションを指定する
+;;正確な整数です。以下にリストアップしたシステム定数に束縛された
+;;変数があります。
+;;
+;;ソケットオプションを設定するには、value に正確な整数を渡す方法と
+;;文字列を渡す方法があります。それが、整数なら、その値は、C の
+;;int として setsockopt (2) に渡されます。文字列なら、バイト列が
+;;そのまま渡されます。どの型の値が要求されるかは、オプションに依存します。
+;;Gauche 側では渡された値が setsockopt (2) で期待された型であるかどうかは
+;;知ることができません。正しい値が渡されるかどうかはプログラマの責任です。
+;;
+;;ソケットオプションを知るには、結果として期待する最大の長さを rsize
+;;を使って教える必要があります。Gauche 側は返されるそれぞれのオプションの
+;;合計を知らないからです。
+;;socket-getsockopt はオプションの値をバイト列として返します。
+;;オプションの値が整数だと、わかっているなら rsize に0を渡すこと
+;;ができます。その場合 socket-getsockopt は正確な整数として値を返します。
+;;
+;;関数名に関する註: これらの関数の名前を socket-@{set|get@}opt あるいは
+;;socket-@{set|get@}-option にしようかとも思いましたが、結局、命名の
+;;一貫性をとることにしました。それで、"sock" が重複しています。
+;;
+;;
+;;@param socket 
+;;@param level 
+;;@param option 
+;;@param rsize 
+
+;;;;;
+;;@type Function
+;;@name socket-setsockopt
+;;@description これらは、setsockopt() および getsockopt() を呼ぶための
+;;インタフェースです。このインタフェースが少々ぎこちないのは、
+;;低レベルの呼び出しすべてにアクセスできるようにしているためです。
+;;
+;;socket および option は、処理する対象の
+;;プロトコルスタックのレベルおよびオプションを指定する
+;;正確な整数です。以下にリストアップしたシステム定数に束縛された
+;;変数があります。
+;;
+;;ソケットオプションを設定するには、value に正確な整数を渡す方法と
+;;文字列を渡す方法があります。それが、整数なら、その値は、C の
+;;int として setsockopt (2) に渡されます。文字列なら、バイト列が
+;;そのまま渡されます。どの型の値が要求されるかは、オプションに依存します。
+;;Gauche 側では渡された値が setsockopt (2) で期待された型であるかどうかは
+;;知ることができません。正しい値が渡されるかどうかはプログラマの責任です。
+;;
+;;ソケットオプションを知るには、結果として期待する最大の長さを rsize
+;;を使って教える必要があります。Gauche 側は返されるそれぞれのオプションの
+;;合計を知らないからです。
+;;socket-getsockopt はオプションの値をバイト列として返します。
+;;オプションの値が整数だと、わかっているなら rsize に0を渡すこと
+;;ができます。その場合 socket-getsockopt は正確な整数として値を返します。
+;;
+;;関数名に関する註: これらの関数の名前を socket-@{set|get@}opt あるいは
+;;socket-@{set|get@}-option にしようかとも思いましたが、結局、命名の
+;;一貫性をとることにしました。それで、"sock" が重複しています。
+;;
+;;
+;;@param socket 
+;;@param level 
+;;@param option 
+;;@param value 
+
+;;;;;
+;;@type var
+;;@name MSG_WAITALL
+;;@description socket-send、socket-sendto、socket-recv および
+;;socket-recvfrom の flag として使う定義済み整数定数。
+;;これらの定数のいくつかは、基盤のＯＳが提供していなければ未定義に
+;;なっています。
+;;
+
+;;;;;
+;;@type var
+;;@name MSG_TRUNC
+;;@description socket-send、socket-sendto、socket-recv および
+;;socket-recvfrom の flag として使う定義済み整数定数。
+;;これらの定数のいくつかは、基盤のＯＳが提供していなければ未定義に
+;;なっています。
+;;
+
+;;;;;
+;;@type var
+;;@name MSG_PEEK
+;;@description socket-send、socket-sendto、socket-recv および
+;;socket-recvfrom の flag として使う定義済み整数定数。
+;;これらの定数のいくつかは、基盤のＯＳが提供していなければ未定義に
+;;なっています。
+;;
+
+;;;;;
+;;@type var
+;;@name MSG_OOB
+;;@description socket-send、socket-sendto、socket-recv および
+;;socket-recvfrom の flag として使う定義済み整数定数。
+;;これらの定数のいくつかは、基盤のＯＳが提供していなければ未定義に
+;;なっています。
+;;
+
+;;;;;
+;;@type var
+;;@name MSG_EOR
+;;@description socket-send、socket-sendto、socket-recv および
+;;socket-recvfrom の flag として使う定義済み整数定数。
+;;これらの定数のいくつかは、基盤のＯＳが提供していなければ未定義に
+;;なっています。
+;;
+
+;;;;;
+;;@type var
+;;@name MSG_DONTROUTE
+;;@description socket-send、socket-sendto、socket-recv および
+;;socket-recvfrom の flag として使う定義済み整数定数。
+;;これらの定数のいくつかは、基盤のＯＳが提供していなければ未定義に
+;;なっています。
+;;
+
+;;;;;
+;;@type var
+;;@name MSG_CTRUNC
+;;@description socket-send、socket-sendto、socket-recv および
+;;socket-recvfrom の flag として使う定義済み整数定数。
+;;これらの定数のいくつかは、基盤のＯＳが提供していなければ未定義に
+;;なっています。
+;;
+
+;;;;;
+;;@type Function
+;;@name socket-recvfrom
+;;@description socket-recv!やsocket-recvfrom!と似ていますが、
+;;受け取ったメッセージを(不完全かもしれない)文字列として返します。
+;;bytesは受信する上限のバイト数を指定します。
+;;socket-recvfromはそれに加えて、送信者のアドレスのために
+;;常に新たなソケットアドレスオブジェクトを生成します。
+;;
+;;これらの手続きの使用はお薦めしません。というのは、バイナリメッセージを
+;;不完全な文字列の形で扱うことになりがちだからです。文字列で
+;;バイナリメッセージを取り扱うことは多くの落とし穴を作ります。
+;;バイナリデータを扱う場合はユニフォームベクタ (特にu8vector) 
+;;を使うべきでしょう。
+;;(これらの手続きが文字列を返すのは単に歴史的な理由によります)。
+;;
+;;@param socket 
+;;@param bytes 
+;;@param :optional 
+;;@param flags 
+
+;;;;;
+;;@type Function
+;;@name socket-recv
+;;@description socket-recv!やsocket-recvfrom!と似ていますが、
+;;受け取ったメッセージを(不完全かもしれない)文字列として返します。
+;;bytesは受信する上限のバイト数を指定します。
+;;socket-recvfromはそれに加えて、送信者のアドレスのために
+;;常に新たなソケットアドレスオブジェクトを生成します。
+;;
+;;これらの手続きの使用はお薦めしません。というのは、バイナリメッセージを
+;;不完全な文字列の形で扱うことになりがちだからです。文字列で
+;;バイナリメッセージを取り扱うことは多くの落とし穴を作ります。
+;;バイナリデータを扱う場合はユニフォームベクタ (特にu8vector) 
+;;を使うべきでしょう。
+;;(これらの手続きが文字列を返すのは単に歴史的な理由によります)。
+;;
+;;@param socket 
+;;@param bytes 
+;;@param :optional 
+;;@param flags 
+
+;;;;;
+;;@type Function
+;;@name socket-recvfrom!
+;;@description recvfrom(2)へのインタフェースです。socketからメッセージを
+;;受け取り、変更可能なユニフォームベクタへ書き込みます。socketは
+;;コネクトされていなくても構いません。socket-recvと同様に、
+;;bufの大きさがメッセージ全てを保持するのに十分でない場合、
+;;socketのタイプによっては残りのメッセージは捨てられます。
+;;
+;;ふたつの値を返します。実際にbufに書かれたバイト数と、
+;;送信者のアドレスを示す<sys-sockaddr>のサブクラスのインスタンスです。
+;;
+;;addrs引数はソケットアドレスインスタンスのリストでなければなりません。
+;;ただし、リストの終端 (最後のcdr) は#tであっても許されます。
+;;(この特殊な場合として、addrs引数にただ#tを渡すことも許されます)。
+;;addrs引数に渡されたソケットアドレスの中身は何でも構いません。
+;;送信者のアドレスファミリーに一致するソケットアドレスインスタンスがaddrs
+;;中にあった場合、socket-recvfrom!はそのインスタンスに直接
+;;送信者のアドレスを書き込みます。受信し得る全てのアドレスファミリのソケットアドレスを
+;;リストで渡しておけば、socket-recvfrom!が(成功時には)
+;;メモリアロケーションを行わないことが保証されます。これは
+;;速度が重要となるタイトなループ内でsocket-recvfrom!を呼ぶ場合に
+;;重要です。
+;;
+;;送信者のアドレスファミリに一致するソケットアドレスがあたえられなかった場合、
+;;socket-recvfrom!の振舞いはaddrsのリスト終端の値によります。
+;;addrsが()で終端されていた場合 (addrsが真性リストで
+;;あった場合)、送信者のアドレスは捨てられ、socket-recvfrom!は
+;;二番めの値として#fを返します。addrsが#tで終端
+;;されていた場合、socket-recvfrom!は新たなソケットアドレス
+;;インスタンスを作成して返します。
+;;
+;;簡単な場合として次の二つがあります：addrsに()が渡された場合、
+;;送信者のアドレスは常に捨てられます。socketがコネクトされていれば
+;;送信者のアドレスは既にわかっているので、そういう場合に便利でしょう。
+;;一方addrsに#tを渡せば、常に新しいソケットアドレスが
+;;アロケートされて返されます。メモリアロケーションについて気にしなくても
+;;良い場合は便利でしょう。
+;;
+;;オプション引数 flags は整数定数 MSG_* のビット毎のORで
+;;指定できます。詳しくはシステムの man ページ recvfrom(2)を見て下さい。
+;;
+;;@param socket 
+;;@param buf 
+;;@param addrs 
+;;@param :optional 
+;;@param flags 
+
+;;;;;
+;;@type Function
+;;@name socket-recv!
+;;@description recv(2)へのインタフェースです。socketからメッセージを
+;;受信し、それを変更可能なユニフォームベクタbufへと書き込みます。
+;;そして実際に書き込まれたバイト数を返します。
+;;socketは既にコネクトされていなければなりません。
+;;bufの大きさが受信したメッセージより小さい場合、socketの
+;;タイプによっては残りのメッセージは捨てられる可能性があります。
+;;
+;;オプション引数 flags は整数定数 MSG_* のビット毎のORで
+;;指定できます。詳しくはシステムの man ページ recv(2)を見て下さい。
+;;
+;;@param socket 
+;;@param buf 
+;;@param :optional 
+;;@param flags 
+
+;;;;;
+;;@type Function
+;;@name socket-buildmsg
+;;@description struct msghdr構造体のバイナリ表現を構築します。
+;;作られたmsghdrはsocket-sendmsgに渡すことができます。
+;;この手続きを理解するには、sendmsg(3)の動作をよく知っていることが必要です。
+;;
+;;addr引数は<sockaddr>のインスタンスか#fでなければ
+;;なりません。<sockaddr>のインスタンスである場合、そのアドレスが
+;;msghdrのmsg_nameフィールドに使われます。
+;;
+;;iov引数はベクタか#fでなければなりません。ベクタの場合、
+;;各要素は文字列かu8vectorでなければなりません。これはmsghdrの
+;;msg_iovフィールドに使われます。各要素の内容はカーネル内で
+;;結合されてペイロードとなります。
+;;
+;;control引数は補助データ(cmsg)を指定します。補助データが必要ない
+;;場合は#fを渡せます。そうでなければ、control引数は
+;;次の形式を持つリストでなければなりません。
+;;example:
+;;  ((level type data) ...)
+;;levelとtypeは正確な整数で、dataは文字列かu8vectorの
+;;いずれかです。
+;;最初の2つはそれぞれcmsgのcmsg_levelと
+;;cmsg_typeフィールドを指定します。dataはcmsgのデータとなります。
+;;(cmsg_lenはdataから計算されます)。
+;; 
+;;flags引数はmsg_flagsフィールドに使われます。
+;;
+;;buf引数が省略されるか#fの場合、msghdrを構築するのに
+;;必要なメモリがアロケートされます。書き換え可能なu8vectorがbuf
+;;に渡されれば、socket-buildmsgはできるだけそれをバッファに使って
+;;msghdrを構築しようとします。bufで領域が不足する場合のみ
+;;新たなメモリをアロケートします。
+;;
+;;この手続きは構築されたmsghdrをu8vectorとして返します。
+;;
+;;この手続きはWindowsネイティブ環境では(まだ)サポートされません。
+;;これが使えるかどうかは、機能識別子gauche.os.windowsを使って判定
+;;できます (Platform-dependent features参照)。
+;;
+;;@param addr 
+;;@param iov 
+;;@param control 
+;;@param flags 
+;;@param :optional 
+;;@param buf 
+
+;;;;;
+;;@type Function
+;;@name socket-sendmsg
+;;@description sendmsg(3)を使って、msghdrで記述されるパケットをsocket
+;;を通じて送ります。msghdr引数は文字列かu8vectorで、
+;;struct msghdr構造体のバイナリ表現でなければなりません。
+;;msghdr引数に適したデータを構築する確かな方法は、下に述べる
+;;socket-buildmsgを使うことです。
+;;
+;;flags引数はsocket-sendおよびsocket-sendtoと同じです。
+;;
+;;送り出されたオクテット数を返します。
+;;
+;;この手続きはWindowsネイティブ環境では(まだ)サポートされません。
+;;これが使えるかどうかは、機能識別子gauche.os.windowsを使って判定
+;;できます (Platform-dependent features参照)。
+;;
+;;@param socket 
+;;@param msghdr 
+;;@param :optional 
+;;@param flags 
+
+;;;;;
+;;@type Function
+;;@name socket-sendto
+;;@description それぞれ、send(2) および sendto(2) へのインタフェース。
+;;msg の内容を socket を通じて送出します。
+;;msgは文字列もしくはユニフォームベクタでなければなりません。
+;;バイナリパケットを送る場合はユニフォームベクタの使用を推奨します。
+;;
+;;socket-send を使うときには、socket は既に接続されて
+;;いなければなりません。他方、socket-sendto は未接続の
+;;ソケットに対して使用でき、送出先アドレスは <sockaddr> のインスタンス
+;;to-address で指定します。
+;;
+;;オプション引数 flags は整数定数 MSG_* のビット毎のORで
+;;指定できます。詳しくはシステムの man ページ send(2) および
+;;sendto(2) を見て下さい。
+;;
+;;@param socket 
+;;@param msg 
+;;@param to-address 
+;;@param :optional 
+;;@param flags. 
+
+;;;;;
+;;@type Function
+;;@name socket-send
+;;@description それぞれ、send(2) および sendto(2) へのインタフェース。
+;;msg の内容を socket を通じて送出します。
+;;msgは文字列もしくはユニフォームベクタでなければなりません。
+;;バイナリパケットを送る場合はユニフォームベクタの使用を推奨します。
+;;
+;;socket-send を使うときには、socket は既に接続されて
+;;いなければなりません。他方、socket-sendto は未接続の
+;;ソケットに対して使用でき、送出先アドレスは <sockaddr> のインスタンス
+;;to-address で指定します。
+;;
+;;オプション引数 flags は整数定数 MSG_* のビット毎のORで
+;;指定できます。詳しくはシステムの man ページ send(2) および
+;;sendto(2) を見て下さい。
+;;
+;;@param socket 
+;;@param msg 
+;;@param :optional 
+;;@param flags 
+
+;;;;;
+;;@type Function
+;;@name socket-getpeername
+;;@description socketの通信相手のアドレスを表す<sockaddr>インスタンスを返します。
+;;
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name socket-getsockname
+;;@description socketのローカル側アドレスを表す<sockaddr>インスタンスを返します。
+;;
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name socket-shutdown
+;;@description socket の接続をシャットダウンします。how がSHUT_RD (0) なら、
+;;socket の受信チャネルが不許可となります。how がSHUT_WR (1)なら、
+;;socket の送信チャネルが不許可となります。how がSHUT_RDWR (2)なら、
+;;socket の送受信チャネルの両方が不許可となります。
+;;接続していないソケットに対して、この手続きを呼ぶとエラーになります。
+;;
+;;ソケットの送信チャネルをシャットダウンすると、リモート側の受信チャネル
+;;に EOF があらわれます。これは、リモート側が何かを送り返す前に EOF
+;;を受けとることを期待している場合、便利です。
+;;
+;;@param socket 
+;;@param how 
+
+;;;;;
+;;@type Function
+;;@name socket-connect
+;;@description socket をリモートアドレス address に接続します。
+;;これは、クライアントソケットをリモートエンティティに接続するための
+;;方法です。
+;;
+;;@param socket 
+;;@param address 
+
+;;;;;
+;;@type Function
+;;@name socket-accept
+;;@description socketに来た接続要求をアクセプトします。リモートエンティティへ
+;;接続している新しいソケットを返します。元の socket は引き続き
+;;次の接続要求を待ちます。接続要求がないとき、これの呼出しは要求が
+;;一つ来るまで待ちます。
+;;
+;;接続要求をペンディングしているかどうかをチェックするのに
+;;sys-selectが使えます。
+;;
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name socket-listen
+;;@description socket をリッスンします。ソケットは既になんらかのアドレスに
+;;束縛されていなければなりません。backlog はキューに入れる
+;;接続要求の最大数を指定します。
+;;
+;;@param socket 
+;;@param backlog 
+
+;;;;;
+;;@type Function
+;;@name socket-bind
+;;@description socket をローカルネットワークアドレス address に束縛します。
+;;通常は、特定のアドレスをこのサーバのポートに結びつけるのに用います。
+;;もし、束縛が失敗したら(多くの場合、そのアドレスが既に使用されている)、
+;;エラーシグナルが発生します。
+;;
+;;INET ドメインアドレスの場合には port=0 とした address を
+;;渡せます。システムがポート番号を割当て、socket の
+;;address スロットに実際のアドレスをセットします。
+;;
+;;@param socket 
+;;@param address 
+
+;;;;;
+;;@type Function
+;;@name socket-status
+;;@description socket の内部状態を、以下のシンボルのどれかで返します。
+;;  closed    socket-close によってクローズされた
+;;  shutdown  socket-shutdown によってシャットダウンされた
+;;  connected socket-connect あるいは socket-accept によって接続されている
+;;  listening socket-listen によって、接続をリッスンしている
+;;  bound     socket-bind によって、あるアドレスに束縛されている
+;;  none      生成直後
+;;
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name socket-fd
+;;@description ソケットのもつ整数のシステムファイルディスクリプタを返します。
+;;
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name make-socket
+;;@description パラメータで指定したソケットを返します。
+;;
+;;@param domain 
+;;@param type 
+;;@param :optional 
+;;@param protocol 
+
+;;;;;
+;;@type Function
+;;@name call-with-client-socket
+;;@description socketは接続されたクライアントソケットでなければなりません。
+;;procがソケットから読み出す入力ポートと、
+;;ソケットに書き出す出力ポートを引数として呼ばれます。
+;;procが正常終了するか、エラーを投げた場合にソケットはクローズされます。
+;;
+;;キーワード引数input-bufferingとoutput-bufferingが与えられた場合、
+;;それらはそれぞれsocket-input-portとsocket-output-portの
+;;bufferingキーワード引数へと渡されます。
+;;
+;;@param socket 
+;;@param proc 
+;;@param :key 
+;;@param input-buffering 
+;;@param output-buffering 
+
+;;;;;
+;;@type Function
+;;@name socket-close
+;;@description ソケットsocketをクローズします。socketの入出力ポートも
+;;クローズされます。
+;;
+;;注意: リリース 0.7.2 より、この手続きは接続をシャットダウンしないように
+;;なりました。その理由は、socket が fork した別プロセスから参照され
+;;ている可能性があり、既存の接続を妨害することなくクローズしたい場合がある
+;;からです。socket-shutdown を呼べば接続を明示的にシャットダウンできます。
+;;
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name socket-output-port
+;;@description それぞれ、socketからデータを読みだす入力ポート、および
+;;socketにデータを書き出す出力ポートを返します。
+;;
+;;キーワード引数bufferingはポートのバッファリングモードを
+;;指定します。バッファリングモードの説明はFile portsにあります。
+;;
+;;@param socket 
+;;@param :key 
+;;@param (buffering :line) 
+
+;;;;;
+;;@type Function
+;;@name socket-input-port
+;;@description それぞれ、socketからデータを読みだす入力ポート、および
+;;socketにデータを書き出す出力ポートを返します。
+;;
+;;キーワード引数bufferingはポートのバッファリングモードを
+;;指定します。バッファリングモードの説明はFile portsにあります。
+;;
+;;@param socket 
+;;@param :key 
+;;@param (buffering :modest) 
+
+;;;;;
+;;@type Function
+;;@name socket-address
+;;@description ソケットsocketのソケットアドレスを返します。
+;;ソケットにアドレスがまだバインドされていない場合は#fが返ります。
+;;
+;;@param socket 
+
+;;;;;
+;;@type Function
+;;@name make-server-sockets
+;;@description host が持つすべての利用可能なネットワークインタフェース上の
+;;port で接続を待つソケットを生成し、それらのリストを返します。
+;;port には数字のポート番号のほか、"http"などの
+;;サービス名も指定できます。
+;;
+;;この手続きは、ホストが複数のプロトコルスタック(IPv4とIPv6など)を
+;;持つ場合に特に便利です。
+;;
+;;キーワード引数の意味はmake-server-socketのと同じです。
+;;
+;;@param host 
+;;@param port 
+;;@param :key 
+;;@param reuse-addr? 
+;;@param sock-init 
+
+;;;;;
+;;@type Function
+;;@name make-server-socket
+;;@description address-specにて接続を待つサーバソケットを作成して返します。
+;;
+;;(make-server-socket 'unix path [:backlog num]) ------
+;;  パス名pathを持つUnixドメインソケットが作成されます。
+;;  キーワード引数backlogに渡された数値はsocket-listenに渡され、
+;;  サーバが接続要求を貯めておくキューの最大長を指定します。
+;;  デフォルトは5です。多忙なサーバーで、"connection refused"が頻発する場合は
+;;  この数値を増やしてみて下さい。
+;;(make-server-socket 'inet port [:reuse-addr? flag] [:sock-init proc] [:backlog num]) ------
+;;  ポートportにて接続を待つInetドメインのTCPソケットが作成されます。
+;;  portは非負の正確な整数か、文字列のサービス名("http"等)でなければなりません。
+;;  portが零の場合はシステムが適当なポート番号を割り当てます。
+;;  キーワード引数reuse-addr?に真の値が与えられた場合は、
+;;  ソケットにSO_REUSEADDRオプションがセットされます。
+;;  その場合、他のプロセスが解放したばかりの(TCP)ポートでも
+;;  エラーとならずに使うことができます。
+;;  
+;;  キーワード引数sock-initが与えられた場合、proc が出来たての
+;;  ソケットとそのソケットアドレスを引数にして呼び出されます。
+;;  つまり、proc はそのような2つの引数を取る手続きでなければなりません。
+;;  ソケットに特殊なオプションを設定したいような場合に便利です。
+;;  
+;;  キーワード引数backlogはunixソケットと同じです。上の記述を参照して下さい。
+;;  
+;;(make-server-socket port [:reuse-addr? flag] [:sock-init proc][:backlog num]) ------
+;;  これは、portが整数でなければならないことを除けば、
+;;  上の形式と同じ動作をします。STkのmake-server-socketとの
+;;  互換性のために提供されています。
+;;(make-server-socket sockaddr [:reuse-addr? flag][:sock-init proc][:backlog num]) ------
+;;  この形式は、listenするソケットアドレスを<sockaddr>のインスタンスで
+;;  明示的に指定します。
+;;
+;;example:
+;;  (make-server-socket 'inet 8080)
+;;    ==> #<socket (listen "0.0.0.0:8080")>
+;;  (make-server-socket 8080)
+;;    ==> #<socket (listen "0.0.0.0:8080")>
+;;  (make-server-socket 'inet 0)
+;;    ==> #<socket (listen "0.0.0.0:35628")>
+;;  (make-server-socket 'unix "/tmp/.sock")
+;;    ==> #<socket (listen "/tmp/.sock")>
+;;
+;;@param :optional 
+;;@param address-spec 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name make-client-socket
+;;@description 引数address-spec ...によって指定されるアドレスと接続する
+;;クライアントソケットを作成して返します。
+;;
+;;(make-client-socket 'unix path) ------
+;;  pathで待っているUnixドメインのサーバーソケットに接続します。
+;;(make-client-socket 'inet host port) ------
+;;  ホストhostのポートportにTCPで接続します。
+;;  hostはIPv4アドレスのドット表記でもホスト名でも
+;;  構いません。Gaucheが--enable-ipv6でコンパイルされていれば、
+;;  IPv6形式のアドレス表記も受け付けます。
+;;  portはポート番号を指定する正確な整数か、文字列のサービス名
+;;  ("http"等)でなければなりません。
+;;  
+;;  Gaucheが--enable-ipv6でコンパイルされており、ホスト名が渡されて、
+;;  そのホスト名がIPv6とIPv4の両方のアドレスを持っていた場合は、
+;;  最初にIPv6での接続が試みられ、それが失敗した場合にIPv4での接続が試みられます。
+;;(make-client-socket host port) ------
+;;  上と同じです。この形式はSTkとの互換性のために提供されています。
+;;(make-client-socket sockaddr) ------
+;;  <sockaddr>クラスのインスタンスが渡された場合には、それに対応する
+;;  ソケットをオープンし、そのアドレスへ接続します。
+;;
+;;ソケットを作成できなかったり、指定されたアドレスに接続できなかった場合は
+;;エラーが報告されます。
+;;
+;;example:
+;;  (make-client-socket 'inet "www.w3.com" 80)
+;;    ==> ;@r{a socket connected to www.w3.com, port 80}
+;;  (make-client-socket "127.0.0.1" 23)
+;;    ==> ;@r{a socket connected to localhost, port 23}
+;;  (make-client-socket 'unix "/tmp/.sock"
+;;    ==> ;@r{a socket connected to a unix domain socket "/tmp/.sock"}
+;;
+;;@param :optional 
+;;@param address-spec 
+;;@param ... 
+
+;;;;;
+;;@type Class
+;;@name <socket>
+;;@description 通信の終端であるところのソケットを表すクラスです。
+;;
+;;コネクション型のソケットには、入力用と出力用の2つのポートが結び付いており、
+;;それらを使って通信路にアクセスできます。
+;;socket-input-portとsocket-output-portはそれぞれ
+;;入力用、出力用のポートを返します。
+;;
+;;
+
+;;;;;
+;;@type Function
+;;@name inet-address->string
+;;@description 与えれれたaddressをプロトコルprotocolの文字列表現に変換し
+;;ます。プロトコルとしては2 (定数AF_INET)または10
+;;(定数AF_INET6)が指定可能です。addressとしては整数または
+;;u8vectorが使えます。u8vectorをつかった場合には必要な部分だけが読み込ま
+;;れます。したがって、必要な長さ以上あるベクタでもかまいません。
+;;
+;;example:
+;;  (inet-address->string 3232235777 AF_INET)
+;;    ==> "192.168.1.1"
+;;  
+;;  (inet-address->string '#u8(192 168 1 1) AF_INET)
+;;    ==> "192.168.1.1"
+;;  
+;;  (inet-address->string 3232235777 AF_INET6)
+;;    ==> "::c0a8:101"
+;;
+;;@param address 
+;;@param protocol 
+
+;;;;;
+;;@type Function
+;;@name inet-string->address!
+;;@description inet-string->addressと同じですが、整数値を返すかわりに、与えら
+;;れたu8vectorであるbufをパーズしたアドレスで埋めるところが違いま
+;;す。inetアドレスの整数表現はbignumと同じやりかたです。この関数を使えば
+;;bignumを生成しなくてすみます。与えられたu8vectorbufは変更可能で
+;;なければなりません。変換に成功した場合はプロトコルが、失敗した場合は
+;;#fが返ります。
+;;
+;;呼び出し側は格納に十分なバッファを用意しなければなりません。buf
+;;が必要な分より大きい場合には結果は先頭から詰められ、ベクタの他の部分は
+;;そのままになります。
+;;
+;;example:
+;;  (let* ((buf (make-u8vector 16 0))
+;;         (proto (inet-string->address! "192.168.1.1" buf)))
+;;    (list proto buf))
+;;   ==> (2 #u8(192 168 1 1 0 0 0 0 0 0 0 0 0 0 0 0))
+;;
+;;@param address 
+;;@param buf 
+
+;;;;;
+;;@type Function
+;;@name inet-string->address
+;;@description 文字列で表現されたインターネットアドレスaddressを整数のアドレス
+;;に変換します。addressのパーズが成功した場合には値を2つ返します。
+;;ひとつは整数で表現されたアドレスの値、もうひとつは認識されたプロトコル
+;;(定数値で、2 (= AF_INET)ならIPv4アドレス、10 (=
+;;AF_INET6)ならIPv6アドレス)です。addressのパーズに失敗した
+;;ら、#fと#fとの2つが返ります。
+;;
+;;example:
+;;  (inet-string->address "192.168.1.1")
+;;   ==> 3232235777 and 2
+;;  (inet-string->address "::1")
+;;   ==> 1 and 10
+;;  (inet-string->address "::192.168.1.1")
+;;   ==> 3232235777 and 10
+;;  (inet-string->address "ffe0::1")
+;;   ==> 340116213421465348979261631549233168385 and 10
+;;  (inet-string->address "::192.168.1.1")
+;;   ==> 3232235777 and 10
+;;
+;;@param address 
+
+;;;;;
+;;@type Function
+;;@name make-sockaddrs
+;;@description これは上位レベルのユーティリティ手続きで、プロトコル proto の
+;;host:port を指す、可能なすべてのドメインソケット
+;;アドレスを生成します。特に、指定したホストが IPv4 および IPv6 の両方の
+;;アドレスを持ち、稼働中のシステムがその両方をサポートしている場合、IPv4 と
+;;IPv6 の両方のソケットアドレスが返ります。もし、host が複数の
+;;IP アドレスをもつ場合、ソケットアドレスはそれぞれのIPアドレス毎に生成
+;;されます。自分のネットワークアプリケーションを異るネットワークスタックの
+;;設定の間でこれまでよりはるかにポータブルなものにすることができます。
+;;
+;;host に #f を渡すと、ローカルな(サーバ)アドレスが生成されます。
+;;port 引数に整数のかわりに、サービス名(たとえば、"http")を
+;;わたすこともできます。proto の値は、tcp あるいは udp
+;;のどちらかのシンボルになります。デフォルトでは、tcp です。
+;;
+;;この手続きは常にソケットアドレスのリストを返します。もし、host の
+;;検索に失敗した場合には、空リストが返ります。
+;;
+;;@param host 
+;;@param port 
+;;@param :optional 
+;;@param proto 
+
+;;;;;
+;;@type Class
+;;@name <sockaddr-in6>
+;;@description AF_INET6ファミリのソケットアドレスです。
+;;このクラスはgaucheが--enable-ipv6つきでconfigureされている場合に使えます。
+;;コンストラクタとスロットは<sockaddr-in>と同じです。
+;;2つ以上のプロトコルスタックを持つようなマシン上で複数のソケットアドレスを
+;;生成するには、後述の make-sockaddrs も参照してください。
+;;
+
+;;;;;
+;;@type Method
+;;@name sockaddr-name
+;;@description ソケットアドレスのパス名を返します。
+;;
+;;@param (addr <sockaddr-un>) 
+
+;;;;;
+;;@type Method
+;;@name sockaddr-family
+;;@description シンボルunixを返します。
+;;
+;;@param (addr <sockaddr-un>) 
+
+;;;;;
+;;@type Class
+;;@name <sockaddr-un>
+;;@description AF_UNIXファミリのソケットアドレスです。このクラスのインスタンスを作成するには、
+;;makeメソッドを次のように呼んで下さい。
+;;example:
+;;  (make <sockaddr-un> :path path)
+;;pathはソケットのパス名を表す文字列です。
+;;
+
+;;;;;
+;;@type Method
+;;@name sockaddr-port
+;;@description それぞれ、IPアドレスとポート番号を整数で返します。
+;;
+;;@param (addr <sockaddr-in>) 
+
+;;;;;
+;;@type Method
+;;@name sockaddr-addr
+;;@description それぞれ、IPアドレスとポート番号を整数で返します。
+;;
+;;@param (addr <sockaddr-in>) 
+
+;;;;;
+;;@type Method
+;;@name sockaddr-name
+;;@description 文字列"a.b.c.d:port"を返します。
+;;コロンの前はIPアドレスのドット表記で、portはポート番号です。
+;;
+;;@param (addr <sockaddr-in>) 
+
+;;;;;
+;;@type Method
+;;@name sockaddr-family
+;;@description シンボルinetを返します。
+;;
+;;@param (addr <sockaddr-in>) 
+
+;;;;;
+;;@type Class
+;;@name <sockaddr-in>
+;;@description AF_INETファミリのソケットアドレスです。このクラスのインスタンスを
+;;作成するには、次のようにしてmakeメソッドを呼びます。
+;;example:
+;;  (make <sockaddr-in> :host host :port port)
+;;hostは文字列、整数のIPアドレス、u8vectorのIPアドレス、
+;;もしくは:any、:broadcast、:none、:loopbackの
+;;いずれかのキーワードでなければなりません。
+;;文字列の場合、それはホスト名かIPアドレスのドット表記です。
+;;Gaucheはgethostbyname(3)を使って実際のIPアドレスを得ます。
+;;この値がキーワード:anyか:broadcastなら、それぞれ
+;;INADDR_ANYかINADDR_BROADCASTがアドレスとして使われます。
+;;キーワード:loopbackはIPv4のループバックアドレス"127.0.0.1"を表します。
+;;
+;;portはポート番号を示す正の整数です。
+;;2つ以上のプロトコルスタックを持つようなマシン上で複数のソケットアドレスを
+;;生成するには、後述の make-sockaddrs も参照してください。
+;;
+
+;;;;;
+;;@type Method
+;;@name sockaddr-name
+;;@description ソケットアドレスaddrの名前を表す文字列を返します。
+;;
+;;@param addr 
+
+;;;;;
+;;@type Method
+;;@name sockaddr-family
+;;@description ソケットアドレスaddrのファミリを表すシンボルを返します。
+;;
+;;@param addr 
+
+;;;;;
+;;@type Class
+;;@name <sockaddr>
+;;@description ソケットアドレスの抽象ベースクラスです。
+;;ソケットアドレスファミリはこのクラスのサブクラスとして実装されます。
+;;
+;;ソケットアドレスはビルトインクラスですが、makeメソッドで
+;;特定のソケットアドレスファミリのインスタンスを作成することができます。
+;;
+

@@ -1,0 +1,308 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Macro
+;;@name with-time-counter
+;;@description 式expr ...が評価される間だけcounterを走らせる、
+;;便利なマクロです。最後の式の結果を返します。このマクロは次のように
+;;定義されます。
+;;example:
+;;  (define-syntax with-time-counter
+;;    (syntax-rules ()
+;;      ((_ counter . exprs)
+;;       (dynamic-wind
+;;        (lambda () (time-counter-start! counter))
+;;        (lambda () . exprs)
+;;        (lambda () (time-counter-stop! counter))))
+;;      ))
+;;
+;;@param counter 
+;;@param expr 
+;;@param ... 
+
+;;;;;
+;;@type Method
+;;@name time-counter-value
+;;@description カウンタcounterの現在の値(秒数)を実数で返します。
+;;分解能はそれぞれのカウンタが用いているシステムコールに依存します。
+;;
+;;@param (counter <time-counter>) 
+
+;;;;;
+;;@type Method
+;;@name time-counter-reset!
+;;@description カウンタcounterの値をリセットします。既にcounterが走っている
+;;場合は、リセットの前にカウンタは停止させられます。
+;;
+;;@param (counter <time-counter>) 
+
+;;;;;
+;;@type Method
+;;@name time-counter-stop!
+;;@description 時間カウンタcounterを開始/停止します。カウンタが走っている間の時間が、
+;;カウンタが停止した時点でカウンタの値に加算されます。
+;;
+;;開始/停止の対はネストすることができます。その場合は、一番外側の対のみが
+;;有効です。
+;;つまり、既に走っているカウンタに対しtime-counter-start!を呼んでも
+;;何も起こりませんが、一度余分にtime-counter-stop!を呼ばないと
+;;カウンタは止まりません。
+;;これは、内部に既に開始/停止の対を含んでいるかもしれない大きなコードブロックの
+;;全体の時間を計測したいというような場合に便利です。
+;;
+;;既に停止しているカウンタに対してtime-counter-stop!を呼んでも
+;;何も起こりません。
+;;
+;;@param (counter <time-counter>) 
+
+;;;;;
+;;@type Method
+;;@name time-counter-start!
+;;@description 時間カウンタcounterを開始/停止します。カウンタが走っている間の時間が、
+;;カウンタが停止した時点でカウンタの値に加算されます。
+;;
+;;開始/停止の対はネストすることができます。その場合は、一番外側の対のみが
+;;有効です。
+;;つまり、既に走っているカウンタに対しtime-counter-start!を呼んでも
+;;何も起こりませんが、一度余分にtime-counter-stop!を呼ばないと
+;;カウンタは止まりません。
+;;これは、内部に既に開始/停止の対を含んでいるかもしれない大きなコードブロックの
+;;全体の時間を計測したいというような場合に便利です。
+;;
+;;既に停止しているカウンタに対してtime-counter-stop!を呼んでも
+;;何も起こりません。
+;;
+;;@param (counter <time-counter>) 
+
+;;;;;
+;;@type Class
+;;@name <process-time-counter>
+;;@description それぞれ、実経過時間、ユーザースペースCPU時間、カーネルスペースCPU時間、
+;;総CPU時間 (ユーザー+カーネル)を計測する時間カウンタのクラスです。
+;;
+
+;;;;;
+;;@type Class
+;;@name <system-time-counter>
+;;@description それぞれ、実経過時間、ユーザースペースCPU時間、カーネルスペースCPU時間、
+;;総CPU時間 (ユーザー+カーネル)を計測する時間カウンタのクラスです。
+;;
+
+;;;;;
+;;@type Class
+;;@name <user-time-counter>
+;;@description それぞれ、実経過時間、ユーザースペースCPU時間、カーネルスペースCPU時間、
+;;総CPU時間 (ユーザー+カーネル)を計測する時間カウンタのクラスです。
+;;
+
+;;;;;
+;;@type Class
+;;@name <real-time-counter>
+;;@description それぞれ、実経過時間、ユーザースペースCPU時間、カーネルスペースCPU時間、
+;;総CPU時間 (ユーザー+カーネル)を計測する時間カウンタのクラスです。
+;;
+
+;;;;;
+;;@type Class
+;;@name <time-counter>
+;;@description 時間カウンタの抽象クラスです。時間カウンタは
+;;時間の経過と共にその値が増加してゆく一種のタイマーです。
+;;何度でもカウントを止めたり開始したりできます。
+;;カウンタの値はカウントが止まっている時に読み出すことができます。
+;;複数の時間カウンタを使えば、
+;;例えばループ中の二つの部分について費される時間を別々に計測することもできます。
+;;
+;;具体的なサブクラスが、どの時間をカウントするかを決定します。
+;;時間カウンタを使うには、下に挙げるサブクラスのいずれかを
+;;インスタンシエイトしなければなりません。
+;;
+
+;;;;;
+;;@type Function
+;;@name report-time-results
+;;@description This is a utility procedure to create a report from
+;;the result of time-these.  Actually, time-these/report
+;;is just a combination of time-these and this procedure:
+;;
+;;example:
+;;  (define (time-these/report how samples)
+;;    (report-time-results (time-these how samples)))
+;;
+;;@param result 
+
+;;;;;
+;;@type Function
+;;@name time-these/report
+;;@description These procedures benchmarks multiple chunks of code to compare.
+;;
+;;The alist argument must be the form of
+;;((key . thunk) ...), where key is a symbol
+;;and thunk is a procedure taking no arguments.
+;;
+;;The how argument is the same as time-this; that is,
+;;either an integer for number of iterations, or a list
+;;(cpu x) to indicate x seconds of cpu time.
+;;
+;;time-these runs benchmarks for each thunk in alist
+;;using time-this, and returns the result in a list of
+;;the form
+;;(how (key1 . result1) (key2 . result2) ...),
+;;where each result is a <time-result> object.
+;;
+;;time-these/report outputs the benchmark results and
+;;comparison matrix in human readable way to the current output port.
+;;
+;;example:
+;;  gosh> (time-these/report '(cpu 3.0)
+;;          `((real1 . ,(cut expt 100 20))
+;;            (real2 . ,(cut %expt 100 20))
+;;            (imag  . ,(cut expt +100i 20))))
+;;  Benchmark: ran real1, real2, imag, each for at least 3.0 cpu seconds.
+;;    real1: 3.312 real, 3.320 cpu (3.320 user + 0.000 sys)@@ 1694277.11/s n=5625000
+;;    real2: 2.996 real, 3.010 cpu (3.010 user + 0.000 sys)@@35595634.55/s n=107142860
+;;     imag: 3.213 real, 3.190 cpu (3.190 user + 0.000 sys)@@  862068.97/s n=2750000
+;;  
+;;                Rate  real1 real2   imag
+;;    real1  1694277/s     -- 0.048  1.965
+;;    real2 35595635/s 21.009    -- 41.291
+;;     imag   862069/s  0.509 0.024     --
+;;
+;;The first part of the report shows, for each thunks,
+;;the real (elapsed) time,
+;;the cpu time used (and its breakdown of user and system time),
+;;the rate of iteration per second, and the total number of iterations.
+;;
+;;The second part compares the speed between each pair of the benchmarks.
+;;For example, its first row tells that the benchmark real1 is
+;;0.048 times faster than real2 and 1.965 times faster than
+;;imag.
+;;
+;;@param how 
+;;@param alist 
+
+;;;;;
+;;@type Function
+;;@name time-these
+;;@description These procedures benchmarks multiple chunks of code to compare.
+;;
+;;The alist argument must be the form of
+;;((key . thunk) ...), where key is a symbol
+;;and thunk is a procedure taking no arguments.
+;;
+;;The how argument is the same as time-this; that is,
+;;either an integer for number of iterations, or a list
+;;(cpu x) to indicate x seconds of cpu time.
+;;
+;;time-these runs benchmarks for each thunk in alist
+;;using time-this, and returns the result in a list of
+;;the form
+;;(how (key1 . result1) (key2 . result2) ...),
+;;where each result is a <time-result> object.
+;;
+;;time-these/report outputs the benchmark results and
+;;comparison matrix in human readable way to the current output port.
+;;
+;;example:
+;;  gosh> (time-these/report '(cpu 3.0)
+;;          `((real1 . ,(cut expt 100 20))
+;;            (real2 . ,(cut %expt 100 20))
+;;            (imag  . ,(cut expt +100i 20))))
+;;  Benchmark: ran real1, real2, imag, each for at least 3.0 cpu seconds.
+;;    real1: 3.312 real, 3.320 cpu (3.320 user + 0.000 sys)@@ 1694277.11/s n=5625000
+;;    real2: 2.996 real, 3.010 cpu (3.010 user + 0.000 sys)@@35595634.55/s n=107142860
+;;     imag: 3.213 real, 3.190 cpu (3.190 user + 0.000 sys)@@  862068.97/s n=2750000
+;;  
+;;                Rate  real1 real2   imag
+;;    real1  1694277/s     -- 0.048  1.965
+;;    real2 35595635/s 21.009    -- 41.291
+;;     imag   862069/s  0.509 0.024     --
+;;
+;;The first part of the report shows, for each thunks,
+;;the real (elapsed) time,
+;;the cpu time used (and its breakdown of user and system time),
+;;the rate of iteration per second, and the total number of iterations.
+;;
+;;The second part compares the speed between each pair of the benchmarks.
+;;For example, its first row tells that the benchmark real1 is
+;;0.048 times faster than real2 and 1.965 times faster than
+;;imag.
+;;
+;;@param how 
+;;@param alist 
+
+;;;;;
+;;@type Function
+;;@name time-result-
+;;@description Add or subtract two <time-result> records and returns a new record.
+;;
+;;If with-count is false,
+;;only the real, user and sys slots are added or subtracted,
+;;and the result's count slot is set to the same as t1's count slot.
+;;It is supposed to be used to calculate on measurement
+;;from different chunk of code.
+;;
+;;If with-count is true,
+;;then the values of count slot is also added or subtracted.
+;;It is supposed to calculate on
+;;multiple benchmark results of the same code.
+;;
+;;@param t1 
+;;@param t2 
+;;@param :key 
+;;@param (with-count #f) 
+
+;;;;;
+;;@type Function
+;;@name time-result+
+;;@description Add or subtract two <time-result> records and returns a new record.
+;;
+;;If with-count is false,
+;;only the real, user and sys slots are added or subtracted,
+;;and the result's count slot is set to the same as t1's count slot.
+;;It is supposed to be used to calculate on measurement
+;;from different chunk of code.
+;;
+;;If with-count is true,
+;;then the values of count slot is also added or subtracted.
+;;It is supposed to calculate on
+;;multiple benchmark results of the same code.
+;;
+;;@param t1 
+;;@param t2 
+;;@param :key 
+;;@param (with-count #f) 
+
+;;;;;
+;;@type Function
+;;@name time-this
+;;@description Calls thunk many times and measure its execution time.
+;;The argument how can be one of the following forms.
+;;
+;;integer ------
+;;  It calls thunk as many times as the given number.
+;;(cpu real) ------
+;;  It calls thunk as many times as the total cpu time exceeds
+;;  the given number of seconds.
+;;
+;;It also runs an empty loop as the same times and subtract the
+;;time took for the empty loop from the measured time, to get
+;;more accurate result.
+;;
+;;The result is returned in a <time-result> record, described below.
+;;Here are some examples:
+;;example:
+;;  ;; Run the thunk 1,000,000 times
+;;  (time-this 1000000 (lambda () (expt 100 30)))
+;;    ==> #<time-result 1000000 times/  1.030 real/  1.040 user/  0.000 sys>
+;;  
+;;  ;; Run the thunk at least 5.0 cpu seconds
+;;  (time-this '(cpu 5.0) (lambda () (expt 100 30)))
+;;    ==> #<time-result 4903854 times/  5.090 real/  5.050 user/  0.010 sys>
+;;
+;;@param how 
+;;@param thunk 
+

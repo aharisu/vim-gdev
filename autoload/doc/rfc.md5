@@ -1,0 +1,34 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name md5-digest-string
+;;@description stringにあるデータをダイジェストし、その結果を不完全文字列で
+;;返します。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name md5-digest
+;;@description 現在の入力ポートからEOFまで読み込み、そのダイジェストを不完全文字列で
+;;返します。
+;;
+
+;;;;;
+;;@type Class
+;;@name <md5>
+;;@description このクラスのインスタンスは、MD5ダイジェストアルゴリズムの内部状態を
+;;保持しています。
+;;
+;;このクラスは、util.digestフレームワークのインターフェースである、
+;;digest-update!、digest-final!、digest、
+;;digest-stringを実装しています。
+;;これらのメソッドの詳細な説明は、Message digester framework
+;;を参照して下さい。
+;;
+

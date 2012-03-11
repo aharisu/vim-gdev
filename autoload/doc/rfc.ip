@@ -1,0 +1,49 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name ip-destination-address
+;;@description 与えられたパケットの送信元アドレスと送信先アドレスをそれぞれ整数で返し
+;;ます。
+;;
+;;@param packet 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name ip-source-address
+;;@description 与えられたパケットの送信元アドレスと送信先アドレスをそれぞれ整数で返し
+;;ます。
+;;
+;;@param packet 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name ip-protocol
+;;@description 与えられたパケットのIPプロトコル番号を返します。
+;;
+;;@param packet 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name ip-header-length
+;;@description 与えられたパケットのIPヘッダ(IPヘッダオプションもすべて含む)のオクテッ
+;;トで数えたサイズを返します。
+;;
+;;@param packet 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name ip-version
+;;@description 与えられたIPパケットのIPバージョン番号(4または6)が返ります。
+;;
+;;@param packet 
+;;@param offset 
+

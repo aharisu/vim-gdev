@@ -1,0 +1,273 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name date->rfc822-date
+;;@description SRFI-19の<date>オブジェクト(SRFI-19 Date参照)
+;;を取り、そのrfc822日付形式表現の文字列を返します。
+;;rfc822-date->dateの逆関数です。
+;;
+;;@param date 
+
+;;;;;
+;;@type Function
+;;@name rfc822-write-headers
+;;@description This is a sort of inverse function of rfc822-read-headers.
+;;It receives a list of header data, in which each header data
+;;consists of (<name> <body>), and writes them out in RFC822 header
+;;field format to the output port specified by the output keyword
+;;argument.  The default output is the current output port.
+;;
+;;By default, the procedure assumes headers contains all the
+;;header fields, and adds an empty line in the end of output
+;;to indicate the end of the header.  You can pass a true value to
+;;the continue keyword argument to prevent this, enabling
+;;more headers can be added later.
+;;
+;;I said ``a sort of'' above.  That's because this function doesn't
+;;(and can't) do the exact inverse.
+;;Specifically, the caller is responsible for line folding and
+;;make sure each header line doesn't exceed the ``hard limit'' defined
+;;by RFC2822 (998 octets).  This procedure cannot do the line 
+;;folding on behalf of the caller, because the places where 
+;;line folding is possible depend on the semantics of each
+;;header field.
+;;
+;;It is also the caller's responsibility to make sure header
+;;field bodies don't have any characters except non-NUL US-ASCII
+;;characters.  If you want to include characters outside of that
+;;range, you should convert them in the way allowed by the
+;;protocol, e.g. MIME.  The rfc.mime module 
+;;(@xref{MIME message handling}) provides a convenience procedure
+;;mime-encode-text for such purpose.
+;;Again, this procedure cannot do the encoding automatically,
+;;since the way the field
+;;should be encoded depends on header fields.
+;;
+;;What this procedure can do is to check and report such violations.
+;;By default, it runs several checks and signals an error if it finds any
+;;violations of RFC2822.  You can control this checking behavior
+;;by the check keyword argument.  It can take one of the
+;;following values:
+;;
+;;:error ------
+;;  Default.  Signals an error if a violation is found.
+;;#f, :ignore ------
+;;  Doesn't perform any check.  Trust the caller.
+;;procedure ------
+;;  When rfc822-write-headers finds a violation, the procedure
+;;  is called with three arguments; the header field name,
+;;  the header field body, and the type of violation explained below.
+;;  The procedure may correct the problem and return two values,
+;;  the corrected header field name and body.  The returned values
+;;  are checked again.  If the procedure returns the
+;;  header field name and body unchanged, an error is signalled
+;;  in the same way as :error is specified.
+;;
+;;The third argument passed to the procedure given to the check
+;;argument is one of the following symbols.  New symbols may be
+;;added in future versions for more checks.
+;;
+;;incomplete-string ------
+;;  Incomplete string is passed.
+;;bad-character ------
+;;  Header field contains characters outside of US-ASCII or NUL.
+;;line-too-long ------
+;;  Line length exceeds 998 octet limit.
+;;stray-crlf ------
+;;  The string contains CR and/or LF character that doesn't consist of 
+;;  proper line folding.
+;;
+;;
+;;@param headers 
+;;@param :key 
+;;@param output 
+;;@param continue 
+;;@param check 
+
+;;;;;
+;;@type Function
+;;@name rfc822-date->date
+;;@description RFC822形式の日付フォーマットをパーズし、SRFI-19 の <date> オブジェクト
+;;(SRFI-19 Date 参照) を返します。string がパーズできないときは
+;;かわりに #f を返します。
+;;
+;;SRFI-19の日付からRFC822形式の日付文字列を作成するには、
+;;後で述べるdate->rfc822-dateが使えます。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name rfc822-parse-date
+;;@description RFC822 形式の日付文字列を取り、8つの値を返します。
+;;example:
+;;  year, month, day-of-month, hour, minutes, seconds, timezone,
+;;  day-of-week.
+;;
+;;timezone は UT(グリニッジ標準時)からの分単位のオフセットです。
+;;day-of-week は日曜日から数えた曜日で、情報が不足している場合は #f です。
+;;monthは1から12までの整数です。
+;;文字列がパーズ不可能ならば、全ての要素が #f になります。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name rfc822-quoted-string
+;;@description それぞれ、atom、dot-atom および quoted-string に
+;;対応するトークナイザです。quoted-string 中の二重引用符および
+;;エスケープのためのバックスラッシュは rfc822-quoted-string に
+;;よって取り除かれます。
+;;
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name rfc822-dot-atom
+;;@description それぞれ、atom、dot-atom および quoted-string に
+;;対応するトークナイザです。quoted-string 中の二重引用符および
+;;エスケープのためのバックスラッシュは rfc822-quoted-string に
+;;よって取り除かれます。
+;;
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name rfc822-atom
+;;@description それぞれ、atom、dot-atom および quoted-string に
+;;対応するトークナイザです。quoted-string 中の二重引用符および
+;;エスケープのためのバックスラッシュは rfc822-quoted-string に
+;;よって取り除かれます。
+;;
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name rfc822-skip-cfws
+;;@description iport から、すべてのコメントおよび/または白空白文字を消費し、
+;;白空白でもコメントでもない、先頭の文字を返します。返された文字は、
+;;iportに残ります。
+;;
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name rfc822-field->tokens
+;;@description これは便利関数です。フィールド本体 field に対応する入力文字列ポート
+;;を生成し、それに対して、rfc822-next-token を全入力を消費するまで、
+;;繰り返しよび、トークンのリストを返します。Tokenizer-specs は、
+;;rfc822-next-token に渡されます。
+;;
+;;@param field 
+;;@param :optional 
+;;@param tokenizer-specs 
+
+;;;;;
+;;@type Function
+;;@name rfc822-next-token
+;;@description 基本的なトークナイザです。まず、もしあれば、白空白および/または
+;;コメント (CFWS) を iport から読み飛ばします。それから、
+;;tokenizer-specs にしたがってトークンをひとつ読み込みます。
+;;トークンを読み込む前に、iport が EOF に到達したら、EOF が
+;;返されます。
+;;
+;;tokenizer-specs はトークナイザ仕様のリストです。
+;;トークナイザ仕様は、文字集合または文字集合と手続きのペアのどちらかです。
+;;
+;;CFWS を読み飛ばしたあと、この手続きは iport の先頭の一文字
+;;を見て、tokenizer-specs のひとつひとつに対してチェックします。
+;;その文字が含まれている文字集合がみつかれば、トークンを次のようにして
+;;引き出します。トークナイザ仕様が文字集合だけの場合、その文字集合に
+;;属している文字の並びがトークンを構成します。トークナイザ仕様が文字集合と
+;;手続きのペアだったら、その手続きを iport とともに呼びだし、
+;;トークンを読み込みます。
+;;
+;;もし、先頭の文字がどの文字集合ともマッチしなければ、その文字が
+;;iport から取り出され、それが返されます。
+;;
+;;デフォルトの tokenizer-specs は以下のようになっています。
+;;example:
+;;  (list (cons #["] rfc822-quoted-string)
+;;        (cons *rfc822-atext-chars* rfc822-dot-atom))
+;;ここで rfc822-quoted-string および rfc822-dot-atom は
+;;後述するトークナイザ手続きで、*rfc822-atext-chars* は RFC2822 で
+;;規定された atext の文字集合に束縛されています。
+;;つまり、rfc822-next-token はデフォルトでは RFC2822 で規定された
+;;quoted-string あるいは dot-atom のトークンを引き出します。
+;;
+;;tokenizer-specs をつかって、ヘッダフィールドのパーズ方法を
+;;カスタマイズすることができます。たとえば、(1) 英字で構成された単語、または
+;;(2) クウォート文字列、のトークンを取り出したいときには、
+;;rfc822-next-token をこんなふうに呼べます。
+;;
+;;example:
+;;  (rfc822-next-token iport
+;;     `(#[[:alpha:]] (#["] . ,rfc822-quoted-string)))
+;;
+;;@param iport 
+;;@param :optional 
+;;@param tokenizer-specs 
+
+;;;;;
+;;@type Function
+;;@name rfc822-header-ref
+;;@description rfc822-read-headers が返すパーズ済みのヘッダリストから
+;;特定のフィールドを得るためのユーティリティ手続きです。
+;;
+;;Field-name は小文字の文字列でフィールド名を指定します。
+;;与えられた名前をもつフィールドが header-list 中にあれば、
+;;その値を文字列で返します。そうでない場合、もし default が
+;;与えられていればそれが返り、与えられていなければ #f が返されます。
+;;
+;;@param header-list 
+;;@param field-name 
+;;@param :optional 
+;;@param default 
+
+;;;;;
+;;@type Function
+;;@name rfc822-header->list
+;;@description これはrfc822-read-headersの古い名前です。
+;;互換性のために残してありますが、新しいコードは
+;;rfc822-read-headersを使って下さい。
+;;
+;;@param iport 
+;;@param :key 
+;;@param strict? 
+;;@param reader 
+
+;;;;;
+;;@type Function
+;;@name rfc822-read-headers
+;;@description 入力ポート iport から、メッセージ・ヘッダの終わりに達するまで、
+;;RFC822 形式のメッセージを読み込みます。
+;;ヘッダ・フィールドは以下のフォーマットのリストに展開、分離されます。
+;;example:
+;;  ((name body) ...)
+;;Name ... はフィールド名で、body ... は対応するフィールドの
+;;ボディ、ともに文字列です。
+;;フィールド名は小文字に変換されます。フィールドのボディは、行折り返しが
+;;取り除かれる以外は変更されません。
+;;フィールドの順番は保存されます。
+;;
+;;デフォルトでは、パーザの動作は寛容です。ヘッダをパーズ中に EOF に
+;;出会うとそれをメッセージの終端とみなします。継続(折り返し)行でもなく、
+;;新しいヘッダフィールドの始端でもない行は無視します。このふるまいは
+;;キーワード引数 strict? に真の値を渡すことで変更することができます。
+;;真を渡すと、このような不正な形式のヘッダに対してエラーを発生させるように
+;;なります。
+;;
+;;キーワード引数 reader は iport から一行読み込む手続きを
+;;とります。デフォルトは read-line です。ほとんどの場合これで
+;;十分のはずです。
+;;
+;;@param iport 
+;;@param :key 
+;;@param strict? 
+;;@param reader 
+

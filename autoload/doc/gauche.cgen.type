@@ -1,0 +1,73 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name cgen-pred-expr
+;;@description c-expr is a string denotes a C expression.
+;;Returns a string of C expression that boxes, unboxes, or
+;;typechecks the c-expr according to the cgen-type.
+;;
+;;example:
+;;;; suppose foo() returns char*
+;;(cgen-box-expr
+;; (cgen-type-from-name '<const-cstring>)
+;; "foo()")
+;; ==> "SCM_MAKE_STR_COPYING(foo())"
+;;
+;;@param cgen-type 
+;;@param c-expr 
+
+;;;;;
+;;@type Function
+;;@name cgen-unbox-expr
+;;@description c-expr is a string denotes a C expression.
+;;Returns a string of C expression that boxes, unboxes, or
+;;typechecks the c-expr according to the cgen-type.
+;;
+;;example:
+;;;; suppose foo() returns char*
+;;(cgen-box-expr
+;; (cgen-type-from-name '<const-cstring>)
+;; "foo()")
+;; ==> "SCM_MAKE_STR_COPYING(foo())"
+;;
+;;@param cgen-type 
+;;@param c-expr 
+
+;;;;;
+;;@type Function
+;;@name cgen-box-expr
+;;@description c-expr is a string denotes a C expression.
+;;Returns a string of C expression that boxes, unboxes, or
+;;typechecks the c-expr according to the cgen-type.
+;;
+;;example:
+;;;; suppose foo() returns char*
+;;(cgen-box-expr
+;; (cgen-type-from-name '<const-cstring>)
+;; "foo()")
+;; ==> "SCM_MAKE_STR_COPYING(foo())"
+;;
+;;@param cgen-type 
+;;@param c-expr 
+
+;;;;;
+;;@type Function
+;;@name cgen-type-from-name
+;;@description Returns an instance of <cgen-type> that has name.
+;;If the name is unknown, #f is returned.
+;;
+;;@param name 
+
+;;;;;
+;;@type Class
+;;@name <cgen-type>
+;;@description An instance of this class represents a stub type.
+;;It can be looked up by name such as <const-cstring> by
+;;cgen-type-from-name.
+;;
+

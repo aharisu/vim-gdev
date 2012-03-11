@@ -1,0 +1,19 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name call-with-iterators
+;;@description N-aryのイテレータメソッドを書くのに便利な手続きです。
+;;この手続きはコレクションのリストcollectionsの各コレクションに対して
+;;call-with-iteratorを呼び、二つのリストを作ります。最初のリストには
+;;終了判定手続きが順に集められており、二つ目のリストにはインクリメント手続きが
+;;順に集められています。そして、これらのリストを引数としてprocを呼び出します。
+;;procが返した値を返します。
+;;
+;;@param collections 
+;;@param proc 
+

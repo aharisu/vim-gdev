@@ -1,0 +1,146 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name sha512-digest-string
+;;@description stringのデータをダイジェストし、その結果を不完全文字列で
+;;返します。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sha384-digest-string
+;;@description stringのデータをダイジェストし、その結果を不完全文字列で
+;;返します。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sha256-digest-string
+;;@description stringのデータをダイジェストし、その結果を不完全文字列で
+;;返します。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sha224-digest-string
+;;@description stringのデータをダイジェストし、その結果を不完全文字列で
+;;返します。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sha1-digest-string
+;;@description stringのデータをダイジェストし、その結果を不完全文字列で
+;;返します。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name sha512-digest
+;;@description 現在の入力ポートからデータをEOFまで読み込み、そのダイジェストを
+;;不完全文字列で返します。
+;;
+
+;;;;;
+;;@type Function
+;;@name sha384-digest
+;;@description 現在の入力ポートからデータをEOFまで読み込み、そのダイジェストを
+;;不完全文字列で返します。
+;;
+
+;;;;;
+;;@type Function
+;;@name sha256-digest
+;;@description 現在の入力ポートからデータをEOFまで読み込み、そのダイジェストを
+;;不完全文字列で返します。
+;;
+
+;;;;;
+;;@type Function
+;;@name sha224-digest
+;;@description 現在の入力ポートからデータをEOFまで読み込み、そのダイジェストを
+;;不完全文字列で返します。
+;;
+
+;;;;;
+;;@type Function
+;;@name sha1-digest
+;;@description 現在の入力ポートからデータをEOFまで読み込み、そのダイジェストを
+;;不完全文字列で返します。
+;;
+
+;;;;;
+;;@type Class
+;;@name <sha512>
+;;@description これらのクラスのインスタンスは、SHAダイジェストアルゴリズムの内部状態を
+;;保持しています。
+;;
+;;このクラスは、util.digestフレームワークのインターフェース、
+;;digest-update!、digest-final!、digest、
+;;digest-stringを実装しています。
+;;これらのメソッドの詳細な説明は、Message digester frameworkを
+;;参照して下さい。
+;;
+
+;;;;;
+;;@type Class
+;;@name <sha384>
+;;@description これらのクラスのインスタンスは、SHAダイジェストアルゴリズムの内部状態を
+;;保持しています。
+;;
+;;このクラスは、util.digestフレームワークのインターフェース、
+;;digest-update!、digest-final!、digest、
+;;digest-stringを実装しています。
+;;これらのメソッドの詳細な説明は、Message digester frameworkを
+;;参照して下さい。
+;;
+
+;;;;;
+;;@type Class
+;;@name <sha256>
+;;@description これらのクラスのインスタンスは、SHAダイジェストアルゴリズムの内部状態を
+;;保持しています。
+;;
+;;このクラスは、util.digestフレームワークのインターフェース、
+;;digest-update!、digest-final!、digest、
+;;digest-stringを実装しています。
+;;これらのメソッドの詳細な説明は、Message digester frameworkを
+;;参照して下さい。
+;;
+
+;;;;;
+;;@type Class
+;;@name <sha224>
+;;@description これらのクラスのインスタンスは、SHAダイジェストアルゴリズムの内部状態を
+;;保持しています。
+;;
+;;このクラスは、util.digestフレームワークのインターフェース、
+;;digest-update!、digest-final!、digest、
+;;digest-stringを実装しています。
+;;これらのメソッドの詳細な説明は、Message digester frameworkを
+;;参照して下さい。
+;;
+
+;;;;;
+;;@type Class
+;;@name <sha1>
+;;@description これらのクラスのインスタンスは、SHAダイジェストアルゴリズムの内部状態を
+;;保持しています。
+;;
+;;このクラスは、util.digestフレームワークのインターフェース、
+;;digest-update!、digest-final!、digest、
+;;digest-stringを実装しています。
+;;これらのメソッドの詳細な説明は、Message digester frameworkを
+;;参照して下さい。
+;;
+

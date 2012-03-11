@@ -1,0 +1,118 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name read-string
+;;@description n 文字まで読み込み、文字列として蓄積しそれを返します。
+;;入力ストリームに含まれる文字のほうが少ない場合、有効な文字を可能な限り
+;;含む文字列が返ります。
+;;
+;;@param n 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name next-token-of
+;;@description 読み込んだ文字が char-list/pred にある限り蓄積し、文字列として
+;;返します。char-list/pred に含まれない最初の文字はポートに残されます。
+;;
+;;char-list/pred は文字のリストか文字を取る述語です。述語の場合、
+;;それぞれの文字がその述語に渡され、真の値が返る場合はその文字は
+;;char-list/pred に属するとみなされます。
+;;
+;;@param char-list/pred 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name next-token
+;;@description prefix-char-list に含まれる文字はいくつでもスキップします。
+;;そして、break-char-list に含まれる文字に出会うまで、文字を
+;;蓄積します。蓄積された文字群は文字列として返されます。
+;;中断文字は port に残されます。
+;;
+;;手続きが EOF に達し、*eof* が break-char-list に含まれていない
+;;場合、comment が含まれたメッセージとともにエラーが通知されます。
+;;
+;;@param prefix-char-list 
+;;@param break-char-list 
+;;@param :optional 
+;;@param comment 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name skip-while
+;;@description char-list に属しない文字に出会うまで、port を読み込みます。
+;;文字はストリームに残されます。EOF に達したら EOF が返されます。
+;;port が省略された場合、現在の入力ポートが使われます。
+;;
+;;この例では、入力から空白スペースをスキップしています。ポートからの次の
+;;読み込みは、最初の空白スペースでない文字を返します。
+;;example:
+;;  (skip-while #[\s] port)
+;;
+;;@param char-list 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name skip-until
+;;@description char-list/number は、文字のリストか数です。
+;;数の場合、たくさんの文字を読んで、#f を返します。
+;;入力が十分に長くない場合は、エラーが通知されます。
+;;char-list/number が文字のリストの場合、その文字リストに属する文字に
+;;出会うまで port を読み込み、その文字を返します。
+;;port が省略された場合、現在の入力ポートが使われます。
+;;
+;;@param char-list/number 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name assert-curr-char
+;;@description port から文字を読みます。その文字が char-list に含まれている場合は
+;;その文字を返します。そうでなければ、string を含むメッセージとともに
+;;エラーを通知します。
+;;
+;;@param char-list 
+;;@param string 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name peek-next-char
+;;@description 現在の文字を破棄し、port から次の文字を読みます。一文字先読みするのに
+;;便利です。port が省略されると、現在の入力ポートが使われます。
+;;
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name find-string-from-port?
+;;@description 入力ポート in-port から、文字列 str を探します。
+;;オプショナル引数 max-no-chars は、ポートから読み込まれる最大文字数を
+;;制限します。省略されると、検索する範囲は EOF までとなります。
+;;
+;;str が見つかると、手続きはすでに読み込んだ文字の数を返します。
+;;in-port の次回の読み込みは、str の次の文字を返します。
+;;str が見つからない場合、#f が返ります。
+;;
+;;注意: この手続きはその名前に「?」がつきますが、Scheme の慣習に反し、
+;;真偽値ではない値を返すことがあります。
+;;
+;;@param str 
+;;@param in-port 
+;;@param :optional 
+;;@param max-no-chars 
+

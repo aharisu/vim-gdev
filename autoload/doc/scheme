@@ -1,0 +1,3473 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name length+
+;;@description [SRFI-1] x が真性リストなら、その長さを返します。さもなければ、
+;;#f を返します。
+;;
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name load
+;;@description [R5RS+]
+;;fileをロードします。すなわち、fileに書かれたScheme式を順次読み込んで
+;;評価します。fileの拡張子 (``.scm'') は省略できます。
+;;
+;;fileが ``/'', ``./'' または ``../'' で始まっていない場合は、
+;;システムファイルサーチパス (変数*load-path* に格納されています)
+;;の中から該当ファイルが探されます。あるいは、キーワード引数pathsにディレクトリ名の
+;;リストを渡すことによりサーチパスを指定することもできます。
+;;
+;;ロードに成功した場合は#tが返されます。
+;;指定ファイルがみつからない場合はエラーとなりますが、もしキーワード引数
+;;error-if-not-foundに#fが与えられていれば単にloadから
+;;#fが返されます。
+;;
+;;デフォルトでは、loadはコーディング認識ポート(Coding-aware ports参照)を
+;;使ってソースファイルを読み込むので、ファイル先頭の"coding:" コメントによる
+;;文字エンコーディング指定が有効になります。
+;;(codingコメントについてはMultibyte scriptsを参照)。
+;;但し、キーワード引数ignore-codingに真の値が渡された場合、
+;;loadはcoding-aware portを作成せず、直接ファイルポートから
+;;ソースを読み込みます。
+;;
+;;キーワード引数environmentにモジュールが渡された場合は、
+;;あたかもそのモジュールがファイルの先頭でselectされたかのように
+;;loadされます。
+;;
+;;カレントモジュールは保存されます。つまり、file中でselect-moduleによって
+;;カレントモジュールを変更しても、loadが終わったらloadを読んだ時点の
+;;モジュールに戻ります。
+;;
+;;ライブラリファイルをロードする場合は、`use' (Defining and selecting modules参照) を
+;;使うか、下に説明する`require' を使う方が良いでしょう。
+;;loadとrequireの違いについてはCompilationを参照してください。
+;;
+;;@param file 
+;;@param :key 
+;;@param paths 
+;;@param (error-if-not-found #t) 
+;;@param environment 
+;;@param ignore-coding 
+
+;;;;;
+;;@type Function
+;;@name write-char
+;;@description [R5RS]
+;;文字charをポートに出力します。
+;;
+;;@param char 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name newline
+;;@description [R5RS]
+;;portに改行文字を書き出します。
+;;
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name display
+;;@description [R5RS]
+;;オブジェクトobjの表示可能な表現を生成し、出力ポートに書き出します。
+;;writeは可能な限り、objの標準的な外部表現を使い、
+;;生成された出力がreadで再び読み込めるようにします。
+;;displayはより人間にとって可読性の高い出力を生成します。
+;;
+;;writeやdisplayが表示中にユーザ定義クラスのオブジェクトに
+;;出会った場合は、ジェネリックファンクションwrite-objectを呼び出します。
+;;
+;;objが循環する構造を持っていた場合、これらの手続きは停止しないかも
+;;しれません。write/ssを参照して下さい。
+;;
+;;@param obj 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name write
+;;@description [R5RS]
+;;オブジェクトobjの表示可能な表現を生成し、出力ポートに書き出します。
+;;writeは可能な限り、objの標準的な外部表現を使い、
+;;生成された出力がreadで再び読み込めるようにします。
+;;displayはより人間にとって可読性の高い出力を生成します。
+;;
+;;writeやdisplayが表示中にユーザ定義クラスのオブジェクトに
+;;出会った場合は、ジェネリックファンクションwrite-objectを呼び出します。
+;;
+;;objが循環する構造を持っていた場合、これらの手続きは停止しないかも
+;;しれません。write/ssを参照して下さい。
+;;
+;;@param obj 
+;;@param :optional 
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name char-ready?
+;;@description [R5RS]
+;;portから文字が読み出せる状態ならば#tを返します。
+;;
+;;今のところ、この手続きはportから少なくとも1バイト読み出せる状態なら#t
+;;を返します。そのバイトがマルチバイト文字を構成する場合、char-ready?を返した
+;;ポートから文字全てを読み込もうとすると、ブロックする可能性があります。
+;;(通常の使用状況ではそのようなことは起きないでしょうが、理論的には起こり得ます。
+;;慎重を期したい場合はread-blockでバイトシーケンスとして読み込んだ後、
+;;入力文字列ポート等を使って文字毎に読むようにして下さい。)
+;;
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name eof-object?
+;;@description [R5RS]
+;;objがEOFオブジェクトなら#tを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name peek-char
+;;@description [R5RS]
+;;iportから1文字読み込んで返します。文字はそのままiportに留まります。
+;;iportが既にEOFに達していた場合はeofオブジェクトを返します。
+;;iportにあるバイトストリームが正しい文字を構成しない場合、
+;;ふるまいは未定義です。(将来はポート側に、不正な文字に対する対応を決める
+;;オプションを設ける予定です)。
+;;
+;;@param :optional 
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name read-char
+;;@description [R5RS]
+;;iportから1文字読み込んで返します。
+;;iportが既にEOFに達していた場合はeofオブジェクトを返します。
+;;iportにあるバイトストリームが正しい文字を構成しない場合、
+;;ふるまいは未定義です。(将来はポート側に、不正な文字に対する対応を決める
+;;オプションを設ける予定です)。
+;;
+;;@param :optional 
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name read
+;;@description [R5RS]
+;;iportからS式をひとつ読み込んで返します。
+;;GaucheはR5RSに定義されている構文要素に加え、Lexical structureに
+;;定義されている拡張構文要素を認識します。
+;;
+;;iportが既にEOFに達していた場合は、EOFオブジェクトが返されます。
+;;
+;;この手続きはS式を構成する最後の文字までを読み、その後の文字はポートに
+;;残します。これは、S式に続く空白文字も読み込むCommonLispのreadの
+;;振る舞いとは異なります。
+;;
+;;@param :optional 
+;;@param iport 
+
+;;;;;
+;;@type Function
+;;@name with-output-to-file
+;;@description [R5RS]
+;;stringで示されるファイルを入力または出力用にオープンし、オープンされた
+;;ポートを現在の入力または出力ポートに設定して、thunkを呼び出します。
+;;thunkが戻るか、thunk内で捕捉されないエラーが生じた際にファイルは閉じられます。
+;;
+;;thunkが返す値を返します。
+;;
+;;キーワード引数は
+;;open-input-file及びopen-output-fileのものと同じ意味を持ちます。
+;;但しif-existsやif-does-not-existに#fが指定され、
+;;ファイルがオープンできなかった場合は、thunkは呼ばれずに
+;;直ちに#fが返されます。
+;;
+;;@param string 
+;;@param thunk 
+;;@param :key 
+;;@param if-does-not-exist 
+;;@param if-exists 
+;;@param buffering 
+;;@param element-type 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name with-input-from-file
+;;@description [R5RS]
+;;stringで示されるファイルを入力または出力用にオープンし、オープンされた
+;;ポートを現在の入力または出力ポートに設定して、thunkを呼び出します。
+;;thunkが戻るか、thunk内で捕捉されないエラーが生じた際にファイルは閉じられます。
+;;
+;;thunkが返す値を返します。
+;;
+;;キーワード引数は
+;;open-input-file及びopen-output-fileのものと同じ意味を持ちます。
+;;但しif-existsやif-does-not-existに#fが指定され、
+;;ファイルがオープンできなかった場合は、thunkは呼ばれずに
+;;直ちに#fが返されます。
+;;
+;;@param string 
+;;@param thunk 
+;;@param :key 
+;;@param if-does-not-exist 
+;;@param buffering 
+;;@param element-type 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name call-with-output-file
+;;@description [R5RS]
+;;stringで示されるファイルを入力または出力用にオープンし、
+;;作成されたポートを引数として手続きprocを呼び出します。
+;;procが正常終了するか、proc内で捕捉されないエラーが起きた場合に
+;;ファイルはクローズされます。
+;;
+;;キーワード引数は
+;;open-input-file及びopen-output-fileのものと同じ意味を持ちます。
+;;if-existsやif-does-not-existに#fを指定した場合、
+;;ファイルがオープンされなかった場合はprocにポートではなく#fが渡される
+;;ことに注意して下さい。
+;;
+;;procが返す値を返します。
+;;
+;;@param string 
+;;@param proc 
+;;@param :key 
+;;@param if-does-not-exist 
+;;@param if-exists 
+;;@param buffering 
+;;@param element-type 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name call-with-input-file
+;;@description [R5RS]
+;;stringで示されるファイルを入力または出力用にオープンし、
+;;作成されたポートを引数として手続きprocを呼び出します。
+;;procが正常終了するか、proc内で捕捉されないエラーが起きた場合に
+;;ファイルはクローズされます。
+;;
+;;キーワード引数は
+;;open-input-file及びopen-output-fileのものと同じ意味を持ちます。
+;;if-existsやif-does-not-existに#fを指定した場合、
+;;ファイルがオープンされなかった場合はprocにポートではなく#fが渡される
+;;ことに注意して下さい。
+;;
+;;procが返す値を返します。
+;;
+;;@param string 
+;;@param proc 
+;;@param :key 
+;;@param if-does-not-exist 
+;;@param buffering 
+;;@param element-type 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name open-output-file
+;;@description [R5RS+]
+;;ファイルfilenameを入力または出力用にオープンし、
+;;入力ポートまたは出力ポートを作成して返します。
+;;
+;;キーワード引数により、動作を細かく指定できます。
+;;
+;;:if-exists ------
+;;  このキーワード引数はopen-output-fileのみに指定でき、
+;;  filenameが既に存在した場合の動作を指定します。次の値のいずれかを与えることができます。
+;;  :supersede ------
+;;    既存のファイルが長さ0に縮められます。これが既定の動作です。
+;;  :append ------
+;;    既存のファイルにこれから書き出す内容が追加されます。
+;;  :overwrite ------
+;;    既存のファイルにこれから書き出す内容が上書きされます。
+;;    書き出されるデータが既存のファイルのデータよりも短い場合、
+;;    残りの部分はそのまま残されます。
+;;  :error ------
+;;    エラーが報告されます。
+;;  #f ------
+;;    何もせず、#fを返します。
+;;  
+;;:if-does-not-exist ------
+;;  このキーワード引数はfilenameが存在しない場合の動作を指定します。
+;;  :error ------
+;;    エラーを報告します。これがopen-input-fileの既定の動作です。
+;;  :create ------
+;;    ファイルが作成されます。これがopen-output-fileの既定の動作です。
+;;    ファイルの存在のチェックと作成はアトミックに行われます。
+;;    このオプションに加え、if-existsオプションに:errorか#fを
+;;    指定することで、排他的にファイルを作成することができます。
+;;    open-input-fileに対してはこの値を指定することはできません。
+;;  #f ------
+;;    何もせず、#fを返します。
+;;  
+;;:buffering ------
+;;  この引数はバッファリングモードを指定します。以下の値が設定できます。
+;;  ポートのバッファリングモードは手続きport-buffering
+;;  (Common port operations参照)によって
+;;  読みだし/変更可能です。
+;;  :full ------
+;;    出来る限りデータをバッファリングします。これがデフォルトのモードです。
+;;  :none ------
+;;    バッファリングを行いません。出力ポートにデータが書き出されるか、
+;;    入力ポートからデータが読み込まれる度に、下位にあるシステムコールが呼ばれます。
+;;    プロセスの標準エラーポートはこのモードでオープンされています。
+;;  :line ------
+;;    このモードは出力ポートにのみ有効です。書き出されたデータはバッファに
+;;    貯められますが、改行文字が書かれたらフラッシュされます。
+;;    このモードは対話的な出力ポートなどに便利です。
+;;    プロセスの標準出力ポートはこのモードでオープンされています。
+;;    (これは、Cのstdioライブラリの「ラインバッファリング」とちょっと違うことに
+;;    注意してください。stdioでは同じファイルディスクリプタから入力が行われる時も
+;;    バッファはフラッシュされますが、Gaucheではそうはなりません)。
+;;  :modest ------
+;;    このモードは入力ポートにのみ有効です。ほとんど:fullバッファリングモードと
+;;    同じですが、read-blockはポートに要求されたデータより少ないデータしか
+;;    無かった場合、要求された量がたまるまで待つのではなく、今あるデータだけを
+;;    返します。このモードはポートがパイプやネットワークに接続されている場合に
+;;    便利です。
+;;  
+;;:element-type ------
+;;  この引数はファイルのタイプを指定します。
+;;  :character ------
+;;    ファイルはキャラクタモード(テキストモード)でオープンされます。
+;;  :binary ------
+;;    ファイルはバイナリモードでオープンされます。
+;;  @emph{現在のバージョンでは、この引数は無視され、全てのファイルはバイナリモードで
+;;  オープンされます。いずれにせよUnixプラットフォームでは違いはありません。}
+;;  
+;;:encoding ------
+;;  この引数はファイルの文字エンコーディングを指定します。引数は文字列かシンボルで、
+;;  文字エンコーディングスキーム(CES)の名前でなければなりません。
+;;  open-input-fileでは、ここにワイルドカードCES (例: *jp) を
+;;  渡して、入力ファイルのエンコーディングを推測させることもできます
+;;  (Autodetecting the encoding scheme参照)。
+;;  
+;;  この引数が与えられた場合、Gaucheは自動的にgauche.charconvモジュールを
+;;  ロードし、ポートの入出力時に文字コード変換を行います。
+;;  CESについて詳しくはSupported character encoding schemesを参照してください。
+;;  
+;;:conversion-buffer-size ------
+;;  この引数は、文字エンコーディング変換に使うバッファサイズを指定するために
+;;  encoding引数と共に使うことができます。渡された値はそのまま
+;;  文字コード変換ポートのコンストラクタのbuffer-size引数に渡されます
+;;  (Conversion ports参照)。
+;;  
+;;  この引数を指定する必要は滅多にありませんが、入力ファイルの文字エンコーディングを
+;;  推測しなければならない場合、大きめのバッファサイズの方が精度が上がります。
+;;  推測ルーチンがより多くのデータを見て文字エンコーディングを決定できるからです。
+;;
+;;if-existsとif-does-not-existフラグの組合せにより、
+;;色々な動作を実現できます。
+;;example:
+;;  (open-output-file "foo" :if-exists :error)
+;;   ==> ;"foo"を排他的にオープンするかエラーを報告する
+;;  
+;;  (open-output-file "foo" :if-exists #f)
+;;   ==> ;"foo"を排他的にオープンするか#fを返す
+;;  
+;;  (open-output-file "foo" :if-exists :append
+;;                          :if-does-not-exist :error)
+;;   ==> ;"foo"が既に存在する場合に限り、それを追加モードでオープン
+;;
+;;ファイルをオープンせずにその存在をチェックするには、
+;;sys-accessかfile-exists?を使って下さい (File stats参照)。
+;;
+;;移植性に関する註：Schemeシステムによっては、filenameのところに
+;;シェルコマンドを指定して、サブプロセスの標準入出力と通信できるようにするものが
+;;あります。他のスクリプティング言語(例：Perl)にも同様の機能があります。
+;;Gaucheでは、open-input-fileとopen-output-fileは
+;;あくまでファイル (OSがファイルとして扱うもの) のみに対して使えます。
+;;サブプロセスと通信するためには、「プロセスポート」という機能が提供されています。
+;;Process portsを参照して下さい。
+;;
+;;@param filename 
+;;@param :key 
+;;@param if-does-not-exist 
+;;@param if-exists 
+;;@param buffering 
+;;@param element-type 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name open-input-file
+;;@description [R5RS+]
+;;ファイルfilenameを入力または出力用にオープンし、
+;;入力ポートまたは出力ポートを作成して返します。
+;;
+;;キーワード引数により、動作を細かく指定できます。
+;;
+;;:if-exists ------
+;;  このキーワード引数はopen-output-fileのみに指定でき、
+;;  filenameが既に存在した場合の動作を指定します。次の値のいずれかを与えることができます。
+;;  :supersede ------
+;;    既存のファイルが長さ0に縮められます。これが既定の動作です。
+;;  :append ------
+;;    既存のファイルにこれから書き出す内容が追加されます。
+;;  :overwrite ------
+;;    既存のファイルにこれから書き出す内容が上書きされます。
+;;    書き出されるデータが既存のファイルのデータよりも短い場合、
+;;    残りの部分はそのまま残されます。
+;;  :error ------
+;;    エラーが報告されます。
+;;  #f ------
+;;    何もせず、#fを返します。
+;;  
+;;:if-does-not-exist ------
+;;  このキーワード引数はfilenameが存在しない場合の動作を指定します。
+;;  :error ------
+;;    エラーを報告します。これがopen-input-fileの既定の動作です。
+;;  :create ------
+;;    ファイルが作成されます。これがopen-output-fileの既定の動作です。
+;;    ファイルの存在のチェックと作成はアトミックに行われます。
+;;    このオプションに加え、if-existsオプションに:errorか#fを
+;;    指定することで、排他的にファイルを作成することができます。
+;;    open-input-fileに対してはこの値を指定することはできません。
+;;  #f ------
+;;    何もせず、#fを返します。
+;;  
+;;:buffering ------
+;;  この引数はバッファリングモードを指定します。以下の値が設定できます。
+;;  ポートのバッファリングモードは手続きport-buffering
+;;  (Common port operations参照)によって
+;;  読みだし/変更可能です。
+;;  :full ------
+;;    出来る限りデータをバッファリングします。これがデフォルトのモードです。
+;;  :none ------
+;;    バッファリングを行いません。出力ポートにデータが書き出されるか、
+;;    入力ポートからデータが読み込まれる度に、下位にあるシステムコールが呼ばれます。
+;;    プロセスの標準エラーポートはこのモードでオープンされています。
+;;  :line ------
+;;    このモードは出力ポートにのみ有効です。書き出されたデータはバッファに
+;;    貯められますが、改行文字が書かれたらフラッシュされます。
+;;    このモードは対話的な出力ポートなどに便利です。
+;;    プロセスの標準出力ポートはこのモードでオープンされています。
+;;    (これは、Cのstdioライブラリの「ラインバッファリング」とちょっと違うことに
+;;    注意してください。stdioでは同じファイルディスクリプタから入力が行われる時も
+;;    バッファはフラッシュされますが、Gaucheではそうはなりません)。
+;;  :modest ------
+;;    このモードは入力ポートにのみ有効です。ほとんど:fullバッファリングモードと
+;;    同じですが、read-blockはポートに要求されたデータより少ないデータしか
+;;    無かった場合、要求された量がたまるまで待つのではなく、今あるデータだけを
+;;    返します。このモードはポートがパイプやネットワークに接続されている場合に
+;;    便利です。
+;;  
+;;:element-type ------
+;;  この引数はファイルのタイプを指定します。
+;;  :character ------
+;;    ファイルはキャラクタモード(テキストモード)でオープンされます。
+;;  :binary ------
+;;    ファイルはバイナリモードでオープンされます。
+;;  @emph{現在のバージョンでは、この引数は無視され、全てのファイルはバイナリモードで
+;;  オープンされます。いずれにせよUnixプラットフォームでは違いはありません。}
+;;  
+;;:encoding ------
+;;  この引数はファイルの文字エンコーディングを指定します。引数は文字列かシンボルで、
+;;  文字エンコーディングスキーム(CES)の名前でなければなりません。
+;;  open-input-fileでは、ここにワイルドカードCES (例: *jp) を
+;;  渡して、入力ファイルのエンコーディングを推測させることもできます
+;;  (Autodetecting the encoding scheme参照)。
+;;  
+;;  この引数が与えられた場合、Gaucheは自動的にgauche.charconvモジュールを
+;;  ロードし、ポートの入出力時に文字コード変換を行います。
+;;  CESについて詳しくはSupported character encoding schemesを参照してください。
+;;  
+;;:conversion-buffer-size ------
+;;  この引数は、文字エンコーディング変換に使うバッファサイズを指定するために
+;;  encoding引数と共に使うことができます。渡された値はそのまま
+;;  文字コード変換ポートのコンストラクタのbuffer-size引数に渡されます
+;;  (Conversion ports参照)。
+;;  
+;;  この引数を指定する必要は滅多にありませんが、入力ファイルの文字エンコーディングを
+;;  推測しなければならない場合、大きめのバッファサイズの方が精度が上がります。
+;;  推測ルーチンがより多くのデータを見て文字エンコーディングを決定できるからです。
+;;
+;;if-existsとif-does-not-existフラグの組合せにより、
+;;色々な動作を実現できます。
+;;example:
+;;  (open-output-file "foo" :if-exists :error)
+;;   ==> ;"foo"を排他的にオープンするかエラーを報告する
+;;  
+;;  (open-output-file "foo" :if-exists #f)
+;;   ==> ;"foo"を排他的にオープンするか#fを返す
+;;  
+;;  (open-output-file "foo" :if-exists :append
+;;                          :if-does-not-exist :error)
+;;   ==> ;"foo"が既に存在する場合に限り、それを追加モードでオープン
+;;
+;;ファイルをオープンせずにその存在をチェックするには、
+;;sys-accessかfile-exists?を使って下さい (File stats参照)。
+;;
+;;移植性に関する註：Schemeシステムによっては、filenameのところに
+;;シェルコマンドを指定して、サブプロセスの標準入出力と通信できるようにするものが
+;;あります。他のスクリプティング言語(例：Perl)にも同様の機能があります。
+;;Gaucheでは、open-input-fileとopen-output-fileは
+;;あくまでファイル (OSがファイルとして扱うもの) のみに対して使えます。
+;;サブプロセスと通信するためには、「プロセスポート」という機能が提供されています。
+;;Process portsを参照して下さい。
+;;
+;;@param filename 
+;;@param :key 
+;;@param if-does-not-exist 
+;;@param buffering 
+;;@param element-type 
+;;@param encoding 
+;;@param conversion-buffer-size 
+
+;;;;;
+;;@type Function
+;;@name close-output-port
+;;@description [R5RS]
+;;それぞれ、入力ポートと出力ポートを閉じます。
+;;
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name close-input-port
+;;@description [R5RS]
+;;それぞれ、入力ポートと出力ポートを閉じます。
+;;
+;;@param port 
+
+;;;;;
+;;@type Function
+;;@name current-output-port
+;;@description [R5RS]
+;;現在の入力ポートと出力ポートをそれぞれ返します。
+;;
+
+;;;;;
+;;@type Function
+;;@name current-input-port
+;;@description [R5RS]
+;;現在の入力ポートと出力ポートをそれぞれ返します。
+;;
+
+;;;;;
+;;@type Function
+;;@name output-port?
+;;@description [R5RS]
+;;obj がそれぞれポート、入力ポート、出力ポートなら真を返します。
+;;port?はR5RSの"Standard Procedures"の項には
+;;載っていませんが、"Disjointness of Types"の項に挙げられています。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name input-port?
+;;@description [R5RS]
+;;obj がそれぞれポート、入力ポート、出力ポートなら真を返します。
+;;port?はR5RSの"Standard Procedures"の項には
+;;載っていませんが、"Disjointness of Types"の項に挙げられています。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name port?
+;;@description [R5RS]
+;;obj がそれぞれポート、入力ポート、出力ポートなら真を返します。
+;;port?はR5RSの"Standard Procedures"の項には
+;;載っていませんが、"Disjointness of Types"の項に挙げられています。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name interaction-environment
+;;@description [R5RS]
+;;evalの第2引数として使われる環境識別子を返します。
+;;現時点では、環境識別子は単にモジュールです。
+;;(null-environment 5)は、R5RSで規定されている単なる構文的な
+;;束縛を含むnullモジュールを返します。
+;;(scheme-report-environment 5)は、R5RSで規定されている
+;;構文的な束縛と手続きの束縛を含むschemeモジュールを返します。
+;;(interaction-environment)は、全てのGaucheのビルトインと
+;;ユーザ定義の全てを含んだuserモジュールを返します。
+;;将来、Gaucheがファーストクラスの環境オブジェクトを採用する可能性が
+;;あるので、環境識別子が単なるモジュールであることを当てにしないで
+;;下さい。
+;;
+;;引数versionに5以外の値を渡すとエラーが通知されます。
+;;
+;;
+
+;;;;;
+;;@type Function
+;;@name scheme-report-environment
+;;@description [R5RS]
+;;evalの第2引数として使われる環境識別子を返します。
+;;現時点では、環境識別子は単にモジュールです。
+;;(null-environment 5)は、R5RSで規定されている単なる構文的な
+;;束縛を含むnullモジュールを返します。
+;;(scheme-report-environment 5)は、R5RSで規定されている
+;;構文的な束縛と手続きの束縛を含むschemeモジュールを返します。
+;;(interaction-environment)は、全てのGaucheのビルトインと
+;;ユーザ定義の全てを含んだuserモジュールを返します。
+;;将来、Gaucheがファーストクラスの環境オブジェクトを採用する可能性が
+;;あるので、環境識別子が単なるモジュールであることを当てにしないで
+;;下さい。
+;;
+;;引数versionに5以外の値を渡すとエラーが通知されます。
+;;
+;;
+;;@param version 
+
+;;;;;
+;;@type Function
+;;@name null-environment
+;;@description [R5RS]
+;;evalの第2引数として使われる環境識別子を返します。
+;;現時点では、環境識別子は単にモジュールです。
+;;(null-environment 5)は、R5RSで規定されている単なる構文的な
+;;束縛を含むnullモジュールを返します。
+;;(scheme-report-environment 5)は、R5RSで規定されている
+;;構文的な束縛と手続きの束縛を含むschemeモジュールを返します。
+;;(interaction-environment)は、全てのGaucheのビルトインと
+;;ユーザ定義の全てを含んだuserモジュールを返します。
+;;将来、Gaucheがファーストクラスの環境オブジェクトを採用する可能性が
+;;あるので、環境識別子が単なるモジュールであることを当てにしないで
+;;下さい。
+;;
+;;引数versionに5以外の値を渡すとエラーが通知されます。
+;;
+;;
+;;@param version 
+
+;;;;;
+;;@type Function
+;;@name eval
+;;@description [R5RS]
+;;exprを評価します。envは下に述べる手続きにより
+;;返される値でなければなりません。現時点では、それは単なる
+;;<module>オブジェクトですが、Gaucheが将来、ファースト
+;;クラスの環境オブジェクトを採用する可能性はあります。
+;;
+;;@param expr 
+;;@param env 
+
+;;;;;
+;;@type Function
+;;@name force
+;;@description [R5RS]
+;;もし、promiseがプロミスでなければ、それをそのまま返します。
+;;
+;;そうではない場合で、もしpromiseの値がまだ計算されていない場合には、
+;;forceはpromiseが内包している式を評価し、その結果を返します。
+;;
+;;いったん、promiseの値が計算されると、その値はメモ化され、あとで
+;;再びforceされても、再計算がおこなわれることはありません。
+;;
+;;@param promise 
+
+;;;;;
+;;@type Function
+;;@name call-with-values
+;;@description [R5RS]
+;;手続きproducerを引数無しで呼びます。そして、それが返した値
+;;を引数としてconsumerを呼びます。consumerが返す値を
+;;返します。
+;;example:
+;;  (call-with-values (lambda () (values 1 2)) cons)
+;;    ==> (1 . 2)
+;;
+;;@param producer 
+;;@param consumer 
+
+;;;;;
+;;@type Function
+;;@name values
+;;@description [R5RS]
+;;obj ... を多値として返します。
+;;呼び出し側は、組み込み構文の receive (Binding constructs参照)か、
+;;下に説明するR5RSの手続きcall-with-valuesを使って多値を受け取ることが
+;;できます。
+;;Let-valuesも参照してください。
+;;example:
+;;  (values 1 2) ==> 1 and 2
+;;
+;;@param obj 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name dynamic-wind
+;;@description [R5RS]
+;;before、thunkおよびafter は引数を取らない手続きです。
+;;dynamic-windはまずbeforeを呼び出し、続いてthunkを呼び出し、
+;;続いてafterを呼び出します。そしてthunkが返した値を返します。
+;;
+;;もしdynamic-windのダイナミックスコープの外で捕捉された継続が
+;;thunkの中で呼ばれることにより制御がthunkから飛び出した場合、
+;;(thunkの中でエラーが起こった場合などが考えられます)、
+;;afterが呼ばれます。
+;;
+;;もし、thunkの中で捕捉された継続がdynamic-windのダイナミックスコープの
+;;外で呼ばれることにより制御がthunkの中へ飛び込んだ場合、
+;;beforeが呼ばれます。
+;;example:
+;;  (letrec ((paths '())
+;;           (c #f)
+;;           (add (lambda (s) (push! paths s))))
+;;    (dynamic-wind
+;;     (lambda () (add 'connect))
+;;     (lambda ()
+;;       (add (call/cc (lambda (c0) (set! c c0) 'talk1))))
+;;     (lambda () (add 'disconnect)))
+;;    (if (< (length paths) 4)
+;;        (c 'talk2)
+;;        (reverse paths)))
+;;   ==> (connect talk1 disconnect connect talk2 disconnect)
+;;
+;;@param before 
+;;@param thunk 
+;;@param after 
+
+;;;;;
+;;@type Function
+;;@name call/cc
+;;@description [R5RS]
+;;現在の継続を手続き (継続手続き) にパッケージ化して、それを引数として
+;;procを呼び出します。procが戻ったら、その返り値がcall/ccの
+;;値となります。作成された継続手続きがどこかで0個または複数個の引数を伴って呼ばれたら、
+;;あたかもcall/ccから戻ったかのように実行が継続されます。その場合、
+;;call/ccは、継続手続きに与えられた引数を複数の値として返します。  
+;;
+;;ファーストクラスの継続はSchemeの最も特徴的な機能のひとつですが、それを
+;;十分に説明するにはこの本の余白は狭すぎます。適切なドキュメントを参照してください。
+;;
+;;Schemeの継続とC言語の実行環境との間に、ちょっとわかりずらい干渉が生じることがあります。
+;;次のシナリオを考えます。
+;;
+;;アプリケーションのCランタイムがSchemeで書かれた手続きをコールバックします。
+;;例えば、GUIフレームワークがSchemeで書かれた描画ルーチンを呼ぶ、というようなケースを考えてください。
+;;そのSchemeルーチンで継続が捕捉される。
+;;Schemeルーチンが終了してCランタイムに制御を戻す。
+;;2で捕捉した継続が起動される。
+;;
+;;継続を起動すること自体には問題は無いのですが、
+;;制御がSchemeからCへと再び戻ろうとすると (つまり、step 3が再び実行されようとすると)
+;;次のようなエラーが投げられます。
+;;
+;;example:
+;;  *** ERROR: attempt to return from a ghost continuation.
+;;
+;;これは、Cの世界では関数が1回より多く戻ってくることを想定していないからです。
+;;最初にSchemeのコールバックが呼ばれた時のCのスタックフレームは、
+;;継続が再び呼ばれた時には状態が変わっているか、捨てられてしまっているでしょう。
+;;
+;;継続を、根から上へ向かって成長する制御フレームの連鎖のようにイメージした場合、
+;;Cの世界へ戻った時点でその連鎖が断ち切られる、と考えることができます。
+;;そのような根無しの継続も実行することはできますが、既に失った根に戻る前に
+;;別の箇所へと制御を移さねばなりません。他の箇所で捕まえた継続を呼んだり、
+;;例外を投げるといったことが考えられます。
+;;
+;;部分継続(限定継続)を使うのも手です。
+;;Partial continuationsを参照してください。
+;;
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name call-with-current-continuation
+;;@description [R5RS]
+;;現在の継続を手続き (継続手続き) にパッケージ化して、それを引数として
+;;procを呼び出します。procが戻ったら、その返り値がcall/ccの
+;;値となります。作成された継続手続きがどこかで0個または複数個の引数を伴って呼ばれたら、
+;;あたかもcall/ccから戻ったかのように実行が継続されます。その場合、
+;;call/ccは、継続手続きに与えられた引数を複数の値として返します。  
+;;
+;;ファーストクラスの継続はSchemeの最も特徴的な機能のひとつですが、それを
+;;十分に説明するにはこの本の余白は狭すぎます。適切なドキュメントを参照してください。
+;;
+;;Schemeの継続とC言語の実行環境との間に、ちょっとわかりずらい干渉が生じることがあります。
+;;次のシナリオを考えます。
+;;
+;;アプリケーションのCランタイムがSchemeで書かれた手続きをコールバックします。
+;;例えば、GUIフレームワークがSchemeで書かれた描画ルーチンを呼ぶ、というようなケースを考えてください。
+;;そのSchemeルーチンで継続が捕捉される。
+;;Schemeルーチンが終了してCランタイムに制御を戻す。
+;;2で捕捉した継続が起動される。
+;;
+;;継続を起動すること自体には問題は無いのですが、
+;;制御がSchemeからCへと再び戻ろうとすると (つまり、step 3が再び実行されようとすると)
+;;次のようなエラーが投げられます。
+;;
+;;example:
+;;  *** ERROR: attempt to return from a ghost continuation.
+;;
+;;これは、Cの世界では関数が1回より多く戻ってくることを想定していないからです。
+;;最初にSchemeのコールバックが呼ばれた時のCのスタックフレームは、
+;;継続が再び呼ばれた時には状態が変わっているか、捨てられてしまっているでしょう。
+;;
+;;継続を、根から上へ向かって成長する制御フレームの連鎖のようにイメージした場合、
+;;Cの世界へ戻った時点でその連鎖が断ち切られる、と考えることができます。
+;;そのような根無しの継続も実行することはできますが、既に失った根に戻る前に
+;;別の箇所へと制御を移さねばなりません。他の箇所で捕まえた継続を呼んだり、
+;;例外を投げるといったことが考えられます。
+;;
+;;部分継続(限定継続)を使うのも手です。
+;;Partial continuationsを参照してください。
+;;
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name for-each
+;;@description [R5RS]
+;;手続きprocをリストの各エレメントに対して順に適用します。
+;;procの結果は捨てられます。for-eachの戻り値は定義されていません。
+;;複数のリストが与えられた場合、一番短いリストが終了した時点でfor-eachは終了します。
+;;
+;;gauche.collectionモジュール(Collection framework参照)
+;;を使うと、for-eachがリスト以外のコレクション型に対しても動作するようになります。
+;;
+;;@param proc 
+;;@param list1 
+;;@param list2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name map
+;;@description [R5RS+]
+;;与えられたリストの各要素に対してprocを適用し、その結果をリストにして
+;;返します。R5RSではprocの適用順序が定められていませんが、Gaucheでは
+;;常にprocはリスト内の順番で呼ばれます。
+;;複数のリストが与えられた場合、最も短いリストが終了した時点でprocの適用を
+;;打ち切ります。
+;;
+;;example:
+;;  (map car '((a b) (c d) (e f))) ==> (a c e)
+;;  
+;;  (map cons '(a b c) '(d e f))
+;;    ==> ((a . d) (b . e) (c . f))
+;;
+;;gauche.collectionモジュール(Collection framework参照)
+;;を使うと、mapがリスト以外のコレクション型に対しても動作するようになります。
+;;
+;;@param proc 
+;;@param list1 
+;;@param list2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name apply
+;;@description [R5RS]
+;;(arg1 ... . args)を引数として手続きprocを呼びます。
+;;最後の引数argsは正規のリストでなければなりません。 procが返す
+;;値をそのまま返します。
+;;example:
+;;  (apply list 'a 'b '(c d e)) ==> (a b c d e)
+;;  
+;;  (apply + 1 2 '(3 4 5))      ==> 15
+;;
+;;@param proc 
+;;@param arg1 
+;;@param ... 
+;;@param args 
+
+;;;;;
+;;@type Function
+;;@name procedure?
+;;@description [R5RS]
+;;objが手続きなら#tを、そうでなければ#fを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name vector-fill!
+;;@description [R5RS+][SRFI-43]
+;;ベクタvectorの全ての要素をfillに変更します。
+;;
+;;省略可能な引数startとendが与えられた場合、
+;;start番目の要素からend-1番目の要素までのみに
+;;fillを格納します。startとendの既定値は
+;;それぞれ0とvectorの大きさです。
+;;start, end引数はGaucheの拡張です。
+;;
+;;@param vector 
+;;@param fill 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name list->vector
+;;@description [R5RS+][SRFI-43+]
+;;ベクタをリストに変換したり、その逆を行う手続きです。
+;;
+;;省略可能な引数startとendを与えることにより、
+;;値を取り出す範囲を制限することができます。
+;;
+;;example:
+;;  (vector->list '#(1 2 3 4 5))     ==> (1 2 3 4 5)
+;;  (list->vector '(1 2 3 4 5))      ==> #(1 2 3 4 5)
+;;  (vector->list '#(1 2 3 4 5) 2 4) ==> (3 4)
+;;  (list->vector (circular-list 'a 'b 'c) 1 6)
+;;    ==> #(b c a b c)
+;;
+;;gauche.collectionモジュールをロードしていれば、
+;;(coerce-to <list> vector) と
+;;(coerce-to <vector> list) も同じ目的で使えます。
+;;
+;;@param list 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name vector->list
+;;@description [R5RS+][SRFI-43+]
+;;ベクタをリストに変換したり、その逆を行う手続きです。
+;;
+;;省略可能な引数startとendを与えることにより、
+;;値を取り出す範囲を制限することができます。
+;;
+;;example:
+;;  (vector->list '#(1 2 3 4 5))     ==> (1 2 3 4 5)
+;;  (list->vector '(1 2 3 4 5))      ==> #(1 2 3 4 5)
+;;  (vector->list '#(1 2 3 4 5) 2 4) ==> (3 4)
+;;  (list->vector (circular-list 'a 'b 'c) 1 6)
+;;    ==> #(b c a b c)
+;;
+;;gauche.collectionモジュールをロードしていれば、
+;;(coerce-to <list> vector) と
+;;(coerce-to <vector> list) も同じ目的で使えます。
+;;
+;;@param vector 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name vector-set!
+;;@description [R5RS]
+;;ベクタvectorのk番目の要素をobjに変更します。
+;;kが負数であったりベクタの長さより大きい場合はエラーとなります。
+;;
+;;gauche.sequenceモジュールをロードしていれば、
+;;メソッドrefのsetterメソッドも使えます。
+;;
+;;@param vector 
+;;@param k 
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name vector-ref
+;;@description [R5RS+]
+;;ベクタvectorのk番目の要素を返します。
+;;
+;;vector-refはkが負の値であったりベクタの長さより
+;;大きかったりした場合はエラーを通知します。但し、省略可能な引数fallback
+;;が与えられている場合はその値が返されます。これはGaucheの拡張です。
+;;
+;;gauche.sequenceモジュールをロードしていれば、
+;;メソッドrefも同じ目的で使えます。
+;;
+;;@param vector 
+;;@param k 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name vector-length
+;;@description [R5RS]
+;;ベクタvectorの長さを返します。
+;;
+;;gauche.collectionモジュールをロードしていれば、
+;;メソッドsize-ofも同じ目的で使えます。
+;;
+;;@param vector 
+
+;;;;;
+;;@type Function
+;;@name vector
+;;@description [R5RS]
+;;要素がobj ...であるようなベクタを作成して返します。
+;;
+;;@param obj 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name make-vector
+;;@description [R5RS]
+;;長さkのベクタを作成して返します。
+;;省略可能な引数fillが与えられていれば、ベクタの各要素はその値で
+;;初期化されます。そうでなければベクタの各要素の値は不定です。
+;;
+;;@param k 
+;;@param :optional 
+;;@param fill 
+
+;;;;;
+;;@type Function
+;;@name vector?
+;;@description [R5RS]
+;;objがベクタなら#tを、そうでなければ#fを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name string-copy
+;;@description [R5RS+][SRFI-13]
+;;stringのコピーを返します。startおよび/あるいはendの
+;;位置インデックスを渡すと元の文字列の部分文字列を取り出せます。
+;;(したがってstring-copyは事実上substringのスーパーセット
+;;です)。
+;;
+;;start引数のみを与えた場合には、部分文字列はstart番目の文字
+;;(これを含む)からstringの最後までで、それが返ります。
+;;startとendの両方を与えたときは、部分文字列はstart番
+;;目の文字(これを含む)から、end番目の文字(これを含まない)までで、
+;;それが返ります。startとendが満すべき条件については
+;;前述のsubstringの項を見てください。
+;;
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name list->string
+;;@description [R5RS+][SRFI-13]
+;;文字列を文字のリストへ、またはその逆の変換をします。
+;;
+;;string->listにはオプショナル引数として開始、終了位置のインデッ
+;;クスを渡せます。これはSRFI-13で規定されています。
+;;
+;;list->stringではlistの要素はすべて文字でなければなりません。
+;;そうでなければ、エラーシグナルがあがります。文字列や文字がまざったリス
+;;トから文字列を構成したい場合にはLazy text constructionにある
+;;tree->stringが使えます。
+;;
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name string->list
+;;@description [R5RS+][SRFI-13]
+;;文字列を文字のリストへ、またはその逆の変換をします。
+;;
+;;string->listにはオプショナル引数として開始、終了位置のインデッ
+;;クスを渡せます。これはSRFI-13で規定されています。
+;;
+;;list->stringではlistの要素はすべて文字でなければなりません。
+;;そうでなければ、エラーシグナルがあがります。文字列や文字がまざったリス
+;;トから文字列を構成したい場合にはLazy text constructionにある
+;;tree->stringが使えます。
+;;
+;;@param string 
+;;@param :optional 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-append
+;;@description [R5RS]
+;;string ...を連結した内容を含む文字列を新しくアロケートして返
+;;します。
+;;
+;;SRFI-13 String reverse & appendのstring-concatenateも参照
+;;してください。
+;;
+;;@param string 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name substring
+;;@description [R5RS]
+;;stringのstart番目の文字(これを含む)から、end番目の文
+;;字(これを含まない)までの部分文字列を返します。引数startおよび
+;;endは以下を満さなければなりません。
+;;0 <= start < N、
+;;0 <= end <= N、
+;;start <= end。ただし、Nは与えられた文字列の長
+;;さです。
+;;
+;;startがゼロでかつendがNの場合には、stringのコ
+;;ピーが返ります。
+;;
+;;実は後述する拡張されたstring-copyはsubstringのスーパーセッ
+;;トになっています。この手続きの役割は主にR5RSとの互換性のためです。
+;;Sequence frameworkのジェネリック版subseqも参照してください。
+;;
+;;@param string 
+;;@param start 
+;;@param end 
+
+;;;;;
+;;@type Function
+;;@name string-ci>=?
+;;@description [R5RS]
+;;
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string-ci>?
+;;@description [R5RS]
+;;
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string-ci<=?
+;;@description [R5RS]
+;;
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string-ci<?
+;;@description [R5RS]
+;;
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string>=?
+;;@description [R5RS]
+;;
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string>?
+;;@description [R5RS]
+;;
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string<=?
+;;@description [R5RS]
+;;
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string<?
+;;@description [R5RS]
+;;
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string-ci=?
+;;@description [R5RS]
+;;
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string=?
+;;@description [R5RS]
+;;
+;;@param string1 
+;;@param string2 
+
+;;;;;
+;;@type Function
+;;@name string-set!
+;;@description [R5RS] stringのk番目の文字をcharで置き換えます。
+;;kは0以上、(string-length string)より小でなければ
+;;なりません。戻り値は未定義です。
+;;
+;;stringが不完全文字列の場合、charの下位8ビットの整数値は、
+;;stringのk番目のバイトをセットするために使われます。
+;;
+;;パフォーマンス上の考慮点について、make-stringの説明を参照して下さい。
+;;
+;;@param string 
+;;@param k 
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name string-ref
+;;@description [R5RS+]
+;;完全な文字列cstringのk番目の文字を返します。
+;;不完全な文字列を渡すのはエラーです。
+;;
+;;kが負数であったりcstringの長さと同じかそれ以上であった場合には
+;;エラーが報告されます。但し、引数fallbackが与えられている場合にはエラーを
+;;報告せずfallbackが返されます。これはGaucheの拡張です。
+;;
+;;@param cstring 
+;;@param k 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name string-length
+;;@description [R5RS]
+;;文字列stringの長さ(文字数)を返します。
+;;stringは不完全な文字列であっても構いません。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name string
+;;@description [R5RS]
+;;文字char ... から構成された文字列を返します。
+;;
+;;@param char 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name make-string
+;;@description [R5RS]
+;;長さkの文字列を作成して返します。
+;;charが与えられればそれで内容を満たします。charが与えられなければ
+;;空白文字で満たされます。常に完全な文字列が返されます。
+;;
+;;example:
+;;  (make-string 5 #\x) ==> "xxxxx"
+;;  (make-string 5 #\ふ) ==> "ふふふふふ"
+;;
+;;make-stringで必要な長さの文字列をアロケートして、string-set!
+;;で順番に埋めて行くアルゴリズムは、Gaucheでは極めて非効率であることに
+;;注意してください。そのようなアルゴリズムは、文字列の内部表現とアロケーションメカニズムに
+;;関して不必要な仮定を置いており、Gaucheはその仮定とは合致しません。
+;;文字列の順次作成に適しているのは文字列ポートです
+;;(文字列ポート参照)。それが使えない場合、
+;;文字のリストを作成し、list->stringで変換する方がまだmake-stringと
+;;string-set!を使うより良いでしょう。
+;;
+;;@param k 
+;;@param :optional 
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name string?
+;;@description [R5RS]
+;;objが文字列なら#tを、そうでなければ#fを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name char-downcase
+;;@description [R5RS+]
+;;charの大文字、小文字、titlecase、foldcaseを
+;;それぞれ返します。foldcaseは最初に大文字にしてそれから小文字にするのと同じ操作です。
+;;
+;;変換は原則としてUnicodeで定義された文字対文字のマッピングに従います。
+;;Unicodeに従って変換する先の文字が内部エンコーディングでサポートされていない
+;;場合は、変換は行いません。内部エンコーディングが'none'の場合は、
+;;文字をLatin-1 (ISO-8859-1) であるとみなします。Latin-1の
+;;small y with diaresis (U+00ff) をupcaseすると、
+;;内部エンコーディングがutf-8の場合はcapital y with diaresis (U+039c)にマップされますが、
+;;内部エンコーディングがnoneであれば元の文字がそのまま返されます。
+;;
+;;文字対文字のマッピングでは、一文字が複数文字に展開されるようなケースマッピングは
+;;扱いません。有名な例はeszett (latin small letter sharp S, U+00df)で、
+;;文字列のコンテキストでは二つの大文字のSへとマップされますが、
+;;char-upcase #\s は単に #\s を返します。
+;;完全なマッピングが必要なら、text.unicodeモジュールの
+;;string-upcase等が利用できます
+;;(Full string case conversion参照)。
+;;
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-upcase
+;;@description [R5RS+]
+;;charの大文字、小文字、titlecase、foldcaseを
+;;それぞれ返します。foldcaseは最初に大文字にしてそれから小文字にするのと同じ操作です。
+;;
+;;変換は原則としてUnicodeで定義された文字対文字のマッピングに従います。
+;;Unicodeに従って変換する先の文字が内部エンコーディングでサポートされていない
+;;場合は、変換は行いません。内部エンコーディングが'none'の場合は、
+;;文字をLatin-1 (ISO-8859-1) であるとみなします。Latin-1の
+;;small y with diaresis (U+00ff) をupcaseすると、
+;;内部エンコーディングがutf-8の場合はcapital y with diaresis (U+039c)にマップされますが、
+;;内部エンコーディングがnoneであれば元の文字がそのまま返されます。
+;;
+;;文字対文字のマッピングでは、一文字が複数文字に展開されるようなケースマッピングは
+;;扱いません。有名な例はeszett (latin small letter sharp S, U+00df)で、
+;;文字列のコンテキストでは二つの大文字のSへとマップされますが、
+;;char-upcase #\s は単に #\s を返します。
+;;完全なマッピングが必要なら、text.unicodeモジュールの
+;;string-upcase等が利用できます
+;;(Full string case conversion参照)。
+;;
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name integer->char
+;;@description [R5RS]
+;;char->integerは文字charの内部エンコーディングに対応する
+;;整数値を返します。integer->charは数値nと内部エンコーディングが
+;;同じ文字を返します。有効な文字charに対して以下の式は常に真となります。
+;;example:
+;;  (eq? char (integer->char (char->integer char)))
+;;
+;;対応する内部エンコーディングを持つ文字が無い数値をinteger->charに渡した
+;;場合の結果は不定です。
+;;
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name char->integer
+;;@description [R5RS]
+;;char->integerは文字charの内部エンコーディングに対応する
+;;整数値を返します。integer->charは数値nと内部エンコーディングが
+;;同じ文字を返します。有効な文字charに対して以下の式は常に真となります。
+;;example:
+;;  (eq? char (integer->char (char->integer char)))
+;;
+;;対応する内部エンコーディングを持つ文字が無い数値をinteger->charに渡した
+;;場合の結果は不定です。
+;;
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-lower-case?
+;;@description [R5RS]
+;;文字charがそれぞれ英字([A-Za-z])、数字([0-9])、
+;;空白文字、大文字および小文字の時に真の値を返します。
+;;今のところ、これらの手続きはASCII文字のみで動作します。
+;;それ以外の文字に対しては#fが返されます。
+;;
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-upper-case?
+;;@description [R5RS]
+;;文字charがそれぞれ英字([A-Za-z])、数字([0-9])、
+;;空白文字、大文字および小文字の時に真の値を返します。
+;;今のところ、これらの手続きはASCII文字のみで動作します。
+;;それ以外の文字に対しては#fが返されます。
+;;
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-whitespace?
+;;@description [R5RS]
+;;文字charがそれぞれ英字([A-Za-z])、数字([0-9])、
+;;空白文字、大文字および小文字の時に真の値を返します。
+;;今のところ、これらの手続きはASCII文字のみで動作します。
+;;それ以外の文字に対しては#fが返されます。
+;;
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-numeric?
+;;@description [R5RS]
+;;文字charがそれぞれ英字([A-Za-z])、数字([0-9])、
+;;空白文字、大文字および小文字の時に真の値を返します。
+;;今のところ、これらの手続きはASCII文字のみで動作します。
+;;それ以外の文字に対しては#fが返されます。
+;;
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-alphabetic?
+;;@description [R5RS]
+;;文字charがそれぞれ英字([A-Za-z])、数字([0-9])、
+;;空白文字、大文字および小文字の時に真の値を返します。
+;;今のところ、これらの手続きはASCII文字のみで動作します。
+;;それ以外の文字に対しては#fが返されます。
+;;
+;;@param char 
+
+;;;;;
+;;@type Function
+;;@name char-ci>=?
+;;@description [R5RS,R6RS]
+;;文字を、大文字小文字を区別せずに比較します。
+;;比較はそれぞれの文字のfoldcaseの内部文字エンコーディングに基づいて行われます。
+;;foldcaseについては下のchar-foldcaseを参照してください。
+;;
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-ci>?
+;;@description [R5RS,R6RS]
+;;文字を、大文字小文字を区別せずに比較します。
+;;比較はそれぞれの文字のfoldcaseの内部文字エンコーディングに基づいて行われます。
+;;foldcaseについては下のchar-foldcaseを参照してください。
+;;
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-ci<=?
+;;@description [R5RS,R6RS]
+;;文字を、大文字小文字を区別せずに比較します。
+;;比較はそれぞれの文字のfoldcaseの内部文字エンコーディングに基づいて行われます。
+;;foldcaseについては下のchar-foldcaseを参照してください。
+;;
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-ci<?
+;;@description [R5RS,R6RS]
+;;文字を、大文字小文字を区別せずに比較します。
+;;比較はそれぞれの文字のfoldcaseの内部文字エンコーディングに基づいて行われます。
+;;foldcaseについては下のchar-foldcaseを参照してください。
+;;
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char-ci=?
+;;@description [R5RS,R6RS]
+;;文字を、大文字小文字を区別せずに比較します。
+;;比較はそれぞれの文字のfoldcaseの内部文字エンコーディングに基づいて行われます。
+;;foldcaseについては下のchar-foldcaseを参照してください。
+;;
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char>=?
+;;@description [R5RS,R6RS]
+;;文字を比較します。比較は内部の文字エンコーディングで行われます。
+;;
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char>?
+;;@description [R5RS,R6RS]
+;;文字を比較します。比較は内部の文字エンコーディングで行われます。
+;;
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char<=?
+;;@description [R5RS,R6RS]
+;;文字を比較します。比較は内部の文字エンコーディングで行われます。
+;;
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char<?
+;;@description [R5RS,R6RS]
+;;文字を比較します。比較は内部の文字エンコーディングで行われます。
+;;
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char=?
+;;@description [R5RS,R6RS]
+;;文字を比較します。比較は内部の文字エンコーディングで行われます。
+;;
+;;@param char1 
+;;@param char2 
+;;@param char3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name char?
+;;@description [R5RS]
+;;objが文字なら#tを、そうでなければ#fを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name string->symbol
+;;@description [R5RS]
+;;文字列stringを名前に持つシンボルを返します。
+;;
+;;example:
+;;  (string->symbol "a") ==> a
+;;  (string->symbol "A") ==> A
+;;  (string->symbol "weird symbol name") ==> |weird symbol name|
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name symbol->string
+;;@description [R5RS]
+;;symbolの名前を文字列で返します。返される文字列は変更不可です。
+;;
+;;example:
+;;  (symbol->string 'foo) ==> foo
+;;
+;;@param symbol 
+
+;;;;;
+;;@type Function
+;;@name symbol?
+;;@description [R5RS] 
+;;objがシンボルなら#tを返します。
+;;example:
+;;  (symbol? 'abc)     ==> #t
+;;  (symbol? 0)        ==> #f
+;;  (symbol? 'i)       ==> #t
+;;  (symbol? '-i)      ==> #f
+;;  (symbol? '|-i|)    ==> #t
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name assoc
+;;@description [R5RS]
+;;listの各要素はペアでなければなりません。
+;;これらの手続きは、listの要素であるペアのうち、そのcarが
+;;objと一致するペアを左から探して行きます。もし見付かればそのペアが、
+;;見付からなければ#fが返されます。
+;;assqは比較関数にeq?を、assvはeqv?を、
+;;assocはequal?をそれぞれ用います。
+;;
+;;SRFI-1 (List library) を使うと、assocは
+;;オプショナルな同一性判定手続きを取るように拡張されます。
+;;
+;;@param obj 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name assv
+;;@description [R5RS]
+;;listの各要素はペアでなければなりません。
+;;これらの手続きは、listの要素であるペアのうち、そのcarが
+;;objと一致するペアを左から探して行きます。もし見付かればそのペアが、
+;;見付からなければ#fが返されます。
+;;assqは比較関数にeq?を、assvはeqv?を、
+;;assocはequal?をそれぞれ用います。
+;;
+;;SRFI-1 (List library) を使うと、assocは
+;;オプショナルな同一性判定手続きを取るように拡張されます。
+;;
+;;@param obj 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name assq
+;;@description [R5RS]
+;;listの各要素はペアでなければなりません。
+;;これらの手続きは、listの要素であるペアのうち、そのcarが
+;;objと一致するペアを左から探して行きます。もし見付かればそのペアが、
+;;見付からなければ#fが返されます。
+;;assqは比較関数にeq?を、assvはeqv?を、
+;;assocはequal?をそれぞれ用います。
+;;
+;;SRFI-1 (List library) を使うと、assocは
+;;オプショナルな同一性判定手続きを取るように拡張されます。
+;;
+;;@param obj 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name member
+;;@description [R5RS]
+;;listからobjを探します。もしlistのn番目の要素が
+;;objと同一ならば、(list-tail list n)を返します。
+;;memqは同一性の判定にeq?を、memvはeqv?を、
+;;memberはequal?を使います。
+;;objがlist中に見つからなければ#fが返されます。
+;;
+;;SRFI-1 (List library) を使うと、memberは
+;;オプショナルな同一性判定手続きを取るように拡張されます。
+;;example:
+;;  (memq 'a '(a b c))          ==> (a b c)
+;;  (memq 'b '(a b c))          ==>  (b c)
+;;  (memq 'a '(b c d))          ==> #f
+;;  (memq (list 'a) '(b (a) c)) ==> #f
+;;  (memv 101 '(100 101 102))   ==> (101 102)
+;;
+;;@param obj 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name memv
+;;@description [R5RS]
+;;listからobjを探します。もしlistのn番目の要素が
+;;objと同一ならば、(list-tail list n)を返します。
+;;memqは同一性の判定にeq?を、memvはeqv?を、
+;;memberはequal?を使います。
+;;objがlist中に見つからなければ#fが返されます。
+;;
+;;SRFI-1 (List library) を使うと、memberは
+;;オプショナルな同一性判定手続きを取るように拡張されます。
+;;example:
+;;  (memq 'a '(a b c))          ==> (a b c)
+;;  (memq 'b '(a b c))          ==>  (b c)
+;;  (memq 'a '(b c d))          ==> #f
+;;  (memq (list 'a) '(b (a) c)) ==> #f
+;;  (memv 101 '(100 101 102))   ==> (101 102)
+;;
+;;@param obj 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name memq
+;;@description [R5RS]
+;;listからobjを探します。もしlistのn番目の要素が
+;;objと同一ならば、(list-tail list n)を返します。
+;;memqは同一性の判定にeq?を、memvはeqv?を、
+;;memberはequal?を使います。
+;;objがlist中に見つからなければ#fが返されます。
+;;
+;;SRFI-1 (List library) を使うと、memberは
+;;オプショナルな同一性判定手続きを取るように拡張されます。
+;;example:
+;;  (memq 'a '(a b c))          ==> (a b c)
+;;  (memq 'b '(a b c))          ==>  (b c)
+;;  (memq 'a '(b c d))          ==> #f
+;;  (memq (list 'a) '(b (a) c)) ==> #f
+;;  (memv 101 '(100 101 102))   ==> (101 102)
+;;
+;;@param obj 
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name reverse
+;;@description [R5RS]
+;;listの各要素を逆順に持つリストを新しく作成して返します。
+;;
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name append
+;;@description [R5RS]
+;;渡されたリストの要素を繋げたリストを返します。最後の引数の部分以外は新しいセルがアロケート
+;;されて使われます。最後の引数は正規のリストである必要がありません。その場合、結果は正規でない
+;;リストとなります。
+;;
+;;@param list 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name list-ref
+;;@description [R5RS+]
+;;listのk番目の要素を返します。listは
+;;正規のリストでもドットリストでも循環リストでも構いません。
+;;
+;;もしkがリストの長さを超えていたり、負数であった場合は通常はエラーが起こります。
+;;しかし、オプショナルな引数fallbackが与えられていた場合は、エラーは起きず
+;;fallbackが返されます。これはGaucheの拡張です。
+;;
+;;@param list 
+;;@param k 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name list-tail
+;;@description [R5RS]
+;;listのk番目のcdrを返します。listは
+;;正規のリストでもドットリストでも循環リストでも構いません。
+;;(listがドットリストの場合、最後のcdrは無視されます)。
+;;
+;;kの値が負であったりlistの長さ以上の場合、
+;;fallback引数が与えられていればそれが返され、
+;;そうでなければエラーが報告されます。
+;;
+;;@param list 
+;;@param k 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name length
+;;@description [R5RS]
+;;正規のリストlistの長さを返します。
+;;listがドットリストならばエラーが起きます。
+;;listが循環リストの場合、この関数は無限ループします。
+;;
+;;循環リストも取り扱う場合は、SRFI-1のlength+を使って下さい
+;;(SRFI-1 List miscellaneous routines参照)。
+;;
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name cddddr
+;;@description [R5RS]
+;;caar ≡  (car (car x)),
+;;cadr ≡  (car (cdr x)), 等々。
+;;
+;;対応するsetterも定義されています。
+;;example:
+;;  (let ((x (list 1 2 3 4 5)))
+;;    (set! (caddr x) -1)
+;;    x)
+;;    ==> (1 2 -1 4 5)
+;;
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name cdddar
+;;@description [R5RS]
+;;caar ≡  (car (car x)),
+;;cadr ≡  (car (cdr x)), 等々。
+;;
+;;対応するsetterも定義されています。
+;;example:
+;;  (let ((x (list 1 2 3 4 5)))
+;;    (set! (caddr x) -1)
+;;    x)
+;;    ==> (1 2 -1 4 5)
+;;
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name cadr
+;;@description ...
+;;
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name caar
+;;@description ...
+;;
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name set-cdr!
+;;@description [R5RS] 
+;;pairのcarもしくはcdrをobjで置き換えます。
+;;
+;;注： (setter car) ≡  set-car! であり、
+;;(setter cdr) ≡  set-cdr! です。
+;;
+;;@param pair 
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name set-car!
+;;@description [R5RS] 
+;;pairのcarもしくはcdrをobjで置き換えます。
+;;
+;;注： (setter car) ≡  set-car! であり、
+;;(setter cdr) ≡  set-cdr! です。
+;;
+;;@param pair 
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name cdr
+;;@description [R5RS] 
+;;それぞれpairのcarとcdrを返します。
+;;
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name car
+;;@description [R5RS] 
+;;それぞれpairのcarとcdrを返します。
+;;
+;;@param pair 
+
+;;;;;
+;;@type Function
+;;@name list
+;;@description [R5RS]
+;;要素がobj ...であるリストを作成します。
+;;example:
+;;  (list 1 2 3) ==> (1 2 3)
+;;  (list) ==> ()
+;;
+;;@param obj 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name cons
+;;@description [R5RS] 
+;;obj1とobj2のペアを作成します。
+;;example:
+;;  (cons 'a 'b) ==> (a . b)
+;;
+;;@param obj1 
+;;@param obj2 
+
+;;;;;
+;;@type Function
+;;@name list?
+;;@description [R5RS]
+;;objが正しいリストなら#tを、そうでなければ#fを返します。
+;;この手続きはobjがドットリストや循環リストなら#fを返します。
+;;
+;;SRFI-1(SRFI-1 List predicates)には更に、
+;;proper-list?、circular-list?、dotted-list?
+;;といった手続きが定義されています。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name null?
+;;@description [R5RS] 
+;;objが空リストなら#tを、そうでなければ#fを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name pair?
+;;@description [R5RS]
+;;objがペアなら#tを、そうでなければ#fを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name boolean?
+;;@description [R5RS]
+;;objが論理値である場合に#tを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name not
+;;@description [R5RS]
+;;objが#fの時のみ#tを返し、それ以外の場合は#fを
+;;返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name string->number
+;;@description [R5RS+]
+;;これらの手続きは数値とそれをradix進数で表現する文字列とを変換します。
+;;radixは2から36の間でなければなりません。省略された場合は10進数とみなされます。
+;;
+;;number->stringは数値zを取り文字列を返します。
+;;zが正確な整数以外の場合、radixは10でなければなりません。
+;;10より大きいradixに関しては、小文字のアルファベットが桁として使われます。
+;;但し、省略可能な引数use-upper?に真の値が与えられた場合は大文字のアルファベットが
+;;使われます。use-upper?引数はGaucheの拡張です。
+;;
+;;string->numberは文字列stringを取り数値を返します。
+;;不正確な数値は10進数表記しか認識されません。与えられた文字列が数値を構成しない
+;;場合は#fが返されます。
+;;
+;;@param string 
+;;@param :optional 
+;;@param radix 
+
+;;;;;
+;;@type Function
+;;@name number->string
+;;@description [R5RS+]
+;;これらの手続きは数値とそれをradix進数で表現する文字列とを変換します。
+;;radixは2から36の間でなければなりません。省略された場合は10進数とみなされます。
+;;
+;;number->stringは数値zを取り文字列を返します。
+;;zが正確な整数以外の場合、radixは10でなければなりません。
+;;10より大きいradixに関しては、小文字のアルファベットが桁として使われます。
+;;但し、省略可能な引数use-upper?に真の値が与えられた場合は大文字のアルファベットが
+;;使われます。use-upper?引数はGaucheの拡張です。
+;;
+;;string->numberは文字列stringを取り数値を返します。
+;;不正確な数値は10進数表記しか認識されません。与えられた文字列が数値を構成しない
+;;場合は#fが返されます。
+;;
+;;@param z 
+;;@param :optional 
+;;@param radix 
+;;@param use-upper? 
+
+;;;;;
+;;@type Function
+;;@name inexact->exact
+;;@description [R5RS]
+;;それぞれ、正確数を非正確に変換、あるいはその逆を行います。
+;;
+;;不正確な数をexact->inexactに渡したり、または正確な数を
+;;inexact->exactに渡した場合、Gaucheではそれをエラーにせず
+;;引数をそのまま返します。従ってこれらはGaucheでは
+;;上のinexactおよびexactとそれぞれ等価です。
+;;R5RS実装の中には、非正確数をexact->inexactに渡したりすると
+;;エラーになるものもあり得るので、ポータブルなコードを書く場合は
+;;注意してください。
+;;
+;;一般的には、exactおよびinexactを使う方が
+;;簡潔で良いでしょう。こちらの手続きはR5RSプログラムとの互換性の
+;;ために用意されています。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name exact->inexact
+;;@description [R5RS]
+;;それぞれ、正確数を非正確に変換、あるいはその逆を行います。
+;;
+;;不正確な数をexact->inexactに渡したり、または正確な数を
+;;inexact->exactに渡した場合、Gaucheではそれをエラーにせず
+;;引数をそのまま返します。従ってこれらはGaucheでは
+;;上のinexactおよびexactとそれぞれ等価です。
+;;R5RS実装の中には、非正確数をexact->inexactに渡したりすると
+;;エラーになるものもあり得るので、ポータブルなコードを書く場合は
+;;注意してください。
+;;
+;;一般的には、exactおよびinexactを使う方が
+;;簡潔で良いでしょう。こちらの手続きはR5RSプログラムとの互換性の
+;;ために用意されています。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name inexact
+;;@description [R6RS]
+;;それぞれ数zの正確な表現および不正確な表現を返します。
+;;
+;;浮動小数点数の表現が有限精度であるため、任意の不正確な実数を正確な
+;;有理数に変換することは常に可能です。しかしそれはあなたの求めるもの
+;;ではないかもしれません。次の例を見てください。
+;;
+;;example:
+;;  (exact 3.1415926535879)
+;;    ==> 7074237752024177/2251799813685248
+;;
+;;不正確な実数を丸めた正確な整数が欲しい場合は、floor、ceiling、
+;;truncateもしくはroundを明示的に使って下さい。
+;;floor->exact、round->exact等を使うという手もあります。
+;;
+;;example:
+;;  (exact (round 3.1415926535879)) ==> 3
+;;  
+;;  (round->exact 3.1415926535879)  ==> 3
+;;
+;;Gaucheは正確な複素数をサポートしません。虚数部がゼロでない不正確な
+;;複素数をexactに渡すとエラーとなります。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name exact
+;;@description [R6RS]
+;;それぞれ数zの正確な表現および不正確な表現を返します。
+;;
+;;浮動小数点数の表現が有限精度であるため、任意の不正確な実数を正確な
+;;有理数に変換することは常に可能です。しかしそれはあなたの求めるもの
+;;ではないかもしれません。次の例を見てください。
+;;
+;;example:
+;;  (exact 3.1415926535879)
+;;    ==> 7074237752024177/2251799813685248
+;;
+;;不正確な実数を丸めた正確な整数が欲しい場合は、floor、ceiling、
+;;truncateもしくはroundを明示的に使って下さい。
+;;floor->exact、round->exact等を使うという手もあります。
+;;
+;;example:
+;;  (exact (round 3.1415926535879)) ==> 3
+;;  
+;;  (round->exact 3.1415926535879)  ==> 3
+;;
+;;Gaucheは正確な複素数をサポートしません。虚数部がゼロでない不正確な
+;;複素数をexactに渡すとエラーとなります。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name angle
+;;@description [R5RS]
+;;複素数zを取り、実数を返します。
+;;real-partとimag-partはzの実数部と虚数部をそれぞれ返し、
+;;magnitudeとangleはzの絶対値と偏角をそれぞれ返します。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name magnitude
+;;@description [R5RS]
+;;複素数zを取り、実数を返します。
+;;real-partとimag-partはzの実数部と虚数部をそれぞれ返し、
+;;magnitudeとangleはzの絶対値と偏角をそれぞれ返します。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name imag-part
+;;@description [R5RS]
+;;複素数zを取り、実数を返します。
+;;real-partとimag-partはzの実数部と虚数部をそれぞれ返し、
+;;magnitudeとangleはzの絶対値と偏角をそれぞれ返します。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name real-part
+;;@description [R5RS]
+;;複素数zを取り、実数を返します。
+;;real-partとimag-partはzの実数部と虚数部をそれぞれ返し、
+;;magnitudeとangleはzの絶対値と偏角をそれぞれ返します。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name make-polar
+;;@description [R5RS]
+;;二つの実数x1とx2から複素数を作ります。
+;;make-rectangular は x1 + @b{i}x2 を返します。
+;;make-polar は x1@b{e}^(@b{i}x2) を返します。
+;;
+;;@param x1 
+;;@param x2 
+
+;;;;;
+;;@type Function
+;;@name make-rectangular
+;;@description [R5RS]
+;;二つの実数x1とx2から複素数を作ります。
+;;make-rectangular は x1 + @b{i}x2 を返します。
+;;make-polar は x1@b{e}^(@b{i}x2) を返します。
+;;
+;;@param x1 
+;;@param x2 
+
+;;;;;
+;;@type Function
+;;@name expt
+;;@description [R5RS]
+;;複素数z1, z2に対して、
+;;z1^z2 (z1のz2乗)を返します。
+;;
+;;@param z1 
+;;@param z2 
+
+;;;;;
+;;@type Function
+;;@name exact-integer-sqrt
+;;@description [R6RS]
+;;非負の正確な整数kに対し、次の式を満たす
+;;非負の正確な整数sとrを返します。
+;;
+;;example:
+;;  k = (+ (* s s) r)
+;;  k < (* (+ s 1) (+ s 1))
+;;
+;;example:
+;;  (exact-integer-sqrt 782763574)
+;;    ==> 27977 and 51045
+;;
+;;@param k 
+
+;;;;;
+;;@type Function
+;;@name sqrt
+;;@description [R5RS]
+;;複素数zの平方根のひとつを返します。枝刈りの定義はCommon Lispと同じです。
+;;実数に対しては正の平方根を返します。
+;;
+;;z が正確な実数の平方である場合、戻り値は正確数となります。
+;;
+;;example:
+;;  (sqrt 2)      ==> 1.4142135623730951
+;;  (sqrt -2)     ==> 0.0+1.4142135623730951i
+;;  (sqrt 256)    ==> 16
+;;  (sqrt 256.0)  ==> 16.0
+;;  (sqrt 81/169) ==> 9/13
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name atan
+;;@description [R5RS]
+;;実数xとyに対して
+;;(angle (make-rectangular x y))を返します。
+;;
+;;@param y 
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name atan
+;;@description [R5RS][R6RS]
+;;超越関数です。複素数も扱えます。
+;;
+;;2引数のlogはR6RSで追加されたもので、z2を底としたz1の対数を
+;;返します。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name acos
+;;@description [R5RS][R6RS]
+;;超越関数です。複素数も扱えます。
+;;
+;;2引数のlogはR6RSで追加されたもので、z2を底としたz1の対数を
+;;返します。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name asin
+;;@description [R5RS][R6RS]
+;;超越関数です。複素数も扱えます。
+;;
+;;2引数のlogはR6RSで追加されたもので、z2を底としたz1の対数を
+;;返します。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name tan
+;;@description [R5RS][R6RS]
+;;超越関数です。複素数も扱えます。
+;;
+;;2引数のlogはR6RSで追加されたもので、z2を底としたz1の対数を
+;;返します。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name cos
+;;@description [R5RS][R6RS]
+;;超越関数です。複素数も扱えます。
+;;
+;;2引数のlogはR6RSで追加されたもので、z2を底としたz1の対数を
+;;返します。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name sin
+;;@description [R5RS][R6RS]
+;;超越関数です。複素数も扱えます。
+;;
+;;2引数のlogはR6RSで追加されたもので、z2を底としたz1の対数を
+;;返します。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name log
+;;@description [R5RS][R6RS]
+;;超越関数です。複素数も扱えます。
+;;
+;;2引数のlogはR6RSで追加されたもので、z2を底としたz1の対数を
+;;返します。
+;;
+;;@param z1 
+;;@param z2 
+
+;;;;;
+;;@type Function
+;;@name log
+;;@description [R5RS][R6RS]
+;;超越関数です。複素数も扱えます。
+;;
+;;2引数のlogはR6RSで追加されたもので、z2を底としたz1の対数を
+;;返します。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name exp
+;;@description [R5RS][R6RS]
+;;超越関数です。複素数も扱えます。
+;;
+;;2引数のlogはR6RSで追加されたもので、z2を底としたz1の対数を
+;;返します。
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name round
+;;@description [R5RS]
+;;引数xは実数でなければなりません。floorとceilingはそれぞれ
+;;xを越えない最大の整数と、xを下回らない最小の整数を返します。
+;;truncateはxの小数部をゼロの方向に向かって切捨てた整数を返します。
+;;roundはxに最も近い整数を返します。xの
+;;小数部が0.5ぴったりだった場合はroundは最も近い偶数を返します。
+;;
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name truncate
+;;@description [R5RS]
+;;引数xは実数でなければなりません。floorとceilingはそれぞれ
+;;xを越えない最大の整数と、xを下回らない最小の整数を返します。
+;;truncateはxの小数部をゼロの方向に向かって切捨てた整数を返します。
+;;roundはxに最も近い整数を返します。xの
+;;小数部が0.5ぴったりだった場合はroundは最も近い偶数を返します。
+;;
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name ceiling
+;;@description [R5RS]
+;;引数xは実数でなければなりません。floorとceilingはそれぞれ
+;;xを越えない最大の整数と、xを下回らない最小の整数を返します。
+;;truncateはxの小数部をゼロの方向に向かって切捨てた整数を返します。
+;;roundはxに最も近い整数を返します。xの
+;;小数部が0.5ぴったりだった場合はroundは最も近い偶数を返します。
+;;
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name floor
+;;@description [R5RS]
+;;引数xは実数でなければなりません。floorとceilingはそれぞれ
+;;xを越えない最大の整数と、xを下回らない最小の整数を返します。
+;;truncateはxの小数部をゼロの方向に向かって切捨てた整数を返します。
+;;roundはxに最も近い整数を返します。xの
+;;小数部が0.5ぴったりだった場合はroundは最も近い偶数を返します。
+;;
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name denominator
+;;@description [R5RS]
+;;有理数qの分子と分母をそれぞれ返します。
+;;
+;;@param q 
+
+;;;;;
+;;@type Function
+;;@name numerator
+;;@description [R5RS]
+;;有理数qの分子と分母をそれぞれ返します。
+;;
+;;@param q 
+
+;;;;;
+;;@type Function
+;;@name lcm
+;;@description [R5RS]
+;;与えられた整数の、最大公約数と最小公倍数をそれぞれ返します。
+;;
+;;@param n 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name gcd
+;;@description [R5RS]
+;;与えられた整数の、最大公約数と最小公倍数をそれぞれ返します。
+;;
+;;@param n 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name div0-and-mod0
+;;@description [R6RS]
+;;これらはR6RSで導入された整数除算手続きです。
+;;quotient, modulo, remainderと違い、
+;;これらの手続きは整数でない値を取ることもできます。
+;;被除数xには任意の実数、除数yにはゼロ以外の実数が許されます。
+;;
+;;divは整数nを、modは実数mを返し、
+;;それらは以下の関係を満たします。
+;;
+;;  x = n y + m
+;;  0 <= m < |y|
+;;
+;;例:
+;;example:
+;;  (div 123 10)     ==> 12
+;;  (mod 123 10)     ==> 3
+;;  
+;;  (div 123 -10)    ==> -12
+;;  (mod 123 -10)    ==> 3
+;;  
+;;  (div -123 10)    ==> -13
+;;  (mod -123 10)    ==> 7
+;;  
+;;  (div -123 -10)   ==> 13
+;;  (mod -123 -10)   ==> 7
+;;  
+;;  (div 123/7 10/9) ==> 15
+;;  (mod 123/7 10/9) ==> 19/21
+;;  ;; 123/7 = 10/9 * 15 + 19/21
+;;  
+;;  (div 14.625 3.75) ==> 3.0
+;;  (mod 14.625 3.75) ==> 3.375
+;;  ;; 14.625 = 3.75 * 3.0 + 3.375
+;;
+;;xが非負の整数、yが整数である場合は、
+;;divとmodの結果はquotientとremainder
+;;の結果に一致します。しかしxが負になると結果は異なります。
+;;
+;;div-and-modはdivとmodを同時に計算し、
+;;結果を二つの値で返します。
+;;
+;;div0とmod0は、mの値域が異なる以外は同じです。
+;;
+;;  x = n y + m
+;;  -|y|/2 <= m < |y|/2
+;;
+;;example:
+;;  (div0 123 10)   ==> 12
+;;  (mod0 123 10)   ==> 3
+;;  
+;;  (div0 127 10)   ==> 13
+;;  (mod0 127 10)   ==> -3
+;;  
+;;  (div0 127 -10)  ==> -13
+;;  (mod0 127 -10)  ==> -3
+;;  
+;;  (div0 -127 10)  ==> -13
+;;  (mod0 -127 10)  ==> 3
+;;  
+;;  (div0 -127 -10) ==> 13
+;;  (mod0 -127 -10) ==> 3
+;;
+;;div0-and-mod0はdiv0とmod0を同時に計算し、
+;;結果を二つの値で返します。
+;;
+;;@param x 
+;;@param y 
+
+;;;;;
+;;@type Function
+;;@name mod0
+;;@description [R6RS]
+;;これらはR6RSで導入された整数除算手続きです。
+;;quotient, modulo, remainderと違い、
+;;これらの手続きは整数でない値を取ることもできます。
+;;被除数xには任意の実数、除数yにはゼロ以外の実数が許されます。
+;;
+;;divは整数nを、modは実数mを返し、
+;;それらは以下の関係を満たします。
+;;
+;;  x = n y + m
+;;  0 <= m < |y|
+;;
+;;例:
+;;example:
+;;  (div 123 10)     ==> 12
+;;  (mod 123 10)     ==> 3
+;;  
+;;  (div 123 -10)    ==> -12
+;;  (mod 123 -10)    ==> 3
+;;  
+;;  (div -123 10)    ==> -13
+;;  (mod -123 10)    ==> 7
+;;  
+;;  (div -123 -10)   ==> 13
+;;  (mod -123 -10)   ==> 7
+;;  
+;;  (div 123/7 10/9) ==> 15
+;;  (mod 123/7 10/9) ==> 19/21
+;;  ;; 123/7 = 10/9 * 15 + 19/21
+;;  
+;;  (div 14.625 3.75) ==> 3.0
+;;  (mod 14.625 3.75) ==> 3.375
+;;  ;; 14.625 = 3.75 * 3.0 + 3.375
+;;
+;;xが非負の整数、yが整数である場合は、
+;;divとmodの結果はquotientとremainder
+;;の結果に一致します。しかしxが負になると結果は異なります。
+;;
+;;div-and-modはdivとmodを同時に計算し、
+;;結果を二つの値で返します。
+;;
+;;div0とmod0は、mの値域が異なる以外は同じです。
+;;
+;;  x = n y + m
+;;  -|y|/2 <= m < |y|/2
+;;
+;;example:
+;;  (div0 123 10)   ==> 12
+;;  (mod0 123 10)   ==> 3
+;;  
+;;  (div0 127 10)   ==> 13
+;;  (mod0 127 10)   ==> -3
+;;  
+;;  (div0 127 -10)  ==> -13
+;;  (mod0 127 -10)  ==> -3
+;;  
+;;  (div0 -127 10)  ==> -13
+;;  (mod0 -127 10)  ==> 3
+;;  
+;;  (div0 -127 -10) ==> 13
+;;  (mod0 -127 -10) ==> 3
+;;
+;;div0-and-mod0はdiv0とmod0を同時に計算し、
+;;結果を二つの値で返します。
+;;
+;;@param x 
+;;@param y 
+
+;;;;;
+;;@type Function
+;;@name div0
+;;@description [R6RS]
+;;これらはR6RSで導入された整数除算手続きです。
+;;quotient, modulo, remainderと違い、
+;;これらの手続きは整数でない値を取ることもできます。
+;;被除数xには任意の実数、除数yにはゼロ以外の実数が許されます。
+;;
+;;divは整数nを、modは実数mを返し、
+;;それらは以下の関係を満たします。
+;;
+;;  x = n y + m
+;;  0 <= m < |y|
+;;
+;;例:
+;;example:
+;;  (div 123 10)     ==> 12
+;;  (mod 123 10)     ==> 3
+;;  
+;;  (div 123 -10)    ==> -12
+;;  (mod 123 -10)    ==> 3
+;;  
+;;  (div -123 10)    ==> -13
+;;  (mod -123 10)    ==> 7
+;;  
+;;  (div -123 -10)   ==> 13
+;;  (mod -123 -10)   ==> 7
+;;  
+;;  (div 123/7 10/9) ==> 15
+;;  (mod 123/7 10/9) ==> 19/21
+;;  ;; 123/7 = 10/9 * 15 + 19/21
+;;  
+;;  (div 14.625 3.75) ==> 3.0
+;;  (mod 14.625 3.75) ==> 3.375
+;;  ;; 14.625 = 3.75 * 3.0 + 3.375
+;;
+;;xが非負の整数、yが整数である場合は、
+;;divとmodの結果はquotientとremainder
+;;の結果に一致します。しかしxが負になると結果は異なります。
+;;
+;;div-and-modはdivとmodを同時に計算し、
+;;結果を二つの値で返します。
+;;
+;;div0とmod0は、mの値域が異なる以外は同じです。
+;;
+;;  x = n y + m
+;;  -|y|/2 <= m < |y|/2
+;;
+;;example:
+;;  (div0 123 10)   ==> 12
+;;  (mod0 123 10)   ==> 3
+;;  
+;;  (div0 127 10)   ==> 13
+;;  (mod0 127 10)   ==> -3
+;;  
+;;  (div0 127 -10)  ==> -13
+;;  (mod0 127 -10)  ==> -3
+;;  
+;;  (div0 -127 10)  ==> -13
+;;  (mod0 -127 10)  ==> 3
+;;  
+;;  (div0 -127 -10) ==> 13
+;;  (mod0 -127 -10) ==> 3
+;;
+;;div0-and-mod0はdiv0とmod0を同時に計算し、
+;;結果を二つの値で返します。
+;;
+;;@param x 
+;;@param y 
+
+;;;;;
+;;@type Function
+;;@name div-and-mod
+;;@description [R6RS]
+;;これらはR6RSで導入された整数除算手続きです。
+;;quotient, modulo, remainderと違い、
+;;これらの手続きは整数でない値を取ることもできます。
+;;被除数xには任意の実数、除数yにはゼロ以外の実数が許されます。
+;;
+;;divは整数nを、modは実数mを返し、
+;;それらは以下の関係を満たします。
+;;
+;;  x = n y + m
+;;  0 <= m < |y|
+;;
+;;例:
+;;example:
+;;  (div 123 10)     ==> 12
+;;  (mod 123 10)     ==> 3
+;;  
+;;  (div 123 -10)    ==> -12
+;;  (mod 123 -10)    ==> 3
+;;  
+;;  (div -123 10)    ==> -13
+;;  (mod -123 10)    ==> 7
+;;  
+;;  (div -123 -10)   ==> 13
+;;  (mod -123 -10)   ==> 7
+;;  
+;;  (div 123/7 10/9) ==> 15
+;;  (mod 123/7 10/9) ==> 19/21
+;;  ;; 123/7 = 10/9 * 15 + 19/21
+;;  
+;;  (div 14.625 3.75) ==> 3.0
+;;  (mod 14.625 3.75) ==> 3.375
+;;  ;; 14.625 = 3.75 * 3.0 + 3.375
+;;
+;;xが非負の整数、yが整数である場合は、
+;;divとmodの結果はquotientとremainder
+;;の結果に一致します。しかしxが負になると結果は異なります。
+;;
+;;div-and-modはdivとmodを同時に計算し、
+;;結果を二つの値で返します。
+;;
+;;div0とmod0は、mの値域が異なる以外は同じです。
+;;
+;;  x = n y + m
+;;  -|y|/2 <= m < |y|/2
+;;
+;;example:
+;;  (div0 123 10)   ==> 12
+;;  (mod0 123 10)   ==> 3
+;;  
+;;  (div0 127 10)   ==> 13
+;;  (mod0 127 10)   ==> -3
+;;  
+;;  (div0 127 -10)  ==> -13
+;;  (mod0 127 -10)  ==> -3
+;;  
+;;  (div0 -127 10)  ==> -13
+;;  (mod0 -127 10)  ==> 3
+;;  
+;;  (div0 -127 -10) ==> 13
+;;  (mod0 -127 -10) ==> 3
+;;
+;;div0-and-mod0はdiv0とmod0を同時に計算し、
+;;結果を二つの値で返します。
+;;
+;;@param x 
+;;@param y 
+
+;;;;;
+;;@type Function
+;;@name mod
+;;@description [R6RS]
+;;これらはR6RSで導入された整数除算手続きです。
+;;quotient, modulo, remainderと違い、
+;;これらの手続きは整数でない値を取ることもできます。
+;;被除数xには任意の実数、除数yにはゼロ以外の実数が許されます。
+;;
+;;divは整数nを、modは実数mを返し、
+;;それらは以下の関係を満たします。
+;;
+;;  x = n y + m
+;;  0 <= m < |y|
+;;
+;;例:
+;;example:
+;;  (div 123 10)     ==> 12
+;;  (mod 123 10)     ==> 3
+;;  
+;;  (div 123 -10)    ==> -12
+;;  (mod 123 -10)    ==> 3
+;;  
+;;  (div -123 10)    ==> -13
+;;  (mod -123 10)    ==> 7
+;;  
+;;  (div -123 -10)   ==> 13
+;;  (mod -123 -10)   ==> 7
+;;  
+;;  (div 123/7 10/9) ==> 15
+;;  (mod 123/7 10/9) ==> 19/21
+;;  ;; 123/7 = 10/9 * 15 + 19/21
+;;  
+;;  (div 14.625 3.75) ==> 3.0
+;;  (mod 14.625 3.75) ==> 3.375
+;;  ;; 14.625 = 3.75 * 3.0 + 3.375
+;;
+;;xが非負の整数、yが整数である場合は、
+;;divとmodの結果はquotientとremainder
+;;の結果に一致します。しかしxが負になると結果は異なります。
+;;
+;;div-and-modはdivとmodを同時に計算し、
+;;結果を二つの値で返します。
+;;
+;;div0とmod0は、mの値域が異なる以外は同じです。
+;;
+;;  x = n y + m
+;;  -|y|/2 <= m < |y|/2
+;;
+;;example:
+;;  (div0 123 10)   ==> 12
+;;  (mod0 123 10)   ==> 3
+;;  
+;;  (div0 127 10)   ==> 13
+;;  (mod0 127 10)   ==> -3
+;;  
+;;  (div0 127 -10)  ==> -13
+;;  (mod0 127 -10)  ==> -3
+;;  
+;;  (div0 -127 10)  ==> -13
+;;  (mod0 -127 10)  ==> 3
+;;  
+;;  (div0 -127 -10) ==> 13
+;;  (mod0 -127 -10) ==> 3
+;;
+;;div0-and-mod0はdiv0とmod0を同時に計算し、
+;;結果を二つの値で返します。
+;;
+;;@param x 
+;;@param y 
+
+;;;;;
+;;@type Function
+;;@name div
+;;@description [R6RS]
+;;これらはR6RSで導入された整数除算手続きです。
+;;quotient, modulo, remainderと違い、
+;;これらの手続きは整数でない値を取ることもできます。
+;;被除数xには任意の実数、除数yにはゼロ以外の実数が許されます。
+;;
+;;divは整数nを、modは実数mを返し、
+;;それらは以下の関係を満たします。
+;;
+;;  x = n y + m
+;;  0 <= m < |y|
+;;
+;;例:
+;;example:
+;;  (div 123 10)     ==> 12
+;;  (mod 123 10)     ==> 3
+;;  
+;;  (div 123 -10)    ==> -12
+;;  (mod 123 -10)    ==> 3
+;;  
+;;  (div -123 10)    ==> -13
+;;  (mod -123 10)    ==> 7
+;;  
+;;  (div -123 -10)   ==> 13
+;;  (mod -123 -10)   ==> 7
+;;  
+;;  (div 123/7 10/9) ==> 15
+;;  (mod 123/7 10/9) ==> 19/21
+;;  ;; 123/7 = 10/9 * 15 + 19/21
+;;  
+;;  (div 14.625 3.75) ==> 3.0
+;;  (mod 14.625 3.75) ==> 3.375
+;;  ;; 14.625 = 3.75 * 3.0 + 3.375
+;;
+;;xが非負の整数、yが整数である場合は、
+;;divとmodの結果はquotientとremainder
+;;の結果に一致します。しかしxが負になると結果は異なります。
+;;
+;;div-and-modはdivとmodを同時に計算し、
+;;結果を二つの値で返します。
+;;
+;;div0とmod0は、mの値域が異なる以外は同じです。
+;;
+;;  x = n y + m
+;;  -|y|/2 <= m < |y|/2
+;;
+;;example:
+;;  (div0 123 10)   ==> 12
+;;  (mod0 123 10)   ==> 3
+;;  
+;;  (div0 127 10)   ==> 13
+;;  (mod0 127 10)   ==> -3
+;;  
+;;  (div0 127 -10)  ==> -13
+;;  (mod0 127 -10)  ==> -3
+;;  
+;;  (div0 -127 10)  ==> -13
+;;  (mod0 -127 10)  ==> 3
+;;  
+;;  (div0 -127 -10) ==> 13
+;;  (mod0 -127 -10) ==> 3
+;;
+;;div0-and-mod0はdiv0とmod0を同時に計算し、
+;;結果を二つの値で返します。
+;;
+;;@param x 
+;;@param y 
+
+;;;;;
+;;@type Function
+;;@name modulo
+;;@description [R5RS]
+;;整数n1を整数n2で割った商(quotient)および余り(remainder, modulo)
+;;を返します。  n1とn2の両方が正確な数値の時のみ、戻り値は正確な数値になります。
+;;
+;;remainderとmodulo はどちらかの引数が負の時に異なる値を返します。
+;;Remainder R と商 Q とは次の関係があります。
+;;example:
+;;    n1 = Q * n2 + R
+;;ここで商について abs(Q) = floor(abs(n1)/abs(n2))
+;;ですから、Rの符号は常にn1と同じになります。
+;;
+;;一方、moduloはn2が正の時はn1の符号に関わらず期待したように動作します
+;;(例: (modulo -1 n2) == n2 - 1)。
+;;n2が負の場合は次の式によって正の場合にマップできます。
+;;example:
+;;    modulo(n1, n2) = @minus{}modulo(@minus{}n1, @minus{}n2)
+;;したがって、moduloの結果の符号は常にn2の符号と同じになります。
+;;example:
+;;  (remainder 10 3)    ==> 1
+;;  (modulo 10 3)       ==> 1
+;;  
+;;  (remainder -10 3)   ==> -1
+;;  (modulo -10 3)      ==> 2
+;;  
+;;  (remainder 10 -3)   ==> 1
+;;  (modulo 10 -3)      ==> -2
+;;  
+;;  (remainder -10 -3)  ==> -1
+;;  (modulo -10 -3)     ==> -1
+;;
+;;@param n1 
+;;@param n2 
+
+;;;;;
+;;@type Function
+;;@name remainder
+;;@description [R5RS]
+;;整数n1を整数n2で割った商(quotient)および余り(remainder, modulo)
+;;を返します。  n1とn2の両方が正確な数値の時のみ、戻り値は正確な数値になります。
+;;
+;;remainderとmodulo はどちらかの引数が負の時に異なる値を返します。
+;;Remainder R と商 Q とは次の関係があります。
+;;example:
+;;    n1 = Q * n2 + R
+;;ここで商について abs(Q) = floor(abs(n1)/abs(n2))
+;;ですから、Rの符号は常にn1と同じになります。
+;;
+;;一方、moduloはn2が正の時はn1の符号に関わらず期待したように動作します
+;;(例: (modulo -1 n2) == n2 - 1)。
+;;n2が負の場合は次の式によって正の場合にマップできます。
+;;example:
+;;    modulo(n1, n2) = @minus{}modulo(@minus{}n1, @minus{}n2)
+;;したがって、moduloの結果の符号は常にn2の符号と同じになります。
+;;example:
+;;  (remainder 10 3)    ==> 1
+;;  (modulo 10 3)       ==> 1
+;;  
+;;  (remainder -10 3)   ==> -1
+;;  (modulo -10 3)      ==> 2
+;;  
+;;  (remainder 10 -3)   ==> 1
+;;  (modulo 10 -3)      ==> -2
+;;  
+;;  (remainder -10 -3)  ==> -1
+;;  (modulo -10 -3)     ==> -1
+;;
+;;@param n1 
+;;@param n2 
+
+;;;;;
+;;@type Function
+;;@name quotient
+;;@description [R5RS]
+;;整数n1を整数n2で割った商(quotient)および余り(remainder, modulo)
+;;を返します。  n1とn2の両方が正確な数値の時のみ、戻り値は正確な数値になります。
+;;
+;;remainderとmodulo はどちらかの引数が負の時に異なる値を返します。
+;;Remainder R と商 Q とは次の関係があります。
+;;example:
+;;    n1 = Q * n2 + R
+;;ここで商について abs(Q) = floor(abs(n1)/abs(n2))
+;;ですから、Rの符号は常にn1と同じになります。
+;;
+;;一方、moduloはn2が正の時はn1の符号に関わらず期待したように動作します
+;;(例: (modulo -1 n2) == n2 - 1)。
+;;n2が負の場合は次の式によって正の場合にマップできます。
+;;example:
+;;    modulo(n1, n2) = @minus{}modulo(@minus{}n1, @minus{}n2)
+;;したがって、moduloの結果の符号は常にn2の符号と同じになります。
+;;example:
+;;  (remainder 10 3)    ==> 1
+;;  (modulo 10 3)       ==> 1
+;;  
+;;  (remainder -10 3)   ==> -1
+;;  (modulo -10 3)      ==> 2
+;;  
+;;  (remainder 10 -3)   ==> 1
+;;  (modulo 10 -3)      ==> -2
+;;  
+;;  (remainder -10 -3)  ==> -1
+;;  (modulo -10 -3)     ==> -1
+;;
+;;@param n1 
+;;@param n2 
+
+;;;;;
+;;@type Function
+;;@name abs
+;;@description [R5RS+]
+;;実数のzに対しては、その絶対値を返します。
+;;複素数のzに対しては、そのmagnitudeを返します。
+;;複素数を扱うのはGaucheの拡張です。
+;;example:
+;;  (abs -1)   ==> 1
+;;  (abs -1.0) ==> 1.0
+;;  (abs 1+i)  ==> 1.4142135623731
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name /
+;;@description [R5RS]
+;;一つだけ数値が与えられた場合、それぞれnegationと逆数を返します。
+;;
+;;2つ以上の数値が与えられた場合、それぞれ次の結果を返します。
+;;example:
+;;  z1 - z2 - z3 ...
+;;  z1 / z2 / z3 ...
+;;
+;;example:
+;;  (- 3)       ==> -3
+;;  (- -3.0)    ==> 3.0
+;;  (- 5+2i)    ==> -5.0-2.0i
+;;  (/ 3)       ==> 1/3
+;;  (/ 5+2i)    ==> 0.172413793103448-0.0689655172413793i
+;;  
+;;  (- 5 2 1)     ==> 2
+;;  (- 5 2.0 1)   ==> 2.0
+;;  (- 5+3i -i)   ==> 5.0+2.0i
+;;  (/ 14 6)      ==> 7/3
+;;  (/ 6+2i 2)    ==> 3.0+1.0i
+;;
+;;註：0.8.8までGaucheは正確な有理数をサポートしておらず、
+;;それ以前は除数と被除数がともに正確な数であっても商が整数にならなければ
+;;結果は非正確な数へと変換されていました。今のGaucheはそうではありません。
+;;
+;;既存のコードが以前のGaucheのふるまいを当てにしていた場合、
+;;速度が大きく低下する可能性があります。正確な有理数の演算は
+;;浮動小数点数の演算よりはるかに遅いからです。
+;;(正確な結果を得たいのでない場合は)下に述べる/.を使うと良いでしょう。
+;;
+;;@param z1 
+;;@param z2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name -
+;;@description [R5RS]
+;;一つだけ数値が与えられた場合、それぞれnegationと逆数を返します。
+;;
+;;2つ以上の数値が与えられた場合、それぞれ次の結果を返します。
+;;example:
+;;  z1 - z2 - z3 ...
+;;  z1 / z2 / z3 ...
+;;
+;;example:
+;;  (- 3)       ==> -3
+;;  (- -3.0)    ==> 3.0
+;;  (- 5+2i)    ==> -5.0-2.0i
+;;  (/ 3)       ==> 1/3
+;;  (/ 5+2i)    ==> 0.172413793103448-0.0689655172413793i
+;;  
+;;  (- 5 2 1)     ==> 2
+;;  (- 5 2.0 1)   ==> 2.0
+;;  (- 5+3i -i)   ==> 5.0+2.0i
+;;  (/ 14 6)      ==> 7/3
+;;  (/ 6+2i 2)    ==> 3.0+1.0i
+;;
+;;註：0.8.8までGaucheは正確な有理数をサポートしておらず、
+;;それ以前は除数と被除数がともに正確な数であっても商が整数にならなければ
+;;結果は非正確な数へと変換されていました。今のGaucheはそうではありません。
+;;
+;;既存のコードが以前のGaucheのふるまいを当てにしていた場合、
+;;速度が大きく低下する可能性があります。正確な有理数の演算は
+;;浮動小数点数の演算よりはるかに遅いからです。
+;;(正確な結果を得たいのでない場合は)下に述べる/.を使うと良いでしょう。
+;;
+;;@param z1 
+;;@param z2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name +
+;;@description [R5RS]
+;;与えられた数の和と積をそれぞれ返します。引数が与えられない場合、
+;;(+) は 0、 (*) は 1 となります。
+;;
+;;@param z 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name min
+;;@description [R5RS]
+;;与えられた実数のうち、それぞれ最大と最小のものを返します。
+;;
+;;@param x1 
+;;@param x2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name max
+;;@description [R5RS]
+;;与えられた実数のうち、それぞれ最大と最小のものを返します。
+;;
+;;@param x1 
+;;@param x2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name >=
+;;@description [R5RS]
+;;与えられた全ての実数xがそれぞれ単調増加、単調非減少、単調減少、単調非増加している
+;;場合に#tを返します。
+;;
+;;@param x1 
+;;@param x2 
+;;@param x3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name >
+;;@description [R5RS]
+;;与えられた全ての実数xがそれぞれ単調増加、単調非減少、単調減少、単調非増加している
+;;場合に#tを返します。
+;;
+;;@param x1 
+;;@param x2 
+;;@param x3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name <=
+;;@description [R5RS]
+;;与えられた全ての実数xがそれぞれ単調増加、単調非減少、単調減少、単調非増加している
+;;場合に#tを返します。
+;;
+;;@param x1 
+;;@param x2 
+;;@param x3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name <
+;;@description [R5RS]
+;;与えられた全ての実数xがそれぞれ単調増加、単調非減少、単調減少、単調非増加している
+;;場合に#tを返します。
+;;
+;;@param x1 
+;;@param x2 
+;;@param x3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name =
+;;@description [R5RS]
+;;与えられた全ての数値zが等しければ#tを返します。
+;;
+;;example:
+;;  (= 2 2)          ==> #t
+;;  (= 2 3)          ==> #f
+;;  (= 2 2.0)        ==> #t
+;;  (= 2 2.0 2.0+0i) ==> #t
+;;  (= 2/4 1/2)      ==> #t
+;;
+;;@param z1 
+;;@param z2 
+;;@param z3 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name even?
+;;@description [R5RS]
+;;整数nがそれぞれ奇数または偶数なら#tを返します。
+;;非整数を渡すとエラーになります。
+;;
+;;example:
+;;  (odd? 3)     ==> #t
+;;  (even? 3)    ==> #f
+;;  (odd? 3.0)   ==> #t
+;;
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name odd?
+;;@description [R5RS]
+;;整数nがそれぞれ奇数または偶数なら#tを返します。
+;;非整数を渡すとエラーになります。
+;;
+;;example:
+;;  (odd? 3)     ==> #t
+;;  (even? 3)    ==> #f
+;;  (odd? 3.0)   ==> #t
+;;
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name negative?
+;;@description [R5RS]
+;;実数xがそれぞれ正または負なら#tを返します。
+;;非実数を渡すとエラーになります。
+;;
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name positive?
+;;@description [R5RS]
+;;実数xがそれぞれ正または負なら#tを返します。
+;;非実数を渡すとエラーになります。
+;;
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name zero?
+;;@description [R5RS]
+;;数値zがゼロに等しければ#tを返します。
+;;
+;;example:
+;;  (zero? 1)        ==> #f
+;;  (zero? 0)        ==> #t
+;;  (zero? 0.0)      ==> #t
+;;  (zero? 0.0+0.0i) ==> #t
+;;
+;;@param z 
+
+;;;;;
+;;@type Function
+;;@name inexact?
+;;@description [R5RS]
+;;objがそれぞれ正確な数、不正確な数ならば#tを返します。
+;;
+;;example:
+;;  (exact? 1)       ==> #t
+;;  (exact? 1.0)     ==> #f
+;;  (inexact? 1)     ==> #f
+;;  (inexact? 1.0)   ==> #t
+;;  
+;;  (exact? (modulo 5 3)) ==> #t
+;;  (inexact? (modulo 5 3.0)) ==> #f
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name exact?
+;;@description [R5RS]
+;;objがそれぞれ正確な数、不正確な数ならば#tを返します。
+;;
+;;example:
+;;  (exact? 1)       ==> #t
+;;  (exact? 1.0)     ==> #f
+;;  (inexact? 1)     ==> #f
+;;  (inexact? 1.0)   ==> #t
+;;  
+;;  (exact? (modulo 5 3)) ==> #t
+;;  (inexact? (modulo 5 3.0)) ==> #f
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name integer-valued?
+;;@description [R6RS]
+;;Gaucheではこれらの手続きはそれぞれreal?、rational?、
+;;およびinteger?の別名となっています。これらはR6RSコードとの互換性のために
+;;提供されています。
+;;
+;;R6RSで規定されている、これらの手続きと-valuedがついていない手続きの違いは、
+;;これらの手続きは非正確なゼロの虚部を持つ複素数に対しても#tを返すという
+;;ことです。Gaucheではゼロの虚部を持つ複素数は実数とみなしているので、
+;;この違いは現れません。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name rational-valued?
+;;@description [R6RS]
+;;Gaucheではこれらの手続きはそれぞれreal?、rational?、
+;;およびinteger?の別名となっています。これらはR6RSコードとの互換性のために
+;;提供されています。
+;;
+;;R6RSで規定されている、これらの手続きと-valuedがついていない手続きの違いは、
+;;これらの手続きは非正確なゼロの虚部を持つ複素数に対しても#tを返すという
+;;ことです。Gaucheではゼロの虚部を持つ複素数は実数とみなしているので、
+;;この違いは現れません。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name real-valued?
+;;@description [R6RS]
+;;Gaucheではこれらの手続きはそれぞれreal?、rational?、
+;;およびinteger?の別名となっています。これらはR6RSコードとの互換性のために
+;;提供されています。
+;;
+;;R6RSで規定されている、これらの手続きと-valuedがついていない手続きの違いは、
+;;これらの手続きは非正確なゼロの虚部を持つ複素数に対しても#tを返すという
+;;ことです。Gaucheではゼロの虚部を持つ複素数は実数とみなしているので、
+;;この違いは現れません。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name integer?
+;;@description [R5RS]
+;;objがそれぞれ数、複素数、実数、有理数、整数ならば#tを返します。
+;;Gaucheでは、数の集合は複素数の集合と同一であり、有理数の集合は
+;;+inf.0, -inf.0, +nan.0を除いた実数の集合と同一
+;;(浮動小数点数が有限精度であるため)です。
+;;
+;;example:
+;;  (complex? 3+4i)   ==> #t
+;;  (complex? 3)      ==> #t
+;;  (real? 3)         ==> #t
+;;  (real? -2.5+0.0i) ==> #t
+;;  (real? #e1e10)    ==> #t
+;;  (integer? 3+0i)   ==> #t
+;;  (integer? 3.0)    ==> #t
+;;  
+;;  (real? +inf.0)     ==> #t
+;;  (real? +nan.0)     ==> #t
+;;  (rational? +inf.0) ==> #f
+;;  (rational? +nan.0) ==> #f
+;;
+;;R6RSでは正確性についてより厳密な定義がなされ、特に
+;;非正確なゼロを虚数部に持つ複素数は実数ではないと規定されています。
+;;Gaucheは今のところ正確な複素数を持たず、虚部がゼロの複素数は
+;;自動的に実数に変換されます。従ってR6RSのコードのうち、
+;;(real? 1+0.0i)が#fであることを当てにしているものは
+;;うまく動かないでしょう。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name rational?
+;;@description [R5RS]
+;;objがそれぞれ数、複素数、実数、有理数、整数ならば#tを返します。
+;;Gaucheでは、数の集合は複素数の集合と同一であり、有理数の集合は
+;;+inf.0, -inf.0, +nan.0を除いた実数の集合と同一
+;;(浮動小数点数が有限精度であるため)です。
+;;
+;;example:
+;;  (complex? 3+4i)   ==> #t
+;;  (complex? 3)      ==> #t
+;;  (real? 3)         ==> #t
+;;  (real? -2.5+0.0i) ==> #t
+;;  (real? #e1e10)    ==> #t
+;;  (integer? 3+0i)   ==> #t
+;;  (integer? 3.0)    ==> #t
+;;  
+;;  (real? +inf.0)     ==> #t
+;;  (real? +nan.0)     ==> #t
+;;  (rational? +inf.0) ==> #f
+;;  (rational? +nan.0) ==> #f
+;;
+;;R6RSでは正確性についてより厳密な定義がなされ、特に
+;;非正確なゼロを虚数部に持つ複素数は実数ではないと規定されています。
+;;Gaucheは今のところ正確な複素数を持たず、虚部がゼロの複素数は
+;;自動的に実数に変換されます。従ってR6RSのコードのうち、
+;;(real? 1+0.0i)が#fであることを当てにしているものは
+;;うまく動かないでしょう。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name real?
+;;@description [R5RS]
+;;objがそれぞれ数、複素数、実数、有理数、整数ならば#tを返します。
+;;Gaucheでは、数の集合は複素数の集合と同一であり、有理数の集合は
+;;+inf.0, -inf.0, +nan.0を除いた実数の集合と同一
+;;(浮動小数点数が有限精度であるため)です。
+;;
+;;example:
+;;  (complex? 3+4i)   ==> #t
+;;  (complex? 3)      ==> #t
+;;  (real? 3)         ==> #t
+;;  (real? -2.5+0.0i) ==> #t
+;;  (real? #e1e10)    ==> #t
+;;  (integer? 3+0i)   ==> #t
+;;  (integer? 3.0)    ==> #t
+;;  
+;;  (real? +inf.0)     ==> #t
+;;  (real? +nan.0)     ==> #t
+;;  (rational? +inf.0) ==> #f
+;;  (rational? +nan.0) ==> #f
+;;
+;;R6RSでは正確性についてより厳密な定義がなされ、特に
+;;非正確なゼロを虚数部に持つ複素数は実数ではないと規定されています。
+;;Gaucheは今のところ正確な複素数を持たず、虚部がゼロの複素数は
+;;自動的に実数に変換されます。従ってR6RSのコードのうち、
+;;(real? 1+0.0i)が#fであることを当てにしているものは
+;;うまく動かないでしょう。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name complex?
+;;@description [R5RS]
+;;objがそれぞれ数、複素数、実数、有理数、整数ならば#tを返します。
+;;Gaucheでは、数の集合は複素数の集合と同一であり、有理数の集合は
+;;+inf.0, -inf.0, +nan.0を除いた実数の集合と同一
+;;(浮動小数点数が有限精度であるため)です。
+;;
+;;example:
+;;  (complex? 3+4i)   ==> #t
+;;  (complex? 3)      ==> #t
+;;  (real? 3)         ==> #t
+;;  (real? -2.5+0.0i) ==> #t
+;;  (real? #e1e10)    ==> #t
+;;  (integer? 3+0i)   ==> #t
+;;  (integer? 3.0)    ==> #t
+;;  
+;;  (real? +inf.0)     ==> #t
+;;  (real? +nan.0)     ==> #t
+;;  (rational? +inf.0) ==> #f
+;;  (rational? +nan.0) ==> #f
+;;
+;;R6RSでは正確性についてより厳密な定義がなされ、特に
+;;非正確なゼロを虚数部に持つ複素数は実数ではないと規定されています。
+;;Gaucheは今のところ正確な複素数を持たず、虚部がゼロの複素数は
+;;自動的に実数に変換されます。従ってR6RSのコードのうち、
+;;(real? 1+0.0i)が#fであることを当てにしているものは
+;;うまく動かないでしょう。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name number?
+;;@description [R5RS]
+;;objがそれぞれ数、複素数、実数、有理数、整数ならば#tを返します。
+;;Gaucheでは、数の集合は複素数の集合と同一であり、有理数の集合は
+;;+inf.0, -inf.0, +nan.0を除いた実数の集合と同一
+;;(浮動小数点数が有限精度であるため)です。
+;;
+;;example:
+;;  (complex? 3+4i)   ==> #t
+;;  (complex? 3)      ==> #t
+;;  (real? 3)         ==> #t
+;;  (real? -2.5+0.0i) ==> #t
+;;  (real? #e1e10)    ==> #t
+;;  (integer? 3+0i)   ==> #t
+;;  (integer? 3.0)    ==> #t
+;;  
+;;  (real? +inf.0)     ==> #t
+;;  (real? +nan.0)     ==> #t
+;;  (rational? +inf.0) ==> #f
+;;  (rational? +nan.0) ==> #f
+;;
+;;R6RSでは正確性についてより厳密な定義がなされ、特に
+;;非正確なゼロを虚数部に持つ複素数は実数ではないと規定されています。
+;;Gaucheは今のところ正確な複素数を持たず、虚部がゼロの複素数は
+;;自動的に実数に変換されます。従ってR6RSのコードのうち、
+;;(real? 1+0.0i)が#fであることを当てにしているものは
+;;うまく動かないでしょう。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name equal?
+;;@description [R5RS+]
+;;obj1とobj2がリストやベクタなどの複合型である場合、
+;;equal?は再帰的に対応する要素同士をequal?で比較してゆきます。
+;;そうでなければ、equal?はeqv?と同じようにふるまいます。
+;;
+;;もしobj1とobj2が論理値、数値、文字、ペア、文字列、
+;;ベクタのいずれでもなく、かつ両者のクラスが等しい場合、equal?は
+;;ジェネリックファンクションobject-equal?を呼びます。
+;;object-equal?にメソッドを定義することにより、
+;;ユーザ定義のデータ型に対するequal?の振るまいを拡張することができます。
+;;
+;;example:
+;;  (equal? (list 1 2) (list 1 2)) ==> #t
+;;  (equal? "abc" "abc")           ==> #t
+;;  (equal? 100 100)               ==> #t
+;;  (equal? 100 100.0)             ==> #f
+;;
+;;註: obj1とobj2がともに循環構造を持っている場合、
+;;equal?は発散する可能性があります。
+;;かわりにisomorph? (Determine isomorphism参照) が使える
+;;かもしれません。
+;;
+;;@param obj1 
+;;@param obj2 
+
+;;;;;
+;;@type Function
+;;@name eqv?
+;;@description [R5RS]
+;;obj1とobj2がともに正確な数値、もしくはともに(NaN以外の)不正確な数値である場合、
+;;(= obj1 obj2)が真であれば#tが、偽であれば#fが
+;;返されます。
+;;obj1とobj2がともに文字である場合、
+;;(char=? obj1 obj2)が真であれば#tが、偽であれば#fが
+;;返されます。
+;;それ以外の場合は、Gaucheではeqv?はeq?と同じです。
+;;
+;;example:
+;;  (eqv? #\a #\a)             ==> #t
+;;  (eqv? #\a #\b)             ==> #f
+;;  (eqv? 1.0 1.0)             ==> #t
+;;  (eqv? 1 1)                 ==> #t
+;;  (eqv? 1 1.0)               ==> #f
+;;  (eqv? (list 'a) (list 'a)) ==> #f
+;;  (let ((x (list 'a)))
+;;    (eqv? x x))              ==> #t
+;;
+;;NaNの比較には少々奇妙なところがあります。数値比較は、引数に一つでもNaNが
+;;含まれていれば失敗します。したがって(= +nan.0 +nan.0)は常に#fと
+;;なります。けれども、(eq? +nan.0 +nan.0) や 
+;;(eqv? +nan.0 +nan.0)は#tを返すことがあるかもしれません。
+;;
+;;@param obj1 
+;;@param obj2 
+
+;;;;;
+;;@type Function
+;;@name eq?
+;;@description [R5RS]
+;;最も高速で、細かい区別ができる述語です。
+;;obj1とobj2がアロケートされる同じ型のオブジェクトで、
+;;かつ両者がメモリ上の全く同じ場所を占めるオブジェクトを指している場合に
+;;#tを返します。また、obj1とobj2がともに
+;;#f, #tあるいは()である場合も#tを返します。
+;;ポインタ比較と考えても良いでしょう。
+;;obj1とobj2がともに文字、あるいは数値であった場合の振るまいは
+;;Schemeの標準では定められていません。
+;;
+;;example:
+;;  (eq? #t #t)               ==> #t
+;;  (eq? #t #f)               ==> #f
+;;  (eq? 'a 'a)               ==> #t
+;;  (eq? 'a 'b)               ==> #f
+;;  (eq? (list 'a) (list 'a)) ==> #f
+;;  (let ((x (list 'a)))
+;;    (eq? x x))              ==> #t
+;;
+;;@param obj1 
+;;@param obj2 
+

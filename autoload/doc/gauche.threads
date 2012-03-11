@@ -1,0 +1,596 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name uncaught-exception-reason
+;;@description [SRFI-18]、[SRFI-21]
+;;<uncaught-exception>オブジェクトのreasonスロットの値を
+;;返します。
+;;SRFI-18との互換性のために提供されています。
+;;
+;;@param exc 
+
+;;;;;
+;;@type Function
+;;@name uncaught-exception?
+;;@description [SRFI-18]、[SRFI-21]
+;;これらの手続きは、objが特定のタイプの例外かどうかを検査します。
+;;SRFI-18との互換性のために提供されています。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name terminated-thread-exception?
+;;@description [SRFI-18]、[SRFI-21]
+;;これらの手続きは、objが特定のタイプの例外かどうかを検査します。
+;;SRFI-18との互換性のために提供されています。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name abandoned-mutex-exception?
+;;@description [SRFI-18]、[SRFI-21]
+;;これらの手続きは、objが特定のタイプの例外かどうかを検査します。
+;;SRFI-18との互換性のために提供されています。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name join-timeout-exception?
+;;@description [SRFI-18]、[SRFI-21]
+;;これらの手続きは、objが特定のタイプの例外かどうかを検査します。
+;;SRFI-18との互換性のために提供されています。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name atomic-update!
+;;@description Calls proc with the current values in atom
+;;while locking atom, and updates the values in atom
+;;by the returned values from proc.
+;;proc must take as many arguments as the number of
+;;values atom has, and must return the same number of
+;;values.
+;;
+;;The returned value(s) of proc is the result of
+;;atomic, unless timeout occurs.
+;;See above for timeout and timeout-val arguments.
+;;
+;;The following example shows a thread-safe counter.
+;;
+;;example:
+;;  (define a (atom 0))
+;;  
+;;  (atomic-update! a (cut + 1 <>))
+;;
+;;@param atom 
+;;@param proc 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name atomic
+;;@description Calls proc with the current values in atom,
+;;while locking atom.  proc must take
+;;as many arguments as the number of values atom has.
+;;
+;;The returned value(s) of proc is the result of
+;;atomic, unless timeout occurs.
+;;See above for timeout and timeout-val arguments.
+;;
+;;For example, the ref/count procedure
+;;in the following example counts the number of times
+;;the hashtable is referenced in thread-safe way.
+;;
+;;example:
+;;  (define a (atom (make-hash-table 'eq?) (list 0)))
+;;  
+;;  (define (ref/count a key)
+;;    (atomic a
+;;     (lambda (ht count-cell)
+;;       (inc! (car count-cell))
+;;       (hash-table-get h key))))
+;;
+;;@param atom 
+;;@param proc 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name atom-ref
+;;@description Returns index-th value of atom.
+;;See above for timeout and timeout-val arguments.
+;;
+;;example:
+;;  (define a (atom 'a 'b))
+;;  
+;;  (atom-ref a 0) ==> a
+;;  (atom-ref a 1) ==> b
+;;
+;;@param atom 
+;;@param :optional 
+;;@param index 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name atom?
+;;@description Returns #t iff obj is an atom.
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name atom
+;;@description Creates and returns an atom object with val ... as the
+;;initial values.
+;;
+;;@param val 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name condition-variable-broadcast!
+;;@description [SRFI-18]、[SRFI-21]
+;;cvで待機している全てのスレッドのブロックを解除します。
+;;
+;;@param cv 
+
+;;;;;
+;;@type Function
+;;@name condition-variable-signal!
+;;@description [SRFI-18]、[SRFI-21]
+;;cvで待機しているスレッドがある場合は、それらのうちの1つがスケジューラに
+;;より選択され、実行可能にされます。
+;;
+;;@param cv 
+
+;;;;;
+;;@type Function
+;;@name condition-variable-specific-set!
+;;@description [SRFI-18]、[SRFI-21]
+;;条件変数の固有の値を取得/セットします。
+;;
+;;@param cv 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name condition-variable-specific
+;;@description [SRFI-18]、[SRFI-21]
+;;条件変数の固有の値を取得/セットします。
+;;
+;;@param cv 
+
+;;;;;
+;;@type Function
+;;@name condition-variable-name
+;;@description [SRFI-18]、[SRFI-21]
+;;条件変数の名前を返します。
+;;
+;;@param cv 
+
+;;;;;
+;;@type Function
+;;@name make-condition-variable
+;;@description [SRFI-18]、[SRFI-21]
+;;新しい条件変数を返します。オプショナル引数nameで
+;;その名前を与えることができます。
+;;
+;;@param :optional 
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name condition-variable?
+;;@description [SRFI-18]、[SRFI-21]
+;;objが条件変数なら#t、そうでなければ#fを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name with-locking-mutex
+;;@description mutexをロックしてthunkを呼びます。次のように実装されています。
+;;example:
+;;  (define (with-locking-mutex mutex thunk)
+;;    (dynamic-wind
+;;     (lambda () (mutex-lock! mutex))
+;;     thunk
+;;     (lambda () (mutex-unlock! mutex))))
+;;
+;;@param mutex 
+;;@param thunk 
+
+;;;;;
+;;@type Function
+;;@name mutex-unlock!
+;;@description [SRFI-18]、[SRFI-21]
+;;mutexをアンロックします。mutexの状態は、unlocked/not-abandoned
+;;(ロックされておらず、放棄されていない状態)となります。
+;;呼び出しているスレッドにより所有されていないmutexをアンロックすることは
+;;許されています。
+;;
+;;オプショナル引数のconditional-variableが与えられている場合、
+;;mutex-unlock!は``条件変数待機''の動作も行います(例えば、POSIXスレッドの
+;;pthread_cond_wait)。
+;;現在のスレッドはmutexをアンロックし、
+;;condition-variableの待ち状態に入る動作をアトミックに行います。
+;;スレッドは、他のスレッドがcondition-variableにシグナルを通知するか
+;;(下記のcondition-variable-signal!とcondition-variable-broadcast!を
+;;見て下さい)、
+;;timeoutが与えられていてそれに達すると、ブロックが解除されます。
+;;引数timeoutは、絶対的な時間を表す<time>オブジェクト(Time参照)、
+;;相対的な時間を秒数で表す実数、タイムアウトしないことを表す#fのいずれかです。
+;;ブロックが解除された時に、必ずしも条件が満たされているとは限らないので、
+;;次に挙げる例(SRFI-18のドキュメントより引用)のように、
+;;呼び出したスレッドはmutexのロックを再獲得して条件を検査するべきです。
+;;
+;;example:
+;;  (let loop ()
+;;    (mutex-lock! m)
+;;    (if (condition-is-true?)
+;;        (begin
+;;          (do-something-when-condition-is-true)
+;;          (mutex-unlock! m))
+;;        (begin
+;;          (mutex-unlock! m cv)
+;;          (loop))))
+;;
+;;mutex-unlock!の戻り値は、タイムアウトした場合に#f、
+;;それ以外の場合は#tとなります。
+;;
+;;@param mutex 
+;;@param :optional 
+;;@param condition-variable 
+;;@param timeout 
+
+;;;;;
+;;@type Function
+;;@name mutex-lock!
+;;@description [SRFI-18]、[SRFI-21]
+;;mutexをロックします。mutexがunlocked/not-abandoned(
+;;ロックされておらず放棄されていない状態)なら、
+;;この手続きはその状態を排他的なlocked(ロックされた状態)に変更します。
+;;デフォルトでは、mutexはlocked/owned(ロックされ、所有された状態)になり、
+;;所有者は呼び出したスレッドです。
+;;他の所有しているスレッドを、引数threadを与えることもできます。
+;;引数threadに#fが与えられると、mutexはlocked/not-owned
+;;(ロックされ所有されていない状態)になります。
+;;
+;;mutexがunlocked/abandoned(ロックされておらず放棄された状態)ならば、それはつまり、
+;;他の何らかのスレッドがそのロックを解放せずに終了した場合、
+;;この手続きはmutexの状態を変更した後に、'abandoned mutex exception'
+;;(Thread exceptions参照)を通知します。
+;;
+;;mutexがlocked(ロックされた状態)で、timeoutが省略されるか#fならば、
+;;この手続きはmutexのロックが解放されるまでブロックします。
+;;timeoutが指定されている場合は、ロックが獲得できなかったケースでは
+;;指定された時間に達した時にmutex-lock!は戻ります。
+;;timeoutには、絶対的な時間(<time>オブジェクト、Time参照)か、
+;;相対的な時間を(実数で)指定できます。
+;;
+;;mutexのロックが成功するとmutex-lock!は#tを返し、
+;;タイムアウトに達すると#fが返ります。
+;;
+;;mutexそれ自身は'再帰的なロック'の機能は実装していません。
+;;つまり、mutexをロックしたスレッドが再度mutexをロックしようと
+;;すると、そのスレッドはブロックします。しかし、このmutexに
+;;基づいて再帰的なロックのセマンティクスを実装することは難しくありません。
+;;次の例は、SRFI-18のドキュメントから引用したものです。
+;;
+;;example:
+;;  (define (mutex-lock-recursively! mutex)
+;;    (if (eq? (mutex-state mutex) (current-thread))
+;;        (let ((n (mutex-specific mutex)))
+;;          (mutex-specific-set! mutex (+ n 1)))
+;;        (begin
+;;          (mutex-lock! mutex)
+;;          (mutex-specific-set! mutex 0))))
+;;  
+;;  (define (mutex-unlock-recursively! mutex)
+;;    (let ((n (mutex-specific mutex)))
+;;      (if (= n 0)
+;;          (mutex-unlock! mutex)
+;;          (mutex-specific-set! mutex (- n 1)))))
+;;
+;;@param mutex 
+;;@param :optional 
+;;@param timeout 
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name mutex-state
+;;@description [SRFI-18]、[SRFI-21]
+;;mutexの状態を返します。状態は以下のうちの1つです。
+;;
+;;あるスレッド ------
+;;  Mutexはlocked/owned(ロックされ所有されている)で、所有者は返されたスレッド。
+;;シンボル not-owned ------
+;;  Mutexはlocked/not-owned(ロックされているが所有されていない)。
+;;シンボル abandoned ------
+;;  Mutexはunlocked/abandoned(ロックされておらず、放棄されている)。
+;;シンボル not-abandoned ------
+;;  Mutexはunlocked/not-abandoned(ロックされておらず、放棄されていない)。
+;;
+;;@param mutex 
+
+;;;;;
+;;@type Function
+;;@name mutex-specific-set!
+;;@description [SRFI-18]、[SRFI-21]
+;;Mutexの固有の値を取得/セットできます。
+;;
+;;@param mutex 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name mutex-specific
+;;@description [SRFI-18]、[SRFI-21]
+;;Mutexの固有の値を取得/セットできます。
+;;
+;;@param mutex 
+
+;;;;;
+;;@type Function
+;;@name mutex-name
+;;@description [SRFI-18]、[SRFI-21]
+;;Mutexの名前を返します。
+;;
+;;@param mutex 
+
+;;;;;
+;;@type Function
+;;@name make-mutex
+;;@description [SRFI-18]、[SRFI-21]
+;;新しいmutexオブジェクトを生成して返します。
+;;生成時には、mutexの状態は、unlocked/not-abandoned(ロックされておらず、
+;;放棄されていない状態)です。オプションで、このmutexに名前を付けることができます。
+;;
+;;@param :optional 
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name mutex?
+;;@description [SRFI-18]、[SRFI-21]
+;;objがmutexであれば#t、そうでなければ#fを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name thread-join!
+;;@description [SRFI-18]、[SRFI-21]
+;;threadの終了、あるいはtimeoutが与えられていればtimeoutが
+;;それに達するのを待ちます。
+;;
+;;Timeoutは絶対的な時間を表す<time>オブジェクト(Time参照)か、
+;;この手続きが呼ばれた時刻からの相対的な時間を秒数で表した実数でなければなりません。
+;;タイムアウトが指定されていない(デフォルト)は#fです。
+;;
+;;threadが正常に終了したら、thread-join!はthreadの
+;;結果フィールドに格納されている値を返します。
+;;threadが異常終了したら、thread-join!はthreadの結果例外
+;;フィールドに格納されている例外を投げます。それは
+;;<terminated-thread-exception>か
+;;<uncaught-exception>のどちらかです。
+;;
+;;タイムアウトに達すると、timeout-valが与えられていればtimeout-valを返し、
+;;与えられていなければ<join-timeout-exception>を投げます。
+;;
+;;これらの例外の詳細についてはThread exceptionsを参照してください。
+;;
+;;@param thread 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name thread-terminate!
+;;@description [SRFI-18]、[SRFI-21]
+;;指定されたスレッドthreadを終了します。
+;;threadは終了され、<terminated-thread-exception>のインスタンスが
+;;threadの結果例外のフィールドに格納されます。
+;;
+;;threadが呼び出しているスレッドと同じ場合、この手続きは戻りません。
+;;そうでなければ、この手続きは未定義値を返します。
+;;
+;;threadには(dynamic-windでの'after'手続きのような)クリーンアップ手続きを
+;;呼ぶチャンスがないので、この手続きは注意して使って下さい。
+;;threadがクリティカルセクションにあるならば、一貫性のない状態を残すことに
+;;なります。
+;;しかし、あるスレッドが一旦終了すると、そのスレッドが保持していたmutexは
+;;'abandoned'(放棄された)状態になり、そのようなmutexをロックしようとするスレッドは
+;;'abandoned mutex exception'を投げるので、その状況を知ることができます。
+;;Synchronization primitives参照。
+;;
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name thread-cont!
+;;@description Resumes execution of thread which has been stopped by
+;;thread-stop!.  An error is raised if thread 
+;;is not in stopped state, or it is stopped by another thread.
+;;
+;;If the caller thread has already requested to stop the target
+;;thread but timed out, calling thread-cont! cancels
+;;the request.
+;;
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name thread-stop!
+;;@description Stops execution of the target thread temporarily.
+;;You can resume the execution of the thread by thread-cont!.
+;;
+;;The stop request is handled synchronously; that is,
+;;Gauche VM only checks the request at the ``safe'' point
+;;of the VM and stops itself.  It means if the thread is
+;;blocked by a system call, it won't become stopped state
+;;until the system call returns.
+;;
+;;By default, thread-stop! returns after the target
+;;thread stops.  Since it may take indefinitely, you can give optional 
+;;timeout argument to specify timeout.   The timeout
+;;argument can be #f, which means no timeout, or 
+;;a <time> object that specifies an absolute point of time,
+;;or a real number specifying the number of seconds to wait.
+;;
+;;The return value of thread-stop! is thread if
+;;it could successfully stop the target, or timeout-val
+;;if timeout reached.   When timeout-val is omitted, #f
+;;is assumed.
+;;
+;;If the target thread has already been stopped by the caller
+;;thread, this procedure returns immediately.
+;;
+;;When thread-stop! is timed out, the request remains
+;;effective even after thread-stop! returns.
+;;That is, the target thread may stop at some point in future.  
+;;The caller thread is expected to call thread-stop!
+;;again to complete the stop operation.
+;;
+;;An error is signalled if the target thread has already been
+;;stopped by another thread (including the ``pending'' stop
+;;request issued by other threads), or the target thread
+;;is in neither runnable nor stopped state.
+;;
+;;@param thread 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name thread-sleep!
+;;@description [SRFI-18]、[SRFI-21]
+;;呼び出しているスレッドをtimeoutに指定した時間だけ中断します。
+;;timeoutは絶対的な時間を表す<time>オブジェクト(Time参照)か、
+;;この手続きが呼ばれた時刻からの相対的な秒数を表す実数でなければなりません。
+;;
+;;指定された時間が経過すると、thread-sleep!は未定義値を返します。
+;;
+;;timeoutが過去の時間を指していたら、thread-sleep!はすぐに戻ります。
+;;
+;;@param timeout 
+
+;;;;;
+;;@type Function
+;;@name thread-yield!
+;;@description [SRFI-18]、[SRFI-21]
+;;呼び出しているスレッドの実行を中断し、他に待機中の実行可能なスレッドがあれば、
+;;CPUにそれを処理させます。
+;;
+
+;;;;;
+;;@type Function
+;;@name thread-start!
+;;@description [SRFI-18]、[SRFI-21]
+;;threadを開始します。threadがすでに開始されていればエラーになります。
+;;threadを返します。
+;;
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name thread-specific-set!
+;;@description [SRFI-18]、[SRFI-21]
+;;threadの指定したスレッドの値を取得/設定します。
+;;
+;;@param thread 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name thread-specific
+;;@description [SRFI-18]、[SRFI-21]
+;;threadの指定したスレッドの値を取得/設定します。
+;;
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name thread-name
+;;@description [SRFI-18]、[SRFI-21]
+;;threadのスロットnameの値を返します。
+;;
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name thread-state
+;;@description threadの状態を示す、new、runnable、stopped、
+;;terminatedのいずれかのシンボルを返します。
+;;
+;;@param thread 
+
+;;;;;
+;;@type Function
+;;@name make-thread
+;;@description [SRFI-18]、[SRFI-21]
+;;thunkを実行するための新しいスレッドを生成して返します。
+;;そのスレッドの実行を開始するには、thread-start!を呼ぶ必要があります。
+;;thunkの実行結果は、thread-join!を呼ぶことで回収できます。
+;;
+;;オプション引数nameを与えることで、そのスレッドに名前を与えることができます。
+;;
+;;作成されたスレッドは、呼び出したスレッドのシグナルマスクを継承し
+;;(Signals and threads参照)、また呼び出したスレッドの持つ
+;;その時点でのパラメータのコピーを受けとります。
+;;
+;;これらの初期化操作以外に、作られるスレッドと呼び出したスレッド間の関係は
+;;ありません。Unixのプロセスのような親子関係があるわけではないのです。
+;;どのスレッドも、他のスレッドに対してthread-join!を発行
+;;して結果を受け取ることができます。
+;;もし誰もthread-join!を発行せず、また作られたスレッドに対する
+;;参照を保持していなかった場合、スレッドは実行が終了した後にガベージコレクトされます。
+;;
+;;もしスレッドが捕捉されない例外のために実行を終了し、その結果がthread-join!で
+;;回収されなかった場合、標準エラーポートに``thread dies a lonely death'' という
+;;警告メッセージが出力されます。そのようなケースは通常何らかのコーディングエラーで
+;;あるからです。スレッドの結果を回収しない場合は、
+;;thunk中ですべての例外を捕捉し処理しなければなりません。
+;;
+;;内部的に、この手続きは単にSchemeスレッドオブジェクトを割り当て初期化している
+;;だけです。POSIXスレッドはthread-start!が呼ばれるまで生成されません。
+;;
+;;@param thunk 
+;;@param :optional 
+;;@param name 
+
+;;;;;
+;;@type Function
+;;@name thread?
+;;@description [SRFI-18]、[SRFI-21]
+;;objがスレッドなら#t、そうでなければ#fを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name gauche-thread-type
+;;@description サポートされているスレッドのタイプを表すシンボルを返します。
+;;現在のバージョンでは、POSIXスレッドの上に構築されるスレッドが
+;;有効な場合はpthreadを返し、スレッドが有効でない場合は
+;;noneを返します。
+;;
+

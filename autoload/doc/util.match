@@ -1,0 +1,190 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Macro
+;;@name match-define
+;;@description トップレベルの define と同様ですが、変数の代りにパターンが許されます。
+;;
+;;example:
+;;  (match-define (x . xs) (list 1 2 3))
+;;  
+;;  x  ==> 1
+;;  xs ==> (2 3)
+;;
+;;
+;;@param pat 
+;;@param expr 
+
+;;;;;
+;;@type Macro
+;;@name match-let1
+;;@description これは Gauche での拡張で、オリジナルの Wright のコードにはありません。
+;;これは以下のコードと同等です。
+;;example:
+;;  (match-let ((pat expr)) body-expr ...)
+;;
+;;構文としては match-let1 は Common Lisp の destructuring-bind
+;;に非常によく似ています。
+;;
+;;example:
+;;  (match-let1 ('let ((var val) ...) body ...)
+;;              '(let ((a b) (c d)) foo bar baz)
+;;    (list var val body))
+;;   ==> ((a c) (b d) (foo bar baz))
+;;
+;;@param pat 
+;;@param expr 
+;;@param body-expr 
+;;@param ... 
+
+;;;;;
+;;@type Macro
+;;@name match-letrec
+;;@description 束縛部分が単なる変数ではなく、パターンを許す、一般化された let、
+;;let* および letrec です。
+;;各 expr が評価され、その後、pat と照合され、束縛された
+;;パターン変数が body-expr ... から見えるようになります。
+;;
+;;example:
+;;  (match-let (
+;;               (((ca . cd) ...)   '((a . 0) (b . 1) (c . 2)))
+;;             )
+;;    (list ca cd))
+;;   ==> ((a b c) (0 1 2))
+;;
+;;括弧はうんざりという向きには、以下の match-let1 をおためしあれ。
+;;
+;;@param ((pat expr) 
+;;@param ...) body-expr ... 
+
+;;;;;
+;;@type Macro
+;;@name match-let*
+;;@description 束縛部分が単なる変数ではなく、パターンを許す、一般化された let、
+;;let* および letrec です。
+;;各 expr が評価され、その後、pat と照合され、束縛された
+;;パターン変数が body-expr ... から見えるようになります。
+;;
+;;example:
+;;  (match-let (
+;;               (((ca . cd) ...)   '((a . 0) (b . 1) (c . 2)))
+;;             )
+;;    (list ca cd))
+;;   ==> ((a b c) (0 1 2))
+;;
+;;括弧はうんざりという向きには、以下の match-let1 をおためしあれ。
+;;
+;;@param ((pat expr) 
+;;@param ...) body-expr ... 
+
+;;;;;
+;;@type Macro
+;;@name match-let
+;;@description 束縛部分が単なる変数ではなく、パターンを許す、一般化された let、
+;;let* および letrec です。
+;;各 expr が評価され、その後、pat と照合され、束縛された
+;;パターン変数が body-expr ... から見えるようになります。
+;;
+;;example:
+;;  (match-let (
+;;               (((ca . cd) ...)   '((a . 0) (b . 1) (c . 2)))
+;;             )
+;;    (list ca cd))
+;;   ==> ((a b c) (0 1 2))
+;;
+;;括弧はうんざりという向きには、以下の match-let1 をおためしあれ。
+;;
+;;@param name 
+;;@param ((pat expr) 
+;;@param ...) body-expr ... 
+
+;;;;;
+;;@type Macro
+;;@name match-let
+;;@description 束縛部分が単なる変数ではなく、パターンを許す、一般化された let、
+;;let* および letrec です。
+;;各 expr が評価され、その後、pat と照合され、束縛された
+;;パターン変数が body-expr ... から見えるようになります。
+;;
+;;example:
+;;  (match-let (
+;;               (((ca . cd) ...)   '((a . 0) (b . 1) (c . 2)))
+;;             )
+;;    (list ca cd))
+;;   ==> ((a b c) (0 1 2))
+;;
+;;括弧はうんざりという向きには、以下の match-let1 をおためしあれ。
+;;
+;;@param ((pat expr) 
+;;@param ...) body-expr ... 
+
+;;;;;
+;;@type Macro
+;;@name match-lambda*
+;;@description match-lambda と同じですが、match をすべての引数のリスト
+;;に対して実行します。機能としては以下の式と同等です。
+;;example:
+;;  (lambda expr (match expr clause ...))
+;;
+;;@param clause 
+;;@param ... 
+
+;;;;;
+;;@type Macro
+;;@name match-lambda
+;;@description ひとつの引数をとり、それに対して clause ... を用いて、
+;;match を実行する関数を生成します。機能としては以下の式と同等です。
+;;example:
+;;  (lambda (expr) (match expr clause ...))
+;;
+;;例:
+;;
+;;example:
+;;  (map (match-lambda
+;;         ((item price-per-lb (quantity 'lbs))
+;;          (cons item (* price-per-lb quantity)))
+;;         ((item price-per-lb (quantity 'kg))
+;;          (cons item (* price-per-lb quantity 2.204))))
+;;       '((apple      1.23 (1.1 lbs))
+;;         (orange     0.68 (1.4 lbs))
+;;         (cantaloupe 0.53 (2.1 kg))))
+;;   ==> ((apple . 1.353) (orange . 0.952)
+;;              (cantaloupe . 2.4530520000000005))
+;;
+;;@param clause 
+;;@param ... 
+
+;;;;;
+;;@type Macro
+;;@name match
+;;@description 
+;;それぞれの clause は以下のうちどちらかです。
+;;example:
+;;  (pat body ...)
+;;  (pat (=> identifier) body ...)
+;;
+;;まず、expr を各節の pat に照合します。パターンの詳しい
+;;構文については後述します。
+;;
+;;pat にマッチする部分が見つかれば、pat 中の パターン変数
+;;は、expr 中の対応する要素に束縛され、その後、body ... 
+;;が評価されます。matchはbody ...の最後の式の値を返します。
+;;
+;;節が 2つ目の形式である場合、identifier は clause の失敗継続
+;;に束縛されます。これは引数をもたない手続きで、呼ばれると、あたかも、
+;;pat の照合に失敗したかの如くマッチャーに戻り、match が
+;;残りの節について試行を続けます。それゆえ、body ... 内部で
+;;追加のテストを実行することが可能で、もし、満足いくものでなければ、
+;;(identifier) を呼ぶことで、照合結果を拒絶することができます。
+;;より詳しくは、後述の例を見てください。
+;;
+;;どの pat もマッチしなければ、match はエラーを報告します。
+;;
+;;@param expr 
+;;@param clause 
+;;@param ... 
+

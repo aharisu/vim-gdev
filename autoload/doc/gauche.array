@@ -1,0 +1,888 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name array-div-elements!
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-div-elements
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-mul-elements!
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-mul-elements
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-sub-elements!
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-sub-elements
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-add-elements!
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-add-elements
+;;@param array 
+;;@param array-or-scalar 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-div-right
+;;@param a 
+;;@param b 
+
+;;;;;
+;;@type Function
+;;@name array-div-left
+;;@param a 
+;;@param b 
+
+;;;;;
+;;@type Function
+;;@name array-expt
+;;@description arrayのpow乗を返します。arrayは正方行列、
+;;powは非負の正確な整数でなければなりません。
+;;
+;;@param array 
+;;@param pow 
+
+;;;;;
+;;@type Function
+;;@name array-mul
+;;@description 配列aとbはともに2次元でなければなりません。
+;;それらを行列とみなして乗算を行います。aの行数とbの列数は
+;;一致していなければなりません。
+;;
+;;example:
+;;  ;;           [6 5]
+;;  ;; [1 2 3] x [4 3] => [20 14]
+;;  ;; [4 5 6]   [2 1]    [56 41]
+;;  
+;;  (array-mul (array (shape 0 2 0 3) 1 2 3 4 5 6)
+;;             (array (shape 0 3 0 2) 6 5 4 3 2 1))
+;;   ==> #,(<array> (0 2 0 2) 20 14 56 41)
+;;
+;;@param a 
+;;@param b 
+
+;;;;;
+;;@type Function
+;;@name determinant!
+;;@description arrayを行列とみなし、その行列式を計算します。
+;;arrayは2次元で、正方行列となるシェイプを持っていなければなりません。
+;;そうでない場合はエラーが投げられます。
+;;
+;;また、determinant!は計算過程でarrayの内容を破壊します。
+;;determinantは計算の前にarrayをコピーするオーバヘッドが
+;;ありますが、arrayは変更されません。
+;;
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name determinant
+;;@description arrayを行列とみなし、その行列式を計算します。
+;;arrayは2次元で、正方行列となるシェイプを持っていなければなりません。
+;;そうでない場合はエラーが投げられます。
+;;
+;;また、determinant!は計算過程でarrayの内容を破壊します。
+;;determinantは計算の前にarrayをコピーするオーバヘッドが
+;;ありますが、arrayは変更されません。
+;;
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name array-inverse
+;;@description arrayを行列とみなし、その逆行列を返します。
+;;arrayは2次元で、正方行列となるシェイプを持っていなければなりません。
+;;そうでない場合はエラーが投げられます。
+;;
+;;arrayが正則行列でない場合は#fが返されます。
+;;
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name identity-array
+;;@description ランク2で行列ともにdimensionである単位行列を作って返します。
+;;配列のクラスをclassに渡せば、結果はそのインスタンスになります。
+;;デフォルトは<array>クラスです。
+;;
+;;example:
+;;  (identity-array 3)
+;;   ==> #,(<array> (0 3 0 3) 1 0 0 0 1 0 0 0 1)
+;;  
+;;  (identity-array 3 <f32array>)
+;;   ==> #,(<f32array> (0 3 0 3) 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0)
+;;
+;;@param dimension 
+;;@param :optional 
+;;@param class 
+
+;;;;;
+;;@type Function
+;;@name array-flip!
+;;@description 配列の内容を、指定番目の次元 (デフォルトは0) で裏返しにします。
+;;array-flip!はarrayを直接変更してそれを返します。
+;;array-flipはarrayには触らず、裏返した内容で新たな配列を作って返します。
+;;
+;;example:
+;;  ;; [1 2 3]  =>  [4 5 6]
+;;  ;; [4 5 6]      [1 2 3]
+;;  (array-flip (array (shape 0 2 0 3) 1 2 3 4 5 6))
+;;   ==> #,(<array> (0 2 0 3) 4 5 6 1 2 3)
+;;  
+;;  ;; [1 2 3]  =>  [3 2 1]
+;;  ;; [4 5 6]      [6 5 4]
+;;  (array-flip (array (shape 0 2 0 3) 1 2 3 4 5 6) 1)
+;;   ==> #,(<array> (0 2 0 3) 3 2 1 6 5 4)
+;;
+;;@param array 
+;;@param :optional 
+;;@param dimension 
+
+;;;;;
+;;@type Function
+;;@name array-flip
+;;@description 配列の内容を、指定番目の次元 (デフォルトは0) で裏返しにします。
+;;array-flip!はarrayを直接変更してそれを返します。
+;;array-flipはarrayには触らず、裏返した内容で新たな配列を作って返します。
+;;
+;;example:
+;;  ;; [1 2 3]  =>  [4 5 6]
+;;  ;; [4 5 6]      [1 2 3]
+;;  (array-flip (array (shape 0 2 0 3) 1 2 3 4 5 6))
+;;   ==> #,(<array> (0 2 0 3) 4 5 6 1 2 3)
+;;  
+;;  ;; [1 2 3]  =>  [3 2 1]
+;;  ;; [4 5 6]      [6 5 4]
+;;  (array-flip (array (shape 0 2 0 3) 1 2 3 4 5 6) 1)
+;;   ==> #,(<array> (0 2 0 3) 3 2 1 6 5 4)
+;;
+;;@param array 
+;;@param :optional 
+;;@param dimension 
+
+;;;;;
+;;@type Function
+;;@name array-rotate-90
+;;@description arrayはランク2以上の配列でなければなりません。
+;;配列のdim1番目の次元とdim2番目の次元をそれぞれ行と列とみなした行列を
+;;考え、その行列を時計まわりに90度回転した新たな配列を作って返します。
+;;
+;;example:
+;;  ;; [1 2 3]      [4 1]
+;;  ;; [4 5 6]  =>  [5 2]
+;;  ;;              [6 3]
+;;  (array-rotate-90 (array (shape 0 2 0 3) 1 2 3 4 5 6))
+;;   ==> #,(<array> (0 3 0 2) 4 1 5 2 6 3)
+;;
+;;arrayのランクが2より大きい場合は、arrayは「部分配列の行列」
+;;と考えられます。
+;;
+;;@param array 
+;;@param :optional 
+;;@param dim1 
+;;@param dim2 
+
+;;;;;
+;;@type Function
+;;@name array-transpose
+;;@description arrayはランク2以上の配列でなければなりません。
+;;配列のdim1番目の次元とdim2番目の次元を転置します。
+;;デフォルトは0番目と1番目です。
+;;
+;;@param array 
+;;@param :optional 
+;;@param dim1 
+;;@param dim2 
+
+;;;;;
+;;@type Function
+;;@name array-concatenate
+;;@description 指定の次元で配列を結合します。指定の次元の大きさは一致していなければなりません。
+;;それ以外のシェイプは異なっていても構いません。配列のランクはいくつであっても
+;;構いませんが、両配列のランクは同じでなければなりません。
+;;
+;;example:
+;;  ;;  [a b]              [a b]
+;;  ;;  [c d] (+)       => [c d]
+;;  ;;            [e f]    [e f]
+;;  (array-concatenate
+;;   (array (shape 0 2 0 2) 'a 'b 'c 'd)
+;;   (array (shape 0 1 0 2) 'e 'f))
+;;   ==> #,(<array> (0 3 0 2) a b c d e f)
+;;  
+;;  ;;  [a b]     [e]    [a b e]
+;;  ;;  [c d] (+) [f] => [c d f]
+;;  (array-concatenate
+;;   (array (shape 0 2 0 2) 'a 'b 'c 'd)
+;;   (array (shape 0 2 0 1) 'e 'f)
+;;   1)
+;;   ==> #,(<array> (0 2 0 3) a b e c d f)
+;;  
+;;  ;; 結合次元の大きさが同じであればインデックスの範囲は異なっていてもよい
+;;  (array-concatenate
+;;   (array (shape 0 2 0 2) 'a 'b 'c 'd) 
+;;   (array (shape 1 3 0 1) 'e 'f) 1)
+;;   ==> #,(<array> (0 2 0 3) a b e c d f)
+;;
+;;@param a 
+;;@param b 
+;;@param :optional 
+;;@param dimension 
+
+;;;;;
+;;@type Function
+;;@name array->list
+;;@description arrayの全要素を並べたベクタもしくはリストを作って返します。
+;;
+;;example:
+;;  (array->vector
+;;   (tabulate-array (shape 1 3 1 4)
+;;                   (^(i j) (+ (* 10 i) j))))
+;;   ==> #(11 12 13 21 22 23)
+;;
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name array->vector
+;;@description arrayの全要素を並べたベクタもしくはリストを作って返します。
+;;
+;;example:
+;;  (array->vector
+;;   (tabulate-array (shape 1 3 1 4)
+;;                   (^(i j) (+ (* 10 i) j))))
+;;   ==> #(11 12 13 21 22 23)
+;;
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name array-map!
+;;@description array-mapと似ていますが、procの結果は
+;;与えられたarrayに格納されます。arrayのシェイプは
+;;入力配列のシェイプと同じでなければなりません。
+;;戻り値は未定義です。
+;;
+;;@param array 
+;;@param shape 
+;;@param proc 
+;;@param array0 
+;;@param array1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-map!
+;;@description array-mapと似ていますが、procの結果は
+;;与えられたarrayに格納されます。arrayのシェイプは
+;;入力配列のシェイプと同じでなければなりません。
+;;戻り値は未定義です。
+;;
+;;@param array 
+;;@param proc 
+;;@param array0 
+;;@param array1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-map
+;;@description 引数array0, array1, ...は同じシェイプを持つ
+;;配列でなければなりません。各入力配列の対応する要素について、
+;;それらを引数としてprocが呼ばれ、その戻り値から
+;;新たな配列が作られて返されます。
+;;二番目の呼び出し形式は第二引数にシェイプを取ります。
+;;それは入力配列のシェイプと一致しなければなりません。
+;;意味的には冗長ですが、shapeがリテラルである場合、
+;;何らかの最適化がなされる可能性があります。
+;;
+;;example:
+;;  (array-map - (array (shape 0 2 0 2) 1 2 3 4))
+;;    ==> #,(<array> (0 2 0 2) -1 -2 -3 -4)
+;;
+;;@param shape 
+;;@param proc 
+;;@param array0 
+;;@param array1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-map
+;;@description 引数array0, array1, ...は同じシェイプを持つ
+;;配列でなければなりません。各入力配列の対応する要素について、
+;;それらを引数としてprocが呼ばれ、その戻り値から
+;;新たな配列が作られて返されます。
+;;二番目の呼び出し形式は第二引数にシェイプを取ります。
+;;それは入力配列のシェイプと一致しなければなりません。
+;;意味的には冗長ですが、shapeがリテラルである場合、
+;;何らかの最適化がなされる可能性があります。
+;;
+;;example:
+;;  (array-map - (array (shape 0 2 0 2) 1 2 3 4))
+;;    ==> #,(<array> (0 2 0 2) -1 -2 -3 -4)
+;;
+;;@param proc 
+;;@param array0 
+;;@param array1 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-retabulate!
+;;@description 配列arrayの各インデックスに対してprocを呼び、その戻り値で
+;;arrayの要素を置き換えます。
+;;省略可能なインデックスオブジェクトの用途は
+;;array-for-each-indexと同じです。
+;;二番目の呼び出し形式は第二引数にシェイプを取ります。
+;;それはarrayのシェイプと一致しなければなりません。
+;;意味的には冗長ですが、shapeがリテラルである場合、
+;;何らかの最適化がなされる可能性があります。
+;;戻り値は未定義です。
+;;
+;;@param array 
+;;@param shape 
+;;@param proc 
+;;@param :optional 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name array-retabulate!
+;;@description 配列arrayの各インデックスに対してprocを呼び、その戻り値で
+;;arrayの要素を置き換えます。
+;;省略可能なインデックスオブジェクトの用途は
+;;array-for-each-indexと同じです。
+;;二番目の呼び出し形式は第二引数にシェイプを取ります。
+;;それはarrayのシェイプと一致しなければなりません。
+;;意味的には冗長ですが、shapeがリテラルである場合、
+;;何らかの最適化がなされる可能性があります。
+;;戻り値は未定義です。
+;;
+;;@param array 
+;;@param proc 
+;;@param :optional 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name tabulate-array
+;;@description shapeが表現する各インデックスについてprocを呼び出し、
+;;その戻り値から配列を構築して返します。省略可能なインデックスオブジェクトの用途は
+;;array-for-each-indexと同じです。
+;;次の例は与えられたシェイプに対する単位行列を生成します:
+;;
+;;example:
+;;  (tabulate-array (shape 0 3 0 3) (^(i j) (if (= i j) 1 0)))
+;;    ==> #,(<array> (0 3 0 3) 1 0 0 0 1 0 0 0 1)
+;;
+;;@param shape 
+;;@param proc 
+;;@param :optional 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name shape-for-each
+;;@description シェイプshapeが表現する全ての可能なインデックスに対してprocを呼びます。
+;;省略可能なindex引数の動作はarray-for-each-indexと同様です。
+;;戻り値は未定義です。
+;;
+;;example:
+;;  gosh> (shape-for-each (shape 0 2 0 2) (^(i j) (print i","j)))
+;;  0,0
+;;  0,1
+;;  1,0
+;;  1,1
+;;
+;;@param shape 
+;;@param proc 
+;;@param :optional 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name array-for-each-index
+;;@description arrayの各インデックスに対してprocを呼びます。
+;;index引数が省略された場合は、
+;;procはインデックス (i, j,k,...) に対して
+;;(proc i j k ...) のように呼ばれます。
+;;
+;;example:
+;;  gosh> (define a (array (shape 0 2 0 2) 1 2 3 4))
+;;  a
+;;  gosh> a
+;;  #,(<array> (0 2 0 2) 1 2 3 4)
+;;  gosh> (array-for-each-index a (^(i j) (print i","j))) 
+;;  0,0
+;;  0,1
+;;  1,0
+;;  1,1
+;;
+;;この形式の呼び出しは簡単なのですが、あまり効率が良くありません。
+;;インデックスオブジェクトを省略可能引数indexに渡すことで、
+;;より良い性能を引き出すことができます。
+;;インデックスオブジェクトはループの度に、各インデックスを表す値に書き換えられます。
+;;インデックスオブジェクトに使えるのは、変更可能な、ベクタ・1次元の配列・
+;;s8vector・s16vectorあるいはs32vectorで、その長さは配列arrayの
+;;ランクと一致していなければなりません。インデックスオブジェクトを使うと、
+;;ループ中に一切アロケーションが行われないため速度的に有利です。
+;;ただし、ループの度にインデックスオブジェクトの内容が書き換えられることに
+;;注意する必要があります。
+;;
+;;example:
+;;  gosh> (array-for-each-index a (cut format #t "~s\n" <>) (vector 0 0))
+;;  #(0 0)
+;;  #(0 1)
+;;  #(1 0)
+;;  #(1 1)
+;;  
+;;  gosh> (array-for-each-index a (cut format #t "~s\n" <>) (s8vector 0 0))
+;;  #s8(0 0)
+;;  #s8(0 1)
+;;  #s8(1 0)
+;;  #s8(1 1)
+;;
+;;戻り値は未定義です。
+;;
+;;@param array 
+;;@param proc 
+;;@param :optional 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name share-array
+;;@description [SRFI-25]
+;;Shapeがshapeであり、与えられた配列arrayとバッキングストレージを
+;;共有する新しい配列を作成して返します。
+;;procは、新しい配列へのインデックスを古い配列へのインデックスへ
+;;マップする手続きです。新しい配列の次元数をn、古い配列の次元数をmと
+;;した時、procはn個の引数を取りm個の値を返す手続きでなければ
+;;なりません。さらに、各マッピングはaffineマッピング、すなわち、
+;;出力は入力の線形合成(プラス定数)でなければなりません。
+;;(share-arrayはprocがaffineマッピングであるという事実に基づいた
+;;最適化を行います。新しい配列にアクセスする度にprocが呼ばれるというわけでは
+;;ありません)。
+;;
+;;@param array 
+;;@param shape 
+;;@param proc 
+
+;;;;;
+;;@type Function
+;;@name array-set!
+;;@description [SRFI-25]
+;;配列arrayの要素にvalueをセットします。
+;;最初の形式では、
+;;要素は整数のインデックスk ...で指定されます。
+;;2番目の形式では、要素はベクタまたは1次元配列のインデックスオブジェクトindex
+;;で指定されます。
+;;
+;;@param array 
+;;@param index 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name array-set!
+;;@description [SRFI-25]
+;;配列arrayの要素にvalueをセットします。
+;;最初の形式では、
+;;要素は整数のインデックスk ...で指定されます。
+;;2番目の形式では、要素はベクタまたは1次元配列のインデックスオブジェクトindex
+;;で指定されます。
+;;
+;;@param array 
+;;@param k 
+;;@param ... 
+;;@param value 
+
+;;;;;
+;;@type Function
+;;@name array-ref
+;;@description [SRFI-25]
+;;配列arrayの要素を取り出します。最初の形式では、
+;;要素は整数のインデックスk ...で指定されます。
+;;2番目の形式では、要素はベクタまたは1次元配列のインデックスオブジェクトindex
+;;で指定されます。
+;;
+;;@param array 
+;;@param index 
+
+;;;;;
+;;@type Function
+;;@name array-ref
+;;@description [SRFI-25]
+;;配列arrayの要素を取り出します。最初の形式では、
+;;要素は整数のインデックスk ...で指定されます。
+;;2番目の形式では、要素はベクタまたは1次元配列のインデックスオブジェクトindex
+;;で指定されます。
+;;
+;;@param array 
+;;@param k 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name array-size
+;;@description 配列arrayの全要素数を返します。
+;;
+;;example:
+;;  (array-size (make-array (shape 5 9 1 3))) ==> 8
+;;  (array-size (make-array (shape))) ==> 1
+;;  (array-size (make-array (shape 0 0 0 2))) ==> 0
+;;
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name array-length
+;;@description [SRFI-25+]
+;;array-startは配列arrayのdim番目の次元の
+;;インデックスの下限を返します。
+;;array-endは上限+1を、そしてarray-lengthは両者の差を返します。
+;;array-startとarray-endはSRFI-25で定義されています。
+;;
+;;example:
+;;  (define a (make-array (shape 1 5 0 2)))
+;;  
+;;  (array-start a 0)  ==> 1
+;;  (array-end a 0)    ==> 5
+;;  (array-length a 0) ==> 4
+;;  (array-start a 1)  ==> 0
+;;  (array-end a 1)    ==> 2
+;;  (array-length a 1) ==> 2
+;;
+;;@param array 
+;;@param dim 
+
+;;;;;
+;;@type Function
+;;@name array-end
+;;@description [SRFI-25+]
+;;array-startは配列arrayのdim番目の次元の
+;;インデックスの下限を返します。
+;;array-endは上限+1を、そしてarray-lengthは両者の差を返します。
+;;array-startとarray-endはSRFI-25で定義されています。
+;;
+;;example:
+;;  (define a (make-array (shape 1 5 0 2)))
+;;  
+;;  (array-start a 0)  ==> 1
+;;  (array-end a 0)    ==> 5
+;;  (array-length a 0) ==> 4
+;;  (array-start a 1)  ==> 0
+;;  (array-end a 1)    ==> 2
+;;  (array-length a 1) ==> 2
+;;
+;;@param array 
+;;@param dim 
+
+;;;;;
+;;@type Function
+;;@name array-start
+;;@description [SRFI-25+]
+;;array-startは配列arrayのdim番目の次元の
+;;インデックスの下限を返します。
+;;array-endは上限+1を、そしてarray-lengthは両者の差を返します。
+;;array-startとarray-endはSRFI-25で定義されています。
+;;
+;;example:
+;;  (define a (make-array (shape 1 5 0 2)))
+;;  
+;;  (array-start a 0)  ==> 1
+;;  (array-end a 0)    ==> 5
+;;  (array-length a 0) ==> 4
+;;  (array-start a 1)  ==> 0
+;;  (array-end a 1)    ==> 2
+;;  (array-length a 1) ==> 2
+;;
+;;@param array 
+;;@param dim 
+
+;;;;;
+;;@type Function
+;;@name array-shape
+;;@description 配列arrayのshapeを表す配列を返します。
+;;
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name array-rank
+;;@description [SRFI-25]
+;;配列arrayの次元数を返します。
+;;
+;;example:
+;;  (array-rank (make-array (shape 0 2 0 2 0 2))) ==> 3
+;;  (array-rank (make-array (shape))) ==> 0
+;;
+;;@param array 
+
+;;;;;
+;;@type Function
+;;@name array
+;;@description [SRFI-25]
+;;Shapeがshapeであるような配列を作成し、
+;;その要素をinit ...で初期化します。
+;;
+;;example:
+;;  (array (shape 0 2 1 3) 'a 'b 'c 'd)
+;;   ==> #,(<array> (0 2 1 3) a b c d)
+;;
+;;@param shape 
+;;@param init 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name shape
+;;@description [SRFI-25]
+;;偶数個の正確な整数を引数に取り、配列のshapeとして使える2次元の配列を返します。
+;;
+;;example:
+;;  (shape 0 2 1 3 3 5)
+;;   ==> #,(<array> (0 3 0 2) 0 2 1 3 3 5)
+;;  
+;;  (shape)
+;;   ==> #,(<array> (0 0 0 2))
+;;
+;;@param bound 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name make-f64array
+;;@description make-arrayと似ていますが、均一な数値配列を返します。
+;;
+;;@param shape 
+;;@param :optional 
+;;@param init 
+
+;;;;;
+;;@type Function
+;;@name make-f32array
+;;@description make-arrayと似ていますが、均一な数値配列を返します。
+;;
+;;@param shape 
+;;@param :optional 
+;;@param init 
+
+;;;;;
+;;@type Function
+;;@name make-s8array
+;;@description ...
+;;
+;;@param shape 
+;;@param :optional 
+;;@param init 
+
+;;;;;
+;;@type Function
+;;@name make-u8array
+;;@description ...
+;;
+;;@param shape 
+;;@param :optional 
+;;@param init 
+
+;;;;;
+;;@type Function
+;;@name make-array
+;;@description [SRFI-25]
+;;Shapeがshapeである配列を作成します。
+;;Shapeは [ D x 2 ] の配列で、
+;;0 <= k < D なる各kに対して要素 [ k 0 ] は
+;;要素[ k 1 ]以下でなければなりません。
+;;initが与えられた場合は、配列の各要素がinitで初期化されます。
+;;initが与えられなかった場合の配列の要素の初期値は不定です。
+;;
+;;example:
+;;  (make-array (shape 0 2 0 2 0 2) 5)
+;;   ==> #,(<array> (0 2 0 2 0 2) 5 5 5 5 5 5 5 5)
+;;
+;;@param shape 
+;;@param :optional 
+;;@param init 
+
+;;;;;
+;;@type Function
+;;@name array?
+;;@description [SRFI-25]
+;;objが配列であれば#tが、そうでなければ#fが返されます。
+;;(is-a? obj <array-base>)と等価です。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Class
+;;@name <f64array>
+;;@description 具体配列クラスです。<array>クラスはsrfi-25互換の配列、
+;;すなわち、任意のSchemeオブジェクトを格納できる配列を実装します。
+;;<u8array>から<f64array>までは、
+;;それぞれ<u8vector>から<f64vector>をバッキングストレージとして
+;;用いる配列を実装し、制限された範囲の整数もしくは不正確な実数のみを
+;;効率良く格納することができます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <f32array>
+;;@description 具体配列クラスです。<array>クラスはsrfi-25互換の配列、
+;;すなわち、任意のSchemeオブジェクトを格納できる配列を実装します。
+;;<u8array>から<f64array>までは、
+;;それぞれ<u8vector>から<f64vector>をバッキングストレージとして
+;;用いる配列を実装し、制限された範囲の整数もしくは不正確な実数のみを
+;;効率良く格納することができます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <f16array>
+;;@description 具体配列クラスです。<array>クラスはsrfi-25互換の配列、
+;;すなわち、任意のSchemeオブジェクトを格納できる配列を実装します。
+;;<u8array>から<f64array>までは、
+;;それぞれ<u8vector>から<f64vector>をバッキングストレージとして
+;;用いる配列を実装し、制限された範囲の整数もしくは不正確な実数のみを
+;;効率良く格納することができます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <s64array>
+;;@description 具体配列クラスです。<array>クラスはsrfi-25互換の配列、
+;;すなわち、任意のSchemeオブジェクトを格納できる配列を実装します。
+;;<u8array>から<f64array>までは、
+;;それぞれ<u8vector>から<f64vector>をバッキングストレージとして
+;;用いる配列を実装し、制限された範囲の整数もしくは不正確な実数のみを
+;;効率良く格納することができます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <u64array>
+;;@description 具体配列クラスです。<array>クラスはsrfi-25互換の配列、
+;;すなわち、任意のSchemeオブジェクトを格納できる配列を実装します。
+;;<u8array>から<f64array>までは、
+;;それぞれ<u8vector>から<f64vector>をバッキングストレージとして
+;;用いる配列を実装し、制限された範囲の整数もしくは不正確な実数のみを
+;;効率良く格納することができます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <s32array>
+;;@description 具体配列クラスです。<array>クラスはsrfi-25互換の配列、
+;;すなわち、任意のSchemeオブジェクトを格納できる配列を実装します。
+;;<u8array>から<f64array>までは、
+;;それぞれ<u8vector>から<f64vector>をバッキングストレージとして
+;;用いる配列を実装し、制限された範囲の整数もしくは不正確な実数のみを
+;;効率良く格納することができます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <u32array>
+;;@description 具体配列クラスです。<array>クラスはsrfi-25互換の配列、
+;;すなわち、任意のSchemeオブジェクトを格納できる配列を実装します。
+;;<u8array>から<f64array>までは、
+;;それぞれ<u8vector>から<f64vector>をバッキングストレージとして
+;;用いる配列を実装し、制限された範囲の整数もしくは不正確な実数のみを
+;;効率良く格納することができます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <s16array>
+;;@description 具体配列クラスです。<array>クラスはsrfi-25互換の配列、
+;;すなわち、任意のSchemeオブジェクトを格納できる配列を実装します。
+;;<u8array>から<f64array>までは、
+;;それぞれ<u8vector>から<f64vector>をバッキングストレージとして
+;;用いる配列を実装し、制限された範囲の整数もしくは不正確な実数のみを
+;;効率良く格納することができます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <u16array>
+;;@description 具体配列クラスです。<array>クラスはsrfi-25互換の配列、
+;;すなわち、任意のSchemeオブジェクトを格納できる配列を実装します。
+;;<u8array>から<f64array>までは、
+;;それぞれ<u8vector>から<f64vector>をバッキングストレージとして
+;;用いる配列を実装し、制限された範囲の整数もしくは不正確な実数のみを
+;;効率良く格納することができます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <s8array>
+;;@description 具体配列クラスです。<array>クラスはsrfi-25互換の配列、
+;;すなわち、任意のSchemeオブジェクトを格納できる配列を実装します。
+;;<u8array>から<f64array>までは、
+;;それぞれ<u8vector>から<f64vector>をバッキングストレージとして
+;;用いる配列を実装し、制限された範囲の整数もしくは不正確な実数のみを
+;;効率良く格納することができます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <u8array>
+;;@description 具体配列クラスです。<array>クラスはsrfi-25互換の配列、
+;;すなわち、任意のSchemeオブジェクトを格納できる配列を実装します。
+;;<u8array>から<f64array>までは、
+;;それぞれ<u8vector>から<f64vector>をバッキングストレージとして
+;;用いる配列を実装し、制限された範囲の整数もしくは不正確な実数のみを
+;;効率良く格納することができます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <array>
+;;@description 具体配列クラスです。<array>クラスはsrfi-25互換の配列、
+;;すなわち、任意のSchemeオブジェクトを格納できる配列を実装します。
+;;<u8array>から<f64array>までは、
+;;それぞれ<u8vector>から<f64vector>をバッキングストレージとして
+;;用いる配列を実装し、制限された範囲の整数もしくは不正確な実数のみを
+;;効率良く格納することができます。
+;;
+

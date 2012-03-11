@@ -1,0 +1,31 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name make-csv-writer
+;;@description 出力ポートとフィールドのリストの2つの引数を取る手続きを返します。
+;;手続きが呼ばれると、separator で区切られたフィールドを
+;;正しくエスケープして出力ポートに出力します。レコードの区切り文字列を
+;;newline で指定することもできます。例えば、ファイルが Windows の
+;;プログラムでも読めるように、"\r\n" を渡すことができます。
+;;
+;;@param separator 
+;;@param :optional 
+;;@param newline 
+;;@param (quote-char #\") 
+
+;;;;;
+;;@type Function
+;;@name make-csv-reader
+;;@description 入力ポートを唯一の引数として取る手続きを返します。
+;;手続きが呼ばれると、ポートからレコードを1つ読み込み、フィールドの
+;;リストを返します。入力ポートが EOF に達すると、EOF を返します。
+;;
+;;@param separator 
+;;@param :optional 
+;;@param (quote-char #\") 
+

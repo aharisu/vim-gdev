@@ -1,0 +1,447 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name codepoints-foldcase
+;;@description Like string-upcase etc, but these work on a sequence of
+;;codepoints instead.  Returns a sequence of the same type of the input.
+;;
+;;example:
+;;  (codepoints-upcase '#(115 116 114 97 223 101))
+;;   ==> #(83 84 82 65 83 83 69)
+;;
+;;@param sequence 
+
+;;;;;
+;;@type Function
+;;@name codepoints-titlecase
+;;@description Like string-upcase etc, but these work on a sequence of
+;;codepoints instead.  Returns a sequence of the same type of the input.
+;;
+;;example:
+;;  (codepoints-upcase '#(115 116 114 97 223 101))
+;;   ==> #(83 84 82 65 83 83 69)
+;;
+;;@param sequence 
+
+;;;;;
+;;@type Function
+;;@name codepoints-downcase
+;;@description Like string-upcase etc, but these work on a sequence of
+;;codepoints instead.  Returns a sequence of the same type of the input.
+;;
+;;example:
+;;  (codepoints-upcase '#(115 116 114 97 223 101))
+;;   ==> #(83 84 82 65 83 83 69)
+;;
+;;@param sequence 
+
+;;;;;
+;;@type Function
+;;@name codepoints-upcase
+;;@description Like string-upcase etc, but these work on a sequence of
+;;codepoints instead.  Returns a sequence of the same type of the input.
+;;
+;;example:
+;;  (codepoints-upcase '#(115 116 114 97 223 101))
+;;   ==> #(83 84 82 65 83 83 69)
+;;
+;;@param sequence 
+
+;;;;;
+;;@type Function
+;;@name string-foldcase
+;;@description [R6RS]
+;;Converts given string to upper case, using language-independent
+;;full case folding defined by Unicode standard.
+;;They differ from srfi-13's procedures
+;;with the same names (@xref{SRFI-13 String case mapping}),
+;;which simply uses character-by-character case mapping.
+;;Notably, the length of resulting string may differ from the source string,
+;;and some conversions are sensitive to whether the character is at the
+;;word boundary or not.  The word boundaries are determined according
+;;to UAX #29 text segmentation rules.
+;;
+;;example:
+;;  (string-upcase "straße")
+;;   ==> "STRASSE"
+;;  (string-downcase "ΧΑΟΣΧΑΟΣ.ΧΑΟΣ. Σ.")
+;;   ==> "χαοσχαοσ.χαος. σ."
+;;  (string-titlecase "You're talking about R6RS, right?")
+;;   ==> "You're Talking About R6rs, Right?"
+;;  (string-foldcase "straße")
+;;   ==> "strasse"
+;;  (string-foldcase "ΧΑΟΣΣ")
+;;   ==> "χαοσσ"
+;;
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name string-titlecase
+;;@description [R6RS]
+;;Converts given string to upper case, using language-independent
+;;full case folding defined by Unicode standard.
+;;They differ from srfi-13's procedures
+;;with the same names (@xref{SRFI-13 String case mapping}),
+;;which simply uses character-by-character case mapping.
+;;Notably, the length of resulting string may differ from the source string,
+;;and some conversions are sensitive to whether the character is at the
+;;word boundary or not.  The word boundaries are determined according
+;;to UAX #29 text segmentation rules.
+;;
+;;example:
+;;  (string-upcase "straße")
+;;   ==> "STRASSE"
+;;  (string-downcase "ΧΑΟΣΧΑΟΣ.ΧΑΟΣ. Σ.")
+;;   ==> "χαοσχαοσ.χαος. σ."
+;;  (string-titlecase "You're talking about R6RS, right?")
+;;   ==> "You're Talking About R6rs, Right?"
+;;  (string-foldcase "straße")
+;;   ==> "strasse"
+;;  (string-foldcase "ΧΑΟΣΣ")
+;;   ==> "χαοσσ"
+;;
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name string-downcase
+;;@description [R6RS]
+;;Converts given string to upper case, using language-independent
+;;full case folding defined by Unicode standard.
+;;They differ from srfi-13's procedures
+;;with the same names (@xref{SRFI-13 String case mapping}),
+;;which simply uses character-by-character case mapping.
+;;Notably, the length of resulting string may differ from the source string,
+;;and some conversions are sensitive to whether the character is at the
+;;word boundary or not.  The word boundaries are determined according
+;;to UAX #29 text segmentation rules.
+;;
+;;example:
+;;  (string-upcase "straße")
+;;   ==> "STRASSE"
+;;  (string-downcase "ΧΑΟΣΧΑΟΣ.ΧΑΟΣ. Σ.")
+;;   ==> "χαοσχαοσ.χαος. σ."
+;;  (string-titlecase "You're talking about R6RS, right?")
+;;   ==> "You're Talking About R6rs, Right?"
+;;  (string-foldcase "straße")
+;;   ==> "strasse"
+;;  (string-foldcase "ΧΑΟΣΣ")
+;;   ==> "χαοσσ"
+;;
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name string-upcase
+;;@description [R6RS]
+;;Converts given string to upper case, using language-independent
+;;full case folding defined by Unicode standard.
+;;They differ from srfi-13's procedures
+;;with the same names (@xref{SRFI-13 String case mapping}),
+;;which simply uses character-by-character case mapping.
+;;Notably, the length of resulting string may differ from the source string,
+;;and some conversions are sensitive to whether the character is at the
+;;word boundary or not.  The word boundaries are determined according
+;;to UAX #29 text segmentation rules.
+;;
+;;example:
+;;  (string-upcase "straße")
+;;   ==> "STRASSE"
+;;  (string-downcase "ΧΑΟΣΧΑΟΣ.ΧΑΟΣ. Σ.")
+;;   ==> "χαοσχαοσ.χαος. σ."
+;;  (string-titlecase "You're talking about R6RS, right?")
+;;   ==> "You're Talking About R6rs, Right?"
+;;  (string-foldcase "straße")
+;;   ==> "strasse"
+;;  (string-foldcase "ΧΑΟΣΣ")
+;;   ==> "χαοσσ"
+;;
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name make-grapheme-cluster-reader
+;;@description The input generator is a generator of characters or codepoints,
+;;and return is a procedure that takes a list of characters or
+;;codepoints, and returns an object.   These procedures creates a
+;;generator that returns an object at at time, each consists of a
+;;word or a grapheme cluster, respectively.
+;;
+;;Suppose a generator g returns characters in a string
+;;That's it., one at a time, again.
+;;Then the created generator works as follows:
+;;
+;;example:
+;;  (define brk (make-word-reader g list->string))
+;;  (brk)  ==>  "That's"
+;;  (brk)  ==>  " "
+;;  (brk)  ==>  "it"
+;;  (brk)  ==>  "."
+;;  (brk)  ==>  #<eof>
+;;
+;;
+;;@param generator 
+;;@param return 
+
+;;;;;
+;;@type Function
+;;@name make-word-reader
+;;@description The input generator is a generator of characters or codepoints,
+;;and return is a procedure that takes a list of characters or
+;;codepoints, and returns an object.   These procedures creates a
+;;generator that returns an object at at time, each consists of a
+;;word or a grapheme cluster, respectively.
+;;
+;;Suppose a generator g returns characters in a string
+;;That's it., one at a time, again.
+;;Then the created generator works as follows:
+;;
+;;example:
+;;  (define brk (make-word-reader g list->string))
+;;  (brk)  ==>  "That's"
+;;  (brk)  ==>  " "
+;;  (brk)  ==>  "it"
+;;  (brk)  ==>  "."
+;;  (brk)  ==>  #<eof>
+;;
+;;
+;;@param generator 
+;;@param return 
+
+;;;;;
+;;@type Function
+;;@name make-grapheme-cluster-breaker
+;;@description From given generator is a generator of characters or codepoints,
+;;returns a generator that returns two values: The first value is the
+;;character or codepoint generated from the original generator, and the
+;;second value is a boolean flag, which is #t if a word
+;;or a grapheme cluster
+;;breaks before the character/codepoint, and #f otherwise.
+;;
+;;Suppose a generator g returns characters in a string
+;;That's it., one at a time.  Then the created generator
+;;will work as follows:
+;;
+;;example:
+;;  (define brk (make-word-breaker g))
+;;  (brk)  ==>  #\T     and #t
+;;  (brk)  ==>  #\h     and #f
+;;  (brk)  ==>  #\a     and #f
+;;  (brk)  ==>  #\t     and #f
+;;  (brk)  ==>  #\'     and #f
+;;  (brk)  ==>  #\s     and #f
+;;  (brk)  ==>  #\space and #t
+;;  (brk)  ==>  #\i     and #t
+;;  (brk)  ==>  #\t     and #f
+;;  (brk)  ==>  #\.     and #t
+;;  (brk)  ==>  #<eof>  and #t
+;;
+;;It shows the word breaks at those character boundaries shown
+;;by the caret ^ below (for clearity, I use _ to indicate
+;;the space).
+;;
+;;example:
+;;    T h a t ' s _ i t .
+;;   ^           ^ ^   ^ ^
+;;
+;;@param generator 
+
+;;;;;
+;;@type Function
+;;@name make-word-breaker
+;;@description From given generator is a generator of characters or codepoints,
+;;returns a generator that returns two values: The first value is the
+;;character or codepoint generated from the original generator, and the
+;;second value is a boolean flag, which is #t if a word
+;;or a grapheme cluster
+;;breaks before the character/codepoint, and #f otherwise.
+;;
+;;Suppose a generator g returns characters in a string
+;;That's it., one at a time.  Then the created generator
+;;will work as follows:
+;;
+;;example:
+;;  (define brk (make-word-breaker g))
+;;  (brk)  ==>  #\T     and #t
+;;  (brk)  ==>  #\h     and #f
+;;  (brk)  ==>  #\a     and #f
+;;  (brk)  ==>  #\t     and #f
+;;  (brk)  ==>  #\'     and #f
+;;  (brk)  ==>  #\s     and #f
+;;  (brk)  ==>  #\space and #t
+;;  (brk)  ==>  #\i     and #t
+;;  (brk)  ==>  #\t     and #f
+;;  (brk)  ==>  #\.     and #t
+;;  (brk)  ==>  #<eof>  and #t
+;;
+;;It shows the word breaks at those character boundaries shown
+;;by the caret ^ below (for clearity, I use _ to indicate
+;;the space).
+;;
+;;example:
+;;    T h a t ' s _ i t .
+;;   ^           ^ ^   ^ ^
+;;
+;;@param generator 
+
+;;;;;
+;;@type Function
+;;@name codepoints->grapheme-clusters
+;;@description From given string or codepoint sequence (a <sequence>
+;;object containing list of codepoints), returns a list of
+;;grapheme clusters.  Each cluster is represented as a string,
+;;or a sequence of the same type as input, respectively.
+;;
+;;@param sequence 
+
+;;;;;
+;;@type Function
+;;@name string->grapheme-clusters
+;;@description From given string or codepoint sequence (a <sequence>
+;;object containing list of codepoints), returns a list of
+;;grapheme clusters.  Each cluster is represented as a string,
+;;or a sequence of the same type as input, respectively.
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name codepoints->words
+;;@description From given string or codepoint sequence (a <sequence>
+;;object containing list of codepoints), returns a list of
+;;words.  Each cluster is represented as a string, or 
+;;a sequence of the same type as input, respectively.
+;;
+;;example:
+;;  (string->words "That's it.")
+;;   ==> ("That's" " " "it" ".")
+;;  (codepoints->words '(84 104 97 116 39 115 32 105 116 46)
+;;   ==> ((84 104 97 116 39 115) (32) (105 116) (46))
+;;
+;;In the second example, the list is a list of codepoints
+;;of characters in "That's it."
+;;
+;;@param sequence 
+
+;;;;;
+;;@type Function
+;;@name string->words
+;;@description From given string or codepoint sequence (a <sequence>
+;;object containing list of codepoints), returns a list of
+;;words.  Each cluster is represented as a string, or 
+;;a sequence of the same type as input, respectively.
+;;
+;;example:
+;;  (string->words "That's it.")
+;;   ==> ("That's" " " "it" ".")
+;;  (codepoints->words '(84 104 97 116 39 115 32 105 116 46)
+;;   ==> ((84 104 97 116 39 115) (32) (105 116) (46))
+;;
+;;In the second example, the list is a list of codepoints
+;;of characters in "That's it."
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name utf16->ucs4
+;;@param octet-list 
+;;@param :optional 
+;;@param strictness 
+
+;;;;;
+;;@type Function
+;;@name utf16-length
+;;@param octet 
+;;@param :optional 
+;;@param strictness 
+
+;;;;;
+;;@type Function
+;;@name ucs4->utf16
+;;@param codepoint 
+;;@param :optional 
+;;@param strictness 
+
+;;;;;
+;;@type Function
+;;@name utf8->ucs4
+;;@description Takes a list of octets, and decodes it as a utf-8 sequence.
+;;Returns two values: The decoded ucs4 codepoint, and the
+;;rest of the input list.
+;;
+;;An invalid utf8 sequence causes an error if strictness
+;;is strict, or skipped if it is ignore.
+;;If strictness is permissive, the procedure accepts
+;;the original utf-8 sequence which can produce surrogated pair
+;;range (between #xd800 and #dfff) and the range
+;;between #x110000 to #x7fffffff.  The invalid
+;;octet sequence is still an error with permissive mode.
+;;
+;;@param octet-list 
+;;@param :optional 
+;;@param strictness 
+
+;;;;;
+;;@type Function
+;;@name utf8-length
+;;@description Takes octet as the first octet of UTF-8 sequence, and
+;;returns the number of total octets requried to decode
+;;the codepoint.
+;;
+;;If strictness is strict (default), this
+;;procedure returns either 1, 2, 3 or 4.   An error is
+;;thrown if octet cannot be a leading octet of
+;;a proper UTF-8 encoded Unicode codepoint.
+;;
+;;If strictness is permissive, this procedure
+;;may return an integer between 0 and 6, inclusive.
+;;It allows the codepoint range #x110000 to
+;;#x7fffffff as the original utf-8 spec, so
+;;the maximum number of octets can be up to 6.
+;;If the input is in the range between #xc0 
+;;and #xdf, inclusive, this procedure returns
+;;1--it's up to the application how to treat these illegal
+;;octets.  For other values, it returns 0.
+;;
+;;If strictness is ignore, this procedure
+;;returns 0 when it would raise an error if
+;;strictness is strict.  Other than that,
+;;it works the same as the default case.
+;;
+;;@param octet 
+;;@param :optional 
+;;@param strictness 
+
+;;;;;
+;;@type Function
+;;@name ucs4->utf8
+;;@description Takes an integer codepoint and returns list of octets that
+;;encodes the input in UTF-8.
+;;
+;;example:
+;;  (ucs4->utf8 #x3bb)  ==> (206 187)
+;;  (ucs4->utf8 #x3042) ==> (227 129 130)
+;;
+;;If strictness is strict (default), input codepoint
+;;between #xd800 to #xdfff, and beyond #x110000,
+;;are rejected.  If strictness is permissive, it accepts
+;;input between 0 and #x7fffffff, inclusive; it may produce
+;;5 or 6 octets if the input is large (as the original UTF-8 definition).
+;;If strictness is ignore, it returns an empty list
+;;for invalid codepoints.
+;;
+;;@param codepoint 
+;;@param :optional 
+;;@param strictness 
+

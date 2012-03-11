@@ -24,8 +24,20 @@
 " }}}
 "=============================================================================
 
+
+let s:neocom_sources_directory = expand('<sfile>:p:h')
+let s:gosh_complete_path = escape(get(g:, 'gosh_complete_path', s:neocom_sources_directory . '/gosh_complete.scm'), ' \')
+let s:gosh_generated_doc_path = escape(s:neocom_sources_directory . '/doc',  ' \')
+let s:async_task_queue = []
+
 let s:ginfo_table = {}
 let s:each_buf_data = {}
+
+let s:debug = 0
+let s:debug_out_err = 0
+
+"5 seconds
+let s:async_task_timeout = 5
 
 function! gosh_complete#add_doc(name, units, extend)
   for unit in a:units
@@ -41,16 +53,6 @@ function! gosh_complete#add_doc(name, units, extend)
           \ 'extend' : a:extend
           \ }
   endif
-endfunction
-
-function! gosh_complete#get_loaded_module()
-  let table = {}
-
-  for [name, doc] in items(s:ginfo_table)
-    let table[name] = doc['extend']
-  endfor
-
-  return table
 endfunction
 
 function! gosh_complete#set_buf_data(buf_num, name, data)
@@ -184,5 +186,161 @@ function! s:unit_name_head_filter(units, keyword)
     let expr = printf('!stridx(v:val.n, %s)', string(a:keyword))
   endif
 
-  return filter(copy(a:list), expr)
+  return filter(copy(a:units), expr)
 endfunction
+
+
+"
+" Communicate to gosh-complete.scm
+
+function! gosh_complete#init_proc()"{{{
+  let s:gosh_comp = vimproc#popen3('gosh' 
+        \ . ' -I' . escape(s:neocom_sources_directory, ' \') . ' '
+        \ . s:gosh_complete_path
+        \ . " --generated-doc-directory=" . s:gosh_generated_doc_path
+        \ . " --output-api-only"
+        \ . " --io-encoding=\"" . s:encoding() . "\""
+        \ . s:get_loaded_module_text())
+endfunction
+
+function s:get_loaded_module_text()"{{{
+  let text = ''
+
+  for [name, doc] in items(s:ginfo_table)
+    let text .= ' --loaded-module="' . s:get_loaded_module_name(name)
+    for module in doc['extend']
+      let text .= ' ' . module
+    endfor
+    let text .= '"'
+  endfor
+
+  return text
+endfunction"}}}
+
+function! s:get_loaded_module_name(docname)"{{{
+  if match(a:docname, '^#') == -1
+    let name = 'm' . a:docname
+  else
+    let name = 'f' . a:docname[2 :]
+    if name ==# '[No Name]'
+      let name = ''
+    endif
+  endif
+
+  return name
+endfunction"}}}"}}}
+
+function! gosh_complete#finale_proc()"{{{
+  call s:gosh_comp.stdin.write("#exit\n")
+  call s:gosh_comp.waitpid()
+endfunction"}}}
+
+function! s:restart_gosh_process()"{{{
+  "signal 15 is SIGTERM
+  call s:gosh_comp.kill(15)
+  call s:init_proc()
+endfunction"}}}
+
+function! gosh_complete#add_async_task(text, callback)"{{{
+  if empty(s:async_task_queue)
+    call s:gosh_comp.stdin.write(a:text)
+    call add(s:async_task_queue, {'callback':a:callback, 'time' : localtime()})
+  else
+    call add(s:async_task_queue, {'text' : a:text, 'callback': a:callback})
+  endif
+endfunction
+
+function! gosh_complete#check_async_task()
+  if empty(s:async_task_queue)
+    return
+  endif
+
+  let out = s:read_output_one_try(s:gosh_comp.stdout)
+
+  let err = ""
+  if empty(out)
+    let err = s:read_output_one_try(s:gosh_comp.stderr)
+  endif
+
+  let is_exec_next_task = 0
+  if !empty(out) || !empty(err)
+    let finish_task = remove(s:async_task_queue, 0)
+    let Callback = finish_task['callback']
+    call Callback(out, err)
+
+    if s:debug_out_err
+      if !empty(out)
+        call neocomplcache#print_warning('out:' . out)
+      endif
+      if !empty(err)
+        call neocomplcache#print_warning('err:' . err)
+      endif
+    endif
+
+    let is_exec_next_task = 1
+  else
+    let cur_task = get(s:async_task_queue, 0)
+    if s:async_task_timeout < (localtime() - cur_task['time'])
+      if s:debug
+        call neocomplcache#print_warning('timeout')
+      endif
+
+      "timeout: task failure
+      call remove(s:async_task_queue, 0)
+
+      "kill current process and restart gosh_complete
+      call s:restart_gosh_process()
+
+      let is_exec_next_task = 1
+    endif
+  endif
+
+  if is_exec_next_task
+    "execution next task
+    let task = get(s:async_task_queue, 0)
+    if task isnot 0
+      call s:gosh_comp.stdin.write(task['text'])
+      let task['text'] = 0
+      let task['time'] = localtime()
+    endif
+  endif
+
+endfunction
+
+function! s:read_output_one_try(port)
+  let out = ""
+
+  let res = a:port.read()
+  if !empty(res)
+    while 1
+      let len = strlen(res)
+      if res[len - 1] ==# "\n"
+        let out .= strpart(res, 0, len - 1)
+        break
+      else
+        let out .= res
+      endif
+
+      let res = a:port.read()
+    endwhile
+  endif
+
+  return out
+endfunction"}}}
+"
+" util
+
+function! s:encoding()"{{{
+  let enc = &encoding
+  if enc == 'utf-8'
+    return 'utf-8'
+  elseif enc == 'cp932'
+    return 'shift_jis'
+  elseif enc == 'euc-jp'
+    return 'euc_jp'
+  elseif enc == 'iso-2022-jp'
+    return 'iso2022jp'
+  endif
+endfunction"}}}
+
+" vim: foldmethod=marker

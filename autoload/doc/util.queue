@@ -1,0 +1,400 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name queue-pop/wait!
+;;@description これらの手続きはmtqueueに対して使うことができ、
+;;スレッド間同期を実現できます。
+;;enqueue/wait!とqueue-push/wait!は、
+;;キューの要素数がmax-lengthを越える場合に、キューに空きができるまで、
+;;dequeue/wait!とqueue-pop/wait!は、
+;;キューが空の場合に、キューに要素が追加されるまで、
+;;呼び出しスレッドをブロックします。
+;;
+;;timeout引数で、ブロックされたスレッドのタイムアウトを指定することができます。
+;;#fは指定しなかった場合と同じで、キューの状態が変化するまで
+;;無期限に待ちます。実数が渡された場合はそれが秒数と解釈され、最低限
+;;その時間経過するまでは待ちます。渡されたのが<time>オブジェクト
+;;(Time参照)である場合は、そのオブジェクトが指定する絶対時刻を
+;;経過するまで待ちます。
+;; 
+;;タイムアウトによりブロックが解かれた場合は、timeout-valで
+;;指定した値が返されます。timeout-valの省略時値は#fです。
+;;
+;;@param mtqueue 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name dequeue/wait!
+;;@description これらの手続きはmtqueueに対して使うことができ、
+;;スレッド間同期を実現できます。
+;;enqueue/wait!とqueue-push/wait!は、
+;;キューの要素数がmax-lengthを越える場合に、キューに空きができるまで、
+;;dequeue/wait!とqueue-pop/wait!は、
+;;キューが空の場合に、キューに要素が追加されるまで、
+;;呼び出しスレッドをブロックします。
+;;
+;;timeout引数で、ブロックされたスレッドのタイムアウトを指定することができます。
+;;#fは指定しなかった場合と同じで、キューの状態が変化するまで
+;;無期限に待ちます。実数が渡された場合はそれが秒数と解釈され、最低限
+;;その時間経過するまでは待ちます。渡されたのが<time>オブジェクト
+;;(Time参照)である場合は、そのオブジェクトが指定する絶対時刻を
+;;経過するまで待ちます。
+;; 
+;;タイムアウトによりブロックが解かれた場合は、timeout-valで
+;;指定した値が返されます。timeout-valの省略時値は#fです。
+;;
+;;@param mtqueue 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name queue-push/wait!
+;;@description これらの手続きはmtqueueに対して使うことができ、
+;;スレッド間同期を実現できます。
+;;enqueue/wait!とqueue-push/wait!は、
+;;キューの要素数がmax-lengthを越える場合に、キューに空きができるまで、
+;;dequeue/wait!とqueue-pop/wait!は、
+;;キューが空の場合に、キューに要素が追加されるまで、
+;;呼び出しスレッドをブロックします。
+;;
+;;timeout引数で、ブロックされたスレッドのタイムアウトを指定することができます。
+;;#fは指定しなかった場合と同じで、キューの状態が変化するまで
+;;無期限に待ちます。実数が渡された場合はそれが秒数と解釈され、最低限
+;;その時間経過するまでは待ちます。渡されたのが<time>オブジェクト
+;;(Time参照)である場合は、そのオブジェクトが指定する絶対時刻を
+;;経過するまで待ちます。
+;; 
+;;タイムアウトによりブロックが解かれた場合は、timeout-valで
+;;指定した値が返されます。timeout-valの省略時値は#fです。
+;;
+;;@param mtqueue 
+;;@param obj 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name enqueue/wait!
+;;@description これらの手続きはmtqueueに対して使うことができ、
+;;スレッド間同期を実現できます。
+;;enqueue/wait!とqueue-push/wait!は、
+;;キューの要素数がmax-lengthを越える場合に、キューに空きができるまで、
+;;dequeue/wait!とqueue-pop/wait!は、
+;;キューが空の場合に、キューに要素が追加されるまで、
+;;呼び出しスレッドをブロックします。
+;;
+;;timeout引数で、ブロックされたスレッドのタイムアウトを指定することができます。
+;;#fは指定しなかった場合と同じで、キューの状態が変化するまで
+;;無期限に待ちます。実数が渡された場合はそれが秒数と解釈され、最低限
+;;その時間経過するまでは待ちます。渡されたのが<time>オブジェクト
+;;(Time参照)である場合は、そのオブジェクトが指定する絶対時刻を
+;;経過するまで待ちます。
+;; 
+;;タイムアウトによりブロックが解かれた場合は、timeout-valで
+;;指定した値が返されます。timeout-valの省略時値は#fです。
+;;
+;;@param mtqueue 
+;;@param obj 
+;;@param :optional 
+;;@param timeout 
+;;@param timeout-val 
+
+;;;;;
+;;@type Function
+;;@name remove-from-queue!
+;;@description キューから、述語predを満たす要素を全て取り除きます。
+;;要素が削除された場合は#tが、そうでなければ#fが返されます。
+;;引数の順序はSRFI-1のremoveに揃えました (SRFI-1 Filtering & Partitioning参照)。
+;;
+;;@param pred 
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name every-in-queue
+;;@description SRFI-1のeveryのように、queue中の各要素に
+;;順にpredを適用し、それが#fを返したらすぐ#fを返します。
+;;predに対し#fを返す要素が無ければ、最後の要素にpredを
+;;適用した結果が返ります。キューが空なら#fが返ります。
+;;
+;;@param pred 
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name any-in-queue
+;;@description SRFI-1のanyのように、queue中の各要素に
+;;順にpredを適用し、それが真の値 (#tである必要はありません) に
+;;評価されたらその値を返します。predを満たす要素が無ければ#fが
+;;返ります。
+;;
+;;@param pred 
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name find-in-queue
+;;@description キュー内の要素のうち述語predを満たす最初の要素を返します。
+;;引数の順序はSRFI-1のfindに揃えました (SRFI-1 Searching参照)。
+;;
+;;@param pred 
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name queue->list
+;;@description キューqueueの内容をリストにして返します。
+;;dequeue-all!と異なり、キューそのものの内容は変化しません。
+;;
+;;Gaucheではqueue->listは新しいリストをアロケートしてキューの
+;;内容をコピーします (dequeue-all!はコピーをせずにキューの内部の
+;;リストをそのまま返します)。組込みでqueue->listを持っているScheme
+;;実装がいくつかありますが、その中にはqueue->listがキューの
+;;内容をコピーすることを保証していないものがあるので、それらの処理系と
+;;共有するコードではqueue->listがリストをコピーすることを
+;;あてにしない方が良いでしょう。
+;;
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name list->queue
+;;@description 与えられたリストlistの各要素をその順で持つようなキューを作成して返します。
+;;
+;;デフォルトではシンプルキューが作られますが、classに<class>の
+;;サブクラスを渡すことで他のキュークラスのインスタンスを作ることができます。
+;;initargsはclassのコンストラクタに渡されます。
+;;
+;;@param list 
+;;@param :optional 
+;;@param class 
+;;@param :rest 
+;;@param initargs 
+
+;;;;;
+;;@type Function
+;;@name queue-rear
+;;@description キューqueueの先頭もしくは末尾の要素を返します。キューそのものは変更されません。
+;;キューが空の場合、fallbackが与えられていればその値を返し、
+;;そうでなければエラーを報告します。
+;;
+;;@param queue 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name queue-front
+;;@description キューqueueの先頭もしくは末尾の要素を返します。キューそのものは変更されません。
+;;キューが空の場合、fallbackが与えられていればその値を返し、
+;;そうでなければエラーを報告します。
+;;
+;;@param queue 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name dequeue-all!
+;;@description キューの全ての内容をリストにして返します。キューそのものは空になります。
+;;キューが既に空の場合は空リストが返されます。
+;;下のqueue->listも参照してください。
+;;
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name queue-pop!
+;;@description キューqueueの先頭からひとつ要素を取って返します。
+;;二つの手続きは全く同じ動作をします。queue-pop!はqueue-push!と
+;;ペアで使われていることを強調したいときに使うと良いでしょう。
+;;
+;;キューが空の場合は、fallbackが与えられていればそれが返され、
+;;そうでなければエラーが報告されます。
+;;
+;;@param queue 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name dequeue!
+;;@description キューqueueの先頭からひとつ要素を取って返します。
+;;二つの手続きは全く同じ動作をします。queue-pop!はqueue-push!と
+;;ペアで使われていることを強調したいときに使うと良いでしょう。
+;;
+;;キューが空の場合は、fallbackが与えられていればそれが返され、
+;;そうでなければエラーが報告されます。
+;;
+;;@param queue 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name queue-push-unique!
+;;@description objが既にqueueの中に含まれている場合にはqueueを
+;;変更しないことを以外には、enqueue!およびqueue-push!と同じ
+;;動作をします。objが含まれているかどうかの検査は
+;;2引数の関数eq-procで行います。
+;;
+;;queueがmtqueueの場合は
+;;全てのオブジェクトはアトミックに追加され、またmax-lengthの値も
+;;チェックされます。詳しくは上のenqueue!の説明を参照してください。
+;;
+;;@param queue 
+;;@param eq-proc 
+;;@param obj 
+;;@param :optional 
+;;@param more-objs 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name enqueue-unique!
+;;@description objが既にqueueの中に含まれている場合にはqueueを
+;;変更しないことを以外には、enqueue!およびqueue-push!と同じ
+;;動作をします。objが含まれているかどうかの検査は
+;;2引数の関数eq-procで行います。
+;;
+;;queueがmtqueueの場合は
+;;全てのオブジェクトはアトミックに追加され、またmax-lengthの値も
+;;チェックされます。詳しくは上のenqueue!の説明を参照してください。
+;;
+;;@param queue 
+;;@param eq-proc 
+;;@param obj 
+;;@param :optional 
+;;@param more-objs 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name queue-push!
+;;@description objをキューqueueの先頭に追加します。
+;;一つ以上のobjを与えることができ、その場合はそれらが順にpushされます。
+;;
+;;enqueue!と同様に、queueがmtqueueの場合は
+;;全てのオブジェクトはアトミックに追加され、またmax-lengthの値も
+;;チェックされます。詳しくは上のenqueue!の説明を参照してください。
+;;
+;;@param queue 
+;;@param obj 
+;;@param :optional 
+;;@param more-objs 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name enqueue!
+;;@description objをキューqueueの末尾に追加します。
+;;一つ以上のobjを与えることができ、その場合はそれらが順にenqueueされます。
+;;
+;;queueがmtqueueの場合、渡されたオブジェクト全ての追加は
+;;アトミックに行われます。すなわち、途中に別スレッドが要素を挿入する
+;;ことはありません。さらに、max-lengthスロットが正の値を
+;;持っており、このenqueue!の実行によってキューの要素数が
+;;max-lengthを越えることになる場合は、queueは
+;;変更されずエラーとなります。
+;;
+;;@param queue 
+;;@param obj 
+;;@param :optional 
+;;@param more-objs 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name copy-queue
+;;@description キューqueueのコピーを返します。
+;;
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name mtqueue-room
+;;@description 保持できる最大容量に達するまであといくつ要素を受け入れることができるかを
+;;示す整数を返します。例えば、既にキューがいっぱいであれば0が返ります。
+;;キューに最大容量が設定されていなければ+inf.0が返ります。
+;;
+;;@param mtqueue 
+
+;;;;;
+;;@type Function
+;;@name mtqueue-max-length
+;;@description キューが保持できる要素の最大数を返します。限度がない場合はゼロが返ります。
+;;
+;;@param mtqueue 
+
+;;;;;
+;;@type Function
+;;@name queue-length
+;;@description キューの中にある要素の数を返します。
+;;
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name queue-empty?
+;;@description objが空のキューであれば#tを返します。
+;;
+;;@param queue 
+
+;;;;;
+;;@type Function
+;;@name mtqueue?
+;;@description objがmtqueueであれば#tを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name queue?
+;;@description objがキューであれば(シンプルなキューでもmtqueueでも)#tを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name make-mtqueue
+;;@description 空のmtqueueを作って返します。整数がmax-lengthに与えられた場合は、
+;;それがmax-lengthスロットの値となります (ゼロは無制限を意味します)。
+;;
+;;@param &key 
+;;@param max-length 
+
+;;;;;
+;;@type Function
+;;@name make-queue
+;;@description 空のシンプルなキューを作って返します。
+;;
+
+;;;;;
+;;@type Class
+;;@name <mtqueue>
+;;@description mtqueueのクラスです。<queue>を継承しています。
+;;
+;;
+;;@slot max-length 正の整数の場合、このスロットの値はキュー中の要素数の上限を示します。
+;;
+
+;;;;;
+;;@type Class
+;;@name <queue>
+;;@description シンプルなキューのクラスです。
+;;
+;;
+;;@slot length キュー中の要素の数を返す、読み取り専用のスロットです。
+;;
+

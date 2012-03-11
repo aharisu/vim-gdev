@@ -1,0 +1,442 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name uri-encode-string
+;;@description 安全でない文字を、%によるエスケープでエンコードします。
+;;uri-encode は現在の入力ポートから入力を受け取り、
+;;結果を現在の出力ポートに書き出します。
+;;uri-encode-string は string を入力とし、エンコードした
+;;文字列を返します。
+;;
+;;デフォルトでは、RFC3986 で"非予約文字"として規定されていない文字は
+;;エスケープされます。noescape 引数に異なる文字セットを渡すことで、
+;;それらがエンコードされるのを抑止することができます。
+;;例えば古いRFC2396では"非予約文字"がいくつか多かったのですが、
+;;*rfc2396-unreserved-char-set* (下記参照) を渡すことで
+;;それらの文字がエスケープされるのを防ぐことができます。
+;;
+;;マルチバイト文字は、デフォルトではGauche のネイティブなマルチバイト表現の
+;;オクテット・ストリームとしてエンコードされます。ただし
+;;uri-encode-stringにはencodingキーワード引数を渡すことができて、
+;;その場合はまずstringが指定された文字エンコーディングへと変換されます。
+;;
+;;@param string 
+;;@param :key 
+;;@param :noescape 
+;;@param :encoding 
+
+;;;;;
+;;@type Function
+;;@name uri-encode
+;;@description 安全でない文字を、%によるエスケープでエンコードします。
+;;uri-encode は現在の入力ポートから入力を受け取り、
+;;結果を現在の出力ポートに書き出します。
+;;uri-encode-string は string を入力とし、エンコードした
+;;文字列を返します。
+;;
+;;デフォルトでは、RFC3986 で"非予約文字"として規定されていない文字は
+;;エスケープされます。noescape 引数に異なる文字セットを渡すことで、
+;;それらがエンコードされるのを抑止することができます。
+;;例えば古いRFC2396では"非予約文字"がいくつか多かったのですが、
+;;*rfc2396-unreserved-char-set* (下記参照) を渡すことで
+;;それらの文字がエスケープされるのを防ぐことができます。
+;;
+;;マルチバイト文字は、デフォルトではGauche のネイティブなマルチバイト表現の
+;;オクテット・ストリームとしてエンコードされます。ただし
+;;uri-encode-stringにはencodingキーワード引数を渡すことができて、
+;;その場合はまずstringが指定された文字エンコーディングへと変換されます。
+;;
+;;@param :key 
+;;@param :noescape 
+
+;;;;;
+;;@type Function
+;;@name uri-decode-string
+;;@description URI エンコーディング、すなわち、%でエスケープされた URI 文字列を
+;;デコードします。uri-decode は現在の入力ポートから入力を受け取り、
+;;デコードした結果を現在の出力ポートに書き出します。
+;;uri-decode-string は string を入力とし、デコードした
+;;文字列を返します。
+;;
+;;cgi-decode が真の場合は、+ がスペース文字に置換されます。
+;;
+;;uri-decode-stringには、外部の文字エンコーディングを指定する
+;;encodingキーワード引数を与えることができます。この引数が与えれた
+;;場合、デコードされたオクテットの列を指定された文字エンコーディングであると
+;;してGaucheの内部文字エンコーディングへと変換したものが返されます。
+;;
+;;@param string 
+;;@param :key 
+;;@param :cgi-decode 
+;;@param :encoding 
+
+;;;;;
+;;@type Function
+;;@name uri-decode
+;;@description URI エンコーディング、すなわち、%でエスケープされた URI 文字列を
+;;デコードします。uri-decode は現在の入力ポートから入力を受け取り、
+;;デコードした結果を現在の出力ポートに書き出します。
+;;uri-decode-string は string を入力とし、デコードした
+;;文字列を返します。
+;;
+;;cgi-decode が真の場合は、+ がスペース文字に置換されます。
+;;
+;;uri-decode-stringには、外部の文字エンコーディングを指定する
+;;encodingキーワード引数を与えることができます。この引数が与えれた
+;;場合、デコードされたオクテットの列を指定された文字エンコーディングであると
+;;してGaucheの内部文字エンコーディングへと変換したものが返されます。
+;;
+;;@param :key 
+;;@param :cgi-decode 
+
+;;;;;
+;;@type Function
+;;@name uri-merge
+;;@description 引数は、完全な、あるいは部分的なURIを表す文字列です。
+;;この手続きは、RFC3986 Section 5.2. ``Relative Resolution'' に
+;;示されるアルゴリズムに従い、relative-uriをbase-uriからの相対
+;;として解決します。
+;;
+;;relative-uri2 ... が与えられた場合は、まずrelative-uri
+;;がbase-uriを基準に解決され、その結果を新たな基準として次の
+;;relative-uri2を解決し、以下同様に続けます。
+;;
+;;example:
+;;  (uri-merge "http://example.com/foo/index.html" "a/b/c")
+;;   ==> "http://example.com/foo/a/b/c"
+;;  
+;;  (uri-merge "http://example.com/foo/search?q=abc" "../about#me")
+;;   ==> "http://example.com/about#me"
+;;  
+;;  (uri-merge "http://example.com/foo" "http://example.net/bar")
+;;   ==> "http://example.net/bar"
+;;  
+;;  (uri-merge "http://example.com/foo/" "q" "?xyz")
+;;   ==> "http://example.com/foo/q?xyz"
+;;
+;;@param base-uri 
+;;@param relative-uri 
+;;@param relative-uri2 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name uri-compose
+;;@description 与えられたコンポーネントから URI を構成します。
+;;妥当な URI を作成するためのコンポーネントの組み合わせはたくさんあります。
+;;以下のダイアグラムは、考え得る組み合わせの方法を示しています。
+;;
+;;example:
+;;          /-----------------specific-------------------\
+;;          |                                            |
+;;   scheme-+------authority-----+-+-------path*---------+-
+;;          |                    | |                     |
+;;          \-userinfo-host-port-/ \-path-query-fragment-/
+;;
+;;キーワード引数に #f が与えられた場合、それはキーワード引数が
+;;指定されないことと等価です。これは URI をパーズした結果を渡す場合に
+;;特に有用です。
+;;
+;;コンポーネントに適切でない文字が含まれている場合は、
+;;url-compose に渡す前に正しくエスケープされなければなりません。
+;;
+;;いくつかの例を示します。
+;;example:
+;;  (uri-compose :scheme "http" :host "foo.com" :port 80
+;;               :path "/index.html" :fragment "top")
+;;    ==> "http://foo.com:80/index.html#top"
+;;  
+;;  (uri-compose :scheme "http" :host "foo.net"
+;;               :path* "/cgi-bin/query.cgi?keyword=foo")
+;;    ==> "http://foo.net/cgi-bin/query.cgi?keyword=foo"
+;;  
+;;  (uri-compose :scheme "mailto" :specific "a@@foo.org")
+;;    ==> "mailto:a@@foo.org"
+;;  
+;;  (receive (authority path query fragment)
+;;     (uri-decompose-hierarchical "//foo.jp/index.html#whatsnew")
+;;   (uri-compose :authority authority :path path
+;;                :query query :fragment fragment))
+;;    ==> "//foo.jp/index.html#whatsnew"
+;;
+;;@param :key 
+;;@param scheme 
+;;@param userinfo 
+;;@param host 
+;;@param port 
+;;@param authority 
+;;@param path 
+;;@param path* 
+;;@param query 
+;;@param fragment 
+;;@param specific 
+
+;;;;;
+;;@type Function
+;;@name uri-decompose-authority
+;;@description URIの一般的なパーザです。これらの関数はURIエンコーディングを
+;;デコードしません。URIスキームによってどの部分をデコードすべきかが
+;;異なるからです。パージングを行った後に、後述のuri-decode等を
+;;使ってデコードを行ってください。
+;;
+;;uri-parseは最も手軽な手続きで、uriを以下に示す部分に
+;;分割し、多値で返します。
+;;もし該当する部分がuriに無かった場合は、その部分には#fが返ります。
+;;  URIスキームを文字列で。
+;;  (例： "mailto:foo@@example.com"の"mailto")。
+;;  authorityパートのuser-infoを文字列で。
+;;  (例： ftp://anonymous@@ftp.example.com/pub/fooの"anonymous")。
+;;  authorityパートのhostnameを文字列で。
+;;  (例： ftp://anonymous@@ftp.example.com/pub/fooの
+;;  "ftp.example.com")。
+;;  authorityパートのport番号を整数で。
+;;  (例： http://www.example.com:8080/の8080)。
+;;  pathパート。
+;;  (例： http://www.example.com/index.htmlの"/index.html")。
+;;  queryパート。
+;;  (例： http://www.example.com/search?key=xyz&lang=enの
+;;  "key=xyz&lang=en")。
+;;  fragmentパート。
+;;  (例： http://www.example.com/document.html#section4の
+;;  "section4")。
+;;
+;;以下の手続きはより詳細に、段階をふんでuriを分割してゆくものです。
+;;
+;;uri-scheme&specific は URI uri を引数に取り、
+;;スキーム部分と、そのスキーム特有の部分を表す2つの値を返します。
+;;uri がスキーム部分を持たない場合、#f を返します。
+;;example:
+;;  (uri-scheme&specific "mailto:sclaus@@north.pole")
+;;    ==> "mailto" and "sclaus@@north.pole"
+;;  (uri-scheme&specific "/icons/new.gif")
+;;    ==> #f and "/icons/new.gif"
+;;
+;;URI が階層的な記法を用いている場合、すなわち、
+;;``//authority/path?query#fragment''
+;;のような場合、スキーム特有の部分を uri-decompose-hierarchical
+;;に渡すと、authority、path、query、fragment
+;;の4つの値が返ります。
+;;example:
+;;  (uri-decompose-hierarchical "//www.foo.com/about/company.html")
+;;    ==> "www.foo.com", "/about/company.html", #f and #f
+;;  (uri-decompose-hierarchical "//zzz.org/search?key=%3fhelp")
+;;    ==> "zzz.org", "/search", "key=%3fhelp" and #f
+;;  (uri-decompose-hierarchical "//jjj.jp/index.html#whatsnew")
+;;    ==> "jjj.jp", "/index.html", #f and "whatsnew"
+;;  (uri-decompose-hierarchical "my@@address")
+;;    ==> #f, #f, #f and #f
+;;
+;;さらに、階層的 URI の authority の部分を
+;;uri-decompose-authority に渡すと、userinfo、
+;;host、port が返ります。
+;;example:
+;;  (uri-decompose-authority "yyy.jp:8080")
+;;    ==> #f, "yyy.jp" and "8080"
+;;  (uri-decompose-authority "mylogin@@yyy.jp")
+;;    ==> "mylogin", "yyy.jp" and #f
+;;
+;;@param authority 
+
+;;;;;
+;;@type Function
+;;@name uri-decompose-hierarchical
+;;@description URIの一般的なパーザです。これらの関数はURIエンコーディングを
+;;デコードしません。URIスキームによってどの部分をデコードすべきかが
+;;異なるからです。パージングを行った後に、後述のuri-decode等を
+;;使ってデコードを行ってください。
+;;
+;;uri-parseは最も手軽な手続きで、uriを以下に示す部分に
+;;分割し、多値で返します。
+;;もし該当する部分がuriに無かった場合は、その部分には#fが返ります。
+;;  URIスキームを文字列で。
+;;  (例： "mailto:foo@@example.com"の"mailto")。
+;;  authorityパートのuser-infoを文字列で。
+;;  (例： ftp://anonymous@@ftp.example.com/pub/fooの"anonymous")。
+;;  authorityパートのhostnameを文字列で。
+;;  (例： ftp://anonymous@@ftp.example.com/pub/fooの
+;;  "ftp.example.com")。
+;;  authorityパートのport番号を整数で。
+;;  (例： http://www.example.com:8080/の8080)。
+;;  pathパート。
+;;  (例： http://www.example.com/index.htmlの"/index.html")。
+;;  queryパート。
+;;  (例： http://www.example.com/search?key=xyz&lang=enの
+;;  "key=xyz&lang=en")。
+;;  fragmentパート。
+;;  (例： http://www.example.com/document.html#section4の
+;;  "section4")。
+;;
+;;以下の手続きはより詳細に、段階をふんでuriを分割してゆくものです。
+;;
+;;uri-scheme&specific は URI uri を引数に取り、
+;;スキーム部分と、そのスキーム特有の部分を表す2つの値を返します。
+;;uri がスキーム部分を持たない場合、#f を返します。
+;;example:
+;;  (uri-scheme&specific "mailto:sclaus@@north.pole")
+;;    ==> "mailto" and "sclaus@@north.pole"
+;;  (uri-scheme&specific "/icons/new.gif")
+;;    ==> #f and "/icons/new.gif"
+;;
+;;URI が階層的な記法を用いている場合、すなわち、
+;;``//authority/path?query#fragment''
+;;のような場合、スキーム特有の部分を uri-decompose-hierarchical
+;;に渡すと、authority、path、query、fragment
+;;の4つの値が返ります。
+;;example:
+;;  (uri-decompose-hierarchical "//www.foo.com/about/company.html")
+;;    ==> "www.foo.com", "/about/company.html", #f and #f
+;;  (uri-decompose-hierarchical "//zzz.org/search?key=%3fhelp")
+;;    ==> "zzz.org", "/search", "key=%3fhelp" and #f
+;;  (uri-decompose-hierarchical "//jjj.jp/index.html#whatsnew")
+;;    ==> "jjj.jp", "/index.html", #f and "whatsnew"
+;;  (uri-decompose-hierarchical "my@@address")
+;;    ==> #f, #f, #f and #f
+;;
+;;さらに、階層的 URI の authority の部分を
+;;uri-decompose-authority に渡すと、userinfo、
+;;host、port が返ります。
+;;example:
+;;  (uri-decompose-authority "yyy.jp:8080")
+;;    ==> #f, "yyy.jp" and "8080"
+;;  (uri-decompose-authority "mylogin@@yyy.jp")
+;;    ==> "mylogin", "yyy.jp" and #f
+;;
+;;@param specific 
+
+;;;;;
+;;@type Function
+;;@name uri-scheme&specific
+;;@description URIの一般的なパーザです。これらの関数はURIエンコーディングを
+;;デコードしません。URIスキームによってどの部分をデコードすべきかが
+;;異なるからです。パージングを行った後に、後述のuri-decode等を
+;;使ってデコードを行ってください。
+;;
+;;uri-parseは最も手軽な手続きで、uriを以下に示す部分に
+;;分割し、多値で返します。
+;;もし該当する部分がuriに無かった場合は、その部分には#fが返ります。
+;;  URIスキームを文字列で。
+;;  (例： "mailto:foo@@example.com"の"mailto")。
+;;  authorityパートのuser-infoを文字列で。
+;;  (例： ftp://anonymous@@ftp.example.com/pub/fooの"anonymous")。
+;;  authorityパートのhostnameを文字列で。
+;;  (例： ftp://anonymous@@ftp.example.com/pub/fooの
+;;  "ftp.example.com")。
+;;  authorityパートのport番号を整数で。
+;;  (例： http://www.example.com:8080/の8080)。
+;;  pathパート。
+;;  (例： http://www.example.com/index.htmlの"/index.html")。
+;;  queryパート。
+;;  (例： http://www.example.com/search?key=xyz&lang=enの
+;;  "key=xyz&lang=en")。
+;;  fragmentパート。
+;;  (例： http://www.example.com/document.html#section4の
+;;  "section4")。
+;;
+;;以下の手続きはより詳細に、段階をふんでuriを分割してゆくものです。
+;;
+;;uri-scheme&specific は URI uri を引数に取り、
+;;スキーム部分と、そのスキーム特有の部分を表す2つの値を返します。
+;;uri がスキーム部分を持たない場合、#f を返します。
+;;example:
+;;  (uri-scheme&specific "mailto:sclaus@@north.pole")
+;;    ==> "mailto" and "sclaus@@north.pole"
+;;  (uri-scheme&specific "/icons/new.gif")
+;;    ==> #f and "/icons/new.gif"
+;;
+;;URI が階層的な記法を用いている場合、すなわち、
+;;``//authority/path?query#fragment''
+;;のような場合、スキーム特有の部分を uri-decompose-hierarchical
+;;に渡すと、authority、path、query、fragment
+;;の4つの値が返ります。
+;;example:
+;;  (uri-decompose-hierarchical "//www.foo.com/about/company.html")
+;;    ==> "www.foo.com", "/about/company.html", #f and #f
+;;  (uri-decompose-hierarchical "//zzz.org/search?key=%3fhelp")
+;;    ==> "zzz.org", "/search", "key=%3fhelp" and #f
+;;  (uri-decompose-hierarchical "//jjj.jp/index.html#whatsnew")
+;;    ==> "jjj.jp", "/index.html", #f and "whatsnew"
+;;  (uri-decompose-hierarchical "my@@address")
+;;    ==> #f, #f, #f and #f
+;;
+;;さらに、階層的 URI の authority の部分を
+;;uri-decompose-authority に渡すと、userinfo、
+;;host、port が返ります。
+;;example:
+;;  (uri-decompose-authority "yyy.jp:8080")
+;;    ==> #f, "yyy.jp" and "8080"
+;;  (uri-decompose-authority "mylogin@@yyy.jp")
+;;    ==> "mylogin", "yyy.jp" and #f
+;;
+;;@param uri 
+
+;;;;;
+;;@type Function
+;;@name uri-parse
+;;@description URIの一般的なパーザです。これらの関数はURIエンコーディングを
+;;デコードしません。URIスキームによってどの部分をデコードすべきかが
+;;異なるからです。パージングを行った後に、後述のuri-decode等を
+;;使ってデコードを行ってください。
+;;
+;;uri-parseは最も手軽な手続きで、uriを以下に示す部分に
+;;分割し、多値で返します。
+;;もし該当する部分がuriに無かった場合は、その部分には#fが返ります。
+;;  URIスキームを文字列で。
+;;  (例： "mailto:foo@@example.com"の"mailto")。
+;;  authorityパートのuser-infoを文字列で。
+;;  (例： ftp://anonymous@@ftp.example.com/pub/fooの"anonymous")。
+;;  authorityパートのhostnameを文字列で。
+;;  (例： ftp://anonymous@@ftp.example.com/pub/fooの
+;;  "ftp.example.com")。
+;;  authorityパートのport番号を整数で。
+;;  (例： http://www.example.com:8080/の8080)。
+;;  pathパート。
+;;  (例： http://www.example.com/index.htmlの"/index.html")。
+;;  queryパート。
+;;  (例： http://www.example.com/search?key=xyz&lang=enの
+;;  "key=xyz&lang=en")。
+;;  fragmentパート。
+;;  (例： http://www.example.com/document.html#section4の
+;;  "section4")。
+;;
+;;以下の手続きはより詳細に、段階をふんでuriを分割してゆくものです。
+;;
+;;uri-scheme&specific は URI uri を引数に取り、
+;;スキーム部分と、そのスキーム特有の部分を表す2つの値を返します。
+;;uri がスキーム部分を持たない場合、#f を返します。
+;;example:
+;;  (uri-scheme&specific "mailto:sclaus@@north.pole")
+;;    ==> "mailto" and "sclaus@@north.pole"
+;;  (uri-scheme&specific "/icons/new.gif")
+;;    ==> #f and "/icons/new.gif"
+;;
+;;URI が階層的な記法を用いている場合、すなわち、
+;;``//authority/path?query#fragment''
+;;のような場合、スキーム特有の部分を uri-decompose-hierarchical
+;;に渡すと、authority、path、query、fragment
+;;の4つの値が返ります。
+;;example:
+;;  (uri-decompose-hierarchical "//www.foo.com/about/company.html")
+;;    ==> "www.foo.com", "/about/company.html", #f and #f
+;;  (uri-decompose-hierarchical "//zzz.org/search?key=%3fhelp")
+;;    ==> "zzz.org", "/search", "key=%3fhelp" and #f
+;;  (uri-decompose-hierarchical "//jjj.jp/index.html#whatsnew")
+;;    ==> "jjj.jp", "/index.html", #f and "whatsnew"
+;;  (uri-decompose-hierarchical "my@@address")
+;;    ==> #f, #f, #f and #f
+;;
+;;さらに、階層的 URI の authority の部分を
+;;uri-decompose-authority に渡すと、userinfo、
+;;host、port が返ります。
+;;example:
+;;  (uri-decompose-authority "yyy.jp:8080")
+;;    ==> #f, "yyy.jp" and "8080"
+;;  (uri-decompose-authority "mylogin@@yyy.jp")
+;;    ==> "mylogin", "yyy.jp" and #f
+;;
+;;@param uri 
+

@@ -1,0 +1,106 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Method
+;;@name find-index
+;;@description findに似ていますが、seqの中でpredを満足する最初の、
+;;要素自身ではなくインデックスを返す点が異なります。
+;;seqの中にpredを満足する要素がなかったら、#fが返ります。
+;;
+;;example:
+;;  (find-index char-upper-case? "abraCadabra")
+;;    ==> 4 
+;;  
+;;  (find-index char-numeric? "abraCadabra")
+;;    ==> #f
+;;
+;;SRFI-1 (SRFI-1 Searching参照)のlist-indexも見て下さい。
+;;
+;;@param pred 
+;;@param (seq <sequence>) 
+
+;;;;;
+;;@type Method
+;;@name find-with-index
+;;@description findのように、seqの中でpredを満足する最初の要素を
+;;探しますが、2つの値、要素のインデックスと要素自身を返します。
+;;predを満足する要素がなかったら、2つの#fが返ります。
+;;
+;;example:
+;;  (find-with-index char-upper-case? "abraCadabra")
+;;    ==> 4 and #\C
+;;  
+;;  (find-with-index char-numeric? "abraCadabra")
+;;    ==> #f and #f
+;;
+;;@param pred 
+;;@param (seq <sequence>) 
+
+;;;;;
+;;@type Method
+;;@name for-each-with-index
+;;@description map、map-to、for-eachと似ていますが、procが
+;;第1引数としてインデックスを受け取る点が違います。
+;;
+;;example:
+;;  (map-with-index list '(a b c d) '(e f g h))
+;;    ==> ((0 a e) (1 b f) (2 c g) (3 d h))
+;;  
+;;  (map-to-with-index <vector> cons '(a b c d))
+;;    ==> #((0 . a) (1 . b) (2 . c) (3 . d))
+;;
+;;@param proc 
+;;@param (seq <sequence>) ... 
+
+;;;;;
+;;@type Method
+;;@name map-to-with-index
+;;@description map、map-to、for-eachと似ていますが、procが
+;;第1引数としてインデックスを受け取る点が違います。
+;;
+;;example:
+;;  (map-with-index list '(a b c d) '(e f g h))
+;;    ==> ((0 a e) (1 b f) (2 c g) (3 d h))
+;;  
+;;  (map-to-with-index <vector> cons '(a b c d))
+;;    ==> #((0 . a) (1 . b) (2 . c) (3 . d))
+;;
+;;@param class 
+;;@param proc 
+;;@param (seq <sequence>) ... 
+
+;;;;;
+;;@type Method
+;;@name map-with-index
+;;@description map、map-to、for-eachと似ていますが、procが
+;;第1引数としてインデックスを受け取る点が違います。
+;;
+;;example:
+;;  (map-with-index list '(a b c d) '(e f g h))
+;;    ==> ((0 a e) (1 b f) (2 c g) (3 d h))
+;;  
+;;  (map-to-with-index <vector> cons '(a b c d))
+;;    ==> #((0 . a) (1 . b) (2 . c) (3 . d))
+;;
+;;@param proc 
+;;@param (seq <sequence>) ... 
+
+;;;;;
+;;@type Method
+;;@name fold-with-index
+;;@description ジェネリックなfoldと似ていますが、konsにはseqの
+;;インデックス内から、第1引数としてseqの要素と増加する値が渡る
+;;点が異なります。
+;;
+;;example:
+;;  (fold-with-index acons '() '(a b c))
+;;    ==> ((2 . c) (1 . b) (0 . a))
+;;
+;;@param kons 
+;;@param knil 
+;;@param (seq <sequence>) ... 
+

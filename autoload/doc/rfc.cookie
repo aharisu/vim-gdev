@@ -1,0 +1,91 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name construct-cookie-string
+;;@description 与えられたクッキーの仕様のリストから、Set-cookie2 か
+;;Set-cookie ヘッダに適切なクッキー文字列を作ります。
+;;
+;;オプションの version 引数は、クッキー・プロトコルのバージョンを
+;;指定するものです。0 は古い Netscape スタイルのフォーマットで、1 は
+;;RFC2965 スタイルのフォーマットです。省略された場合、1 が指定されたものと
+;;されます。
+;;
+;;クッキーの仕様は以下のフォーマットを持ちます。
+;;example:
+;;  (<name> <value> [:comment <comment>] [:comment-url <url>]
+;;                  [:discard <bool>] [:domain <domain>]
+;;                  [:max-age <age>] [:path <path>]
+;;                  [:port <port-list>] [:secure <bool>] [:http-only <bool>]
+;;                  [:version <version>] [:expires <date>])
+;;<name> ------
+;;  文字列。クッキーの名前。
+;;<value> ------
+;;  クッキーの値。文字列か、値が必要なければ #f 。
+;;<comment> <url> <domain> <path> <port-list> ------
+;;  文字列。
+;;<bool> ------
+;;  真偽値。
+;;<age> <version> ------
+;;  整数。
+;;<date> ------
+;;  整数(エポックからの秒数)か、Netscape のクッキー仕様に従うフォーマットされた
+;;  日付文字列。
+;;
+;;属性値は適切にクォートされます。指定された属性が version に不適切な
+;;場合は無視されます。古いスタイルと新しいスタイルの両方のクッキー文字列を
+;;作るために同じ仕様を渡すことができます。
+;;
+;;戻り値はそれぞれのクッキー文字列のリストです。(Set-cookie を使う)
+;;古いスタイルのプロトコルでは、それぞれを独立したヘッダとして送らなければ
+;;なりません。(Set-cookie2 ヘッダを使う)新しいプロトコルでは、
+;;それらをカンマで繋ぎ、一度に送ることができます。詳細は RFC6265 を見て下さい。
+;;
+;;いくつかの例を示します。
+;;example:
+;;  (construct-cookie-string
+;;     `(("name" "foo" :domain "foo.com" :path "/"
+;;                     :expires ,(+ (sys-time) 86400) :max-age 86400)))
+;;   ==> ("name=foo;Domain=foo.com;Path=/;Max-age=86400")
+;;  
+;;  (construct-cookie-string
+;;     `(("name" "foo" :domain "foo.com" :path "/"
+;;                     :expires ,(+ (sys-time) 86400) :max-age 86400))
+;;     0)
+;;   ==>
+;;   ("name=foo;Domain=foo.com;Path=/;Expires=Sun, 09-Sep-2001 01:46:40 GMT")
+;;
+;;@param specs 
+;;@param :optional 
+;;@param version 
+
+;;;;;
+;;@type Function
+;;@name parse-cookie-string
+;;@description リクエスト・ヘッダの Cookie の値のクッキー文字列 string を
+;;パースします。通常、CGI プログラムでは、同じ情報は環境変数
+;;HTTP_COOKIE を通して利用できます。
+;;
+;;リクエスト・ヘッダ Cookie2 を通してクッキーのバージョンが分かる
+;;場合は、version へ整数のバージョンとして渡されなければなりません。
+;;そうでなければ、parse-cookie は string からバージョンを
+;;取り出します。
+;;
+;;結果は以下のフォーマットを持ちます。
+;;example:
+;;  ((<name> <value> [:path <path>] [:domain <domain>] [:port <port>])
+;;   ...)
+;;<name> は属性名で、<value> は対応する値です。
+;;属性が値を持たない場合、<value> は #f になります。
+;;(属性が NULL 値を持つ場合は、"" となることに注意。)
+;;属性がパスやドメイン、ポート番号のオプションを持つ場合は、
+;;キーワード-値のペアの形式で与えられます。
+;;
+;;@param string 
+;;@param :optional 
+;;@param version 
+

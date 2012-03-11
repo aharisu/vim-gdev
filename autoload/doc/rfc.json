@@ -1,0 +1,78 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name construct-json-string
+;;@description SchemeオブジェクトobjのJSON表現を作ります。
+;;construct-jsonは結果をoutput-portに書き出します。デフォルトは
+;;current-output-portです。construct-json-stringは結果を文字列で返します。
+;;RFC4627はJSONテキストはobjectかarrayであると定めているので、
+;;objはJSONオブジェクトかJSON配列へと変換できるSchemeオブジェクト
+;;でなければなりません。
+;;
+;;objがJSONにマップできないオブジェクトを含んでいた場合は
+;;<json-consturct-error>コンディションが投げられます。
+;;JSONとScheme間のマッピングについては上のparse-jsonのエントリを
+;;参照してください。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name construct-json
+;;@description SchemeオブジェクトobjのJSON表現を作ります。
+;;construct-jsonは結果をoutput-portに書き出します。デフォルトは
+;;current-output-portです。construct-json-stringは結果を文字列で返します。
+;;RFC4627はJSONテキストはobjectかarrayであると定めているので、
+;;objはJSONオブジェクトかJSON配列へと変換できるSchemeオブジェクト
+;;でなければなりません。
+;;
+;;objがJSONにマップできないオブジェクトを含んでいた場合は
+;;<json-consturct-error>コンディションが投げられます。
+;;JSONとScheme間のマッピングについては上のparse-jsonのエントリを
+;;参照してください。
+;;
+;;@param obj 
+;;@param :optional 
+;;@param output-port 
+
+;;;;;
+;;@type Function
+;;@name parse-json-string
+;;@description 文字列strをJSONとしてパーズし、結果をS式で返します。
+;;パーズエラーが起きた場合は<json-parse-error>コンディションを投げます。
+;;
+;;JSONのデータ型とSchemeの型とのマッピングについては上のparse-json
+;;を参照してください。
+;;
+;;@param str 
+
+;;;;;
+;;@type Function
+;;@name parse-json
+;;@description JSON表記をinput-port (省略された場合はcurrent-input-port)から
+;;読み込みパーズして、結果をS式で返します。
+;;パーズエラーが起きた場合は<json-parse-error>コンディションを投げます。
+;;
+;;下のテーブルに、JSONのデータ型がどのようにSchemeにマップされるかを示します。
+;;(将来は、このマッピングをカスタマイズできるようにするかもしれません。)
+;;
+;;true, false, null ------
+;;  シンボルtrue, false and null。
+;;配列 ------
+;;  Schemeのベクタ。
+;;オブジェクト ------
+;;  Schemeの連想リスト。キーは文字列で、値はSchemeオブジェクト。
+;;数値 ------
+;;  Schemeの不正確な実数。
+;;文字列 ------
+;;  Schemeの文字列。
+;;
+;;
+;;@param :optional 
+;;@param input-port 
+

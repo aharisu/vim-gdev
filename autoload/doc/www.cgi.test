@@ -1,0 +1,104 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name run-cgi-script->string-list
+;;@description これらの手続きは、run-cgi-script->header&bodyの
+;;readerとして、それぞれ port->string、
+;;port->string-listを使います。
+;;
+;;@param script 
+;;@param :key 
+;;@param environment 
+;;@param parameters 
+
+;;;;;
+;;@type Function
+;;@name run-cgi-script->string
+;;@description これらの手続きは、run-cgi-script->header&bodyの
+;;readerとして、それぞれ port->string、
+;;port->string-listを使います。
+;;
+;;@param script 
+;;@param :key 
+;;@param environment 
+;;@param parameters 
+
+;;;;;
+;;@type Function
+;;@name run-cgi-script->sxml
+;;@description この手続きでは、run-cgi-script->header&bodyの
+;;readerとして、ssax:xml->sxml
+;;(Functional XML parser参照)を使います。
+;;整形式(Well-formed)のHTMLやXMLドキュメントを生成する
+;;CGIスクリプトをテストする場合に便利です。
+;;
+;;@param script 
+;;@param :key 
+;;@param environment 
+;;@param parameters 
+
+;;;;;
+;;@type Function
+;;@name run-cgi-script->header&body
+;;@description call-with-cgi-script の便利なラッパー手続きです。
+;;script、environment、parametersは、
+;;そのまま call-with-cgi-scriptに渡されます。
+;;スクリプトの出力は、run-cgi-script->header&bodyにより
+;;パーズされます。
+;;最初に、RFC2822ヘッダフィールドが rfc822-read-headers
+;;(RFC822 message parsing参照)によりパーズされます。
+;;次に、readerが、スクリプトの出力にパイプされた入力ポートと
+;;ともに呼ばれます。
+;;
+;;run-cgi-script->header&bodyは、ヘッダのリスト
+;;(rfc822-read-headersによりパーズされたもの)と
+;;readerの戻り値の2つの値を返します。
+;;
+;;@param script 
+;;@param reader 
+;;@param :key 
+;;@param environment 
+;;@param parameters 
+
+;;;;;
+;;@type Function
+;;@name call-with-cgi-script
+;;@description 与えられた環境でスクリプトを実行し、そのスクリプトの標準出力のパイプに
+;;接続された入力ポートを1つ引数に取る proc を呼び出します。
+;;
+;;引数 script は、プログラムの名前とその引数のリストでなければ
+;;なりません。リストの要素はそれぞれ、文字列化されるためにまず
+;;x->stringに渡されます。
+;;
+;;スクリプトは、変数 environment で与えられる環境と、上述した
+;;デフォルトのテスト環境の下で実行されます。
+;;environmentは、キー(car)がその環境変数の名前、
+;;cdrが対応する値であるような連想リストでなければなりません。
+;;両方ともまず x->string に渡されます。
+;;environment とデフォルトのテスト環境に同じ環境変数がある場合は、
+;;environment にあるものが使われます。
+;;
+;;さらに、引数 parameters に連想リストが渡された場合、そこから
+;;クエリストリングが作られスクリプトに渡されます。
+;;クエリストリングを渡す実際のメソッドは、環境変数 REQUEST_METHODの
+;;値に依存します。REQUEST_METHOD が GET か HEAD で
+;;ある場合は、クエリストリングは環境変数 QUERY_STRING に置かれます。
+;;REQUEST_METHOD が POST の場合は、クエリストリングは
+;;スクリプトの標準入力から取得されます。後者の場合、CONTENT_TYPE には
+;;application/x-www-form-urlencodedが、
+;;CONTENT_LENGTH には QUERY_STRINGの長さが、それぞれ自動的に
+;;セットされます。REQUEST_METHOD がその他の値の場合は、
+;;parameters は無視されます。
+;;必要であれば、このメカニズムをバイパスして、環境変数 QUERY_STRING を
+;;直接セットアップすることも可能です。
+;;
+;;@param script 
+;;@param proc 
+;;@param :key 
+;;@param (environment ()) (parameters #f) 
+

@@ -1,0 +1,188 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Class
+;;@name <object-set-relation>
+
+;;;;;
+;;@type Class
+;;@name <simple-relation>
+
+;;;;;
+;;@type Method
+;;@name relation-fold
+;;@description procを各行のカラムcolumn ... の値に適用します。
+;;seedは状態の値として渡されます。すなわち、リレーションrの
+;;各行ごとに以下のようにprocを呼びます。
+;;example:
+;;  
+;;  (proc v_0 v_1 ... v_i seed)
+;;  
+;;   where v_k = (relation-ref r row column_k)
+;;  
+;;
+;;呼び出しの結果があたらしいシードの値となり、最終の結果が
+;;relation-foldから返ります。
+;;
+;;たとえば、リレーションが amount という名前のカラムをもつものと
+;;し、リレーション r 内にあるそのカラムをすべて足しあわせたいとす
+;;ると以下のように書けます。
+;;example:
+;;  (relation-fold r + 0 'amount)
+;;
+;;@param (r <relation>) proc seed column ... 
+
+;;;;;
+;;@type Method
+;;@name relation-delete!
+;;@description リレーションrから行rowを削除します。
+;;
+;;@param (r <relation>) row 
+
+;;;;;
+;;@type Method
+;;@name relation-deletable?
+;;@description リレーションrから行を削除可能である場合にのみ真を返します。
+;;
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-insert!
+;;@description リレーションrに行rowを挿入します。
+;;
+;;@param (r <relation>) row 
+
+;;;;;
+;;@type Method
+;;@name relation-insertable?
+;;@description リレーションrに新しい行を挿入可能な場合にのみ真を返します。
+;;
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-coercer
+;;@description 行をシーケンスに変換する手続きを返します。行がすでにシーケンスで表現さ
+;;れているリレーションであれば、行をそのまま返す手続きです。
+;;
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-column-setters
+;;@description ゲッタとセッタの完全なリストを返します。通常はデフォルトのメソッドで十
+;;分ですが、たとえばゲッタのリストをキャッシュしたいときもあるでしょう。
+;;
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-column-getters
+;;@description ゲッタとセッタの完全なリストを返します。通常はデフォルトのメソッドで十
+;;分ですが、たとえばゲッタのリストをキャッシュしたいときもあるでしょう。
+;;
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-set!
+;;@description rowはリレーションrの行です。valueをrowの
+;;columnに設定します。リレーションが読み込み専用の場合には
+;;エラーを示すシグナルがあがります。
+;;
+;;@param (r <relation>) row column value 
+
+;;;;;
+;;@type Method
+;;@name relation-ref
+;;@description rowはリレーションrの行です。rowのcolumnの値を
+;;返します。columnが不正なカラム名である場合、defaultが与え
+;;られていればそれを返し、そうでなければ、エラーを示すシグナルがあがりま
+;;す。
+;;
+;;@param (r <relation>) row column :optional default 
+
+;;;;;
+;;@type Method
+;;@name relation-column-setter
+;;@description リレーションrの行の指定したカラムにアクセスする手続を返します。
+;;Relation-column-getterは、1つの引数、行をとる手続きを返さなけれ
+;;ばなりません。Relation-column-setterは2つの引数、行と新しくセッ
+;;トする値を取る手続きを返さなければなりません。
+;;
+;;リレーションが読み込み専用の場合はrelation-column-setter
+;;は#fを返します。
+;;
+;;@param (r <relation>) column 
+
+;;;;;
+;;@type Method
+;;@name relation-column-getter
+;;@description リレーションrの行の指定したカラムにアクセスする手続を返します。
+;;Relation-column-getterは、1つの引数、行をとる手続きを返さなけれ
+;;ばなりません。Relation-column-setterは2つの引数、行と新しくセッ
+;;トする値を取る手続きを返さなければなりません。
+;;
+;;リレーションが読み込み専用の場合はrelation-column-setter
+;;は#fを返します。
+;;
+;;@param (r <relation>) column 
+
+;;;;;
+;;@type Method
+;;@name relation-column-name?
+;;@description columnがリレーションrにおいて有効なカラム名である場合にの
+;;み真を返します。
+;;
+;;@param (r <relation>) column 
+
+;;;;;
+;;@type Method
+;;@name relation-rows
+;;@description サブクラスではこのメソッドは必ず実装しなければなりまん。
+;;基盤となっている<collection>クラスまたはそのサブクラス(たとえば
+;;<sequence>)のインスタンスを返さなければなりません。
+;;
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-modifier
+;;@description サブクラスではこのメソッドは必ず実装しなければなりまん。
+;;3つの引数、リレーションrの行、カラム名、値をとり、その値をセット
+;;する手続を返さなければなりません。
+;;
+;;リレーションが読み込み専用の場合はこのメソッドは#fを返します。
+;;
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-accessor
+;;@description サブクラスではこのメソッドは必ず実装しなければなりまん。2つの引数をと
+;;り、リレーションrの行とカラム名をとり、指定したカラムの値を返す
+;;手続を返さなければなりません。
+;;
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Method
+;;@name relation-column-names
+;;@description サブクラスではこのメソッドを必ず実装しなければなりません。
+;;カラムの名前のシーケンスを返す必要があります。カラム名の型はリレーショ
+;;ンによります。equal?の意味で相互に異っているかぎり、カラム名に
+;;ついて特に制限はありません。
+;;
+;;@param (r <relation>) 
+
+;;;;;
+;;@type Class
+;;@name <relation>
+;;@description リレーションの抽象ベースクラス
+;;
+

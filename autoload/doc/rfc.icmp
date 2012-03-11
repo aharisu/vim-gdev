@@ -1,0 +1,153 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name icmp6-parameter-code->string
+;;@description ICMPv4およびICMPv6のタイプとコードの説明テキストを返します。
+;;
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp6-exceeded-code->string
+;;@description ICMPv4およびICMPv6のタイプとコードの説明テキストを返します。
+;;
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp6-unreach-code->string
+;;@description ICMPv4およびICMPv6のタイプとコードの説明テキストを返します。
+;;
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp6-message-type->string
+;;@description ICMPv4およびICMPv6のタイプとコードの説明テキストを返します。
+;;
+;;@param type 
+
+;;;;;
+;;@type Function
+;;@name icmp4-security-code->string
+;;@description ICMPv4およびICMPv6のタイプとコードの説明テキストを返します。
+;;
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp4-parameter-code->string
+;;@description ICMPv4およびICMPv6のタイプとコードの説明テキストを返します。
+;;
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp4-exceeded-code->string
+;;@description ICMPv4およびICMPv6のタイプとコードの説明テキストを返します。
+;;
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp4-router-code->string
+;;@description ICMPv4およびICMPv6のタイプとコードの説明テキストを返します。
+;;
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp4-redirect-code->string
+;;@description ICMPv4およびICMPv6のタイプとコードの説明テキストを返します。
+;;
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp4-unreach-code->string
+;;@description ICMPv4およびICMPv6のタイプとコードの説明テキストを返します。
+;;
+;;@param code 
+
+;;;;;
+;;@type Function
+;;@name icmp4-message-type->string
+;;@description ICMPv4およびICMPv6のタイプとコードの説明テキストを返します。
+;;
+;;@param type 
+
+;;;;;
+;;@type Function
+;;@name icmp6-describe-packet
+;;@description それぞれ与えられたICMPv4およびICMPv6パケットの簡単な説明を印字します。
+;;
+;;@param buffer 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name icmp4-describe-packet
+;;@description それぞれ与えられたICMPv4およびICMPv6パケットの簡単な説明を印字します。
+;;
+;;@param buffer 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name icmp-packet-code
+;;@description それぞれICMPパケットのタイプ、コード、識別子、シーケンスフィールドを抜
+;;き出します。これらの関数はICMPv4/v6で共通です。
+;;
+;;@param buffer 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name icmp-packet-type
+;;@description それぞれICMPパケットのタイプ、コード、識別子、シーケンスフィールドを抜
+;;き出します。これらの関数はICMPv4/v6で共通です。
+;;
+;;@param buffer 
+;;@param offset 
+
+;;;;;
+;;@type Function
+;;@name icmp6-fill-echo!
+;;@description bufferにICMPv6のエコーリクエストパケットを詰め込みます。
+;;Dataはu8vectorでなければなりません。チェックサムフィールドは
+;;ゼロのままで、ここはカーネルが埋めることになっています。したがって、
+;;ユーザーが自分で埋める必要はありません。
+;;
+;;@param buffer 
+;;@param ident 
+;;@param sequence 
+;;@param data 
+
+;;;;;
+;;@type Function
+;;@name icmp4-fill-checksum!
+;;@description buffer中のsize(バッファではなくパケットの長さ)分のパケット
+;;のICMPv4チェックサムを計算し、そのパケットのチェックサムフィールドをう
+;;めます。
+;;
+;;@param buffer 
+;;@param size 
+
+;;;;;
+;;@type Function
+;;@name icmp4-fill-echo!
+;;@description bufferにICMPv4のエコーリクエストパケットを詰め込みます。
+;;Dataはu8vectorでなければなりません。チェックサムフィールドはゼロ
+;;のままです。チェックサムはicmp4-fill-checksum!を使って埋め込み
+;;ます。
+;;
+;;@param buffer 
+;;@param ident 
+;;@param sequence 
+;;@param data 
+

@@ -1,0 +1,65 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Method
+;;@name hmac-digest-string
+;;@description <hmac>オブジェクトを作り、stringにあるデータをハッシュし、
+;;不完全文字列でそのハッシュされた結果を返します。
+;;
+;;@param string 
+;;@param :key 
+;;@param key 
+;;@param hasher 
+
+;;;;;
+;;@type Method
+;;@name hmac-digest
+;;@description <hmac>オブジェクトを作り、現在の入力ポートからの
+;;データストリームをハッシュし、不完全文字列でそのハッシュされた
+;;結果を返します。
+;;
+;;@param :key 
+;;@param key 
+;;@param hasher 
+
+;;;;;
+;;@type Method
+;;@name hmac-final!
+;;@description hmacの内部状態を終了させ、不完全文字列でハッシュされた文字列を
+;;返します。
+;;``hexified''(16進化)された結果を得るために、digest-hexify
+;;(Message digester framework参照)を使うことが
+;;できます。
+;;一旦終了されると、hmacに対してはhmac-update!や
+;;hmac-final!を呼ぶことはできません。
+;;
+;;@param (hmac <hmac>) 
+
+;;;;;
+;;@type Method
+;;@name hmac-update!
+;;@description (不完全かもしれない)文字列で表現されるdataにより、
+;;hmacの内部状態を更新します。
+;;
+;;@param (hmac <hmac>) data 
+
+;;;;;
+;;@type Class
+;;@name <hmac>
+;;@description HMACアルゴリズムの状態情報を保持します。
+;;鍵とハッシングアルゴリズムは、キーワード引数:keyと:hasherを
+;;それぞれ使って、生成時に与えます。
+;;<md5> (MD5 message digest参照)や
+;;<sha256> (SHA message digest参照)などのような
+;;ダイジェストインタフェース(Message digester framework参照)を
+;;実装するいかなるクラスオブジェクトを渡すこともできます。
+;;
+;;例:
+;;example:
+;;  (make <hmac> :key (make-byte-string 16 #x0b) :hasher <md5>)
+;;
+

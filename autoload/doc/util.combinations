@@ -1,0 +1,235 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name cartesian-product-right
+;;@description list-of-setsにあるセットのデカルト積を返します。
+;;cartesian-productは左固定順で結果を構築しますが
+;;(一番右の要素がまず異なる)、
+;;cartesian-product-rightは右固定順で行います
+;;(一番左の要素がまず異なる)。
+;;
+;;example:
+;;  (cartesian-product '((a b c) (0 1)))
+;;    ==> ((a 0) (a 1) (b 0) (b 1) (c 0) (c 1))
+;;  
+;;  (cartesian-product-right '((a b c) (0 1)))
+;;    ==> ((a 0) (b 0) (c 0) (a 1) (b 1) (c 1))
+;;
+;;@param list-of-sets 
+
+;;;;;
+;;@type Function
+;;@name cartesian-product
+;;@description list-of-setsにあるセットのデカルト積を返します。
+;;cartesian-productは左固定順で結果を構築しますが
+;;(一番右の要素がまず異なる)、
+;;cartesian-product-rightは右固定順で行います
+;;(一番左の要素がまず異なる)。
+;;
+;;example:
+;;  (cartesian-product '((a b c) (0 1)))
+;;    ==> ((a 0) (a 1) (b 0) (b 1) (c 0) (c 1))
+;;  
+;;  (cartesian-product-right '((a b c) (0 1)))
+;;    ==> ((a 0) (b 0) (c 0) (a 1) (b 1) (c 1))
+;;
+;;@param list-of-sets 
+
+;;;;;
+;;@type Function
+;;@name power-set-binary
+;;@description power-setのように、setの累乗集合を返しますが、順番が異なります。
+;;power-set-binaryはサブセットの空間を深さ優先でトラバースしますが、
+;;power-setは横型探索を行います。
+;;
+;;example:
+;;  (power-set-binary '(a b c))
+;;    ==> (() (c) (b) (b c) (a) (a c) (a b) (a b c))
+;;
+;;@param set 
+
+;;;;;
+;;@type Function
+;;@name power-set*-for-each
+;;@description setのそれぞれのサブセットについてprocを呼び出す。
+;;
+;;@param proc 
+;;@param set 
+;;@param :optional 
+;;@param eq 
+
+;;;;;
+;;@type Function
+;;@name power-set-for-each
+;;@description setのそれぞれのサブセットについてprocを呼び出す。
+;;
+;;@param proc 
+;;@param set 
+
+;;;;;
+;;@type Function
+;;@name power-set*
+;;@description リストsetの累乗集合(全てのサブセット)を返します。
+;;
+;;example:
+;;  (power-set '(a b c))
+;;    ==> (() (a) (b) (c) (a b) (a c) (b c) (a b c))
+;;  
+;;  (power-set* '(a a b)
+;;    ==> (() (a) (b) (a a) (a b) (a a b))
+;;
+;;@param set 
+;;@param :optional 
+;;@param eq 
+
+;;;;;
+;;@type Function
+;;@name power-set
+;;@description リストsetの累乗集合(全てのサブセット)を返します。
+;;
+;;example:
+;;  (power-set '(a b c))
+;;    ==> (() (a) (b) (c) (a b) (a c) (b c) (a b c))
+;;  
+;;  (power-set* '(a a b)
+;;    ==> (() (a) (b) (a a) (a b) (a a b))
+;;
+;;@param set 
+
+;;;;;
+;;@type Function
+;;@name combinations*-for-each
+;;@description setのn個の要素のそれぞれの組み合わせについてprocを
+;;呼び出します。戻り値は未定義値です。
+;;
+;;@param proc 
+;;@param set 
+;;@param n 
+;;@param :optional 
+;;@param eq 
+
+;;;;;
+;;@type Function
+;;@name combinations-for-each
+;;@description setのn個の要素のそれぞれの組み合わせについてprocを
+;;呼び出します。戻り値は未定義値です。
+;;
+;;@param proc 
+;;@param set 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name combinations*
+;;@description リストsetのn個の要素の可能性のある全ての順列のリストを
+;;返します。
+;;
+;;example:
+;;  (combinations '(a b c) 2)
+;;    ==> ((a b) (a c) (b c))
+;;  
+;;  (combinations '(a a b) 2)
+;;    ==> ((a a) (a b) (a b))
+;;  
+;;  (combinations* '(a a b) 2)
+;;    ==> ((a a) (a b))
+;;
+;;setが大きいときは、組み合わせの爆発について注意して下さい。
+;;
+;;@param set 
+;;@param n 
+;;@param :optional 
+;;@param eq 
+
+;;;;;
+;;@type Function
+;;@name combinations
+;;@description リストsetのn個の要素の可能性のある全ての順列のリストを
+;;返します。
+;;
+;;example:
+;;  (combinations '(a b c) 2)
+;;    ==> ((a b) (a c) (b c))
+;;  
+;;  (combinations '(a a b) 2)
+;;    ==> ((a a) (a b) (a b))
+;;  
+;;  (combinations* '(a a b) 2)
+;;    ==> ((a a) (a b))
+;;
+;;setが大きいときは、組み合わせの爆発について注意して下さい。
+;;
+;;@param set 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name permutations*-for-each
+;;@description リストsetのそれぞれの順列に対して、procを呼び出します。
+;;戻り値は未定義値です。
+;;
+;;@param proc 
+;;@param set 
+;;@param :optional 
+;;@param eq 
+
+;;;;;
+;;@type Function
+;;@name permutations-for-each
+;;@description リストsetのそれぞれの順列に対して、procを呼び出します。
+;;戻り値は未定義値です。
+;;
+;;@param proc 
+;;@param set 
+
+;;;;;
+;;@type Function
+;;@name permutations*
+;;@description リストsetの全ての順列のリストを返します。
+;;
+;;example:
+;;  (permutations '(a b c))
+;;    ==> ((a b c) (a c b) (b a c) (b c a) (c a b) (c b a))
+;;  
+;;  (permutations '(a a b))
+;;    ==> ((a a b) (a b a) (a a b) (a b a) (b a a) (b a a))
+;;  
+;;  (permutations* '(a a b))
+;;    ==> ((a a b) (a b a) (b a a))
+;;
+;;setがある程度の要素を持っている場合、可能性のある順列の数は
+;;爆発的に大きくなります。注意して使って下さい。
+;;一度にそれぞれの順列を処理したい場合は、下記のpermutations-for-eachの
+;;使用を考慮して下さい。
+;;
+;;@param set 
+;;@param :optional 
+;;@param eq 
+
+;;;;;
+;;@type Function
+;;@name permutations
+;;@description リストsetの全ての順列のリストを返します。
+;;
+;;example:
+;;  (permutations '(a b c))
+;;    ==> ((a b c) (a c b) (b a c) (b c a) (c a b) (c b a))
+;;  
+;;  (permutations '(a a b))
+;;    ==> ((a a b) (a b a) (a a b) (a b a) (b a a) (b a a))
+;;  
+;;  (permutations* '(a a b))
+;;    ==> ((a a b) (a b a) (b a a))
+;;
+;;setがある程度の要素を持っている場合、可能性のある順列の数は
+;;爆発的に大きくなります。注意して使って下さい。
+;;一度にそれぞれの順列を処理したい場合は、下記のpermutations-for-eachの
+;;使用を考慮して下さい。
+;;
+;;@param set 
+

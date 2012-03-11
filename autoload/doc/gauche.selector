@@ -1,0 +1,67 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Method
+;;@name selector-select
+;;@description ディスパッチャのボディです。selfに登録された条件を待ち、条件が合致すると
+;;それに関連付けられたハンドラを呼びます。
+;;timeout引数が省略されるか偽の場合、このメソッドは永久に待ちます。
+;;タイムアウトの値を与える場合は、マイクロ秒を表す実数か、秒とマイクロ秒を
+;;表す2つの整数のリストを与えます。
+;;
+;;戻り値は、ハンドラが呼ばれた回数です。0(ゼロ)は、セレクタがタイムアウト
+;;したことを意味します。
+;;
+;;ハンドラの中でselfを変更することは安全です。その変更は、次回の
+;;selector-selectの呼び出し以降に反映されます。
+;;
+;;@param (self <selector>) :optional (timeout #f) 
+
+;;;;;
+;;@type Method
+;;@name selector-delete!
+;;@description port-or-fd、proc、flagsにマッチするハンドラエントリを
+;;削除します。引数のいずれかが#fである場合は、それが何でも良いことを
+;;意味します。例えば、
+;;example:
+;;  (selector-delete! selector the-port #f #f)
+;;the-portに関連付けられた全てのハンドラを削除します。
+;;example:
+;;  (selector-delete! selector #f #f '(w))
+;;書き込み可能になるのを待っている全てのハンドラを削除します。
+;;
+;;@param (self <selector>) port-or-fd proc flags 
+
+;;;;;
+;;@type Method
+;;@name selector-add!
+;;@description セレクタにハンドラprocを追加します。procは、port-or-fd
+;;(ポートオブジェクトかシステムのファイルディスクリプタを表す整数)が
+;;flagsで指定された条件に合致した場合に呼ばれます。
+;;flagsは、以下のシンボルの1つ以上のリストでなければなりません。
+;;r ------
+;;  port-or-fdが読み取り可能になった時点でprocが呼ばれます。
+;;w ------
+;;  port-or-fdが書き込み可能になった時点でprocが呼ばれます。
+;;x ------
+;;  port-or-fdで例外的な状況が発生した場合にprocが呼ばれます。
+;;
+;;procは、2引数で呼ばれます。1つ目はport-or-fdそのもので、
+;;2つ目は条件を表すシンボル、r、wあるいはxです。
+;;
+;;同じ条件の下ですでにport-or-fdにハンドラが関連付けられていた場合は、
+;;以前のハンドラがprocで置き換えられます。
+;;
+;;@param (self <selector>) port-or-fd proc flags 
+
+;;;;;
+;;@type Class
+;;@name <selector>
+;;@description ディスパッチャのインスタンスで、ハンドラを携えてI/Oポートを監視します。
+;;makeメソッドで新しいインスタンスを作れます。
+;;
+

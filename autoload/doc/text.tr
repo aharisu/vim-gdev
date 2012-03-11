@@ -1,0 +1,135 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name build-transliterator
+;;@description 実際の変換動作をする手続きを作成して返します。内部データのセットアップを済ませるため、
+;;同じ文字変換セットに対してtrを繰り返し呼ぶような場合は、この手続きを用いることで
+;;初期化のオーバヘッドを軽減することができます。
+;;
+;;註記：inputやoutputキーワード引数が省略された場合、
+;;作成される変換手続きは、それが使用された時点でのカレント入出力ポート
+;;を参照します。
+;;
+;;example:
+;;  (with-input-from-file "huge-file.txt"
+;;    (lambda ()
+;;      (let loop ((line (read-line)))
+;;        (unless (eof-object? line) (tr "A-Za-z" "a-zA-Z")))))
+;;  
+;;  ;; 以下の方が効率良く動作します...
+;;  
+;;  (with-input-from-file "huge-file.txt"
+;;    (lambda ()
+;;      (let ((ptr (build-transliterator "A-Za-z" "a-zA-Z")))
+;;        (let loop ((line (read-line)))
+;;          (unless (eof-object? line) (ptr))))))
+;;
+;;
+;;@param from-list 
+;;@param to-list 
+;;@param :key 
+;;@param :complement 
+;;@param :delete 
+;;@param :squeeze 
+;;@param :table-size 
+;;@param :input 
+;;@param :output 
+
+;;;;;
+;;@type Function
+;;@name string-tr
+;;@description 入力をstringから取って変換結果を文字列で返す以外はtrと同じです。
+;;
+;;@param string 
+;;@param from-list 
+;;@param to-list 
+;;@param :key 
+;;@param :complement 
+;;@param :delete 
+;;@param :squeeze 
+;;@param :table-size 
+
+;;;;;
+;;@type Function
+;;@name tr
+;;@description inputから文字を読み込み、その文字がfrom-list内にあれば
+;;対応するto-list内の文字に置き換えて、outputへと書き出します。
+;;from-listに無い文字はそのままoutputへと渡されます。
+;;
+;;inputとoutputの既定値はそれぞれ現在の入力ポートと
+;;出力ポートです。
+;;
+;;from-listとto-listは文字列でなければなりません。
+;;その中には次のような表記を使うことができます。それ以外の文字はそのまま使われます。
+;;
+;;  文字xから文字yまでの文字の昇順の並びと解釈されます。
+;;  xとyは含まれます。文字の並びはGaucheの内部文字エンコーディングに
+;;  よって決定されるので、一般にはxとyは同じキャラクタクラスの中に
+;;  止めておいた方が安全でしょう。xはyより小さくなければなりません。
+;;  
+;;  文字xのn個の並び。nは10進数で表記された数値です。
+;;  これはto-listでのみ有効で、from-listで使うとエラーになります。
+;;  nが省略されるか0の場合、xはto-listの長さがfrom-list
+;;  の長さに達するまで繰り返されます(その場合、to-listの残りは無視されます)。
+;;  
+;;  文字xそれ自身。特殊文字そのものを埋め込みたい場合に使います。
+;;  文字列のリーダも\を解釈するので、\\と書かねばならないことに注意
+;;  して下さい。
+;;  
+;;  グラフィカルでない文字のための構文はありません。文字列リーダの構文を使って
+;;  そのような文字を文字列に含めることができます。
+;;
+;;いくつか例を挙げます。
+;;example:
+;;  ;; 大文字と小文字を交換します
+;;  (tr "A-Za-z" "a-zA-Z")
+;;  
+;;  ;; ひらがなとかたかなを交換します
+;;  (tr "ぁ-んァ-ン" "ァ-ンぁ-ん")
+;;  
+;;  ;; 7ビットのノングラフィカルな文字を`?'に変換します
+;;  (tr "\x00-\x19\x7f" "?*")
+;;
+;;to-listがfrom-listより短い場合、動作はキーワード引数deleteに
+;;依存します。もし真の値がdeleteに与えられれば、from-listに現われて
+;;to-listに対応するものがない文字は入力から取り除かれます。そうでなければ
+;;そのような文字はそのまま出力されます。
+;;
+;;真の値がcomplementに与えられた場合、from-listの文字の
+;;補集合がfrom-listとして使われます。この文字集合は極めて大きくなる
+;;可能性があることに注意してください。従って、一般にこのオプションは
+;;to-listに`*'を使ってそれらの文字を一文字にマッピングするか、
+;;deleteオプションと併用するかしないとあまり意味がありません。
+;;
+;;真の値がsqueezeに与えられた場合、同じ文字への置換が2つ以上並ぶ場合に
+;;2つめ以降の文字が削除されます。to-listが空の場合は、from-list
+;;に含まれる文字で同一文字が並んだ場合に2つめ以降の文字が削除されます。
+;;
+;;内部的に、trはキャラクタのマッピングのためにテーブルを使用します。
+;;但し、Gaucheでは極めて大きな文字セットを扱うため、テーブルはキャラクタコードの
+;;小さい文字のみに対して使われます(デフォルトではコード255以下の文字)。
+;;もし、より大きな文字を頻繁に変換することが分かっていて、メモリを余分に使っても
+;;速度を上げたい場合は、このテーブルの大きさをtable-sizeキーワード引数で
+;;指定することができます。例えばEUC-JPコードで大量の平仮名と片仮名を変換する場合は、
+;;table-sizeを42483以上にすると、全ての変換がテーブルルックアップで
+;;行われます。
+;;
+;;trが変換テーブルを計算するのにいくらかオーバーヘッドがあることに
+;;注意して下さい。内側のループでtrを繰り返し呼ぶような場合は
+;;下に示すbuild-transliteratorを使った方が良いでしょう。
+;;
+;;@param from-list 
+;;@param to-list 
+;;@param :key 
+;;@param :complement 
+;;@param :delete 
+;;@param :squeeze 
+;;@param :table-size 
+;;@param :input 
+;;@param :output 
+

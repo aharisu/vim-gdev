@@ -1,0 +1,625 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name sxml:child-elements
+;;@description example:
+;;  ((select-kids sxml:element?) nodeset)
+;;
+;;@param nodeset 
+
+;;;;;
+;;@type Function
+;;@name sxml:child-nodes
+;;@description example:
+;;  ((sxml:child sxml:node?) nodeset)
+;;
+;;@param nodeset 
+
+;;;;;
+;;@type Function
+;;@name sxml:preceding-sibling
+;;@description 先行する兄弟の軸です。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:preceding
+;;@description 先行するものの軸です。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:namespace
+;;@description 名前空間の軸です。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:following-sibling
+;;@description 後続する兄弟の軸です。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:following
+;;@description 後続するものの軸です。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:descendant-or-self
+;;@description 子孫と自分の軸です。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:descendant
+;;@description 子孫の軸です。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:ancestor-or-self
+;;@description 祖先と自分の軸です。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:ancestor
+;;@description 祖先の軸です。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:parent
+;;@description 親の軸です。
+;;
+;;述語を与えると、RootNode -> Converter関数を返します。
+;;この関数は、rootnodeに適用されると、node -> parentと
+;;なります。
+;;
+;;このようなコンバータは、 ((sxml:parent test-pred) rootnode) 
+;;を使って構築され、それが適用されたノードの親を帰します。
+;;ノードセットに適用された場合、そのノードセットにあるノードの
+;;親のリストを返します。
+;;rootnodeはSXMLツリー全体のルートノードである必要はありません。
+;;興味の対象となるブランチ(枝)のルートノードでも構いません。
+;;parent::軸は、どんなSXMLノードにも使えます。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:child
+;;@description 子要素の軸です。
+;;この関数は、'select-kids'に似ていますが、処理命令やコメント、
+;;実体ノードについては、空の子リストを返します。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:attribute
+;;@description 属性の軸です。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:relational-cmp
+;;@description 2つのXPathオブジェクトの関係比較( <、>、<=、>= )
+;;を作ります。
+;;opは、比較を行う手続き: <、>、<=、>=です。
+;;
+;;@param op 
+
+;;;;;
+;;@type Function
+;;@name sxml:not-equal?
+;;@description XPathの等値比較: =、!=に対応するもので、
+;;デフォルトの等値テストを使います。
+;;
+;;@param a 
+;;@param b 
+
+;;;;;
+;;@type Function
+;;@name sxml:equal?
+;;@description XPathの等値比較: =、!=に対応するもので、
+;;デフォルトの等値テストを使います。
+;;
+;;@param a 
+;;@param b 
+
+;;;;;
+;;@type Function
+;;@name sxml:equality-cmp
+;;@description XPathの等値比較: =、!=のためのヘルパです。
+;;bool-op、number-op、'string-opはそれぞれ、
+;;真偽値、数値、文字列のペアのための比較子です。
+;;
+;;@param bool-op 
+;;@param number-op 
+;;@param string-op 
+
+;;;;;
+;;@type Function
+;;@name sxml:id
+;;@description SXML要素を、そのユニークなIDによって選択します(XPath勧告 4.1)。
+;;objectを引数に取るコンバータを返します。
+;;このobjectは、ノードセットか、'string'関数により
+;;文字列に変換できるデータタイプです。
+;;
+;;id-indexは、( (id-value . element) (id-value . element) ... )です。
+;;
+;;このインデックスは、要素をそのユニークなIDによって選択するために使われます。
+;;
+;;@param id-index 
+
+;;;;;
+;;@type Function
+;;@name sxml:attr-list
+;;@description 与えられたSXMLノードの属性のリストを返します。
+;;与えられたノードが要素ではないか、属性のリストを持っていない場合は、
+;;空リストが返されます。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:node?
+;;@description XPathの仕様2.3にしたがい、このテストはいかなるXPathノードに
+;;対しても真を返します。
+;;SXMLの補助的なリストや属性のリストは除外されます。
+;;
+;;@param node 
+
+;;;;;
+;;@type Function
+;;@name sxml:string-value
+;;@description XPath勧告のセクション5.1 - 5.7にしたがって、与えられたノードの
+;;文字列値を返します。
+;;
+;;@param node 
+
+;;;;;
+;;@type Function
+;;@name sxml:number
+;;@description XPathのnumber関数(XPath勧告のセクション4.4)に対応するものです。
+;;引数を数値に変換します。
+;;注意:
+;;引数は(まだ?)オプションではありません。
+;;string->numberの変換は、IEEE 754の四捨五入ではありません。
+;;NaNは、0として表現されます。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name sxml:boolean
+;;@description XPathのboolean関数(XPath勧告のセクション4.3)に対応するものです。
+;;引数を真偽値に変換します。
+;;
+;;@param object 
+
+;;;;;
+;;@type Function
+;;@name sxml:string
+;;@description XPathのstring関数(XPath勧告のセクション4.2)に対応するものです。
+;;与えられたオブジェクトを文字列に変換します。
+;;注意:
+;;ノードセットを変換する時は、ドキュメントオーダーは保持されません。
+;;number->string関数は、その結果をXPath勧告の仕様とは少し違った
+;;フォームで返します。
+;;
+;;@param object 
+
+;;;;;
+;;@type Function
+;;@name sxml:id-alist
+;;@description 与えられたノードについて、(ID_value . element)の
+;;ペアのリストをインデックスとして構築します。
+;;lpathsは、タイプIDの属性のロケーションパスです。
+;;
+;;@param node 
+;;@param . 
+;;@param lpaths 
+
+;;;;;
+;;@type Function
+;;@name car-sxpath
+;;@description もし存在すれば、最初に見つかったノードを返します。
+;;そうでなければ、空リストを返します。
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name if-car-sxpath
+;;@description もし存在すれば、最初に見つかったノードを返します。
+;;そうでなければ、#fを返します。
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name if-sxpath
+;;@description sxpathは、常にリストを返し、それはSchemeでは#tとなります。
+;;if-sxpathは、空リストの代わりに#fを返します。
+;;
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name sxpath
+;;@description Evaluates an abbreviated SXPath
+;;
+;;example:
+;;   sxpath:: AbbrPath -> Converter, or
+;;   sxpath:: AbbrPath -> Node|Nodeset -> Nodeset
+;;
+;;AbbrPathはリストです。これは、以下の書き換えルールに従って
+;;完全なSXPathに変換されます。
+;;example:
+;;   (sxpath '()) -> (node-join)
+;;   (sxpath '(path-component ...)) ->
+;;                  (node-join (sxpath1 path-component) (sxpath '(...)))
+;;   (sxpath1 '//) -> (node-or 
+;;                       (node-self (ntype?? '*any*))
+;;                       (node-closure (ntype?? '*any*)))
+;;   (sxpath1 '(equal? x)) -> (select-kids (node-equal? x))
+;;   (sxpath1 '(eq? x))    -> (select-kids (node-eq? x))
+;;   (sxpath1 '(or@@ ...))  -> (select-kids (ntype-names??
+;;                                            (cdr '(or@@ ...))))
+;;   (sxpath1 '(not@@ ...)) -> (select-kids (sxml:invert 
+;;                                           (ntype-names??
+;;                                            (cdr '(not@@ ...)))))
+;;   (sxpath1 '(ns-id:* x)) -> (select-kids 
+;;                                        (ntype-namespace-id?? x))
+;;   (sxpath1 ?symbol)     -> (select-kids (ntype?? ?symbol))
+;;   (sxpath1 ?string)     -> (txpath ?string)
+;;   (sxpath1 procedure)   -> procedure
+;;   (sxpath1 '(?symbol ...)) -> (sxpath1 '((?symbol) ...))
+;;   (sxpath1 '(path reducer ...)) ->
+;;                  (node-reduce (sxpath path) (sxpathr reducer) ...)
+;;   (sxpathr number)      -> (node-pos number)
+;;   (sxpathr path-filter) -> (filter (sxpath path-filter))
+;;
+;;@param abbrpath 
+;;@param . 
+;;@param ns-binding 
+
+;;;;;
+;;@type Function
+;;@name node-closure
+;;@description 
+;;example:
+;;   node-closure:: Converter -> Converter
+;;
+;;述語としてのコンバータを満足するノードの全ての子孫を選択します。
+;;このコンビネータはselect-kidsに似ていますが、孫要素やその
+;;子要素達にも適用を行います。
+;;このコンビネータは、XPathの軸である``descendant::''を実装します。
+;;概念的には、このコンビネータは以下のように表現することができます。
+;;example:
+;;   (define (node-closure f)
+;;        (node-or
+;;          (select-kids f)
+;;  	 (node-reduce (select-kids (ntype?? '*)) (node-closure f))))
+;;
+;;この定義は、字面の通り、フィックスポイントのような何かで、
+;;永久に実行し続けます。しかし、いつかは(select-kids (ntype?? '*))
+;;が空のノードセットを返すことは明白です。その時点では、以降の
+;;イテレーションはその結果に影響を及ぼさず停止されることができます。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name node-or
+;;@description 
+;;example:
+;;   node-or:: [Converter] -> Converter
+;;
+;;このコンビネータは、全てのコンバータを与えられたノードに適用し、
+;;それらの結果のユニオンを作ります。
+;;このコンビネータは、XPathのロケーションパスでの'|'オペレーション
+;;であるユニオンに対応します。
+;;
+;;@param . 
+;;@param converters 
+
+;;;;;
+;;@type Function
+;;@name node-reduce
+;;@description 
+;;example:
+;;   node-reduce:: [LocPath] -> Node|Nodeset -> Nodeset, or
+;;   node-reduce:: [Converter] -> Converter
+;;
+;;コンバータの通常の関数的なコンポジションです。
+;;見方を変えると、((apply node-reduce converters) nodeset)は
+;;(foldl apply nodeset converters)と等価です。
+;;すなわち、コンバータのリストをノードセットをseedとして畳み込みや分解
+;;を行うようなものです。
+;;
+;;@param . 
+;;@param converters 
+
+;;;;;
+;;@type Function
+;;@name node-join
+;;@description 
+;;example:
+;;   node-join:: [LocPath] -> Node|Nodeset -> Nodeset, or
+;;   node-join:: [Converter] -> Converter
+;;
+;;上のタイトルコメントで説明されるようなロケーションステップ
+;;あるいはロケーションパスのシーケンスをつなぎ合わせます。
+;;
+;;@param . 
+;;@param selectors 
+
+;;;;;
+;;@type Function
+;;@name node-self
+;;@description 
+;;example:
+;;   node-self:: Pred -> Node -> Nodeset, or
+;;   node-self:: Converter -> Converter
+;;
+;;select-kidsに似ていますが、自身をその子要素に適用するのでは
+;;なく、ノードそれ自身に適用します。
+;;結果のノードセットは、1つのコンポーネントを含むか、
+;;空(ノードが述語を満足しない場合)になります。
+;;
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name select-kids
+;;@description 
+;;example:
+;;  select-kids:: Pred -> Node -> Nodeset
+;;ノードを与えると、述語(実際はコンバータ)を満足するその子要素の
+;;(順序付けられた)サブセットを返します。
+;;
+;;example:
+;;  select-kids:: Pred -> Nodeset -> Nodeset
+;;上と同じですが、ノードセットの全てのノードの子要素から選択します。
+;;
+;;@param test-pred? 
+
+;;;;;
+;;@type Function
+;;@name node-trace
+;;@description 
+;;example:
+;;   node-trace:: String -> Converter
+;;
+;;(node-trace title)は、それ自身を返すコンバータです。
+;;また、自身が適用されるノードやノードセットを、'title'という
+;;プリフィックスを付けてプリントします。
+;;このコンバータは、デバッグの際にとても便利です。
+;;
+;;@param title 
+
+;;;;;
+;;@type Function
+;;@name node-reverse
+;;@description 
+;;example:
+;;  node-reverse :: Converter, or
+;;  node-reverse:: Node|Nodeset -> Nodeset
+;;
+;;ノードセットでのノードの順番を逆順にします。
+;;この基本的なコンバータは、逆順のドキュメントオーダーを実装するために
+;;必要です。(XPath勧告を参照して下さい。)
+;;
+;;@param node-or-nodeset 
+
+;;;;;
+;;@type Function
+;;@name map-union
+;;@description procをlstの各要素に適用し、結果のリストを返します。
+;;procがノードセットを返す場合、それを結果につなぎ合わせます。
+;;
+;;別の観点から見ると、map-unionはConverter->Converter関数で、
+;;結合を行いたいコンテキストでの引数としてのコンバータに
+;;位置します。
+;;
+;;@param proc 
+;;@param lst 
+
+;;;;;
+;;@type Function
+;;@name take-after
+;;@description 
+;;example:
+;;  take-after:: Converter -> Converter, or
+;;  take-after:: Pred -> Node|Nodeset -> Nodeset
+;;
+;;述語としてのコンバータとノードセットを与えると、
+;;述語をノードセットの各要素に適用し、
+;;述語が#fかnil以外を返すと、
+;;まだ述語が適用されていない要素を返します。
+;;つまり、述語を満足する最初の要素の後に続く要素を返します。
+;;take-afterとtake-untilを一緒に使うと、
+;;入力のノードセットを3つのパート:
+;;述語を満足する最初の要素、その要素の前の部分、その要素の後の部分に
+;;分けます。
+;;
+;;@param pred? 
+
+;;;;;
+;;@type Function
+;;@name take-until
+;;@description 
+;;example:
+;;   take-until:: Converter -> Converter, or
+;;   take-until:: Pred -> Node|Nodeset -> Nodeset
+;;
+;;述語としてのコンバータとノードセットが与えられると、
+;;ノードセットの各要素に述語を適用し、
+;;述語が#fあるいはnil以外を返すと、
+;;(その述語が失敗した)その時点までに処理された要素を返します。
+;;take-untilは、上のフィルタのバリエーションの1つです。
+;;take-untilは、その述語を満足する最初の要素(それ自体は含まない)まで、
+;;順序付けられた入力のセットの要素をパスします。
+;;((take-until (not pred)) nset)により返されるノードセットは、
+;;((filter pred) nset)により返されるノードセットのサブセット
+;;-- 具体的には接頭辞 --になります。
+;;
+;;@param pred? 
+
+;;;;;
+;;@type Function
+;;@name sxml:filter
+;;@description 
+;;example:
+;;   filter:: Converter -> Converter
+;;
+;;フィルタリングを行う、フィルタアプリケータです。
+;;引数のコンバータは、#fあるいはnilとなることが失敗を意味する述語と
+;;みなされます。
+;;
+;;@param pred? 
+
+;;;;;
+;;@type Function
+;;@name node-pos
+;;@description 
+;;example:
+;;   node-pos:: N -> Nodeset -> Nodeset, or
+;;   node-pos:: N -> Converter
+;;
+;;ノードセットのN番目の要素を選択し、1つの要素を持つノードセットを返します。
+;;N番目の要素が存在しなければ、空のノードセットを返します。
+;;((node-pos 1) Nodeset)は、ノードセットの先頭ノードがあればそれを選択します。
+;;((node-pos 2) Nodeset)は、2番目のノードがあればそれを選択します。
+;;Nは負の数でも構いません。その場合、ノードはリストの末尾から数えられます。
+;;((node-pos -1) Nodeset)は、空ではないノードセットの最後のノードを選択します。
+;;((node-pos -2) Nodeset)は、最後から2番目のノードがあればそれを選択します。
+;;
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name node-equal?
+;;@description 等価な述語としてのコンパータにカリー化します。すなわち、
+;;example:
+;;    ((node-eq? a) b)    ≡  (eq? a b)
+;;    ((node-equal? a) b) ≡  (equal? a b)
+;;
+;;@param other 
+
+;;;;;
+;;@type Function
+;;@name node-eq?
+;;@description 等価な述語としてのコンパータにカリー化します。すなわち、
+;;example:
+;;    ((node-eq? a) b)    ≡  (eq? a b)
+;;    ((node-equal? a) b) ≡  (equal? a b)
+;;
+;;@param other 
+
+;;;;;
+;;@type Function
+;;@name sxml:invert
+;;@description この関数は、述語を取り、それを反対にして返します。
+;;与えられた述語が#fや'()を返す場合、反対にされたものは
+;;与えられたノード(#t)を返します。
+;;
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name ntype-namespace-id??
+;;@description この関数は、名前空間IDを取り、述語Node -> Booleanを
+;;返します。この述語はまさにその名前空間IDを持つノードに対しては
+;;#tを返します。ns-idは文字列です。
+;;(ntype-namespace-id?? #f)は、完全修飾されていない名前を
+;;持つノードに対して#tを返します。
+;;
+;;@param ns-id 
+
+;;;;;
+;;@type Function
+;;@name ntype??
+;;@description 関数ntype??は、型に関する判定基準を取り、関数を返します。
+;;この関数は、ノードに適用された際、そのノードがそのテストを満足するかを
+;;返します。
+;;example:
+;;    ntype?? :: Crit -> Node -> Boolean
+;;
+;;判定基準critは、以下のシンボルのうちの1つです。
+;;id ------
+;;  そのノードが正しい名前(id)を持っているかをテストします。
+;;@@ ------
+;;  そのノードがattributes-listであるかをテストします。
+;;* ------
+;;  そのノードがElementであるかをテストします。
+;;*text* ------
+;;  そのノードがテキストノードであるかをテストします。
+;;*data* ------
+;;  そのノードがデータノード(テキスト、数値、真偽値などで、ペアではない)であるか
+;;  をテストします。
+;;*PI* ------
+;;  そのノードがPIノードであるかをテストします。
+;;*COMMENT* ------
+;;  そのノードがCOMMENTノードであるかをテストします。
+;;*ENTITY* ------
+;;  そのノードがENTITYノードであるかをテストします。
+;;*any* ------
+;;  どんなタイプのノードに対しても#tを返します。
+;;
+;;@param crit 
+
+;;;;;
+;;@type Function
+;;@name ntype-names??
+;;@description 関数ntype-names??は、判定基準として受け付け可能なノード名のリストを取り、
+;;関数を返します。この関数は、ノードに適用された際、そのノード名が判定基準リストに
+;;含まれていれば#tを、含まれていなければ#fを返す関数です。
+;;example:
+;;   ntype-names?? :: ListOfNames -> Node -> Boolean
+;;
+;;@param crit 
+
+;;;;;
+;;@type Function
+;;@name sxml:element?
+;;@description objがSXMLの要素であれば#tを返し、そうでなければ#fを
+;;返す述語です。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name as-nodeset
+;;@description xがノードセットならば、それをそのまま返し、そうでなければそれを
+;;リストでラップして返します。
+;;
+;;@param x 
+
+;;;;;
+;;@type Function
+;;@name nodeset?
+;;@description 与えられたオブジェクトがノードセットならば、#tを返します。
+;;
+;;@param x 
+

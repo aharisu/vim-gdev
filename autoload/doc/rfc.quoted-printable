@@ -1,0 +1,64 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name quoted-printable-decode-string
+;;@description Quoted-printableエンコードされた文字列stringをデコードし、
+;;その結果を文字列で返します。
+;;
+;;@param string 
+
+;;;;;
+;;@type Function
+;;@name quoted-printable-decode
+;;@description 現在の入力ポートから文字ストリームを読み込み、それをQuoted-printable
+;;フォーマットからデコードし、結果のバイトストリームを現在の出力ポートへ
+;;書き出します。
+;;この変換は、EOFを読み出すと終了します。
+;;不正なシーケンス('='の後に16進文字が続かない、など)に出会うと、それらを
+;;リテラルのまま出力へコピーします。
+;;
+
+;;;;;
+;;@type Function
+;;@name quoted-printable-encode-string
+;;@description stringの内容をQuoted-printableエンコードされたフォーマットに
+;;変換します。入力の文字列は、完全文字列でも不完全文字列でも構いません。
+;;常にバイトシーケンスとして処理されます。
+;;
+;;キーワード引数はquoted-printable-encodeと同じです。
+;;
+;;@param string 
+;;@param :key 
+;;@param line-width 
+;;@param binary 
+
+;;;;;
+;;@type Function
+;;@name quoted-printable-encode
+;;@description 現在の入力ポートからバイトストリームを読み込み、それをQuoted-printable
+;;フォーマットにエンコードし、現在の出力ポートへ結果の文字ストリームを
+;;書き出します。この変換は、現在の入力ポートからEOFを読み出すと終了します。
+;;キーワード引数line-widthは、出力に現れる行の最大長を指定します。
+;;エンコードされた行の長さがこの値を越えそうな場合は、「ソフトラインブレーク」が
+;;適宜挿入され、各行の長さがこの値を越えないように調整されます。
+;;ソフトラインブレークはquoted-printableフォーマットのデコード時に
+;;取り除かれます。
+;;line-widthのデフォルト値は76です。(最小の意味のある値は4です。)
+;;line-widthに#fまたは0を渡せば、
+;;ソフトラインブレークは挿入されません。
+;;デフォルトでは、quoted-printable-encodeは入力中の改行に対して
+;;CR-LFシーケンスを出力します(「ハードラインブレーク」)。
+;;しかし、binaryキーワード引数に真の値が与えられた場合、
+;;入力中のオクテット#x0aおよび#x0dはそれぞれ
+;;=0A、=0Dのようにエンコードされます。
+;;詳しくはRFC2045の6.7節を参照してください。
+;;
+;;@param :key 
+;;@param line-width 
+;;@param binary 
+

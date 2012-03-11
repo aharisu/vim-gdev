@@ -1,0 +1,350 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name ftp-rename
+;;@description from-nameで指定したリモートファイル名をto-nameに変更する。
+;;返り値は最終的なサーバーのレスポンスです。
+;;
+;;@param conn 
+;;@param from-name 
+;;@param to-name 
+
+;;;;;
+;;@type Function
+;;@name ftp-put-unique
+;;@description from-fileで指定したローカルファイルをリモートサーバーへ送信しま
+;;す。リモート側のファイル名重複しないことを保証します。返り値は2つで、
+;;最終的なリモートサーバーからのレスポンスとリモートファイル名です。2つ
+;;めの値は、リモートサーバーがRFC1123をサポートしていない(ほとんどない)
+;;場合に#fになります。
+;;
+;;@param conn 
+;;@param from-file 
+
+;;;;;
+;;@type Function
+;;@name ftp-put
+;;@description from-fileで指定したローカルファイルをto-fileで指定した名前
+;;でリモートサーバーに送信します。to-fileが省略された場合にはベー
+;;ス名としてfrom-fileが使われます。返り値はサーバーのレスポンスで
+;;す。
+;;
+;;@param conn 
+;;@param from-file 
+;;@param :optional 
+;;@param to-file 
+
+;;;;;
+;;@type Function
+;;@name ftp-get
+;;@description リモートファイルpathを検索します。検索データはsinkで与えら
+;;れた出力ポートに送られます。すべてのデータが検索されたあと、
+;;flusherで与えられた手続きをポートsinkを引数として呼びます。
+;;返り値はftp-getから返されたものです。
+;;
+;;sinkおよびflusherのデフォルト値はそれぞれ、新しく作成され
+;;た文字列ポートとget-output-stringです。すなわち、ftp-get
+;;はデフォルトでは検索データを文字列として返します。巨大なファイルの場合
+;;このデフォルトの挙動ではありがたくありません。
+;;
+;;@param conn 
+;;@param path 
+;;@param :key 
+;;@param sink 
+;;@param flusher 
+
+;;;;;
+;;@type Function
+;;@name ftp-ls
+;;@description pathで指定したパスもしくは現在のリモートディレクトリにあるファイ
+;;ル名リストを返します。ただし、他の情報は含みません。ftp-lsは
+;;ftp-name-listの別名です。便利なので定義してあります。
+;;
+;;リモートディレクトリにファイルが含まれていないときにはサーバーはエラー
+;;を返すことがあることに注意してください。
+;;
+;;@param conn 
+;;@param :optional 
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name ftp-name-list
+;;@description pathで指定したパスもしくは現在のリモートディレクトリにあるファイ
+;;ル名リストを返します。ただし、他の情報は含みません。ftp-lsは
+;;ftp-name-listの別名です。便利なので定義してあります。
+;;
+;;リモートディレクトリにファイルが含まれていないときにはサーバーはエラー
+;;を返すことがあることに注意してください。
+;;
+;;@param conn 
+;;@param :optional 
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name ftp-list
+;;@description pathで指定されたリモートディレクトリあるいはリモートファイル内の
+;;ファイルに関する情報を返します。path指定がない場合は現在のリモー
+;;トディレクトリで、結果のフォーマットはls(1)のフォーマットと非常
+;;によく似ています。文字列のリストが返り、それぞれの文字列はサーバーのリ
+;;プライの行に対応します。正確なフォーマットについてはサーバーに依存しま
+;;す。
+;;
+;;@param conn 
+;;@param :optional 
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name ftp-noop
+;;@description FTPコマンドNOOPを送り、サーバーからのリプライを返します。
+;;
+;;@param conn 
+
+;;;;;
+;;@type Function
+;;@name ftp-mtime
+;;@description pathで指定したリモートファイルの更新日時を問合せます。結果は
+;;<date>オブジェクト(Time data types and procedures参照)で
+;;返ります。local-time?が真値に設定されている場合、日付はローカル
+;;時刻で返ります。そうでない場合は日付はUTCです。
+;;
+;;@param conn 
+;;@param path 
+;;@param :optional 
+;;@param local-time? 
+
+;;;;;
+;;@type Function
+;;@name ftp-mdtm
+;;@description pathで指定したリモートファイルの更新時刻を問合せます。この関数は
+;;サーバーからのリプライをステータスコードも含めそのまま返します。解析済
+;;みの結果が欲しいときは後述のftp-mtimeを使ってください。
+;;
+;;@param conn 
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name ftp-size
+;;@description pathで指定したリモートファイルのサイズを問合せます。
+;;整数値が返ります。
+;;
+;;註：コネクションがasciiモードかbinaryモードかによって、返されるサイズは
+;;異なるかもしれません。ftpサーバによっては、binaryモードでしか
+;;sizeリクエストに答えないものもあります。この関数を呼ぶ際には、
+;;コネクションに望みのtransfer typeがセットされているようにしてください。
+;;
+;;@param conn 
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name ftp-system
+;;@description FTPコマンドSYSTをつかってサーバーのオペレーティングシステムを問
+;;合せます。返り値はステータスコードを含まないサーバーのリプライです。
+;;
+;;example:
+;;  (call-with-ftp-connection "localhost" ftp-system)
+;;    ==> "UNIX Type: L8"
+;;
+;;@param conn 
+
+;;;;;
+;;@type Function
+;;@name ftp-stat
+;;@description FTPコマンドSTATをサーバーに送信します。
+;;RFC959ではこのコマンドのセマンティクスをいくつか定義しています。詳細は
+;;RFC959を見てください。返り値はサーバーのリプライです。
+;;
+;;@param conn 
+;;@param :optional 
+;;@param pathname 
+
+;;;;;
+;;@type Function
+;;@name ftp-rmdir
+;;@description dirnameで指定したリモートディレクトリを削除します。返り値はサー
+;;バーのリプライです。
+;;
+;;@param conn 
+;;@param dirname 
+
+;;;;;
+;;@type Function
+;;@name ftp-site
+;;@description FTPコマンドSITEを引数argとともに送ります。SITEコマ
+;;ンドのセマンティクスはサーバーに依存します。返り値はサーバーのリプライ
+;;です。
+;;
+;;@param conn 
+;;@param arg 
+
+;;;;;
+;;@type Function
+;;@name ftp-current-directory
+;;@description 現在のリモートディレクトリを返します。
+;;
+;;@param conn 
+
+;;;;;
+;;@type Function
+;;@name ftp-mkdir
+;;@description ディレクトリdirnameを作成します。作成されたディレクトリ名が返り
+;;ます。
+;;
+;;@param conn 
+;;@param dirname 
+
+;;;;;
+;;@type Function
+;;@name ftp-help
+;;@description FTPコマンドHELPを送ります。Optionは文字列でなければなりま
+;;せん。これはHELPコマンドの引数にわたされます。
+;;
+;;@param conn 
+;;@param :optional 
+;;@param option 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name ftp-remove
+;;@description pathで指定したリモートファイルを削除します。
+;;
+;;@param conn 
+;;@param path 
+
+;;;;;
+;;@type Function
+;;@name ftp-chdir
+;;@description リモートディレクトリをdirnameに変更します。
+;;
+;;@param conn 
+;;@param dirname 
+
+;;;;;
+;;@type Function
+;;@name ftp-quit
+;;@description FTPのQUITコマンドをコネクションconnに送り、コネクションを
+;;シャットダウンします。この手続きはcall-with-ftp-connectionを使っ
+;;たときに暗黙の内に呼ばれます。
+;;
+;;いったんシャットダウンしたコネクションをつかっての通信はできません。
+;;
+;;@param conn 
+
+;;;;;
+;;@type Function
+;;@name ftp-login
+;;@description hostで指定されたFTPサーバーに接続し、ユーザー認証をすませ、新し
+;;く生成した<ftp-connection>のインスタンスを返します。この手続き
+;;はcall-with-ftp-connectionを使ったときに暗黙の内に呼ばれます。
+;;host引数およびキーワード引数のセマンティクスは
+;;call-with-ftp-connectionと同じです。
+;;
+;;@param host 
+;;@param :key 
+;;@param passive 
+;;@param port 
+;;@param username 
+;;@param password 
+;;@param account 
+;;@param log-drain 
+
+;;;;;
+;;@type Function
+;;@name ftp-passive?
+;;@description 指定したFTPコネクションがパッシブモードである場合でその場合に限り真を
+;;返します。
+;;
+;;@param conn 
+
+;;;;;
+;;@type Function
+;;@name ftp-transfer-type
+;;@description 指定したFTPコネクションconnの転送タイプを返します。セッターを適
+;;用することもできます。たとえば、(set! (ftp-transfer-type conn) 'ascii)
+;;とします。
+;;
+;;@param conn 
+
+;;;;;
+;;@type Function
+;;@name call-with-ftp-connection
+;;@description 高水準の便利関数で、ひとつのFTPサーバーへのFTPコネクションをオープンし、
+;;与えられた手続きを呼びます。
+;;
+;;接続するサーバーはhostで指定します。オプションでユーザー名、ポー
+;;ト番号をuser@@servername:portという形式で指定
+;;できます。もしあれば、hostの部分をキーワード引数にすることもでき
+;;ます。
+;;
+;;hostへのFTPコネクション確立が成功したら、procが引数を1つとっ
+;;て呼ばれます。この引数は<ftp-connection>のインスタンスです。
+;;procから返ったときにこのコネクションはクローズされ、procの
+;;返り値がcall-with-ftp-connectionから返されます。例外がなげられ
+;;たら、その例外がcall-with-ftp-connectionから外へでる前にFTPコネ
+;;クションはクローズされます。
+;;
+;;キーワード引数passiveに真値を与えると、FTPコネクションはパッシブ
+;;モードになります。デフォルトではアクティブモードです。
+;;
+;;キーワード引数port、usernameおよびpasswordは
+;;それぞれ、ポート番号、ユーザー名、パスワードを指定するのに使います。
+;;省略された場合のデフォルトは、ポート番号が21,usernameが
+;;"anonymous"、passwordが"anonymous@@"にセットされま
+;;す。ポート番号とユーザー名はhost引数で指定されたものが優先されま
+;;す。
+;;
+;;キーワード引数accountが与えられた場合には、その値が、ログイン時
+;;にサーバーからの要求でFTPのACCTコマンドに渡されます。デフォルト
+;;では空文字列""です。
+;;
+;;キーワード引数log-drainが生成したFTPコネクションの
+;;log-drainスロットに設定されます。
+;;
+;;@param host 
+;;@param proc 
+;;@param :key 
+;;@param passive 
+;;@param port 
+;;@param username 
+;;@param password 
+;;@param account 
+;;@param log-drain 
+
+;;;;;
+;;@type Class
+;;@name <ftp-error>
+;;@description このタイプの例外はFTPサーバーがエラーコードを返したときに投げられます。
+;;<error>を継承しています。メッセージフィールドにはステータスコー
+;;ドを含むサーバーからの返答が含まれます。
+;;
+
+;;;;;
+;;@type Class
+;;@name <ftp-connection>
+;;@description ひとつのサーバーへのFTPコネクションを保持するオブジェクト。以下の公開
+;;スロットがあります。
+;;
+;;
+;;
+;;
+;;@slot transfer-type FTPの転送タイプ。以下のシンボルのどれかひとつでなければなりません。
+;;ascii、binary (デフォルト)、およびimage。
+;;
+;;@slot passive パッシブコネクションを使うとき真。
+;;
+;;@slot log-drain このスロットは<log-drain>のインスタンス(User-level logging参照)
+;;を保持しているかあるいは#fでなければなりません。<log-drain>
+;;のインスタンスを保持している場合、FTP通信のログがそこに記録されます。
+;;
+;;
+

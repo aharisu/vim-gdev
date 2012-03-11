@@ -1,0 +1,227 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name test-module
+;;@description Moduleはモジュール名のシンボルかモジュールでなければなりません。
+;;この手続きはモジュールmoduleに関していくつかの経験的な一貫性チェックを
+;;行います：(1) autoloadに設定されたシンボルがちゃんとロードできるか、
+;;(2) exportにリストされたシンボルがモジュール内で定義されているか、
+;;(3) 関数中で参照されているグローバル変数が全て定義されたものであるか。
+;;この手続きは完璧ではないものの、
+;;ケアレスミスによる名前の綴り間違いを発見することができます。
+;;
+;;しばしば、プラットフォームやコンパイルオプションによって
+;;グローバル変数が定義されるかどうかが異なる場合があります。
+;;コード中では実行時にその変数の存在を確認してから使うように
+;;コーディングしてあったとしても、test-moduleは
+;;そのようなロジックを追わないため、未定義変数の参照を報告して
+;;しまいます。そのような場合は、チェックから外す変数名のリストを
+;;allow-undefinedキーワード引数に渡して下さい。
+;;
+;;@param module 
+;;@param :key 
+;;@param allow-undefined 
+
+;;;;;
+;;@type var
+;;@name *test-report-error*
+;;@description この変数が真であれば、testルーチンはエラーを捕捉した際に
+;;スタックトレースをカレントエラーポートに出力します。
+;;期待しない状況でtest-errorオブジェクトが返された際に、そのエラーが
+;;どこで起こったかを知るのに役立つでしょう。
+;;
+;;この変数はgauche.testモジュールが読み込まれた時点で
+;;環境変数GAUCHE_TEST_REPORT_ERRORの値により初期化されます。
+;;例えば、テストスクリプト中の予期せぬエラーを調べるのに、
+;;次のようにすることができるでしょう (環境変数がセットされていれば、値は関係ありません)。
+;;
+;;example:
+;;  env GAUCHE_TEST_REPORT_ERROR=1 gosh mytest.scm
+;;
+
+;;;;;
+;;@type var
+;;@name *test-error*
+;;@description (非推奨) condition typeとして<error>を持つ<test-error>
+;;オブジェクトに束縛されています。この変数は互換性のためにのみ残されています。
+;;新しいコードは上に述べたtest-error手続きを使ってください。
+;;
+
+;;;;;
+;;@type Function
+;;@name test-error
+;;@description 与えられたcondition-typeと適合する<test-error>オブジェクト
+;;とマッチするような、新たな<test-error>オブジェクトを作成して返します。
+;;
+;;テスト結果をチェックするtest-check手続きは<test-error>オブジェクトを
+;;特別に扱います。err-expectedとerr-actualが
+;;ともに<test-error>のインスタンスであるとき、
+;;(test-check err-expected err-actual)は
+;;err-expectedの持つcondition typeがerr-actualの
+;;それと同じであるか、スーパータイプである場合に#tを返します。
+;;
+;;例えばfooの呼び出しが<io-error> (もしくはそのサブタイプ) の
+;;コンディションを投げるかどうかをテストしたければ、次のように書くことができます。
+;;
+;;example:
+;;  (test "see if foo raises <io-error>" (test-error <io-error>) (foo))
+;;
+;;@param :optional 
+;;@param (condition-type <error>) 
+
+;;;;;
+;;@type Function
+;;@name test-one-of
+;;@description 時々、テスト式exprの結果が外部の環境に左右されるため、
+;;ひとつの確定した値を期待値expectedとして書いておけない場合があります。
+;;この手続きはそのようなテストを簡単に書けるようにします。
+;;
+;;デフォルトの検査手続きであるtest-checkは、expected引数に
+;;そのオブジェクトが渡ってきた場合には、テスト結果とchoice ...を
+;;ひとつづつ照合し、どれかがマッチすれば真を返します。
+;;
+;;例えば次のテストは、procが1か2を返せば成功となります。
+;;
+;;example:
+;;  (test* "proc returns either 1 or 2" (test-one-of 1 2) (proc))
+;;
+;;@param choice 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name test-check
+;;@description テスト式の結果が期待された値に合致していることをチェックするために
+;;testとtest*が使うデフォルトの手続きです。
+;;基本的に、test-checkはexpectedとresultを
+;;fallbackに渡された手続きで比較するだけです。fallbackの
+;;デフォルト値はequal?です。
+;;ただし、以下に述べるとおり、expectedが特殊なテストオブジェクト
+;;だった場合には特別な振る舞いをします。
+;;
+;;@param expected 
+;;@param result 
+;;@param :optional 
+;;@param fallback 
+
+;;;;;
+;;@type Function
+;;@name test
+;;@description thunkを呼び、その結果がexpectedに沿っているかを
+;;checkを次のとおり呼び出すことで確認します。
+;;example:
+;;  (check expected result-of-thunk)
+;;この手続きは、渡された結果が期待する値と合致する場合に#tを、
+;;そうでなければ#fを返さなければなりません。
+;;デフォルトのcheck手続きは下で述べるtest-checkです。
+;;これは、expectedがいくつかの特殊なテストオブジェクトである場合をのぞき、
+;;expectedとresult-of-thunkがequal?
+;;である場合に#tを返します。すなわち、通常はテスト式の結果が
+;;期待するものとequal?であればテストは成功である、ということです。
+;;(特別な場合については下の ``曖昧な結果をテストする'' および
+;;``異常系をテストする'' の項を見てください)。
+;;
+;;特別な比較手続きのひとつの用法は、不正確な数値を、多少の誤差を許して
+;;比較するような場合です。
+;;
+;;example:
+;;  (test "test 1" (/ 3.141592653589 4)
+;;        (lambda () (atan 1))
+;;        (lambda (expected result)
+;;          (< (abs (- expected result)) 1.0e-10)))
+;;
+;;nameはログに残すためのテストの名前です。
+;;
+;;thunk内で捕捉されないエラーが発生した場合、それは捕捉され、
+;;特別なエラーオブジェクト<test-error>に置き換えられます。
+;;その結果を、下で説明するtest-error手続きで作った<test-error>
+;;オブジェクトと比較することにより、エラーが期待されたものであるか、
+;;また適切な例外が上がっているかをテストすることができます。
+;;
+;;@param name 
+;;@param expected 
+;;@param thunk 
+;;@param :optional 
+;;@param check 
+
+;;;;;
+;;@type Macro
+;;@name test*
+;;@description exprをlambdaでくるんでくれる便利なマクロです。
+;;
+;;example:
+;;  (test* name expected expr)
+;;    ≡  (test name expected (lambda () expr))
+;;
+;;@param name 
+;;@param expected 
+;;@param expr 
+;;@param :optional 
+;;@param check 
+
+;;;;;
+;;@type Function
+;;@name test-record-file
+;;@description テストスクリプトがいくつかある場合を考えます。通常は、それらのテストスクリプト
+;;をひとつづつ走らせて結果を確かめるのではなく、全部を一気に走らせて
+;;簡単な結果のまとめだけを知りたいと思うでしょう。
+;;
+;;test record fileはテスト結果を集積するための補助ファイルです。
+;;その内容は次のような一行のサマリになっています。
+;;
+;;example:
+;;  Total:  9939 tests,  9939 passed,     0 failed,     0 aborted.
+;;
+;;test record fileが既に存在していると、test-startは
+;;それを読みこんで数字を覚えておきます。そしてtest-endが
+;;そのスクリプト中のテスト結果の数字を加算して、同じtest record fileに書き戻します。
+;;
+;;makefileのcheckターゲットを次のように書いておけば、
+;;make checkを実行するたびにテスト結果の一行サマリを
+;;得ることができます。
+;;ただし、test1.scm、test2.scm、test3.scmはいずれも
+;;test-start呼び出し前に(test-record-file "test.record")を
+;;評価しているものとします。
+;;
+;;example:
+;;  check:
+;;          @@rm -f test.record test.log
+;;          gosh test1.scm >> test.log
+;;          gosh test2.scm >> test.log
+;;          gosh test3.scm >> test.log
+;;          @@cat test.record
+;;
+;;test-record-file手続きがうまく動作するためには、それが
+;;test-startより前に呼ばれなければならないことに注意してください。
+;;
+;;この手続きのかわりに、環境変数GAUCHE_TEST_RECORD_FILEを使って
+;;test record fileを指定することもできます。
+;;
+;;@param file 
+
+;;;;;
+;;@type Function
+;;@name test-end
+;;@description 失敗したテストのリストを報告し、その総数を返します。
+;;
+
+;;;;;
+;;@type Function
+;;@name test-section
+;;@description 一群のテストの開始をマークします。単にログに使われるだけです。
+;;
+;;@param section-name 
+
+;;;;;
+;;@type Function
+;;@name test-start
+;;@description テストの状態を初期化して、ヘッダをログに書き出します。テストを呼ぶ前に呼んで下さい。
+;;module-nameはログのために使われる文字列です。
+;;
+;;@param module-name 
+

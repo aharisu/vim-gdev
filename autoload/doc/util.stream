@@ -1,0 +1,727 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Function
+;;@name write-stream
+;;@param stream 
+;;@param :optional 
+;;@param oport 
+;;@param writer 
+
+;;;;;
+;;@type Function
+;;@name stream-grep
+;;@param re 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-delete-duplicates
+;;@param stream 
+;;@param :optional 
+;;@param elt= 
+
+;;;;;
+;;@type Function
+;;@name stream-delete
+;;@param obj 
+;;@param stream 
+;;@param :optional 
+;;@param elt= 
+
+;;;;;
+;;@type Function
+;;@name stream-memv
+;;@param obj 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-memq
+;;@param obj 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-member
+;;@param obj 
+;;@param stream 
+;;@param :optional 
+;;@param elt= 
+
+;;;;;
+;;@type Function
+;;@name stream-index
+;;@param pred 
+;;@param stream 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-every
+;;@param pred 
+;;@param stream 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-any
+;;@param pred 
+;;@param stream 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-break
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-span
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-drop-while
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-take-while
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-find-tail
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-find
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-partition
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-remove
+;;@param pred 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-count
+;;@param pred 
+;;@param stream 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-reverse
+;;@param stream 
+;;@param :optional 
+;;@param tail-stream 
+
+;;;;;
+;;@type Function
+;;@name stream-concatenate
+;;@param streams 
+
+;;;;;
+;;@type Function
+;;@name stream-append
+;;@param stream 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-length>=
+;;@param stream 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name stream-length
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-butlast-n
+;;@param stream 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name stream-butlast
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-last-n
+;;@param stream 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name stream-last
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-split
+;;@param stream 
+;;@param pred 
+
+;;;;;
+;;@type Function
+;;@name stream-intersperse
+;;@description Returns a new stream in which element is
+;;inserted between elements of stream.
+;;
+;;@param stream 
+;;@param element 
+
+;;;;;
+;;@type Function
+;;@name stream-drop-safe
+;;@description Returns a new stream that consists of the elements in the given 
+;;stream except the first count elements.
+;;If the given stream has less than count elements,
+;;stream-drop returns a stream that raises an error
+;;if its element is accessed, and stream-drop-safe
+;;returns an empty stream.
+;;
+;;@param stream 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name stream-drop
+;;@description Returns a new stream that consists of the elements in the given 
+;;stream except the first count elements.
+;;If the given stream has less than count elements,
+;;stream-drop returns a stream that raises an error
+;;if its element is accessed, and stream-drop-safe
+;;returns an empty stream.
+;;
+;;@param stream 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name stream-take-safe
+;;@description Returns a new stream that consists of the first count elements 
+;;of the given stream.   If the given stream has less than
+;;count elements, the stream returned by stream-take 
+;;would raise an error when the elements beyond the original stream
+;;is accessed.  On the other hand, the stream returned by 
+;;stream-take-safe will return a shortened stream when
+;;the given steram has less than count elements.
+;;
+;;example:
+;;  (stream->list (stream-take (stream-iota -1) 10))
+;;   ==> (0 1 2 3 4 5 6 7 8 9)
+;;  
+;;  (stream-take (stream 1 2) 5)
+;;   ==> stream
+;;  
+;;  (stream->list (stream-take (stream 1 2) 5))
+;;   ==> error
+;;  
+;;  (stream->list (stream-take-safe (stream 1 2) 5))
+;;   ==> (1 2)
+;;
+;;
+;;@param stream 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name stream-take
+;;@description Returns a new stream that consists of the first count elements 
+;;of the given stream.   If the given stream has less than
+;;count elements, the stream returned by stream-take 
+;;would raise an error when the elements beyond the original stream
+;;is accessed.  On the other hand, the stream returned by 
+;;stream-take-safe will return a shortened stream when
+;;the given steram has less than count elements.
+;;
+;;example:
+;;  (stream->list (stream-take (stream-iota -1) 10))
+;;   ==> (0 1 2 3 4 5 6 7 8 9)
+;;  
+;;  (stream-take (stream 1 2) 5)
+;;   ==> stream
+;;  
+;;  (stream->list (stream-take (stream 1 2) 5))
+;;   ==> error
+;;  
+;;  (stream->list (stream-take-safe (stream 1 2) 5))
+;;   ==> (1 2)
+;;
+;;
+;;@param stream 
+;;@param count 
+
+;;;;;
+;;@type Function
+;;@name stream-tenth
+;;@description (stream-first s) = (stream-ref s 0) etc.
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-ninth
+;;@description (stream-first s) = (stream-ref s 0) etc.
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-eighth
+;;@description (stream-first s) = (stream-ref s 0) etc.
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-seventh
+;;@description (stream-first s) = (stream-ref s 0) etc.
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-sixth
+;;@description (stream-first s) = (stream-ref s 0) etc.
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-fifth
+;;@description (stream-first s) = (stream-ref s 0) etc.
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-fourth
+;;@description (stream-first s) = (stream-ref s 0) etc.
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-third
+;;@description (stream-first s) = (stream-ref s 0) etc.
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-second
+;;@description (stream-first s) = (stream-ref s 0) etc.
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-first
+;;@description (stream-first s) = (stream-ref s 0) etc.
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-ref
+;;@description Returns the pos-th element in the stream.  Pos
+;;must be a nonnegative exact integer.
+;;
+;;@param stream 
+;;@param pos 
+
+;;;;;
+;;@type Function
+;;@name stream-cddddr
+;;@description (stream-caar s) = (stream-car (stream-car s)) etc.
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-cdddar
+;;@description (stream-caar s) = (stream-car (stream-car s)) etc.
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-cadr
+;;@description ...
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-caar
+;;@description ...
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-prefix=
+;;@description Compares initial elements of stream against
+;;a list prefix by elt=.  Only as many elements of stream
+;;as prefix has are checked.
+;;
+;;@param stream 
+;;@param prefix 
+;;@param :optional 
+;;@param elt= 
+
+;;;;;
+;;@type Function
+;;@name stream=
+;;@description Returns true iff each corresponding element of stream ...
+;;are the same in terms of elt=.  This procedure won't terminate
+;;if any of streams is infinite.
+;;
+;;@param elt= 
+;;@param stream 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-lines
+;;@description Splits stream where its element equals to #\n, and 
+;;returns a stream of splitted streams.
+;;
+;;example:
+;;  (stream->list 
+;;   (stream-map stream->string 
+;;               (stream-lines (string->stream "abc\ndef\nghi"))))
+;;   ==> ("abc" "def" "ghi")
+;;
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name iterator->stream
+;;@description A generic procedure to turn an internal iterator iter
+;;into a stream of iterated results.
+;;
+;;The iter argument is a procedure that takes two arguments,
+;;next and end, where next is a procedure that takes
+;;one argument and end is a thunk.
+;;Iter is supposed to iterate over some set and call next
+;;for each argument, then call end to indicate the end of
+;;the iteration.  Here's a contrived example:
+;;
+;;example:
+;;  (stream->list
+;;   (iterator->stream 
+;;    (lambda (next end) (for-each next '(1 2 3 4 5)) (end))))
+;;   ==> (1 2 3 4 5)
+;;
+;;Internally iterator->stream uses the ``inversion of iterator''
+;;technique, so that iter only iterates to the element that
+;;are needed by the stream.  Thus iter can iterate over 
+;;an infinite set.  In the following example, iter is
+;;an infinite loop calling next with increasing integers,
+;;but only the first 10 elements are calculated because of
+;;stream-take:
+;;
+;;example:
+;;  (stream->list 
+;;   (stream-take
+;;    (iterator->stream
+;;     (lambda (next end)
+;;       (let loop ((n 0)) (next n) (loop (+ n 1))))) 
+;;    10))
+;;   ==> (0 1 2 3 4 5 6 7 8 9)
+;;
+;;@param iter 
+
+;;;;;
+;;@type Function
+;;@name port->stream
+;;@description Creates a stream, whose elements consist of the items
+;;read from the input port iport.
+;;The default iport is the current input port.
+;;The default reader is read-char.
+;;
+;;The result stream terminates at the point where reader
+;;returns EOF (EOF itself is not included in the stream).
+;;If closer is given, it is called with iport as
+;;an argument just after reader reads EOF.
+;;
+;;@param :optional 
+;;@param iport 
+;;@param reader 
+;;@param closer 
+
+;;;;;
+;;@type Function
+;;@name string->stream
+;;@description Convers a string to a stream of characters.  If an optional
+;;stream is given, it becomes the tail of the resulting
+;;stream.
+;;
+;;example:
+;;(stream->list (string->stream "abc" (list->stream '(1 2 3))))
+;; ==> (#\a #\b #\c 1 2 3)
+;;
+;;@param string 
+;;@param :optional 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name list->stream
+;;@description Converts a list to a stream of its elements.
+;;
+;;@param list 
+
+;;;;;
+;;@type Function
+;;@name stream->string
+;;@description Converts a stream to a list or a string.  All of stream's
+;;elements are forced; if stream is infinite, these
+;;procedures won't terminate.  For stream->string,
+;;all stream must be characters, or an error is signalled.
+;;
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream->list
+;;@description Converts a stream to a list or a string.  All of stream's
+;;elements are forced; if stream is infinite, these
+;;procedures won't terminate.  For stream->string,
+;;all stream must be characters, or an error is signalled.
+;;
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-format
+;;@description string->streamを(format fmt arg ...)に適用した結果の
+;;ストリームを返します。
+;;
+;;@param fmt 
+;;@param arg 
+;;@param ... 
+
+;;;;;
+;;@type Function
+;;@name stream-tabulate
+;;@description n個の要素をもつ新しいストリームを生成します。k-番目の要素
+;;は init-proc を k に適用して得られます。nを負の値にする
+;;と無限ストリームが生成されます。
+;;startからはじまり、stepずつ要素が増加する整数のストリーム
+;;を生成します。ストリームの長さはcountが正ならその値になります。
+;;countが負なら無限ストリームになります。startのデフォルト値
+;;は 0、stepのデフォルト値は 1 です。
+;;
+;;@param n 
+;;@param init-proc 
+
+;;;;;
+;;@type Function
+;;@name make-stream
+;;@description n個のinitを要素とする新しいストリームを生成します。
+;;initが省略された場合#fが使われます。nを負の値にする
+;;と無限ストリームが生成されます。
+;;
+;;@param n 
+;;@param :optional 
+;;@param init 
+
+;;;;;
+;;@type Function
+;;@name stream-cons*
+;;@description streamの前にelt ...を連結した新しいストリームを生成し
+;;ます。
+;;
+;;@param elt 
+;;@param ... 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-xcons
+;;@description (stream-cons b a)のこと。利便性のためだけにある。
+;;
+;;@param a 
+;;@param b 
+
+;;;;;
+;;@type Function
+;;@name stream-filter
+;;@description [SRFI-40]
+;;pred?をパスする要素のみからなる新しいストリームを返す。
+;;
+;;@param pred? 
+;;@param stream 
+
+;;;;;
+;;@type Function
+;;@name stream-for-each
+;;@description [SRFI-40]
+;;funcをstreamsの各要素に適用します。
+;;streamsが終端にたっしたところで停止します。
+;;
+;;@param func 
+;;@param . 
+;;@param streams 
+
+;;;;;
+;;@type Function
+;;@name stream-map
+;;@description [SRFI-40]
+;;streamsの各要素にfuncを適用した値を要素とする新しいストリー
+;;ムを返します。
+;;
+;;@param func 
+;;@param . 
+;;@param streams 
+
+;;;;;
+;;@type Function
+;;@name stream-unfoldn
+;;@description [SRFI-40]
+;;互いに関連する n 本のストリームを生成します。それぞれの内容は
+;;generatorおよびseedを使って生成します。
+;;
+;;generatorは現在のシード値とともに呼ばれ、n+1個の値
+;;を返します。
+;;example:
+;;  (generator seed)
+;;    => seed result_0 result_1 ... result_n-1
+;;
+;;最初の値は次のシード値になります。Result_kは以下の形式のどれかで
+;;なければなりません。
+;;(val) ------
+;;  valはk-番目のストリームの次のcar部になります。
+;;#f ------
+;;  k-番目のストリームの新しい情報はありません。
+;;() ------
+;;  k-番目のストリームの最後に到達しました。
+;;
+;;以下の例では2つのストリームが作られます。最初のものは奇数の無限ストリー
+;;ムで、2つめのものは偶数の無限ストリームです。
+;;
+;;example:
+;;  gosh> (define-values (s0 s1)
+;;          (stream-unfoldn (lambda (i)
+;;                            (values (+ i 2)          ;; next seed
+;;                                    (list i)         ;; for the first stream
+;;                                    (list (+ i 1)))) ;; for the second stream
+;;                          0 2))
+;;  #<undef>
+;;  gosh> (stream->list (stream-take s0 10))
+;;  (0 2 4 6 8 10 12 14 16 18)
+;;  gosh> (stream->list (stream-take s1 10))
+;;  (1 3 5 7 9 11 13 15 17 19)
+;;
+;;
+;;@param generator 
+;;@param seed 
+;;@param n 
+
+;;;;;
+;;@type Function
+;;@name stream
+;;@description [SRFI-40]
+;;要素がobj ...であるような新しいストリームを返します。
+;;
+;;@param obj 
+;;@param ... 
+
+;;;;;
+;;@type Macro
+;;@name stream-delay
+;;@description [SRFI-40]
+;;exprの遅延形式であるストリームを返します。
+;;
+;;原則として、ストリームを生成する関数はすべからく結果を
+;;stream-delayでラップすべきです。
+;;
+;;@param expr 
+
+;;;;;
+;;@type Function
+;;@name stream-cdr
+;;@description [SRFI-40]
+;;ストリームsの最初の要素をのぞいたのこりの要素をストリームとして
+;;返します。
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-car
+;;@description [SRFI-40]
+;;ストリームsの最初の要素を返します。
+;;
+;;@param s 
+
+;;;;;
+;;@type Function
+;;@name stream-pair?
+;;@description [SRFI-40]
+;;objがNULLストリームではないストリームのときにのみ#tを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name stream-null?
+;;@description [SRFI-40]
+;;objがNULLストリームの場合にのみ#tを返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Macro
+;;@name stream-cons
+;;@description [SRFI-40]
+;;ストリームの基本構成子。objectをstreamの先頭に追加し、新し
+;;いストリームを返します。
+;;
+;;@param object 
+;;@param stream 
+
+;;;;;
+;;@type var
+;;@name stream-null
+;;@description [SRFI-40]
+;;NULLストリームのシングルトンインスタンス。
+;;
+
+;;;;;
+;;@type Function
+;;@name stream?
+;;@description [SRFI-40]
+;;objがutil.streamの手続きによって作成されたストリームであ
+;;る場合にかぎり#tを返します。
+;;
+;;@param obj 
+

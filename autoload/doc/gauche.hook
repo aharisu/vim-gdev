@@ -1,0 +1,92 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Method
+;;@name run-hook
+;;@description hookの手続きを、arg ...を引数として順番に呼び出します。
+;;引数の数は、make-hook時に与えられたアリティにマッチしなければ
+;;なりません。
+;;
+;;@param (hook <hook>) arg ... 
+
+;;;;;
+;;@type Method
+;;@name hook->list
+;;@description hookの手続きリストのコピーを返します。
+;;
+;;@param (hook <hook>) 
+
+;;;;;
+;;@type Method
+;;@name reset-hook!
+;;@description hookの手続きリストを空にします。
+;;
+;;@param (hook <hook>) 
+
+;;;;;
+;;@type Method
+;;@name remove-hook!
+;;@description hookの手続きリストからprocを削除します。
+;;Guileとの互換性のためだけに、remove-hook!がdelete-hook!の
+;;エイリアスとなっています。
+;;
+;;@param (hook <hook>) proc 
+
+;;;;;
+;;@type Method
+;;@name delete-hook!
+;;@description hookの手続きリストからprocを削除します。
+;;Guileとの互換性のためだけに、remove-hook!がdelete-hook!の
+;;エイリアスとなっています。
+;;
+;;@param (hook <hook>) proc 
+
+;;;;;
+;;@type Method
+;;@name add-hook!
+;;@description 手続きprocをhookに追加します。
+;;append?が与えられ真であれば、procはリストの最後に
+;;追加されます。そうでなければ、procはリストの最初に追加
+;;されます。
+;;procは、make-hook時に与えられたアリティとともに
+;;呼ばれなければなりません。
+;;
+;;@param (hook <hook>) proc :optional (append? #f) 
+
+;;;;;
+;;@type Function
+;;@name hook-empty?
+;;@description hookの手続きリストが空なら、真を返します。
+;;
+;;@param hook 
+
+;;;;;
+;;@type Function
+;;@name hook?
+;;@description objがフックオブジェクトであれば、真を返します。
+;;
+;;@param obj 
+
+;;;;;
+;;@type Function
+;;@name make-hook
+;;@description 与えられたアリティ(正の整数でなければなりません)とともに新しい
+;;フックオブジェクトを作成します。
+;;
+;;@param :optional 
+;;@param (arity 0) 
+
+;;;;;
+;;@type Class
+;;@name <hook>
+;;@description フックのクラスで、一度に呼び出される手続きのリストを保持しています。
+;;
+;;<hook>クラスにはobject-applyメソッドが定義されているので、
+;;あたかもそれが手続きであるかのようにフックオブジェクトを``適用''できます。
+;;フックオブジェクトを適用すると、登録されている全ての手続きが呼び出されます。
+;;
+

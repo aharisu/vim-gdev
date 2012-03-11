@@ -1,0 +1,47 @@
+
+;;;;;
+;;@type cmd
+;;@@parse-relative #f
+
+
+;;;;;
+;;@type Method
+;;@name object-isomorphic?
+;;@description このメソッドで、二つのオブジェクトの同型判定処理をカスタマイズできます。
+;;基本的には、オブジェクトのトラバースしたいスロットに対してisomorphic?を順に適用し、
+;;全てが成功すれば#tを、一つでも失敗すれば#fを返すようにします。
+;;contextはトラバースのコンテクストを保持しているオブジェクトです。そのまま
+;;isomorphic?に渡して下さい。
+;;
+;;デフォルトメソッドは、obj1とobj2がequal?の意味で等しければ
+;;#tを返します。
+;;
+;;@param obj1 
+;;@param obj2 
+;;@param context 
+
+;;;;;
+;;@type Function
+;;@name isomorphic?
+;;@description obj1とobj2が同型であれば#tを返します。
+;;
+;;省略可能な引数contextは、下で説明するobject-isomorphic?
+;;の中からisomorphic?を再帰的に呼び出す場合に使います。
+;;
+;;example:
+;;  (isomorphic? '(a b) '(a b)) ==> #t
+;;  
+;;  (define x (cons 0 0))
+;;  (define y (cons 0 0))
+;;  (isomorphic? (cons x x)
+;;               (cons x y))
+;;   ==> #f
+;;  (isomorphic? (cons x x)
+;;               (cons y y))
+;;   ==> #t
+;;
+;;@param obj1 
+;;@param obj2 
+;;@param :optional 
+;;@param context 
+
