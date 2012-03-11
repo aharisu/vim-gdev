@@ -247,7 +247,7 @@ function! s:restart_gosh_process()"{{{
 
   "signal 15 is SIGTERM
   call s:gosh_comp.kill(15)
-  call s:init_proc()
+  call gosh_complete#init_proc()
 endfunction"}}}
 
 function! gosh_complete#add_async_task(text, callback)"{{{
