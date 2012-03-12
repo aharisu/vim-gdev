@@ -476,11 +476,16 @@ function! gosh_complete#finale_proc()"{{{
 endfunction"}}}
 
 function! s:restart_gosh_process()"{{{
+  " save s:init_count
+  let tmp = s:init_count
   let s:init_count = 0
 
   "signal 15 is SIGTERM
   call s:gosh_comp.kill(15)
   call gosh_complete#init_proc()
+
+  " restore s:init_count
+  let s:init_count = tmp
 endfunction"}}}
 
 function! gosh_complete#add_async_task(text, callback, context)"{{{
