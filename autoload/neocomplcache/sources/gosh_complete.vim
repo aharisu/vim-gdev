@@ -140,22 +140,22 @@ function! s:add_doc(docs)"{{{
   endfor
 endfunction "}}}
 
-function! s:set_module_order(order)"{{{
+function! s:set_module_order(bufnr, order)"{{{
   let order = copy(s:default_module_order)
   call extend(order, a:order)
 
-  call gosh_complete#set_module_order(bufnr('%'), order)
+  call gosh_complete#set_module_order(a:bufnr, order)
 endfunction"}}}
 
-function! s:constract_word_list()"{{{
+function! s:constract_word_list(bufnr)"{{{
   " get all unit
-  let units = gosh_complete#match_unit_in_order(bufnr('%'), '', 0)
+  let units = gosh_complete#match_unit_in_order(a:bufnr, '', 0)
 
   " unit to completion word
   let word_list = s:units_to_word_list(units)
 
   " register word list
-  call gosh_complete#set_buf_data(bufnr('%'), 'words', word_list)
+  call gosh_complete#set_buf_data(a:bufnr, 'words', word_list)
 endfunction"}}}
 
 function! s:units_to_word_list(units) "{{{
@@ -205,10 +205,11 @@ endfunction"}}}
 
 function! s:load_default_module()"{{{
   call gosh_complete#add_async_task("#load-default-module\n", 
-        \ function('neocomplcache#sources#gosh_complete#load_default_module_end_callback'))
+        \ function('neocomplcache#sources#gosh_complete#load_default_module_end_callback'),
+        \ {})
 endfunction
 
-function! neocomplcache#sources#gosh_complete#load_default_module_end_callback(out, err)
+function! neocomplcache#sources#gosh_complete#load_default_module_end_callback(out, err, context)
   if s:debug
     call neocomplcache#print_warning("end default parse")
   endif
@@ -267,17 +268,19 @@ function! s:parse_cur_buf(parse_tick)"{{{
     call gosh_complete#add_async_task('#stdin ' . docname . "\n" .
           \ join(getbufline('%', 1, '$'), "\n") . "\n" .
           \ "#stdin-eof\n", 
-          \ function('neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback'))
+          \ function('neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback'),
+          \ {'bufnr' : bufnr('%')})
   else
 
     "parse from file
     call gosh_complete#add_async_task('#load-file ' . filename . ' ' . docname . "\n",
-          \ function('neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback'))
+          \ function('neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback'),
+          \ {'bufnr' : bufnr('%')})
   endif
 
 endfunction
 
-function! neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback(out, err)
+function! neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback(out, err, context)
   if s:debug
     call neocomplcache#print_warning("end parse")
   endif
@@ -285,11 +288,10 @@ function! neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback(out, er
   if !empty(a:out)
     let result = eval(a:out)
 
-
     call s:add_doc(result['docs'])
-    call s:set_module_order(result['order'])
+    call s:set_module_order(a:context['bufnr'], result['order'])
 
-    call s:constract_word_list()
+    call s:constract_word_list(a:context['bufnr'])
   endif
 endfunction"}}}
 

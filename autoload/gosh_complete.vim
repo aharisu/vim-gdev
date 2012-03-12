@@ -243,7 +243,8 @@ function! s:get_unit_ginfo(units)
     "call gosh
     call gosh_complete#add_async_task('#get-unit '
           \ . doc_name . ' ' . unit_name . "\n",
-          \ function('s:get_unit_ginfo_callback'))
+          \ function('s:get_unit_ginfo_callback'),
+          \ {})
 
     "wait until get unit
     while !s:get_unit_ginfo_complete
@@ -268,7 +269,7 @@ function! s:get_unit_ginfo(units)
   endif
 endfunction
 
-function! s:get_unit_ginfo_callback(out, err)
+function! s:get_unit_ginfo_callback(out, err, context)
   if !empty(a:out)
     let s:unit_ginfo = eval(a:out)
   endif
@@ -482,12 +483,12 @@ function! s:restart_gosh_process()"{{{
   call gosh_complete#init_proc()
 endfunction"}}}
 
-function! gosh_complete#add_async_task(text, callback)"{{{
+function! gosh_complete#add_async_task(text, callback, context)"{{{
   if empty(s:async_task_queue)
     call s:gosh_comp.stdin.write(a:text)
-    call add(s:async_task_queue, {'callback':a:callback, 'time' : localtime()})
+    call add(s:async_task_queue, {'callback':a:callback, 'time' : localtime(), 'context' : a:context})
   else
-    call add(s:async_task_queue, {'text' : a:text, 'callback': a:callback})
+    call add(s:async_task_queue, {'text' : a:text, 'callback': a:callback, 'context' : a:context})
   endif
 endfunction
 
@@ -507,7 +508,7 @@ function! gosh_complete#check_async_task()
   if !empty(out) || !empty(err)
     let finish_task = remove(s:async_task_queue, 0)
     let Callback = finish_task['callback']
-    call Callback(out, err)
+    call Callback(out, err, finish_task['context'])
 
     if s:debug_out_err
       if !empty(out)
