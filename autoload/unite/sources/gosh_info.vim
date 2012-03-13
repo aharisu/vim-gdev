@@ -35,3 +35,29 @@ function! s:source.action_table.open.func(c)
   call gosh_complete#show_ginfo(a:c.source__docname, a:c.word)
 endfunction
 
+
+function! unite#sources#gosh_info#start_search()
+  call s:start_search(0)
+endfunction
+
+function! unite#sources#gosh_info#start_search_with_cur_keyword()
+  call s:start_search(1)
+endfunction
+
+function! s:start_search(with_key)
+  if !exists(':Unite')
+    echoerr 'unite.vim is not installed.'
+    return 
+  endif
+
+  let context = {}
+
+  if a:with_key
+    let context['input'] = expand('<cword>')
+    let context['immediately'] = 1
+  endif
+
+  call unite#start(['gosh_info'], context)
+endfunction
+
+

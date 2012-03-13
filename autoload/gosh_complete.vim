@@ -58,6 +58,11 @@ function! s:initialize()
         \<ESC>:call gosh_complete#do_cmd_in_gosh_info("call s:gosh_info_scroll_down()")<CR>a
   inoremap <silent> <Plug>(gosh_info_close) 
         \<ESC>:call gosh_complete#do_cmd_in_gosh_info("wincmd q")<CR>a
+
+  nnoremap <silent> <Plug>(gosh_info_start_search)
+        \ :call unite#sources#gosh_info#start_search()<CR>
+  nnoremap <silent> <Plug>(gosh_info_start_search_with_cur_keyword)
+        \ :call unite#sources#gosh_info#start_search_with_cur_keyword()<CR>
 endfunction
 
 function! gosh_complete#add_doc(name, units)
