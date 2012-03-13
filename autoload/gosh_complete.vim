@@ -43,6 +43,23 @@ let s:init_count = 0
 
 let s:default_open_cmd = '6:split'
 
+function! s:initialize()
+
+  " Register key mapping
+  nnoremap <silent> <Plug>(gosh_info_row_up)
+        \ :call gosh_complete#do_cmd_in_gosh_info("call s:gosh_info_scroll_up()")<CR>
+  nnoremap <silent> <Plug>(gosh_info_row_down)
+        \ :call gosh_complete#do_cmd_in_gosh_info("call s:gosh_info_scroll_down()")<CR>
+  nnoremap <silent> <Plug>(gosh_info_close)
+        \ :call gosh_complete#do_cmd_in_gosh_info("wincmd q")<CR>
+  inoremap <silent> <Plug>(gosh_info_row_up) 
+        \<ESC>:call gosh_complete#do_cmd_in_gosh_info("call s:gosh_info_scroll_up()")<CR>a
+  inoremap <silent> <Plug>(gosh_info_row_down) 
+        \<ESC>:call gosh_complete#do_cmd_in_gosh_info("call s:gosh_info_scroll_down()")<CR>a
+  inoremap <silent> <Plug>(gosh_info_close) 
+        \<ESC>:call gosh_complete#do_cmd_in_gosh_info("wincmd q")<CR>a
+endfunction
+
 function! gosh_complete#add_doc(name, units)
   for unit in a:units
     let unit['docname'] = a:name
@@ -428,6 +445,8 @@ endfunction"}}}
 
 function! gosh_complete#init_proc()"{{{
   if s:init_count == 0
+    call s:initialize()
+
     let s:gosh_comp = vimproc#popen3('gosh' 
           \ . ' -I' . escape(s:neocom_sources_directory, ' \') . ' '
           \ . s:gosh_complete_path
@@ -582,20 +601,10 @@ endfunction"}}}
 function! s:open_preview(content, noenter)"{{{
 
   if a:noenter
-    let w:ref_back = 1
+    call s:mark_back_to_window()
   endif
 
-  let bufnr = 0
-  for i in range(0, winnr('$'))
-    let n = winbufnr(i)
-    if getbufvar(n, '&filetype') ==# 'gosh-info'
-      if i != 0
-        execute i 'wincmd w'
-      endif
-      let bufnr = n
-      break
-    endif
-  endfor
+  let bufnr = s:move_to_gosh_info_window()
 
   if bufnr == 0
     silent! execute s:default_open_cmd
@@ -614,15 +623,7 @@ function! s:open_preview(content, noenter)"{{{
   setlocal nomodifiable readonly
 
   if a:noenter
-    for t in range(1, tabpagenr('$'))
-      for w in range(1, winnr('$'))
-        if gettabwinvar(t, w, 'ref_back')
-          execute 'tabnext' t
-          execute w 'wincmd w'
-          unlet! w:ref_back
-        endif
-      endfor
-    endfor
+    call s:back_to_marked_window()
   endif
 
 endfunction"}}}
@@ -637,6 +638,73 @@ function! s:initialize_buffer()"{{{
   setlocal filetype=gosh-info
 endfunction"}}}
 
+function! gosh_complete#do_cmd_in_gosh_info(cmd)
+  call s:mark_back_to_window()
+
+  if s:move_to_gosh_info_window()
+    execute a:cmd
+    call s:back_to_marked_window()
+  else
+    call s:unmark_back_to_window()
+  endif
+endfunction
+
+function! s:gosh_info_scroll_down()
+  let c = winheight(0) - winline() + 1
+  let i = 0
+
+  while i < c && line('.') != line('$')
+    execute 'normal j'
+
+    let i += 1
+  endwhile
+endfunction
+
+function! s:gosh_info_scroll_up()
+  let c = winline()
+  let i = 0
+
+  while i < c && line('.') != 1
+    execute 'normal k'
+
+    let i += 1
+  endwhile
+endfunction
+
+
+function! s:move_to_gosh_info_window()"{{{
+  for i in range(0, winnr('$'))
+    let n = winbufnr(i)
+    if getbufvar(n, '&filetype') ==# 'gosh-info'
+      if i != 0
+        execute i 'wincmd w'
+      endif
+      return n
+    endif
+  endfor
+
+  return 0
+endfunction"}}}
+
+function! s:mark_back_to_window()"{{{
+  let w:ref_back = 1
+endfunction"}}}
+
+function! s:unmark_back_to_window()"{{{
+  unlet! w:ref_back
+endfunction"}}}
+
+function! s:back_to_marked_window()"{{{
+  for t in range(1, tabpagenr('$'))
+    for w in range(1, winnr('$'))
+      if gettabwinvar(t, w, 'ref_back')
+        execute 'tabnext' t
+        execute w 'wincmd w'
+        unlet! w:ref_back
+      endif
+    endfor
+  endfor
+endfunction"}}}
 
 "
 " util
