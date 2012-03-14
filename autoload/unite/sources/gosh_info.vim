@@ -53,8 +53,13 @@ function! s:start_search(with_key)
   let context = {}
 
   if a:with_key
-    let context['input'] = expand('<cword>')
-    let context['immediately'] = 1
+    let cword = expand('<cword>')
+    let context['input'] = cword
+
+    let units = gosh_complete#match_unit_in_order(bufnr('%'), cword, 0)
+    if len(units) == 1 
+      let context['immediately'] = 1
+    endif
   endif
 
   call unite#start(['gosh_info'], context)
