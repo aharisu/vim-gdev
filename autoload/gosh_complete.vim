@@ -59,10 +59,15 @@ function! s:initialize()
   inoremap <silent> <Plug>(gosh_info_close) 
         \<ESC>:call gosh_complete#do_cmd_in_gosh_info("wincmd q")<CR>a
 
+  inoremap <silent> <Plug>(gosh_info_start_search_with_cur_keyword) 
+        \<ESC>:call unite#sources#gosh_info#start_search_with_cur_keyword(1, 0)<CR>
+  inoremap <silent> <Plug>(ginfo_start_with_cur_keyword_only_unique) 
+        \<ESC>:call unite#sources#gosh_info#start_search_with_cur_keyword(2, 1)<CR>
+
   nnoremap <silent> <Plug>(gosh_info_start_search)
-        \ :call unite#sources#gosh_info#start_search()<CR>
+        \ :call unite#sources#gosh_info#start_search(0)<CR>
   nnoremap <silent> <Plug>(gosh_info_start_search_with_cur_keyword)
-        \ :call unite#sources#gosh_info#start_search_with_cur_keyword()<CR>
+        \ :call unite#sources#gosh_info#start_search_with_cur_keyword(0, 0)<CR>
 endfunction
 
 function! gosh_complete#add_doc(name, units)
@@ -109,15 +114,23 @@ function! gosh_complete#get_module_order(buf_num)
   return gosh_complete#get_buf_data(a:buf_num, 'order', [])
 endfunction
 
-function! gosh_complete#match_unit_in_order(buf_num, keyword, allow_duplicate)
+function! gosh_complete#match_unit_in_order_first_match(buf_num, keyword, allow_duplicate)
   if a:allow_duplicate
-    return s:match_unit_in_order_allow_duplicate(a:buf_num, a:keyword)
+    return s:match_unit_in_order_allow_duplicate(a:buf_num, a:keyword, function('s:first_match_filter'))
   else
-    return s:match_unit_in_order_no_duplicate(a:buf_num, a:keyword)
+    return s:match_unit_in_order_no_duplicate(a:buf_num, a:keyword, function('s:first_match_filter'))
   endif
 endfunction
 
-functio! s:match_unit_in_order_no_duplicate(buf_num, keyword)
+function! gosh_complete#match_unit_in_order(buf_num, keyword, allow_duplicate)
+  if a:allow_duplicate
+    return s:match_unit_in_order_allow_duplicate(a:buf_num, a:keyword, function('s:unit_name_head_filter'))
+  else
+    return s:match_unit_in_order_no_duplicate(a:buf_num, a:keyword, function('s:unit_name_head_filter'))
+  endif
+endfunction
+
+functio! s:match_unit_in_order_no_duplicate(buf_num, keyword, Comp)
   let unit_table = {}
 
   for mod in gosh_complete#get_module_order(a:buf_num)
@@ -125,11 +138,12 @@ functio! s:match_unit_in_order_no_duplicate(buf_num, keyword)
       continue
     endif
 
+
     let ginfo = s:ginfo_table[mod]
     if a:keyword == ''
       let units = copy(ginfo['units'])
     else
-      let units = s:unit_name_head_filter(ginfo['units'], a:keyword)
+      let units = a:Comp(ginfo['units'], a:keyword)
     endif
 
     for unit in units
@@ -140,7 +154,7 @@ functio! s:match_unit_in_order_no_duplicate(buf_num, keyword)
   return values(unit_table)
 endfunction
 
-functio! s:match_unit_in_order_allow_duplicate(buf_num, keyword)
+functio! s:match_unit_in_order_allow_duplicate(buf_num, keyword, Comp)
   let unit_table = {}
   let type_list = type([])
 
@@ -153,7 +167,7 @@ functio! s:match_unit_in_order_allow_duplicate(buf_num, keyword)
     if a:keyword == ''
       let units = copy(ginfo['units'])
     else
-      let units = s:unit_name_head_filter(ginfo['units'], a:keyword)
+      let units = a:Comp(ginfo['units'], a:keyword)
     endif
 
     let table = {}
@@ -194,14 +208,14 @@ functio! s:match_unit_in_order_allow_duplicate(buf_num, keyword)
   return unit_list
 endfunction
 
-functio! s:any_name(name, units)
-  for unit in a:units
-    if a:name ==# unit['n']
-      return 1
-    endif
-  endfor
+function! s:first_match_filter(units, keyword)
+  if &ignorecase
+    let expr = printf('strpart(v:val.n, 0, %d) =~  %s', len(a:keyword), string(a:keyword))
+  else
+    let expr = printf('strpart(v:val.n, 0, %d) =~# %s', len(a:keyword), string(a:keyword))
+  endif
 
-  return 0
+  return filter(copy(a:units), expr)
 endfunction
 
 function! s:unit_name_head_filter(units, keyword)

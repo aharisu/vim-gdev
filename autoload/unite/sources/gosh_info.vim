@@ -13,12 +13,17 @@ endfunction
 
 
 function! s:source.hooks.on_init(args, context)
-  let units = gosh_complete#match_unit_in_order(bufnr('%'), '', 0) "no duplicate
+  if has_key(a:context, 'source__with_keyword')
+    let units = gosh_complete#match_unit_in_order_first_match(bufnr('%'),a:context.input , 0) "no duplicate
+  else
+    let units = gosh_complete#match_unit_in_order(bufnr('%'), '', 0) "no duplicate
+  endif
   call map(units, '{
         \ "word" : v:val.n,
         \ "kind" : "openable",
         \ "source__docname" : v:val.docname,
         \}')
+
   let a:context.source__candidates = units
 endfunction
 
@@ -35,16 +40,15 @@ function! s:source.action_table.open.func(c)
   call gosh_complete#show_ginfo(a:c.source__docname, a:c.word)
 endfunction
 
-
-function! unite#sources#gosh_info#start_search()
-  call s:start_search(0)
+function! unite#sources#gosh_info#start_search(is_insert)
+  call s:start_search(0, a:is_insert, 0)
 endfunction
 
-function! unite#sources#gosh_info#start_search_with_cur_keyword()
-  call s:start_search(1)
+function! unite#sources#gosh_info#start_search_with_cur_keyword(is_insert, only_unique)
+  call s:start_search(1, a:is_insert, a:only_unique)
 endfunction
 
-function! s:start_search(with_key)
+function! s:start_search(with_key, is_insert, only_unique)
   if !exists(':Unite')
     echoerr 'unite.vim is not installed.'
     return 
@@ -52,17 +56,37 @@ function! s:start_search(with_key)
 
   let context = {}
 
+  let is_unique = 0
   if a:with_key
     let cword = expand('<cword>')
     let context['input'] = cword
 
-    let units = gosh_complete#match_unit_in_order(bufnr('%'), cword, 0)
+    let units = gosh_complete#match_unit_in_order_first_match(bufnr('%'), cword, 0)
     if len(units) == 1 
+      let is_unique = 1
       let context['immediately'] = 1
+      let context['source__with_keyword'] = 1
     endif
   endif
 
-  call unite#start(['gosh_info'], context)
+  if !a:only_unique || is_unique
+    call unite#start(['gosh_info'], context)
+    if is_unique && a:is_insert
+      call s:start_a_insert()
+    endif
+  else
+    if a:is_insert
+      call s:start_a_insert()
+    endif
+  endif
 endfunction
 
+function! s:start_a_insert()
+  let [l,c] = searchpos('\>', 'ec')
+  if c == col('$')
+    startinsert!
+  else
+    startinsert
+  endif
+endfunction
 
