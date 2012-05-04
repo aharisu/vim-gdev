@@ -36,7 +36,6 @@ let s:debug_out_err = 0
 let s:neocom_sources_directory = expand('<sfile>:p:h')
 let s:gosh_complete_path = escape(get(g:, 'gosh_complete_path', s:neocom_sources_directory . '/gosh_complete.scm'), ' \')
 let s:gosh_generated_doc_path = escape(s:neocom_sources_directory . '/doc',  ' \')
-let s:async_task_queue = []
 
 let s:default_module_order = []
 
@@ -104,7 +103,7 @@ function! s:cursor_hold(type)"{{{
   call s:parse_cur_buf(1)
 
   "wait until all tasks
-  while !empty(s:async_task_queue)
+  while !gosh_complete#is_empty_async_task()
     call gosh_complete#check_async_task()
 
     sleep 150m

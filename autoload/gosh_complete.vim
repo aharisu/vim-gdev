@@ -43,7 +43,7 @@ let s:init_count = 0
 
 let s:default_open_cmd = '6:split'
 
-function! s:initialize()
+function! s:initialize()"{{{
 
   " Register key mapping
   nnoremap <silent> <Plug>(gosh_info_row_up)
@@ -68,9 +68,13 @@ function! s:initialize()
         \ :call unite#sources#gosh_info#start_search(0)<CR>
   nnoremap <silent> <Plug>(gosh_info_start_search_with_cur_keyword)
         \ :call unite#sources#gosh_info#start_search_with_cur_keyword(0, 0)<CR>
-endfunction
+endfunction"}}}
 
-function! gosh_complete#add_doc(name, units)
+function! gosh_complete#add_doc(name, units)"{{{
+  if s:debug
+    call neocomplcache#print_warning('add_doc:' . a:name)
+  endif
+
   for unit in a:units
     let unit['docname'] = a:name
     let unit['_loaded_doc'] = 0
@@ -83,9 +87,16 @@ function! gosh_complete#add_doc(name, units)
           \ 'units' : a:units,
           \ }
   endif
-endfunction
+endfunction"}}}
 
-function! gosh_complete#set_buf_data(buf_num, name, data)
+function! gosh_complete#set_buf_data(buf_num, name, data)"{{{
+  if s:debug
+    call neocomplcache#print_warning('set_buf_data:' 
+          \ . a:buf_num . ':' 
+          \ . a:name . ':')
+
+  endif
+
   if has_key(s:each_buf_data, a:buf_num)
     let s:each_buf_data[a:buf_num][a:name] = a:data
   else
@@ -93,9 +104,9 @@ function! gosh_complete#set_buf_data(buf_num, name, data)
           \ a:name : a:data
           \ }
   endif
-endfunction
+endfunction"}}}
 
-function! gosh_complete#get_buf_data(buf_num, name, ...)
+function! gosh_complete#get_buf_data(buf_num, name, ...)"{{{
   if has_key(s:each_buf_data, a:buf_num) &&
         \ has_key(s:each_buf_data[a:buf_num], a:name)
     return s:each_buf_data[a:buf_num][a:name]
@@ -104,33 +115,33 @@ function! gosh_complete#get_buf_data(buf_num, name, ...)
   else
     return 0
   endif
-endfunction
+endfunction"}}}
 
-function! gosh_complete#set_module_order(buf_num, order)
+function! gosh_complete#set_module_order(buf_num, order)"{{{
   call gosh_complete#set_buf_data(a:buf_num, 'order', a:order)
-endfunction
+endfunction"}}}
 
-function! gosh_complete#get_module_order(buf_num)
+function! gosh_complete#get_module_order(buf_num)"{{{
   return gosh_complete#get_buf_data(a:buf_num, 'order', [])
-endfunction
+endfunction"}}}
 
-function! gosh_complete#match_unit_in_order_first_match(buf_num, keyword, allow_duplicate)
+function! gosh_complete#match_unit_in_order_first_match(buf_num, keyword, allow_duplicate)"{{{
   if a:allow_duplicate
     return s:match_unit_in_order_allow_duplicate(a:buf_num, a:keyword, function('s:first_match_filter'))
   else
     return s:match_unit_in_order_no_duplicate(a:buf_num, a:keyword, function('s:first_match_filter'))
   endif
-endfunction
+endfunction"}}}
 
-function! gosh_complete#match_unit_in_order(buf_num, keyword, allow_duplicate)
+function! gosh_complete#match_unit_in_order(buf_num, keyword, allow_duplicate)"{{{
   if a:allow_duplicate
     return s:match_unit_in_order_allow_duplicate(a:buf_num, a:keyword, function('s:unit_name_head_filter'))
   else
     return s:match_unit_in_order_no_duplicate(a:buf_num, a:keyword, function('s:unit_name_head_filter'))
   endif
-endfunction
+endfunction"}}}
 
-functio! s:match_unit_in_order_no_duplicate(buf_num, keyword, Comp)
+functio! s:match_unit_in_order_no_duplicate(buf_num, keyword, Comp)"{{{
   let unit_table = {}
 
   for mod in gosh_complete#get_module_order(a:buf_num)
@@ -152,9 +163,9 @@ functio! s:match_unit_in_order_no_duplicate(buf_num, keyword, Comp)
   endfor
 
   return values(unit_table)
-endfunction
+endfunction"}}}
 
-functio! s:match_unit_in_order_allow_duplicate(buf_num, keyword, Comp)
+functio! s:match_unit_in_order_allow_duplicate(buf_num, keyword, Comp)"{{{
   let unit_table = {}
   let type_list = type([])
 
@@ -206,9 +217,9 @@ functio! s:match_unit_in_order_allow_duplicate(buf_num, keyword, Comp)
   endfor
 
   return unit_list
-endfunction
+endfunction"}}}
 
-function! s:first_match_filter(units, keyword)
+function! s:first_match_filter(units, keyword)"{{{
   if &ignorecase
     let expr = printf('strpart(v:val.n, 0, %d) =~  %s', len(a:keyword), string(a:keyword))
   else
@@ -216,9 +227,9 @@ function! s:first_match_filter(units, keyword)
   endif
 
   return filter(copy(a:units), expr)
-endfunction
+endfunction"}}}
 
-function! s:unit_name_head_filter(units, keyword)
+function! s:unit_name_head_filter(units, keyword)"{{{
   if &ignorecase
     let expr = printf('!stridx(tolower(v:val.n), %s)', tolower(string(a:keyword)))
   else
@@ -226,7 +237,7 @@ function! s:unit_name_head_filter(units, keyword)
   endif
 
   return filter(copy(a:units), expr)
-endfunction
+endfunction"}}}
 
 function! gosh_complete#show_ginfo(module, symbol)"{{{
   if has_key(s:ginfo_table, a:module)
@@ -535,6 +546,10 @@ function! gosh_complete#add_async_task(text, callback, context)"{{{
   endif
 endfunction
 
+function! gosh_complete#is_empty_async_task()
+  return empty(s:async_task_queue)
+endfunction
+
 function! gosh_complete#check_async_task()
   if empty(s:async_task_queue)
     return
@@ -595,7 +610,7 @@ endfunction
 function! s:read_output_one_try(port)
   let out = ""
 
-  let res = a:port.read()
+  let res = a:port.read(-1, 0)
   if !empty(res)
     while 1
       let len = strlen(res)
@@ -606,7 +621,7 @@ function! s:read_output_one_try(port)
         let out .= res
       endif
 
-      let res = a:port.read()
+      let res = a:port.read(-1, 250)
     endwhile
   endif
 
@@ -657,7 +672,7 @@ function! s:initialize_buffer()"{{{
   setlocal filetype=gosh-info
 endfunction"}}}
 
-function! gosh_complete#do_cmd_in_gosh_info(cmd)
+function! gosh_complete#do_cmd_in_gosh_info(cmd)"{{{
   call s:mark_back_to_window()
 
   if s:move_to_gosh_info_window()
@@ -688,7 +703,7 @@ function! s:gosh_info_scroll_up()
 
     let i += 1
   endwhile
-endfunction
+endfunction"}}}
 
 
 function! s:move_to_gosh_info_window()"{{{
