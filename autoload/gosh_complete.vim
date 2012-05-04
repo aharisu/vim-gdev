@@ -443,14 +443,28 @@ function! s:get_unit_description(unit)"{{{
     endif
 
     let description .= "--description--\n"
-    let description .= a:unit['d']
+    let description .= s:trim_both(a:unit['d'])
   endif
 
   return description
 endfunction
 
+function! s:trim_both(text)
+  let text = a:text
+  "trim head \n
+  while text =~# "^\n"
+    let text = text[1 :]
+  endwhile
+  "trim tail \n
+  while text =~# "\n\n$"
+    let text = text[0 : strlen(text) - 2]
+  endwhile
+
+  return text
+endfunction
+
 function! s:get_param_description(param, is_show_empty)
-  let text = a:param['n']
+  let text = s:trim_both(a:param['n'])
   let has_description = 0
 
   if has_key(a:param, 'a')
@@ -459,7 +473,7 @@ function! s:get_param_description(param, is_show_empty)
   endif
   if has_key(a:param, 'd')
     let has_description = 1
-    let text .= "\n   " . a:param['d']
+    let text .= "\n   " . s:trim_both(a:param['d'])
   endif
 
   if a:is_show_empty || has_description

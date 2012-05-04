@@ -623,7 +623,9 @@
                   (raise (condition (<geninfo-warning> (message "@name tag required document unit name"))))
                   (slot-set! unit 'name (x->string name)))
                 ""))
-            (lambda (text config unit) (slot-set! unit 'name text)))
+            (lambda (text config unit) 
+              (unless (string-null? text)
+                (slot-set! unit 'name text))))
 
 
 ;;define @type tag
@@ -703,10 +705,7 @@
 ;;有効なドキュメントテキストがなければ#fを返す
 (define (next-doc-text)
   (if (not (zero? (string-length (string-trim (next-token-of '(#\space #\tab #\;))))))
-    (let ([line (read-line)])
-      (if (zero? (string-length line))
-        (next-doc-text) ;; read next line
-        line))
+    (read-line)
     #f))
 
 ;;ドキュメントタグと本文を分解する
@@ -737,7 +736,7 @@
 
 ;;テキスト内にタグがあれば処理を行う
 (define (process-tag text config unit)
-  (if (eq? #\@ (string-ref text 0))
+  (if (and (not (string-null? text)) (eq? #\@ (string-ref text 0)))
     (let-values ([(tag text) (split-tag-and-text text)])
       (cond 
         [(get-allow-multiple tag) 
@@ -755,8 +754,7 @@
   (regexp-replace-all #/"/ text "\\\\\""))
 ;;テキストを現在のタグ内に追加する
 (define (process-text text config unit)
-  (if (not (string-null? text))
-    (append-text text config unit))
+  (append-text text config unit)
   unit)
 
 ;;一つのドキュメントを最後までパースする
