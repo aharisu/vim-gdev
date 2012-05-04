@@ -110,36 +110,36 @@
 (define loaded-doc-table (make-hash-table 'equal?))
 
 (define (add-loaded-module module :optional name)
-  (let ([name (if (undefined? name) module name)]
-        [doc (geninfo (if (symbol? module)
-                        (alt-geninfo-file module)
-                        module))])
+  (let* ([name (if (undefined? name) module name)]
+         [module (if (symbol? module) (alt-geninfo-file module) module)]
+         [doc (geninfo module)])
     (slot-set! doc 'name name)
-    (hash-table-put! loaded-doc-table name doc)))
+    (hash-table-put! loaded-doc-table name (cons doc (get-filestamp module)))))
 
 (define (get-module-extend name)
   (cond
-    [(hash-table-get loaded-doc-table name #f) => (cut ref <> 'extend)]
+    [(hash-table-get loaded-doc-table name #f) => (.$ (cut ref <> 'extend) car)]
     [else '()]))
 
 (define (guarded-read :optional (port (current-input-port)))
   (guard (exc [(or (<read-error> exc) (<error> exc)) (guarded-read)])
     (read port)))
 
-(define (load-info loader name update?)
+(define (load-info loader name filestamp)
   (guard (e [else '()]) ;catch all error
-    (let1 loaded? (hash-table-exists? loaded-doc-table name)
-      (if (or update? (not loaded?))
+    (let1 loaded-doc (hash-table-get loaded-doc-table name #f)
+      ;;do not load yet, or has been updated
+      (if (or (not loaded-doc) (< (cdr loaded-doc) filestamp))
         (let1 doc (loader)
           ;;overwrite document name
           (slot-set! doc 'name name)
-          (hash-table-put! loaded-doc-table name doc)
+          (hash-table-put! loaded-doc-table name (cons doc filestamp))
           (cons
             (cons name doc)
             (fold
               (lambda (m acc)
                 (append
-                  (load-info (pa$ geninfo (alt-geninfo-file m)) m #f)
+                  (load-info-from-alt-geninfo m)
                   acc))
               '()
               (ref doc 'extend))))
@@ -164,7 +164,7 @@
        => (lambda (doc)
             (filter
               (lambda (u) (string=? (slot-ref u 'name) name))
-              (slot-ref doc 'units)))]
+              (slot-ref (car doc) 'units)))]
       [else '()])))
 
 ;;If you have read the generated document
@@ -173,6 +173,10 @@
     (if (file-is-readable? generated-doc-path)
               generated-doc-path
               module)))
+
+(define (load-info-from-alt-geninfo name)
+  (let1 alt (alt-geninfo-file name)
+    (load-info (pa$ geninfo alt) name (get-filestamp alt))))
 
 (define (to-abs-path path)
   (if (absolute-path? path)
@@ -185,43 +189,73 @@
                       (substring path 1 (string-length path))))
         path))))
 
-(define (parse-related-module port)
-  ;;TODO
-  (define (get-load-path op) (map to-abs-path *load-path*))
-  (define (parse-expression e)
-    (match e
-      [(or ('use (? symbol? name) op ...) 
-         ('import ((? symbol? name) op ...)))
-       (load-info (pa$ geninfo (alt-geninfo-file name)) name #f)]
-      [('import (? symbol? name)) 
-       (load-info (pa$ geninfo (alt-geninfo-file (string->symbol name))) 
-                  (string->symbol name) #f)]
-      [('load (? string? file) op ...) 
-       (let* ([load-path (get-load-path op)]
-              [path (find-file-in-paths (if (path-extension file)
-                                          file
-                                          (path-swap-extension file "scm"))
-                                        :paths load-path
-                                        :pred file-is-readable?)])
-         (if path
-           (load-info (pa$ geninfo path) path #f)
-           '()))]
-      [('define-module (? symbol? mod) spec ...)
-       (append-map
-         (cut parse-expression <>)
-         spec)]
-      [('extend module ...)
-       (append-map
-         (lambda (m) (load-info (pa$ geninfo (alt-geninfo-file m)) m #f))
-         module)]
-      ;;do nothing
-      [_ '()]))
-  (with-input-from-port
-    port
-    (pa$ port-fold
-         (lambda (e acc) (append (parse-expression e) acc))
-         '()
-         guarded-read)))
+(define (get-filestamp name)
+  (cond
+    [(string? name) 
+     (if (file-is-readable? name)
+       (file-mtime name)
+       (sys-time))]
+    [(symbol? name) 
+     (let1 path (library-fold name (lambda (l p acc) (cons p acc)) '())
+       (if (null? path)
+         (sys-time)
+         (file-mtime (car path))))]
+    [else (sys-time)]))
+
+(define (parse-related-module basedir port)
+  (let ([add-path '()]
+        [find-load-file (lambda (path)
+                          (cond
+                            [(string-prefix? "/" path) path]
+                            [(or (string-prefix? "./" path) (string-prefix? "../" path))
+                             (simplify-path (build-path basedir path))]
+                            [else (find-file-in-paths (if (path-extension path)
+                                                        path
+                                                        (path-swap-extension path "scm"))
+                                                      :paths (map to-abs-path *load-path*)
+                                                      :pred file-is-readable?)]))])
+    (define (parse-expression e)
+      (match e
+        [('add-load-path (? string? path) :relative)
+         (let1 path (simplify-path (build-path basedir path))
+           (set! add-path (cons path add-path))
+           ((with-module gauche.internal %add-load-path) path #f) 
+           '())]
+        [('add-load-path (? string? path))
+         (set! add-path (cons path add-path))
+         ((with-module gauche.internal %add-load-path) path #f) 
+         '()]
+        [(or ('use (? symbol? name) op ...) 
+           ('import ((? symbol? name) op ...)))
+         (load-info-from-alt-geninfo name)]
+        [('import (? symbol? name)) 
+         (load-info-from-alt-geninfo name)]
+        [('load (? string? file) op ...) 
+         (let1 path (find-load-file file)
+           (if path
+             (load-info (pa$ geninfo path) path (get-filestamp path))
+             '()))]
+        [('define-module (? symbol? mod) spec ...)
+         (append-map
+           (cut parse-expression <>)
+           spec)]
+        [('extend module ...)
+         (append-map
+           (lambda (m) (load-info-from-alt-geninfo m))
+           module)]
+        ;;do nothing
+        [_ '()]))
+    (begin0
+      (with-input-from-port
+        port
+        (pa$ port-fold
+             (lambda (e acc) (append (parse-expression e) acc))
+             '()
+             guarded-read))
+      (set! *load-path*
+        (filter
+          (lambda (path) (not (any (cut string=? path <>) add-path)))
+          *load-path*)))))
 
 ;;---------------------
 ;;Functions related to output
@@ -381,26 +415,26 @@
 ;;--------------------
 
 (define-cmd stdin
-            (lambda (num) (eq? 1 num))
-            (lambda (name) (cons 'read-texts (list name))))
+            (lambda (num) (eq? 2 num))
+            (lambda (basedir name) (cons 'read-texts (list basedir name))))
 
 (define-cmd load-default-module
             (lambda (num) (zero? num))
             (lambda ()
               (output-result 
                 (append-map
-                  (lambda (m) (load-info (pa$ geninfo (alt-geninfo-file m)) m #t))
+                  (lambda (m) (load-info-from-alt-geninfo m))
                   default-module))))
 
 (define-cmd load-file
-            (lambda (num) (and (<= 1 num) (<= num 2)))
+            (lambda (num) (<= 1 num 2))
             (lambda (file :optional name)
               (if (file-is-readable? file)
                 (let1 name (if (undefined? name) file name)
                   (output-result
                     (append
-                      (load-info (pa$ geninfo file) name #t)
-                      (call-with-input-file file parse-related-module))))
+                      (load-info (pa$ geninfo file) name (get-filestamp file))
+                      (call-with-input-file file (pa$ parse-related-module (sys-dirname file))))))
                 (output-result '()))))
 
 (define-cmd get-unit
@@ -418,9 +452,11 @@
 ;;--------------------
 
 (let ([name #f]
+      [basedir #f]
       [texts #f])
   (define-state read-texts
-                (lambda (n); enter execution
+                (lambda (base n); enter execution
+                  (set! basedir base)
                   (set! name n)
                   (set! texts ""))
                 (lambda (line)
@@ -430,8 +466,8 @@
                 (lambda () ;exit execution
                   (output-result
                     (append
-                      (load-info (pa$ geninfo-from-text texts name) name #t)
-                      (parse-related-module (open-input-string texts))))
+                      (load-info (pa$ geninfo-from-text texts name) name (sys-time))
+                      (parse-related-module basedir (open-input-string texts))))
                   (set! name #f)
                   (set! texts #f)
                   )))
@@ -449,7 +485,7 @@
                       (print-err "Invalid argument.")) 
                     (print-err (format #f "Unkown command [~a]." line)))))
               (lambda ()))
-  
+
 
 ;;---------------------
 ;;Entry point

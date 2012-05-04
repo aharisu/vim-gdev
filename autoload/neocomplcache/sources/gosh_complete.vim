@@ -262,9 +262,14 @@ function! s:parse_cur_buf(parse_tick)"{{{
   let docname = s:constract_docname(bufnumber, filename)
   if empty(filename) || b:changedtick != b:prev_parse_tick
     let b:prev_parse_tick = b:changedtick
+    if empty(filename)
+      let basedir = getcwd()
+    else
+      let basedir = escape(expand('%:p:h'),  ' \')
+    endif
 
     "parse from buffer
-    call gosh_complete#add_async_task('#stdin ' . docname . "\n" .
+    call gosh_complete#add_async_task('#stdin ' . basedir . ' ' . docname . "\n" .
           \ join(getbufline('%', 1, '$'), "\n") . "\n" .
           \ "#stdin-eof\n", 
           \ function('neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback'),
