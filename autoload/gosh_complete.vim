@@ -130,7 +130,13 @@ function! gosh_complete#set_module_order(buf_num, order)"{{{
 endfunction"}}}
 
 function! gosh_complete#get_module_order(buf_num)"{{{
-  return gosh_complete#get_buf_data(a:buf_num, 'order', [])
+  let order = gosh_complete#get_buf_data(a:buf_num, 'order', 0)
+  if order is 0
+    unlet order
+    let order = keys(s:ginfo_table)
+  endif
+
+  return order
 endfunction"}}}
 
 function! gosh_complete#match_unit_in_order_first_match(buf_num, keyword, allow_duplicate)"{{{
