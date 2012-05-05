@@ -1,9 +1,11 @@
+let s:openable_action_table = {}
+
 let s:source = {
       \ 'name' : 'gosh_info',
       \ 'description' : 'gauche infomation',
       \ 'default_action' : 'open',
       \ 'is_volativle' : 1,
-      \ 'action_table' : {},
+      \ 'action_table' : {'openable' : s:openable_action_table},
       \ 'hooks' : {},
       \ }
 
@@ -31,14 +33,60 @@ function! s:source.gather_candidates(args, context)
   return a:context.source__candidates
 endfunction
 
+"
+"action table
 
-let s:source.action_table.open ={
+let s:openable_action_table.open ={
       \ 'is_selectable' : 0,
       \ }
-
-function! s:source.action_table.open.func(c)
+function! s:openable_action_table.open.func(c)
   call gosh_complete#show_ginfo(a:c.source__docname, a:c.word)
 endfunction
+
+let s:openable_action_table.split ={
+      \ 'is_selectable' : 0,
+      \ }
+function! s:openable_action_table.split.func(c)
+  call gosh_complete#show_ginfo(a:c.source__docname, a:c.word, 'h')
+endfunction
+
+let s:openable_action_table.vsplit ={
+      \ 'is_selectable' : 0,
+      \ }
+function! s:openable_action_table.vsplit.func(c)
+  call gosh_complete#show_ginfo(a:c.source__docname, a:c.word, 'v')
+endfunction
+
+let s:openable_action_table.left ={
+      \ 'is_selectable' : 0,
+      \ }
+function! s:openable_action_table.left.func(c)
+  call gosh_complete#show_ginfo(a:c.source__docname, a:c.word, 'v:l')
+endfunction
+
+let s:openable_action_table.right ={
+      \ 'is_selectable' : 0,
+      \ }
+function! s:openable_action_table.right.func(c)
+  call gosh_complete#show_ginfo(a:c.source__docname, a:c.word, 'v:r')
+endfunction
+
+let s:openable_action_table.above ={
+      \ 'is_selectable' : 0,
+      \ }
+function! s:openable_action_table.above.func(c)
+  call gosh_complete#show_ginfo(a:c.source__docname, a:c.word, 'h:a')
+endfunction
+
+let s:openable_action_table.below ={
+      \ 'is_selectable' : 0,
+      \ }
+function! s:openable_action_table.below.func(c)
+  call gosh_complete#show_ginfo(a:c.source__docname, a:c.word, 'h:b')
+endfunction
+
+"
+"application interface
 
 function! unite#sources#gosh_info#start_search(is_insert)
   call s:start_search(0, a:is_insert, 0)

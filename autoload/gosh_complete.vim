@@ -41,7 +41,15 @@ let s:async_task_timeout = 5
 
 let s:init_count = 0
 
-let s:default_open_cmd = '6:split'
+let g:gosh_info_width = 
+      \ get(g:, 'gosh_info_width', 35)
+
+let g:gosh_info_height = 
+      \ get(g:, 'gosh_info_height', 6)
+
+let g:gosh_info_direction = 
+      \ get(g:, 'gosh_info_direction', 'h')
+
 
 function! s:initialize()"{{{
 
@@ -239,13 +247,13 @@ function! s:unit_name_head_filter(units, keyword)"{{{
   return filter(copy(a:units), expr)
 endfunction"}}}
 
-function! gosh_complete#show_ginfo(module, symbol)"{{{
+function! gosh_complete#show_ginfo(module, symbol, ...)"{{{
   if has_key(s:ginfo_table, a:module)
     let units = s:find_ginfo_in_doc(s:ginfo_table[a:module], a:symbol)
     let ginfo_list = s:get_unit_ginfo(units)
 
     let text = s:ginfo_list_to_text(ginfo_list)
-    call s:open_preview(text, 1)
+    call s:open_preview(text, 1, 0 < a:0 ? a:1 : g:gosh_info_direction)
   endif
 endfunction"}}}
 
@@ -646,8 +654,7 @@ endfunction"}}}
 "
 "open gosh info buffer
 
-function! s:open_preview(content, noenter)"{{{
-
+function! s:open_preview(content, noenter, open_cmd)"{{{
   if a:noenter
     call s:mark_back_to_window()
   endif
@@ -655,9 +662,10 @@ function! s:open_preview(content, noenter)"{{{
   let bufnr = s:move_to_gosh_info_window()
 
   if bufnr == 0
-    silent! execute s:default_open_cmd
+    call s:open_buffer(a:open_cmd)
     enew
     call s:initialize_buffer()
+
   else
     setlocal modifiable noreadonly
     % delete _
@@ -674,6 +682,55 @@ function! s:open_preview(content, noenter)"{{{
     call s:back_to_marked_window()
   endif
 
+endfunction"}}}
+
+function s:open_buffer(open_cmd)"{{{
+  let cmds = split(a:open_cmd, ':')
+
+  let direc = ''
+
+  let len = len(cmds)
+  if len == 0
+    let split = g:gosh_info_height . 'sp'
+  else
+    if cmds[0] =~ 'v'
+      let split = g:gosh_info_width . 'vs'
+    else
+      let split = g:gosh_info_height . 'sp'
+    endif
+
+    if 1 < len 
+      if cmds[1] =~ 'l'
+        let tmp_split = &splitright
+        let &splitright = 0
+        let direc = 'v'
+
+      elseif cmds[1] =~ 'r'
+        let tmp_split = &splitright
+        let &splitright = 1
+
+        let direc = 'v'
+      elseif cmds[1] =~ 'a'
+        let tmp_split = &splitbelow
+        let &splitbelow = 0
+
+        let direc = 'h'
+      elseif cmds[1] =~ 'b'
+        let tmp_split = &splitbelow
+        let &splitbelow = 1
+
+        let direc = 'h'
+      endif
+    endif
+  endif
+
+  silent! execute split
+
+  if direc ==# 'v'
+    let &splitright = tmp_split
+  elseif direc ==# 'h'
+    let &splitbelow = tmp_split
+  endif
 endfunction"}}}
 
 function! s:initialize_buffer()"{{{
