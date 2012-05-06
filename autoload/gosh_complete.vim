@@ -497,6 +497,40 @@ function! s:get_param_description(param, is_show_empty)
   endif
 endfunction"}}}
 
+function! gosh_complete#constract_unit_word(unit)
+  let name = a:unit.n
+  let len = len(name)
+  let padding = 30 - len
+  if 0 < padding
+    let name .= repeat(' ', padding)
+  endif
+
+  let type = a:unit.t
+  if type ==# 'F'
+    let type = '[Func]  '
+  elseif type ==# 'Method'
+    let type = '[Method]'
+  elseif type ==# 'var'
+    let type = '[Var]   '
+  elseif type ==# 'C'
+    let type = '[Const] '
+  elseif type ==# 'Parameter'
+    let type = '[Param] '
+  elseif type ==# 'Class'
+    let type = '[Class] '
+  elseif type ==# 'Macro'
+    let type = '[Macro] '
+  endif
+
+  let source = a:unit.docname
+  if match(source, '^#') == -1
+    let source = fnamemodify(source, ':t')
+  else
+    let source = fnamemodify(source[2 :], ':t')
+  endif
+
+  return printf("%s %s %s", name, type, source)
+endfunction
 
 "
 " Communicate to gosh-complete.scm

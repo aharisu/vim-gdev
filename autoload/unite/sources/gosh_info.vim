@@ -23,6 +23,7 @@ function! s:source.hooks.on_init(args, context)
   call map(units, '{
         \ "word" : v:val.n,
         \ "kind" : "openable",
+        \ "abbr" : gosh_complete#constract_unit_word(v:val),
         \ "source__docname" : v:val.docname,
         \}')
 
