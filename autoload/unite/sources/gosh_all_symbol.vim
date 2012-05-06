@@ -64,6 +64,7 @@ function! s:source.async_gather_candidates(args, context)"{{{
       call extend(ret, map(units, '{
           \ "word" : v:val.n,
           \ "kind" : "openable",
+          \ "abbr" : gosh_complete#constract_unit_word(v:val, doc_name),
           \ "source__docname" : doc_name,
           \}'))
     endfor

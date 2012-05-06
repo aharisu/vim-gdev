@@ -505,7 +505,7 @@ function! s:get_param_description(param, is_show_empty)
   endif
 endfunction"}}}
 
-function! gosh_complete#constract_unit_word(unit)
+function! gosh_complete#constract_unit_word(unit, ...)"{{{
   let name = a:unit.n
   let len = len(name)
   let padding = 30 - len
@@ -530,7 +530,7 @@ function! gosh_complete#constract_unit_word(unit)
     let type = '[Macro] '
   endif
 
-  let source = a:unit.docname
+  let source = 0 < a:0 ? a:1 : a:unit.docname
   if match(source, '^#') == -1
     let source = fnamemodify(source, ':t')
   else
@@ -538,7 +538,7 @@ function! gosh_complete#constract_unit_word(unit)
   endif
 
   return printf("%s %s %s", name, type, source)
-endfunction
+endfunction"}}}
 
 "
 " Communicate to gosh-complete.scm
