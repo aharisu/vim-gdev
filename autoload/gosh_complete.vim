@@ -254,10 +254,17 @@ function! s:unit_name_head_filter(units, keyword)"{{{
 endfunction"}}}
 
 function! gosh_complete#show_ginfo(module, symbol, ...)"{{{
+
   if has_key(s:ginfo_table, a:module)
     let units = s:find_ginfo_in_doc(s:ginfo_table[a:module], a:symbol)
-    let ginfo_list = s:get_unit_ginfo(units)
+    let is_in_table = 1
+  else
+    let units = [{'n' : a:symbol, 'docname' : a:module, '_loaded_doc' : 0}]
+    let is_in_table = 0
+  endif
 
+  let ginfo_list = s:get_unit_ginfo(units, is_in_table)
+  if len(ginfo_list)
     let text = s:ginfo_list_to_text(ginfo_list)
     call s:open_preview(text, 1, 0 < a:0 ? a:1 : g:gosh_info_direction)
   endif
@@ -278,11 +285,10 @@ endfunction"}}}
 "s:get_unit_ginfo"{{{
 let s:get_unit_ginfo_complete = 1
 let s:unit_ginfo = []
-function! s:get_unit_ginfo(units)
+function! s:get_unit_ginfo(units, is_in_table)
   if empty(a:units)
     return a:units
   endif
-
 
   let loaded = 1
   for unit in a:units 
@@ -291,7 +297,6 @@ function! s:get_unit_ginfo(units)
       break
     endif
   endfor
-
 
   if loaded
     return a:units
@@ -314,15 +319,17 @@ function! s:get_unit_ginfo(units)
       sleep 50m
     endwhile
 
-    call filter(s:ginfo_table[doc_name]['units'],
-          \ 'v:val["n"] !=# unit_name')
-
     for unit in s:unit_ginfo
       let unit['docname'] = doc_name
       let unit['_loaded_doc'] = 1
     endfor
 
-    call extend(s:ginfo_table[doc_name]['units'], s:unit_ginfo)
+    if a:is_in_table
+      call filter(s:ginfo_table[doc_name]['units'],
+            \ 'v:val["n"] !=# unit_name')
+
+      call extend(s:ginfo_table[doc_name]['units'], s:unit_ginfo)
+    endif
 
     let ret = s:unit_ginfo
     let s:unit_ginfo = []
@@ -334,6 +341,7 @@ function! s:get_unit_ginfo_callback(out, err, context)
   if !empty(a:out)
     let s:unit_ginfo = eval(a:out)
   endif
+
   let s:get_unit_ginfo_complete = 1
 endfunction"}}}
 
@@ -543,7 +551,7 @@ function! gosh_complete#init_proc()"{{{
           \ . ' -I' . escape(s:neocom_sources_directory, ' \') . ' '
           \ . s:gosh_complete_path
           \ . " --generated-doc-directory=" . s:gosh_generated_doc_path
-          \ . " --output-api-only"
+          \ . " --output-name-only"
           \ . " --io-encoding=\"" . s:encoding() . "\""
           \ . s:get_load_module_text())
   endif
@@ -599,6 +607,10 @@ function! s:restart_gosh_process()"{{{
   let s:init_count = tmp
 endfunction"}}}
 
+function! gosh_complete#write_text(text)"{{{
+  call s:gosh_comp.stdin.write(a:text)
+endfunction"}}}
+
 function! gosh_complete#add_async_task(text, callback, context)"{{{
   if empty(s:async_task_queue)
     call s:gosh_comp.stdin.write(a:text)
@@ -612,23 +624,35 @@ function! gosh_complete#is_empty_async_task()
   return empty(s:async_task_queue)
 endfunction
 
+let s:outport_remain = ''
+let s:errport_remain = ''
 function! gosh_complete#check_async_task()
   if empty(s:async_task_queue)
-    return
+    return 0
   endif
 
-  let out = s:read_output_one_try(s:gosh_comp.stdout)
+  let [out, remain] = s:read_output_one_try(s:gosh_comp.stdout, s:outport_remain)
+  let s:outport_remain = remain
 
   let err = ""
   if empty(out)
-    let err = s:read_output_one_try(s:gosh_comp.stderr)
+    let [err, remain] = s:read_output_one_try(s:gosh_comp.stderr, s:errport_remain)
+    let s:errport_remain = remain
   endif
 
   let is_exec_next_task = 0
   if !empty(out) || !empty(err)
-    let finish_task = remove(s:async_task_queue, 0)
-    let Callback = finish_task['callback']
-    call Callback(out, err, finish_task['context'])
+    let has_output = 1
+
+    let cur_task = s:async_task_queue[0]
+    let Callback = cur_task['callback']
+
+    if Callback(out, err, cur_task['context']) == 0
+      call remove(s:async_task_queue, 0)
+      let is_exec_next_task = 1
+    else
+      let cur_task['time'] = localtime()
+    endif
 
     if s:debug_out_err
       if !empty(out)
@@ -639,8 +663,9 @@ function! gosh_complete#check_async_task()
       endif
     endif
 
-    let is_exec_next_task = 1
   else
+    let has_output = 0
+
     let cur_task = get(s:async_task_queue, 0)
     if s:async_task_timeout < (localtime() - cur_task['time'])
       if s:debug
@@ -665,29 +690,33 @@ function! gosh_complete#check_async_task()
       let task['text'] = 0
       let task['time'] = localtime()
     endif
+
   endif
 
+  return has_output
 endfunction
 
-function! s:read_output_one_try(port)
-  let out = ""
+function! s:read_output_one_try(port, remain)
+  let out = ''
+  let res = a:remain
 
-  let res = a:port.read(-1, 0)
-  if !empty(res)
-    while 1
-      let len = strlen(res)
-      if res[len - 1] ==# "\n"
-        let out .= strpart(res, 0, len - 1)
-        break
-      else
-        let out .= res
+  let res .= a:port.read(512, 0)
+  while !empty(res)
+    
+    let i = stridx(res, "\n")
+    if 0 <= i
+      if i != 0
+        let out .= res[0 : i - 1]
       endif
 
-      let res = a:port.read(-1, 250)
-    endwhile
-  endif
+      return [out, res[i+1 : ]]
+    endif
 
-  return out
+    let out .= res
+    let res = a:port.read(512, 0)
+  endwhile
+
+  return ['', out] 
 endfunction"}}}
 
 

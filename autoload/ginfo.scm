@@ -1306,8 +1306,9 @@
               doc)])))
 
 (define (get-module-exports module)
-  (eval `(require ,(module-name->path module)) 'gauche)
-  (module-exports (find-module module)))
+  (guard (e [else #f])
+    (eval `(require ,(module-name->path module)) 'gauche)
+    (module-exports (find-module module))))
 
 (define (geninfo-from-module symbol no-cache ignore-warning?)
   (let ([path (library-fold symbol (lambda (l p acc) (cons p acc)) '())])

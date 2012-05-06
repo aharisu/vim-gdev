@@ -36,6 +36,7 @@
 (use file.util)
 (use gauche.parseopt)
 (use gauche.charconv)
+(use gauche.sequence)
 (use ginfo)
 
 (ignore-geninfo-warning? #t)
@@ -48,7 +49,7 @@
     [(_ text)
      (or output-full-member (not (string-null? text)))]))
 
-(define output-api-only #f)
+(define output-name-only #f)
 
 ;;---------------------
 ;;Functions related to print
@@ -107,14 +108,88 @@
 ;;---------------------
 ;;Functions related to load doccument
 ;;---------------------
-(define loaded-doc-table (make-hash-table 'equal?))
+
+(define all-doc-vector (make-weak-vector 200))
+
+(define add-to-all-doc-vector 
+  (let1 next-index 0
+    (lambda (name obj)
+      (when (<= (weak-vector-length all-doc-vector) next-index)
+        (let1 vec (make-weak-vector (truncate->exact (* 1.5 (weak-vector-length all-doc-vector))))
+          (for-each-with-index
+            (lambda (idx obj) (weak-vector-set! vec idx obj))
+            all-doc-vector)
+          (set! all-doc-vector vec)))
+      (hash-table-put! all-doc-vector-index-table name next-index)
+      (weak-vector-set! all-doc-vector next-index obj) 
+      (inc! next-index))))
+
+(define-constant all-doc-vector-index-table (make-hash-table 'equal?))
+
+(define-constant loaded-doc-table (make-hash-table 'equal?))
+
+(define (set-ginfo-unit name doc :optional (weak-only #f))
+  (unless weak-only
+    (hash-table-put! loaded-doc-table name doc))
+  (let1 index (hash-table-get all-doc-vector-index-table name #f)
+    (if index
+      (weak-vector-set! all-doc-vector index doc)
+      (add-to-all-doc-vector name doc))))
+
+(define (get-doc-from-waek-vec module index)
+  (let1 doc (weak-vector-ref all-doc-vector index)
+    (if doc
+      (car doc)
+      (let* ([alt (alt-geninfo-file module)]
+             [doc (geninfo alt)])
+        (slot-set! doc 'name module)
+        (weak-vector-set! all-doc-vector index 
+                          (cons doc (get-filestamp alt)))
+        doc))))
+
+(define (get-doc module)
+  (let1 sym-module (if (string? module)
+                     (string->symbol module)
+                     module)
+    (cond
+      [(or (hash-table-get loaded-doc-table sym-module #f)
+         (hash-table-get loaded-doc-table module #f))
+       => car]
+      [(hash-table-get all-doc-vector-index-table sym-module #f)
+       => (pa$ get-doc-from-waek-vec sym-module)]
+      [(hash-table-get all-doc-vector-index-table module #f)
+       => (pa$ get-doc-from-waek-vec module)]
+      [else 
+        (let* ([alt (alt-geninfo-file module)]
+               [doc (geninfo alt)])
+          (slot-set! doc 'name module)
+          (add-to-all-doc-vector module (cons doc (get-filestamp alt)))
+          doc)])))
+
+(define (get-ginfo-unit module name)
+  (define (filter-unit doc)
+    (filter
+      (lambda (u) 
+        (string=? (slot-ref u 'name) name))
+      (slot-ref doc 'units)))
+
+  (let1 sym-module (string->symbol module)
+    (cond
+      [(or (hash-table-get loaded-doc-table sym-module #f)
+         (hash-table-get loaded-doc-table module #f))
+       => (.$ filter-unit car)]
+      [(hash-table-get all-doc-vector-index-table sym-module #f)
+       => (.$ filter-unit (pa$ get-doc-from-waek-vec sym-module))]
+      [(hash-table-get all-doc-vector-index-table module #f)
+       => (.$ filter-unit (pa$ get-doc-from-waek-vec module))]
+      [else '()])))
 
 (define (add-loaded-module module :optional name)
   (let* ([name (if (undefined? name) module name)]
          [module (if (symbol? module) (alt-geninfo-file module) module)]
          [doc (geninfo module)])
     (slot-set! doc 'name name)
-    (hash-table-put! loaded-doc-table name (cons doc (get-filestamp module)))))
+    (set-ginfo-unit name (cons doc (get-filestamp module)))))
 
 (define (get-module-extend name)
   (cond
@@ -133,7 +208,7 @@
         (let1 doc (loader)
           ;;overwrite document name
           (slot-set! doc 'name name)
-          (hash-table-put! loaded-doc-table name (cons doc filestamp))
+          (set-ginfo-unit name (cons doc filestamp))
           (cons
             (cons name doc)
             (fold
@@ -156,23 +231,14 @@
                             '()))))))
         ))))
 
-(define (get-ginfo-unit module name)
-  (let1 sym-module (string->symbol module)
-    (cond
-      [(or (hash-table-get loaded-doc-table sym-module #f)
-         (hash-table-get loaded-doc-table module #f))
-       => (lambda (doc)
-            (filter
-              (lambda (u) (string=? (slot-ref u 'name) name))
-              (slot-ref (car doc) 'units)))]
-      [else '()])))
-
 ;;If you have read the generated document
 (define (alt-geninfo-file module)
-  (let1 generated-doc-path (build-path generated-doc-directory (symbol->string module))
-    (if (file-is-readable? generated-doc-path)
-              generated-doc-path
-              module)))
+  (if (symbol? module)
+    (let1 generated-doc-path (build-path generated-doc-directory (symbol->string module))
+      (if (file-is-readable? generated-doc-path)
+        generated-doc-path
+        module))
+    module))
 
 (define (load-info-from-alt-geninfo name)
   (let1 alt (alt-geninfo-file name)
@@ -298,20 +364,16 @@
         (string-append
           ;; n is name
           "{\"n\":\"" (param-name p) "\""
-          (if output-api-only
-            ""
-            (let1 desc (make-description (param-description p))
-              (if (output? desc)
-                ;; d is description
-                (string-append ",\"d\":\"" desc "\"")
-                "")))
-          (if output-api-only
-            ""
-            (let1 accept (make-list-text (param-acceptable p))
-              (if (output? accept)
-                ;; a is accept
-                (string-append",\"a\":[" accept "]")
-                "")))
+          (let1 desc (make-description (param-description p))
+            (if (output? desc)
+              ;; d is description
+              (string-append ",\"d\":\"" desc "\"")
+              ""))
+          (let1 accept (make-list-text (param-acceptable p))
+            (if (output? accept)
+              ;; a is accept
+              (string-append",\"a\":[" accept "]")
+              ""))
           "}"))
       params)
     ","))
@@ -326,7 +388,7 @@
                  ;; n is name
                  ",\"n\":\"" (ref unit 'name) "\""
                  ;; d is description
-                 (if output-api-only
+                 (if output-name-only
                    ""
                    (let1 desc (make-description (ref unit 'description))
                      (if (output? desc)
@@ -336,15 +398,14 @@
 
 (define-method output ((c <json-context>) (unit <unit-proc>))
   (next-method)
-  (display-std (string-append
-                 ;; p is param
-                 (let1 param (make-params-text (ref unit 'param))
-                   (if (output? param)
-                     (string-append ",\"p\":[" param "]")
-                     ""))
-                 ;; r is return
-                 (if output-api-only
-                   ""
+  (unless output-name-only
+    (display-std (string-append
+                   ;; p is param
+                   (let1 param (make-params-text (ref unit 'param))
+                     (if (output? param)
+                       (string-append ",\"p\":[" param "]")
+                       ""))
+                   ;; r is return
                    (let1 return (make-description (ref unit 'return))
                      (if (output? return)
                        (string-append ",\"r\":\"" return "\"")
@@ -353,15 +414,16 @@
 
 (define-method output ((c <json-context>) (unit <unit-class>))
   (next-method)
-  (display-std (string-append
-                 (let1 supers (make-list-text (ref unit 'supers))
-                   (if (output? supers)
-                     (string-append ",\"supers\":[" supers "]")
-                     ""))
-                 (let1 slots (make-params-text (ref unit 'slots))
-                   (if (output? slots)
-                     (string-append ",\"s\":[" slots "]")
-                     ""))))
+  (unless output-name-only
+    (display-std (string-append
+                   (let1 supers (make-list-text (ref unit 'supers))
+                     (if (output? supers)
+                       (string-append ",\"supers\":[" supers "]")
+                       ""))
+                   (let1 slots (make-params-text (ref unit 'slots))
+                     (if (output? slots)
+                       (string-append ",\"s\":[" slots "]")
+                       "")))))
   )
 
 (define-method output ((c <json-context>) (doc <doc>))
@@ -440,12 +502,48 @@
 (define-cmd get-unit
             (lambda (num) (eq? 2 num))
             (lambda (module symbol)
-              (let1 save output-api-only
-                (set! output-api-only #f)
+              (let1 save output-name-only
+                (set! output-name-only #f)
                 (unwind-protect
                   (output-unit-list (get-ginfo-unit module symbol))
-                  (set! output-api-only save))
+                  (set! output-name-only save))
                 (print-std))))
+
+(define (all-library-names)
+  (filter
+    identity
+    (append-map
+      (lambda (s)
+        (library-map
+          s
+          (lambda (m p) 
+            (if (or (eq? m 'gauche.singleton)
+                  (eq? m 'gauche.validator)
+                  (eq? m 'gauche.let-opt))
+              #f m))))
+      '(* *.* *.*.* *.*.*.* *.*.*.*.*))))
+
+(define-cmd load-all-module
+            zero?
+            (lambda ()
+              (let/cc cont
+                (for-each
+                  (.$
+                    (lambda (notuse) 
+                      (print-std)
+                      (when (char-ready? (standard-input-port))
+                        (cont)))
+                    output-unit-list
+                    (cut cons <> '())
+                    get-doc)
+                  (append
+                    default-module
+                    (all-library-names))))
+              (print-std "#")))
+
+(define-cmd end-load-all-module
+            zero?
+            (lambda () #f))
 
 ;;--------------------
 ;;definination of state
@@ -531,8 +629,8 @@
                                       (cadr module)))))))]
      [#f "output-full-member"
       => (lambda () (set! output-full-member #t))]
-     [#f "output-api-only"
-      => (lambda () (set! output-api-only #t))]
+     [#f "output-name-only"
+      => (lambda () (set! output-name-only #t))]
      [#f "io-encoding=s"
       => (lambda (opt) 
            (let1 opt (string-downcase (string-trim-both opt))

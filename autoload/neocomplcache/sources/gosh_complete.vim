@@ -100,18 +100,20 @@ function! s:check_buffer_init()"{{{
 endfunction"}}}
 
 function! s:cursor_hold(type)"{{{
-  call s:parse_cur_buf(1)
+  if &filetype !=# 'unite'
+    "call s:parse_cur_buf(1)
 
-  "wait until all tasks
-  while !gosh_complete#is_empty_async_task()
-    call gosh_complete#check_async_task()
-
-    sleep 150m
-  endwhile
+    "wait until all tasks
+    while !gosh_complete#is_empty_async_task()
+      call gosh_complete#check_async_task()
+    endwhile
+  endif
 endfunction"}}}
 
 function! s:cursor_moved(type)"{{{
-  call gosh_complete#check_async_task() 
+  if &filetype !=# 'unite'
+    call gosh_complete#check_async_task() 
+  endif
 endfunction"}}}
 
 function! s:constract_docname(bufnum, bufname)"{{{
