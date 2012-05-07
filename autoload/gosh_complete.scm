@@ -523,27 +523,60 @@
               #f m))))
       '(* *.* *.*.* *.*.*.* *.*.*.*.*))))
 
+(define load-all-module-continuation #f)
+
+
 (define-cmd load-all-module
             zero?
             (lambda ()
-              (let/cc cont
-                (for-each
-                  (.$
-                    (lambda (notuse) 
-                      (print-std)
-                      (when (char-ready? (standard-input-port))
-                        (cont)))
-                    output-unit-list
-                    (cut cons <> '())
-                    get-doc)
-                  (append
-                    default-module
-                    (all-library-names))))
-              (print-std "#")))
+              (cond-expand
+                (gauche.os.windows
+                  (let/cc escape
+                    (for-each-with-index
+                      (lambda (index mod)
+                        (output-unit-list (cons
+                                            (get-doc mod)
+                                            '()))
+                        (print-std)
+                        (when (zero? (remainder (+ index 1) 12))
+                          (let/cc resume-cont
+                            ;;pause
+                            (print-std "##")
+                            (set! load-all-module-continuation resume-cont)
+                            (escape))))
+                      (append
+                        default-module
+                        (all-library-names)))
+                    (print-std "#")))
+                (else
+                  (let/cc escape
+                    (for-each
+                      (.$
+                        (lambda (notuse) 
+                          (print-std)
+                          (when (char-ready? (standard-input-port))
+                            (escape)))
+                        output-unit-list
+                        (cut cons <> '())
+                        get-doc)
+                      (append
+                        default-module
+                        (all-library-names))))
+                  (print-std "#")))))
+
+(define-cmd resume-load-all-module
+            zero?
+            (lambda ()
+              (let1 resume load-all-module-continuation
+                (set! load-all-module-continuation #f)
+                (if resume
+                  (resume)
+                  (print-err "Invalid resume.")))))
 
 (define-cmd end-load-all-module
             zero?
-            (lambda () #f))
+            (lambda () 
+              (set! load-all-module-continuation #f)))
 
 ;;--------------------
 ;;definination of state

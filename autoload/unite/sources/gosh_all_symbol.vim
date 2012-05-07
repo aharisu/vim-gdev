@@ -48,7 +48,7 @@ function! s:source.async_gather_candidates(args, context)"{{{
     let s:cur_text = a:context.input
   endif
 
-  for n in range(0, s:equal_count * 5)
+  for n in range(0, s:equal_count * 4)
     if gosh_complete#check_async_task() == 0
       break
     endif
@@ -80,7 +80,17 @@ function! s:source.async_gather_candidates(args, context)"{{{
 endfunction"}}}
 
 function! s:get_all_symbol_callback(out, err, context)"{{{
-  if a:out ==# '#'
+  if a:out ==# '##'
+    if !s:symbol_selected
+      call gosh_complete#write_text("#resume-load-all-module\n")
+      return 1
+    else
+      let s:ginfo_doc = []
+      let s:finish_get_all_symbol = 1
+      return 0
+    endif
+
+  elseif a:out ==# '#'
     let s:ginfo_doc = []
     let s:finish_get_all_symbol = 1
     return 0
