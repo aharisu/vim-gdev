@@ -306,7 +306,7 @@ endfunction"}}}
 " util
 
 function! s:cur_buf_filepath() "{{{
-  return escape(expand('%:p'),  ' \')
+  return escape(substitute(expand('%:p'), '\\', '/', 'g'), ' ')
 endfunction"}}}
 
 " vim: foldmethod=marker

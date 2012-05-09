@@ -608,7 +608,7 @@
 (define-state init
               (lambda ())
               (lambda (line)
-                (let* ([tokens (string-split line #[\s])]
+                (let* ([tokens (string-split-space line)]
                        [cmd (get-command (car tokens))])
                   (if cmd
                     (if ((cmd-valid-arg cmd) (length (cdr tokens)))
@@ -617,6 +617,30 @@
                     (print-err (format #f "Unkown command [~a]." line)))))
               (lambda ()))
 
+(define (whitespace? ch) (or (eq? ch #\space) (eq? ch #\tab)))
+
+(define (string-split-space text)
+  (let1 in (open-input-string text)
+    (let loop ([prev #f]
+               [out (open-output-string)]
+               [l '()])
+      (let1 ch (read-char in)
+        (if (eof-object? ch)
+          (reverse (cons (get-output-string out) l))
+          (cond
+            [(whitespace? ch)
+             (cond
+               [(eq? prev #\\) 
+                (display ch out)
+                (loop ch out l)]
+               [(whitespace? prev) (loop ch out l)]
+               [else 
+                 (loop ch (open-output-string)
+                       (cons (get-output-string out) l))])]
+            [(eq? ch #\\) (loop ch out l)]
+            [else
+              (display ch out)
+              (loop ch out l)]))))))
 
 ;;---------------------
 ;;Entry point
@@ -655,7 +679,7 @@
       => (lambda (opt)
            (let1 opt (string-trim-both opt)
              (unless (string-null? opt)
-               (let1 module (string-split opt #[\s])
+               (let1 module (string-split-space opt)
                  (add-loaded-module (convert-token (car module))
                                     (if (null? (cdr module))
                                       (undefined)

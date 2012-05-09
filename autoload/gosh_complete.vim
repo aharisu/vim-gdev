@@ -84,7 +84,7 @@ function! gosh_complete#add_doc(name, units)"{{{
   endif
 
   for unit in a:units
-    let unit['docname'] = a:name
+    let unit['docname'] = escape(a:name, ' ')
     let unit['_loaded_doc'] = 0
   endfor
 
