@@ -204,6 +204,8 @@
   (
    (%slots :init-value (make-hash-table))
    (initial-state?)
+   (tag-first-line :init-value #t)
+   (tag-text-indent :init-value #f)
    )
   :metaclass <unit-bottom-meta>)
 
@@ -704,7 +706,10 @@
 ;;次の有効なドキュメントテキストを取得する
 ;;有効なドキュメントテキストがなければ#fを返す
 (define (next-doc-text)
-  (if (not (zero? (string-length (string-trim (next-token-of '(#\space #\tab #\;))))))
+  (if (not (zero? (string-length (string-trim 
+                                   (string-append
+                                     (next-token-of '(#\space #\tab))
+                                     (next-token-of '(#\;)))))))
     (read-line)
     #f))
 
@@ -734,15 +739,23 @@
                      SEEK_CUR)
           (skip-current-tag)))))) ; read next line
 
+(define original-string-ref string-ref)
+(define (string-ref str idx)
+  (if (<= (string-length str) idx)
+    #f
+    (original-string-ref str idx)))
+
 ;;テキスト内にタグがあれば処理を行う
 (define (process-tag text config unit)
-  (if (and (not (string-null? text)) (eq? #\@ (string-ref text 0)))
-    (let-values ([(tag text) (split-tag-and-text text)])
+  (if (eq? #\@ (string-ref (string-trim text) 0))
+    (let-values ([(tag text) (split-tag-and-text (string-trim text))])
       (cond 
         [(get-allow-multiple tag) 
          => (lambda (pred) 
               (if (pred config unit)
                 (begin
+                  (slot-set! unit 'tag-first-line #t)
+                  (slot-set! unit 'tag-text-indent #f)
                   (set-tag (string->symbol tag) unit)
                   ((get-init tag) text config unit))
                 #f))]
@@ -752,8 +765,20 @@
 
 (define (escape-special-character text)
   (regexp-replace-all #/"/ text "\\\\\""))
+
+(define (trim-indent text unit)
+  (let1 indent (slot-ref unit 'tag-text-indent)
+    (if (and indent (string-prefix? indent text))
+      (substring (string-length indent) (string-length text))
+      text)))
+
 ;;テキストを現在のタグ内に追加する
 (define (process-text text config unit)
+  (if (slot-ref unit 'tag-first-line)
+    (slot-set! unit 'tag-first-line #f)
+    (unless (slot-ref unit 'tag-text-indent)
+      (slot-set! unit 'tag-next-indent
+                 (next-token-of '(#\space #\tab) (open-input-string text)))))
   (append-text text config unit)
   unit)
 

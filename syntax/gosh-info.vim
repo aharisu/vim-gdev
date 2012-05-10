@@ -13,7 +13,7 @@ syn case match
 
 syn keyword gosh_infoKeyword Function Method Variable Constant Parameter Class Macro
 
-syn match gosh_infoTag oneline ,^\a[a-zA-Z ]*:$,
+syn match gosh_infoTag oneline ,^\s*\a[a-zA-Z ]*:$,
 syn match gosh_infoLabel oneline ,^--.*--$,
 syn match gosh_infoSlots oneline ,^[ 0-9][0-9]*:.*$,
 
