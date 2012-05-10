@@ -578,6 +578,28 @@
             (lambda () 
               (set! load-all-symbol-continuation #f)))
 
+(define-cmd load-all-module
+            zero?
+            (lambda ()
+              (display-std "[")
+              (for-each-with-index
+                (lambda (idx mod)
+                  (unless (zero? idx)
+                    (display-std ","))
+                  (display-std "\"" mod "\""))
+                (append default-module (all-library-names)))
+              (print-std "]")))
+
+(define-cmd load-symbol-in
+            (pa$ eq? 1)
+            (.$
+              (lambda (notuse) (print-std))
+              output-unit-list
+              (cut cons <> '())
+              get-doc
+              string->symbol))
+
+
 ;;--------------------
 ;;definination of state
 ;;--------------------
