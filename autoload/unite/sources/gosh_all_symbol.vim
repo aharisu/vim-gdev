@@ -26,14 +26,14 @@ function! s:source.hooks.on_init(args, context)"{{{
   let s:cur_text = ''
   let s:equal_count = 0
 
-  call gosh_complete#add_async_task("#load-all-module\n",
+  call gosh_complete#add_async_task("#load-all-symbol\n",
         \ s:funcref('get_all_symbol_callback'),
         \ 0)
 endfunction"}}}
 
 function! s:source.hooks.on_close(args, context)"{{{
   let s:symbol_selected = 1
-  call gosh_complete#write_text("#end-load-all-module\n")
+  call gosh_complete#write_text("#end-load-all-symbol\n")
 
   while !s:finish_get_all_symbol
     call gosh_complete#check_async_task()
@@ -82,7 +82,7 @@ endfunction"}}}
 function! s:get_all_symbol_callback(out, err, context)"{{{
   if a:out ==# '##'
     if !s:symbol_selected
-      call gosh_complete#write_text("#resume-load-all-module\n")
+      call gosh_complete#write_text("#resume-load-all-symbol\n")
       return 1
     else
       let s:ginfo_doc = []

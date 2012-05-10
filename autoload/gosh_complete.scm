@@ -523,10 +523,10 @@
               #f m))))
       '(* *.* *.*.* *.*.*.* *.*.*.*.*))))
 
-(define load-all-module-continuation #f)
+(define load-all-symbol-continuation #f)
 
 
-(define-cmd load-all-module
+(define-cmd load-all-symbol
             zero?
             (lambda ()
               (cond-expand
@@ -542,7 +542,7 @@
                           (let/cc resume-cont
                             ;;pause
                             (print-std "##")
-                            (set! load-all-module-continuation resume-cont)
+                            (set! load-all-symbol-continuation resume-cont)
                             (escape))))
                       (append
                         default-module
@@ -564,19 +564,19 @@
                         (all-library-names))))
                   (print-std "#")))))
 
-(define-cmd resume-load-all-module
+(define-cmd resume-load-all-symbol
             zero?
             (lambda ()
-              (let1 resume load-all-module-continuation
-                (set! load-all-module-continuation #f)
+              (let1 resume load-all-symbol-continuation
+                (set! load-all-symbol-continuation #f)
                 (if resume
                   (resume)
                   (print-err "Invalid resume.")))))
 
-(define-cmd end-load-all-module
+(define-cmd end-load-all-symbol
             zero?
             (lambda () 
-              (set! load-all-module-continuation #f)))
+              (set! load-all-symbol-continuation #f)))
 
 ;;--------------------
 ;;definination of state
