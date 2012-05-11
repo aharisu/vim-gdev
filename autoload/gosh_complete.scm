@@ -578,6 +578,7 @@
             (lambda () 
               (set! load-all-symbol-continuation #f)))
 
+(include "./module_description.scm")
 (define-cmd load-all-module
             zero?
             (lambda ()
@@ -586,7 +587,10 @@
                 (lambda (idx mod)
                   (unless (zero? idx)
                     (display-std ","))
-                  (display-std "\"" mod "\""))
+                  (display-std "{\"n\":\"" mod "\",\"d\":\""
+                               (let1 d (assq mod module-description)
+                                 (if d (cdr d) ""))
+                               "\"}"))
                 (append default-module (all-library-names)))
               (print-std "]")))
 

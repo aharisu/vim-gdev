@@ -27,7 +27,8 @@ function! s:source.async_gather_candidates(args, context)"{{{
 
   if exists('s:modules')
     call map(s:modules, '{
-          \ "word" : v:val,
+          \ "word" : v:val.n,
+          \ "abbr" : s:constract_word(v:val.n, v:val.d),
           \ }')
 
     let ret = s:modules
@@ -37,6 +38,14 @@ function! s:source.async_gather_candidates(args, context)"{{{
     return ret
   else
     return []
+  endif
+endfunction"}}}
+
+function! s:constract_word(mod, description)"{{{
+  if empty(a:description)
+    return a:mod
+  else
+    return printf("%s -- %s", a:mod, a:description)
   endif
 endfunction"}}}
 
