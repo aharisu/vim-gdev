@@ -23,6 +23,8 @@ function! s:source.hooks.on_init(args, context)"{{{
     return
   endif
 
+  let a:context.source__first_candidates = 1
+
   unlet! s:doc
   call gosh_complete#add_async_task('#load-symbol-in ' . a:args[0] . "\n",
         \ s:funcref('get_all_symbol_in_callback'),
@@ -30,9 +32,19 @@ function! s:source.hooks.on_init(args, context)"{{{
 endfunction"}}}
 
 function! s:source.async_gather_candidates(args, context)"{{{
+  if len(a:args) == 0
+    let a:context.is_async = 0
+    return [{
+          \ 'word': '!!! require module name !!!',
+          \ 'is_dummy' : 1,
+          \}]
+  endif
+
   call gosh_complete#check_async_task()
 
   if exists('s:doc')
+    let a:context.source.unite__cached_candidates = []
+
     let doc_name = s:doc['n']
     let units = s:doc['units']
 
@@ -46,6 +58,12 @@ function! s:source.async_gather_candidates(args, context)"{{{
 
     let a:context.is_async = 0
     return units
+  elseif a:context.source__first_candidates
+    let a:context.source__first_candidates = 0
+    return [{
+          \ 'word': 'Loading ...',
+          \ 'is_dummy' : 1,
+          \}]
   else
     return []
   endif

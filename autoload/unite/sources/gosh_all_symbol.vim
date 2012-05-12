@@ -26,6 +26,8 @@ function! s:source.hooks.on_init(args, context)"{{{
   let s:cur_text = ''
   let s:equal_count = 0
 
+  let a:context.source__candidates_state = 0
+
   call gosh_complete#add_async_task("#load-all-symbol\n",
         \ s:funcref('get_all_symbol_callback'),
         \ 0)
@@ -57,6 +59,12 @@ function! s:source.async_gather_candidates(args, context)"{{{
   let ret = []
 
   if len(s:ginfo_doc)
+    if a:context.source__candidates_state == 1
+      "clear loading word
+      let a:context.source.unite__cached_candidates = []
+      let a:context.source__candidates_state = 2
+    endif
+
     for doc in s:ginfo_doc
       let doc_name = doc['n']
       let units = doc['units']
@@ -70,6 +78,13 @@ function! s:source.async_gather_candidates(args, context)"{{{
     endfor
 
     let s:ginfo_doc = []
+  elseif a:context.source__candidates_state == 0
+    let a:context.source__candidates_state = 1
+    "first candidate
+    call add(ret, {
+          \ 'word': 'Loading ...',
+          \ 'is_dummy' : 1,
+          \})
   endif
 
   if s:finish_get_all_symbol

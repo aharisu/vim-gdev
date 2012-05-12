@@ -17,6 +17,8 @@ function! unite#sources#gosh_all_module#define()
 endfunction
 
 function! s:source.hooks.on_init(args, context)"{{{
+  let a:context.source__first_candidates = 1
+
   call gosh_complete#add_async_task("#load-all-module\n",
         \ s:funcref('get_all_module_callback'),
         \ 0)
@@ -26,6 +28,9 @@ function! s:source.async_gather_candidates(args, context)"{{{
   call gosh_complete#check_async_task()
 
   if exists('s:modules')
+    "clear loading word
+    let a:context.source.unite__cached_candidates = []
+
     call map(s:modules, '{
           \ "word" : v:val.n,
           \ "abbr" : s:constract_word(v:val.n, v:val.d),
@@ -36,6 +41,12 @@ function! s:source.async_gather_candidates(args, context)"{{{
 
     let a:context.is_async = 0
     return ret
+  elseif a:context.source__first_candidates
+    let a:context.source__first_candidates = 0
+    return [{
+          \ 'word': 'Loading ...',
+          \ 'is_dummy' : 1,
+          \}]
   else
     return []
   endif
