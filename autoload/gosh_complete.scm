@@ -599,7 +599,9 @@
             (.$
               (lambda (notuse) (print-std))
               output-unit-list
-              (cut cons <> '())
+              (lambda (doc)
+                (cons doc
+                      (map get-doc (slot-ref doc 'extend))))
               get-doc
               string->symbol))
 

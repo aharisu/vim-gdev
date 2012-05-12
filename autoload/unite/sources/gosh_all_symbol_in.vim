@@ -43,21 +43,25 @@ function! s:source.async_gather_candidates(args, context)"{{{
   call gosh_complete#check_async_task()
 
   if exists('s:doc')
+    "clear loading word
     let a:context.source.unite__cached_candidates = []
 
-    let doc_name = s:doc['n']
-    let units = s:doc['units']
+    let ret = []
+    for doc in s:doc
+      let doc_name = doc['n']
+      let units = doc['units']
 
-    call map(units, '{
-          \ "word" : v:val.n,
-          \ "kind" : "openable",
-          \ "abbr" : gosh_complete#constract_unit_word(v:val, doc_name),
-          \ "source__docname" : doc_name,
-          \}')
+      call extend(ret, map(units, '{
+            \ "word" : v:val.n,
+            \ "kind" : "openable",
+            \ "abbr" : gosh_complete#constract_unit_word(v:val, doc_name),
+            \ "source__docname" : doc_name,
+            \}'))
+    endfor
     unlet s:doc
 
     let a:context.is_async = 0
-    return units
+    return ret
   elseif a:context.source__first_candidates
     let a:context.source__first_candidates = 0
     return [{
@@ -70,7 +74,7 @@ function! s:source.async_gather_candidates(args, context)"{{{
 endfunction"}}}
 
 function! s:get_all_symbol_in_callback(out, err, context)"{{{
-  let s:doc = eval(a:out)[0]
+  let s:doc = eval(a:out)
 endfunction"}}}
 
 "
