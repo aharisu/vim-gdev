@@ -6,7 +6,7 @@ let s:source = {
       \ 'default_action' : 'open',
       \ 'is_volativle' : 0,
       \ 'required_pattern_length' : 0,
-      \ 'max_candidates' : 1000,
+      \ 'max_candidates' : 100,
       \ 'action_table' : {'openable' : s:openable_action_table},
       \ 'hooks' : {},
       \ }

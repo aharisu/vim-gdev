@@ -70,9 +70,13 @@ endfunction"}}}
 function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str)"{{{
   if s:check_buffer_init()
     "It is not necessary to copy?
-    return neocomplcache#keyword_filter(
+    let list = neocomplcache#keyword_filter(
           \ copy(gosh_complete#get_buf_data(bufnr('%'), 'words', []))
           \ ,a:cur_keyword_str)
+    if len(list) > g:neocomplcache_max_list
+      let list = list[0 : g:neocomplcache_max_list]
+    endif
+    return list
   else
     return []
   endif
