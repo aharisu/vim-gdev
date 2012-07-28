@@ -364,8 +364,12 @@ function! s:ginfo_list_to_text(units)"{{{
       endif
     endif
 
-    let text .= s:get_unit_interface(unit)
-    let text .= "\n\n"
+    let text .= s:get_unit_interface(unit) . "\n"
+    let ret = s:get_unit_return(unit)
+    if !empty(ret)
+      let text .= ":: " . ret . "\n"
+    endif
+    let text .= "\n"
     let text .= s:get_unit_description(unit)
   endfor
 
@@ -419,6 +423,14 @@ function! s:get_unit_interface(unit)"{{{
 
   return info
 endfunction"}}}
+
+function! s:get_unit_return(unit)
+  if has_key(a:unit, 'r')
+    return a:unit['r']
+  else
+    return ''
+  endif
+endfunction
 
 function! s:get_unit_description(unit)"{{{
   let type = a:unit['t']

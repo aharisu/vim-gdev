@@ -1083,7 +1083,8 @@
 ;;解析可能な式か?
 (define (analyzable? exp)
   (if (and (pair? exp) (list? exp))
-    (boolean (assq (car exp) analyzable-symbols))
+    (or (assq-ref analyzable-symbols (car exp))
+      (and (rxmatch #/^define-.+$/ (symbol->string (car exp))) analyze-normal-define))
     #f))
 
 (define (return-from-read-exception org-fp)
@@ -1105,9 +1106,9 @@
                  (return-from-read-exception org-fp)))
       (let ([exp (read)])
         (unless (get-config config 'skip-relative) 
-          (if (analyzable? exp)
+          (if-let1 analyzer (analyzable? exp)
             (guard (e [else #f]) ;error of automated analysis is ignored
-              ((assq-ref  analyzable-symbols (car exp)) exp config unit doc))))))
+              (analyzer exp config unit doc))))))
     unit))
 
 (define (put-class-c->scm config c-name scm-name)
