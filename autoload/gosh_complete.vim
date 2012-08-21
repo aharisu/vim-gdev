@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: gosh_complete.vim
 " AUTHOR:  aharisu <foo.yobina@gmail.com>
-" Last Modified: 10 Mar 2012.
+" Last Modified: 21 Aug 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -78,13 +78,24 @@ function! s:initialize()"{{{
         \ :call unite#sources#gosh_info#start_search_with_cur_keyword(0, 0)<CR>
 endfunction"}}}
 
-function! gosh_complete#add_doc(name, units)"{{{
+function! gosh_complete#add_doc(name, filepath, units)"{{{
   if s:debug
-    call neocomplcache#print_warning('add_doc:' . a:name)
+    call neocomplcache#print_warning('add_doc:' . a:name . ',' . a:filepath)
+  endif
+
+  if empty(a:filepath)
+    if match(a:name, '^#') == -1
+      let filepath = ''
+    else
+      let filepath = a:name[2 :]
+    endif
+  else
+      let filepath = a:filepath
   endif
 
   for unit in a:units
     let unit['docname'] = escape(a:name, ' ')
+    let unit['filepath'] = escape(filepath, ' ')
     let unit['_loaded_doc'] = 0
   endfor
 
@@ -906,6 +917,140 @@ function! s:encoding()"{{{
   elseif enc == 'iso-2022-jp'
     return 'iso2022jp'
   endif
+endfunction"}}}
+
+"
+" Gauche Development Environment Command
+
+function! gosh_complete#gosh_goto_define(buf_num, keyword, split)"{{{
+  let units = gosh_complete#match_unit_in_order_first_match(a:buf_num, a:keyword, 0) "no duplicate
+  if len(units) == 1
+    let line = units[0]['l']
+    let filepath = units[0]['filepath']
+    if line > 0 && !empty(filepath)
+      if a:split
+        call s:openSplit(filepath)
+      else
+        call s:open(filepath)
+      endif
+      call cursor(line, 1)
+    endif
+  endif
+endfunction"}}}
+
+"
+" File Open Functions
+
+function! s:exec(cmd)"{{{
+  let old_ei = &ei
+  set ei=all
+  exec a:cmd
+  let &ei = old_ei
+endfunction"}}}
+
+function! s:openSplit(path)"{{{
+  let savesplitbelow=&splitbelow
+  let savesplitright=&splitright
+
+  let onlyOneWin = (winnr("$") ==# 1)
+  let width = winwidth(bufnr('%'))
+
+  if onlyOneWin
+    let &splitright=1
+    let &splitbelow=0
+  else
+    let &splitright=0
+    let &splitbelow=1
+  endif
+
+  let splitMode = onlyOneWin ? "vertical" : ""
+
+  try
+    exec(splitMode." sp " . a:path)
+  catch /^Vim\%((\a\+)\)\=:/
+    "do nothing
+  endtry
+
+  if onlyOneWin
+    call s:exec("wincmd l")
+    exec("silent ". splitMode ." resize ". (width / 2))
+  endif
+
+  let &splitbelow=savesplitbelow
+  let &splitright=savesplitright
+endfunction"}}}
+
+function! s:open(path)"{{{
+  let winnr = bufwinnr('^' . a:path . '$')
+  if winnr != -1
+    call s:exec(winnr . "wincmd w")
+
+  else
+    if !s:isWindowUsable(winnr("#")) && s:firstUsableWindow() ==# -1
+      call s:openSplit(a:path)
+    else
+      if !s:isWindowUsable(winnr("#"))
+        call s:exec(s:firstUsableWindow() . "wincmd w")
+      else
+        call s:exec('wincmd p')
+      endif
+      exec("edit " . a:path)
+    endif
+  endif
+endfunction"}}}
+
+function! s:firstUsableWindow()"{{{
+  let i = 1
+  while i <= winnr("$")
+    let bnum = winbufnr(i)
+    if bnum != -1 && getbufvar(bnum, '&buftype') ==# ''
+          \ && !getwinvar(i, '&previewwindow')
+          \ && (!getbufvar(bnum, '&modified') || &hidden)
+      return i
+    endif
+
+    let i += 1
+  endwhile
+  return -1
+endfunction"}}}
+
+function! s:isWindowUsable(winnumber)"{{{
+  if winnr("$") ==# 1
+    return 0
+  endif
+
+  let oldwinnr = winnr()
+  call s:exec(a:winnumber . "wincmd p")
+  let specialWindow = getbufvar("%", '&buftype') != '' || getwinvar('%', '&previewwindow')
+  let modified = &modified
+  call s:exec(oldwinnr . "wincmd p")
+
+  if specialWindow
+    return 0
+  endif
+
+  if &hidden
+    return 1
+  endif
+
+  return !modified || s:bufInWindows(winbufnr(a:winnumber)) >= 2
+endfunction"}}}
+
+function! s:bufInWindows(bnum)"{{{
+  let cnt = 0
+  let winnum = 1
+  while 1
+    let bufnum = winbufnr(winnum)
+    if bufnum < 0
+      break
+    endif
+    if bufnum ==# a:bnum
+      let cnt = cnt + 1
+    endif
+    let winnum = winnum + 1
+  endwhile
+
+  return cnt
 endfunction"}}}
 
 " vim: foldmethod=marker

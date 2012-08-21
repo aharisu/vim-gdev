@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: gosh_complete.vim
 " AUTHOR:  aharisu <foo.yobina@gmail.com>
-" Last Modified: 10 Mar 2012.
+" Last Modified: 21 Aug 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -140,8 +140,7 @@ endfunction"}}}
 
 function! s:add_doc(docs)"{{{
   for doc in a:docs
-    call gosh_complete#add_doc(doc['n']
-          \ ,get(doc, 'units', []))
+    call gosh_complete#add_doc(doc['n'] ,doc['f'] ,get(doc, 'units', []))
   endfor
 endfunction "}}}
 
@@ -266,12 +265,16 @@ function! s:parse_cur_buf(parse_tick)"{{{
   let filename = s:cur_buf_filepath()
 
   let docname = s:constract_docname(bufnumber, filename)
-  if empty(filename) || b:changedtick != b:prev_parse_tick
+  if empty(filename) || (b:changedtick - b:prev_parse_tick) > 10
     let b:prev_parse_tick = b:changedtick
     if empty(filename)
       let basedir = getcwd()
     else
       let basedir = escape(expand('%:p:h'),  ' \')
+    endif
+
+    if s:debug
+      call neocomplcache#print_warning('from buffer')
     endif
 
     "parse from buffer
@@ -281,6 +284,10 @@ function! s:parse_cur_buf(parse_tick)"{{{
           \ function('neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback'),
           \ {'bufnr' : bufnr('%')})
   else
+
+    if s:debug
+      call neocomplcache#print_warning('from file')
+    endif
 
     "parse from file
     call gosh_complete#add_async_task('#load-file ' . filename . ' ' . docname . "\n",

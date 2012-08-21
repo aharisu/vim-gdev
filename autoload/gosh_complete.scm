@@ -50,6 +50,7 @@
      (or output-full-member (not (string-null? text)))]))
 
 (define output-name-only #f)
+(define process-all-line #f)
 
 ;;---------------------
 ;;Functions related to print
@@ -104,10 +105,23 @@
 (define (variable-length-argument num) #t)
 
 
-
 ;;---------------------
 ;;Functions related to load doccument
 ;;---------------------
+
+(define-class <doc-extend> (<doc>)
+  (
+   (filestamp :init-value 0)
+   ))
+
+(define (doc->doc-extend doc name filestamp)
+  (let1 ext (make <doc-extend>)
+    (slot-set! ext 'filestamp filestamp)
+    (slot-set! ext 'units (slot-ref doc 'units))
+    (slot-set! ext 'name name)
+    (slot-set! ext 'filepath (slot-ref doc 'filepath))
+    (slot-set! ext 'extend (slot-ref doc 'extend))
+    ext))
 
 (define all-doc-vector (make-weak-vector 200))
 
@@ -139,12 +153,11 @@
 (define (get-doc-from-waek-vec module index)
   (let1 doc (weak-vector-ref all-doc-vector index)
     (if doc
-      (car doc)
+      doc
       (let* ([alt (alt-geninfo-file module)]
-             [doc (geninfo alt)])
-        (slot-set! doc 'name module)
-        (weak-vector-set! all-doc-vector index 
-                          (cons doc (get-filestamp alt)))
+             [doc (doc->doc-extend ((geninfo-with-alt module alt))
+                                   module (get-filestamp alt))])
+        (weak-vector-set! all-doc-vector index doc)
         doc))))
 
 (define (get-doc module)
@@ -154,30 +167,29 @@
     (cond
       [(or (hash-table-get loaded-doc-table sym-module #f)
          (hash-table-get loaded-doc-table module #f))
-       => car]
+       => identity]
       [(hash-table-get all-doc-vector-index-table sym-module #f)
        => (pa$ get-doc-from-waek-vec sym-module)]
       [(hash-table-get all-doc-vector-index-table module #f)
        => (pa$ get-doc-from-waek-vec module)]
       [else 
         (let* ([alt (alt-geninfo-file module)]
-               [doc (geninfo alt)])
-          (slot-set! doc 'name module)
-          (add-to-all-doc-vector module (cons doc (get-filestamp alt)))
+               [doc (doc->doc-extend ((geninfo-with-alt module alt))
+                                     module (get-filestamp alt))])
+          (add-to-all-doc-vector module doc)
           doc)])))
 
 (define (get-ginfo-unit module name)
-  (define (filter-unit doc)
-    (filter
-      (lambda (u) 
-        (string=? (slot-ref u 'name) name))
-      (slot-ref doc 'units)))
-
-  (let1 sym-module (string->symbol module)
+  (let ([filter-unit (lambda (doc)
+                       (filter
+                         (lambda (u) 
+                           (string=? (slot-ref u 'name) name))
+                         (slot-ref doc 'units)))]
+        [sym-module (string->symbol module)])
     (cond
       [(or (hash-table-get loaded-doc-table sym-module #f)
-         (hash-table-get loaded-doc-table module #f))
-       => (.$ filter-unit car)]
+         (hash-table-get loaded-doc-table module #f)) 
+       => filter-unit]
       [(hash-table-get all-doc-vector-index-table sym-module #f)
        => (.$ filter-unit (pa$ get-doc-from-waek-vec sym-module))]
       [(hash-table-get all-doc-vector-index-table module #f)
@@ -186,14 +198,14 @@
 
 (define (add-loaded-module module :optional name)
   (let* ([name (if (undefined? name) module name)]
-         [module (if (symbol? module) (alt-geninfo-file module) module)]
-         [doc (geninfo module)])
-    (slot-set! doc 'name name)
-    (set-ginfo-unit name (cons doc (get-filestamp module)))))
+         [module (if (symbol? module) (alt-geninfo-file module) module)])
+    (set-ginfo-unit name (doc->doc-extend 
+                           ((geninfo-with-alt name module))
+                           name (get-filestamp module)))))
 
 (define (get-module-extend name)
   (cond
-    [(hash-table-get loaded-doc-table name #f) => (.$ (cut ref <> 'extend) car)]
+    [(hash-table-get loaded-doc-table name #f) => (cut ref <> 'extend)]
     [else '()]))
 
 (define (guarded-read :optional (port (current-input-port)))
@@ -204,11 +216,9 @@
   (guard (e [else '()]) ;catch all error
     (let1 loaded-doc (hash-table-get loaded-doc-table name #f)
       ;;do not load yet, or has been updated
-      (if (or (not loaded-doc) (< (cdr loaded-doc) filestamp))
-        (let1 doc (loader)
-          ;;overwrite document name
-          (slot-set! doc 'name name)
-          (set-ginfo-unit name (cons doc filestamp))
+      (if (or (not loaded-doc) (< (slot-ref loaded-doc 'filestamp) filestamp))
+        (let1 doc (doc->doc-extend (loader) name filestamp)
+          (set-ginfo-unit name doc)
           (cons
             (cons name doc)
             (fold
@@ -234,15 +244,66 @@
 ;;If you have read the generated document
 (define (alt-geninfo-file module)
   (if (symbol? module)
-    (let1 generated-doc-path (build-path generated-doc-directory (symbol->string module))
+    (let1 generated-doc-path (build-path generated-doc-directory 
+                                         (symbol->string module))
       (if (file-is-readable? generated-doc-path)
         generated-doc-path
         module))
     module))
 
+(define (unit-top-equal? this other)
+  (and (string=? (slot-ref this 'name) (slot-ref other 'name))
+    (string=? (slot-ref this 'type) (slot-ref other 'type))))
+
+(define-method unit-equal? ((this <unit-top>) other)
+  #f)
+
+(define-method unit-equal? ((this <unit-proc>) (other <unit-proc>))
+  (boolean
+    (and (unit-top-equal? this other)
+      (= (length (slot-ref this 'param)) (length (slot-ref other 'param))))))
+
+(define-method unit-equal? ((this <unit-var>) (other <unit-var>))
+  (boolean (unit-top-equal? this other)))
+
+(define-method unit-equal? ((this <unit-class>) (other <unit-class>))
+  (boolean (unit-top-equal? this other)))
+
+(define (merge-units units1 units2)
+  (map
+    (lambda (u)
+      (when (<= (slot-ref u 'line) 0)
+        (if-let1 u2 (find (cut unit-equal? u <>) units2)
+          (slot-set! u 'line (slot-ref u2 'line))))
+      u)
+    units1))
+
+(define (not-found-garud-geninfo module)
+  (guard (e 
+           [(and (<geninfo-warning> e) (string=? (slot-ref e 'message) "module not found"))
+            #f]
+           [else e])
+    (geninfo module)))
+
+(define (geninfo-with-alt original alt)
+  (if (equal? original alt)
+    (pa$ geninfo original)
+    (lambda ()
+      (let ([org (not-found-garud-geninfo original)]
+            [alt (not-found-garud-geninfo alt)])
+        (cond
+          [(and (is-a? org <doc>) (is-a? alt <doc>))
+           (slot-set! alt 'units (merge-units (slot-ref alt 'units)
+                                              (slot-ref org 'units)))
+           (slot-set! alt 'filepath (slot-ref org 'filepath))
+           alt]
+          [(is-a? org <doc>) org]
+          [(is-a? alt <doc>) alt]
+          [else (raise org)])))))
+
 (define (load-info-from-alt-geninfo name)
   (let1 alt (alt-geninfo-file name)
-    (load-info (pa$ geninfo alt) name (get-filestamp alt))))
+    (load-info (geninfo-with-alt name alt) name (get-filestamp alt))))
 
 (define (to-abs-path path)
   (if (absolute-path? path)
@@ -387,6 +448,8 @@
                               [else (ref unit 'type)]) "\""
                  ;; n is name
                  ",\"n\":\"" (ref unit 'name) "\""
+                 ;; l is line
+                 ",\"l\":\"" (x->string (ref unit 'line)) "\""
                  ;; d is description
                  (if output-name-only
                    ""
@@ -429,6 +492,7 @@
 (define-method output ((c <json-context>) (doc <doc>))
   (display-std (string-append
                  "\"n\":\"" (x->string (ref doc 'name)) "\""
+                 ",\"f\":\"" (x->string (ref doc 'filepath)) "\""
                  ",\"units\":"))
   (output-unit-list (ref doc 'units)))
 
@@ -610,25 +674,32 @@
 ;;definination of state
 ;;--------------------
 
-(let ([name #f]
+(let ([save-process-all-line #f]
+      [name #f]
       [basedir #f]
-      [texts #f])
+      [lines #f])
   (define-state read-texts
                 (lambda (base n); enter execution
+                  (set! save-process-all-line process-all-line)
+                  (set! process-all-line #t)
                   (set! basedir base)
                   (set! name n)
-                  (set! texts ""))
+                  (set! lines '()))
                 (lambda (line)
                   (if (string=? "#stdin-eof" line)
                     (cons 'init '())
-                    (set! texts (string-append texts "\n" line))))
+                    (begin
+                      (set! lines (cons line lines))
+                      (undefined))))
                 (lambda () ;exit execution
-                  (output-result
-                    (append
-                      (load-info (pa$ geninfo-from-text texts name) name (sys-time))
-                      (parse-related-module basedir (open-input-string texts))))
+                  (let1 text (string-join (reverse lines) "\n")
+                    (output-result
+                      (append
+                        (load-info (pa$ geninfo-from-text text name) name (sys-time))
+                        (parse-related-module basedir (open-input-string text)))))
+                  (set! process-all-line save-process-all-line)
                   (set! name #f)
-                  (set! texts #f)
+                  (set! lines #f)
                   )))
 
 ;;
@@ -728,12 +799,14 @@
      . args)
     (unwind-protect
       (begin
-        (let loop ([line (in-conv (read-line))])
-          (unless (eof-object? line)
-            (let1 line (string-trim-both line)
+        (let loop ([raw-line (in-conv (read-line))])
+          (unless (eof-object? raw-line)
+            (let1 line (string-trim-both raw-line)
               (unless (string=? line "#exit")
-                (unless (zero? (string-length line))
-                  (exec-line line))
+                (if process-all-line 
+                  (exec-line raw-line)
+                  (unless (zero? (string-length line))
+                    (exec-line line)))
                 (loop (in-conv (read-line)))))))
         0)
       1)))

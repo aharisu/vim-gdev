@@ -54,7 +54,6 @@
   (guard (exc [(or (<read-error> exc) (<error> exc)) (guarded-read)])
     (read port)))
 
-
 ;-------***************-----------
 ;data structure
 ;-------***************-----------
@@ -75,6 +74,7 @@
   (
    (units :init-keyword :units :init-value '())
    (name :init-keyword :name)
+   (filepath :init-keyword :filepath :init-value "")
    (extend :init-keyword :extend :init-value '())
    ))
 
@@ -128,6 +128,7 @@
 
    (name :init-keyword :name :init-value #f)
    (type :init-keyword :type :init-value #f)
+   (line :init-keyword :line :init-value 0)
 
    (description :init-keyword :description :init-value '())
    ))
@@ -162,12 +163,14 @@
 (define-method commit ((unit <unit-top>) original)
   (slot-set! unit 'name (escape-special-character (slot-ref original 'name)))
   (slot-set! unit 'type (escape-special-character (slot-ref original 'type)))
+  (slot-set! unit 'line (slot-ref original 'line))
   (slot-set! unit 'description (reverse-and-escape-character (slot-ref original 'description)))
   unit)
 
 (define-method show ((unit <unit-top>))
   (format #t "type: ~S\n" (slot-ref unit 'type))
   (format #t "name: ~S\n" (slot-ref unit 'name))
+  (format #t "line: ~S\n" (slot-ref unit 'line))
   (format #t "description: ~S\n" (slot-ref unit 'description)))
 
 
@@ -310,7 +313,6 @@
   (format #t "param: ~S\n" (slot-ref unit 'param))
   (format #t "return: ~S\n" (slot-ref unit 'return)))
 
-
 ;;;;;
 ;;var、constant、parameterタイプ用のunit
 (define-class <unit-var> (<unit-top>) () )
@@ -378,8 +380,6 @@
   (next-method)
   (format #t "supers: ~S\n" (slot-ref unit 'supers))
   (format #t "slots: ~S\n" (slot-ref unit 'slots)))
-
-
 
 (define-macro (or-equal? x . any)
   `(or ,@(map (lambda (y) `(equal? ,x ,y)) any)))
@@ -705,12 +705,12 @@
 
 ;;次の有効なドキュメントテキストを取得する
 ;;有効なドキュメントテキストがなければ#fを返す
-(define (next-doc-text)
+(define (next-doc-text config)
   (if (not (zero? (string-length (string-trim 
                                    (string-append
                                      (next-token-of '(#\space #\tab))
                                      (next-token-of '(#\;)))))))
-    (read-line)
+    (read-line-inc config)
     #f))
 
 ;;ドキュメントタグと本文を分解する
@@ -726,18 +726,18 @@
             "")]))
 
 ;;次のタグかドキュメントの終わりまで本文のテキストをスキップする
-(define (skip-current-tag)
+(define (skip-current-tag config)
   (let ([org-fp (port-seek (current-input-port) 0 SEEK_CUR)])
-    (if (not (zero? (string-length (string-trim (next-token-of '(#\space #\tab #\;))))))
-      (let ([line (read-line)])
+    (unless (zero? (string-length (string-trim (next-token-of '(#\space #\tab #\;)))))
+      (let ([line (read-line-inc config)])
         (if (zero? (string-length line))
-          skip-current-tag) ; read next line
-        (if (eq? #\@ (string-ref line 0))
-          ;;return to origin point file pointer
-          (port-seek (current-input-port) 
-                     (- org-fp (port-seek (current-input-port) 0 SEEK_CUR))
-                     SEEK_CUR)
-          (skip-current-tag)))))) ; read next line
+          (skip-current-tag config) ; read next line
+          (if (eq? #\@ (string-ref line 0))
+            ;;return to origin point file pointer
+            (port-seek (current-input-port) 
+                       (- org-fp (port-seek (current-input-port) 0 SEEK_CUR))
+                       SEEK_CUR)
+            (skip-current-tag config))))))) ; read next line
 
 (define original-string-ref string-ref)
 (define (string-ref str idx)
@@ -785,13 +785,13 @@
 ;;一つのドキュメントを最後までパースする
 (define (parse-doc config unit)
   (cond 
-    [(next-doc-text)
+    [(next-doc-text config)
      => (lambda (text) 
           (parse-doc config (cond 
                               [(process-tag text config unit)
                                => (lambda (text) (process-text text config unit))]
                               ;;TODO Warning
-                              [else (skip-current-tag) unit])))];skip tag text
+                              [else (skip-current-tag config) unit])))];skip tag text
     [else unit]))
 
 
@@ -1087,27 +1087,31 @@
       (and (rxmatch #/^define-.+$/ (symbol->string (car exp))) analyze-normal-define))
     #f))
 
-(define (return-from-read-exception org-fp)
+(define (return-from-read-exception config org-fp org-line)
+  ;;restore file pointer
   (port-seek (current-input-port) org-fp SEEK_SET)
   ;;skip the first-line of the problem
-  (read-line)
-  (let loop ([line (read-line)])
+  (read-line-inc config)
+  (let loop ([line (read-line-inc config)])
     (unless (eof-object? line) 
       (if (or (exp-start-line? line) (doc-start-line? line))
-        (restore-fp-with-line line)
-        (loop (read-line))))))
-
+        (restore-fp-with-line config line)
+        (loop (read-line-inc config))))))
 
 ;;ドキュメントの直下にある式が定義であれば
 ;;ドキュメントと関連するものとして解析を行う
 (define (parse-expression config unit doc)
-  (let1 org-fp (port-seek (current-input-port) 0 SEEK_CUR)
+  (let ([org-fp (port-seek (current-input-port) 0 SEEK_CUR)]
+        [org-line (port-current-line (current-input-port))]
+        [cur-line (get-config config 'line)])
     (guard (exc ((or [<read-error> exc] [<error> exc])
-                 (return-from-read-exception org-fp)))
-      (let ([exp (read)])
-        (unless (get-config config 'skip-relative) 
+                 (return-from-read-exception config org-fp org-line)))
+      (let ([exp (read-inc config)])
+        (if (get-config config 'skip-relative) 
+          (slot-set! unit 'line -1)
           (if-let1 analyzer (analyzable? exp)
             (guard (e [else #f]) ;error of automated analysis is ignored
+              (slot-set! unit 'line cur-line)
               (analyzer exp config unit doc))))))
     unit))
 
@@ -1170,6 +1174,23 @@
 (define (get-config config slot)
   (hash-table-get config slot #f))
 
+(define (read-inc config)
+  (let* ([start (port-current-line (current-input-port))]
+         [ret (read)])
+    (set-config config 'line (+ (get-config config 'line) 
+                                (- (port-current-line (current-input-port))
+                                   start)))
+    ret))
+
+(define (read-line-inc config)
+  (begin0 (read-line)
+    (set-config config 'line (+ (get-config config 'line) 1))))
+
+(define (read-char-inc config)
+  (rlet1 c (read-char)
+    (when (or (eq? #\lf c) (and (= newline-size 1) (eq? #\cr c))) 
+      (set-config config 'line (+ (get-config config 'line) 1)))))
+
 (define newline-size 0)
 (define (init-newline-size)
   (let loop ([c (read-char)])
@@ -1183,7 +1204,8 @@
       [else (loop (read-char))]))
   (port-seek (current-input-port) 0))
 
-(define (restore-fp-with-line line)
+(define (restore-fp-with-line config line)
+  (set-config config 'line (- (get-config config 'line) 1))
   (port-seek (current-input-port) -1 SEEK_CUR)
   (let1 ch (read-byte)
     (port-seek (current-input-port) 
@@ -1193,29 +1215,29 @@
                      newline-size 0)))
              SEEK_CUR)))
 
-(define (skip-block-comment)
+(define (skip-block-comment config)
   (skip-while #[\s])
   (read-char) ;;skip # char
   (read-char) ;;skip | char
-  (let loop ([ch (read-char)]
+  (let loop ([ch (read-char-inc config)]
              [level 1])
     (cond
       [(and (eq? ch #\#) (eq? (peek-char) #\|))
        (read-char) ;skip | char
-       (loop (read-char) (+ level 1))]
+       (loop (read-char-inc config) (+ level 1))]
       [(and (eq? ch #\|) (eq? (peek-char) #\#))
        (read-char) ;skip # char
        (if (zero? (- level 1))
          #f;finish
-         (loop (read-char) (- level 1)))]
-      [else (loop (read-char) level)])))
+         (loop (read-char-inc config) (- level 1)))]
+      [else (loop (read-char-inc config) level)])))
 
-(define (skip-exp-comment)
+(define (skip-exp-comment config)
   (skip-while #[\s])
   (read-char) ;;skip # char
   (read-char) ;;skip ; char
   (guard (e [else #f])
-    (read)))
+    (read-inc config)))
 
 (define (cmd-type-unit? unit)
   (if (and (slot-ref unit 'type) (equal? (slot-ref unit 'type) type-cmd))
@@ -1227,6 +1249,7 @@
         [config (make-hash-table)]
         [cur-unit (make <unit-bottom>)])
     (set-config config 'name name)
+    (set-config config 'line 1)
     (parameterize ([ignore-geninfo-warning? ignore-warning?])
       (with-input-from-port
         port
@@ -1245,19 +1268,19 @@
                 (cond
                   [(string-null? line) ]
                   [(block-comment-start-line? line)
-                   (restore-fp-with-line line)
-                   (skip-block-comment)]
+                   (restore-fp-with-line config line)
+                   (skip-block-comment config)]
                   [(exp-comment-start-line? line)
-                   (restore-fp-with-line line)
-                   (skip-exp-comment)]
+                   (restore-fp-with-line config line)
+                   (skip-exp-comment config)]
                   [(exp-start-line? line) 
-                   (restore-fp-with-line line)
+                   (restore-fp-with-line config line)
                    (let ([u (parse-expression config cur-unit doc)])
                      (unless (initial-state? u)
                        (add-unit doc (commit-unit config u))
                        (set! cur-unit (make <unit-bottom>))))]
                   [(doc-start-line? line) 
-                   (restore-fp-with-line line)
+                   (restore-fp-with-line config line)
                    (unless (initial-state? cur-unit)
                      (add-unit doc (commit-unit config cur-unit))
                      (set! cur-unit (make <unit-bottom>)))
@@ -1266,13 +1289,12 @@
                       => (cut set! cur-unit <>)]
                      [else (set! cur-unit (make <unit-bottom>))])]
                   )))
-            read-line)
+            (pa$ read-line-inc config))
           (unless (initial-state? cur-unit)
             (guard (e [(<geninfo-warning> e)
                        (unless (ignore-geninfo-warning?) (raise e))])
               (add-unit doc (commit-unit config cur-unit)))))))
     (commit-doc doc)))
-
 
 (define (read-all-doc-from-file filename name ignore-warning?)
   (let1 port (open-input-file filename)
@@ -1302,6 +1324,7 @@
     (cond
       [(and (not no-cache) (hash-table-get docs abs-path #f)) => identity]
       [else (let ([doc (read-all-doc-from-file abs-path name ignore-warning?)])
+              (slot-set! doc 'filepath abs-path)
               (if (not no-cache)
                 (hash-table-put! docs abs-path doc))
               doc)])))
@@ -1325,6 +1348,7 @@
                                  (let ([n (string->symbol (slot-ref u 'name))]) 
                                    (find (cut eq? <> n) exports)))
                                (slot-ref doc 'units))
+                :filepath (slot-ref doc 'filepath)
                 :extend (slot-ref doc 'extend)))))))
 
 ;;;;;
