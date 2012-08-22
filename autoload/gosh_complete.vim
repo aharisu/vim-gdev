@@ -968,8 +968,6 @@ function! s:openSplit(path)"{{{
   let savesplitright=&splitright
 
   let onlyOneWin = (winnr("$") ==# 1)
-  let width = winwidth(bufnr('%'))
-
   if onlyOneWin
     let &splitright=1
     let &splitbelow=0
@@ -978,17 +976,16 @@ function! s:openSplit(path)"{{{
     let &splitbelow=1
   endif
 
-  let splitMode = onlyOneWin ? "vertical" : ""
-
   try
-    exec(splitMode." sp " . a:path)
+    let splitMode = onlyOneWin ? "vertical" : ""
+    let width = winwidth(bufnr('%'))
+    exec(splitMode . " " . (width / 2) . "sp " . a:path)
   catch /^Vim\%((\a\+)\)\=:/
     "do nothing
   endtry
 
   if onlyOneWin
     call s:exec("wincmd l")
-    exec("silent ". splitMode ." resize ". (width / 2))
   endif
 
   let &splitbelow=savesplitbelow
