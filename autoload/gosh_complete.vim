@@ -314,6 +314,7 @@ function! s:get_unit_ginfo(units, is_in_table)
   else
     let unit_name = a:units[0]['n']
     let doc_name = a:units[0]['docname']
+    let filepath = a:units[0]['filepath']
 
     let s:get_unit_ginfo_complete = 0
 
@@ -332,6 +333,7 @@ function! s:get_unit_ginfo(units, is_in_table)
 
     for unit in s:unit_ginfo
       let unit['docname'] = doc_name
+      let unit['filepath'] = filepath
       let unit['_loaded_doc'] = 1
     endfor
 

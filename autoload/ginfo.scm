@@ -916,6 +916,40 @@
     #f);TODO warning
   (analyze-args (caddr l) identity config unit))
 
+;;parse define-syntax
+(define (analyze-syntax-define l config unit doc)
+  (set-unit-name (symbol->string (cadr l)) config unit)
+  (set-unit-type type-macro config unit)
+  (when (eq? (car (caddr l)) 'syntax-rules)
+    (let* ([init (get-init 'param)]
+           [params-list (let loop ([section (cddr (caddr l))]
+                                   [c '()])
+                          (if (null? section)
+                            (reverse c)
+                            (let1 u (make <unit-bottom>)
+                              (for-each
+                                (lambda (arg)
+                                  (init (x->string arg) config u))
+                                (cell->list (cdaar section)))
+                              (loop (cdr section)
+                                    (cons (slot-ref u 'param) c)))))])
+      (unless (null? params-list)
+        (slot-set! unit 'param (car params-list))
+        (for-each 
+          (lambda (params)
+            ((get-appender 'description)
+             (string-append
+               "other pattern: ("
+               (slot-ref unit 'name)
+               (let1 args (string-join
+                            (reverse (map (.$ x->string cadr) params))
+                            " ")
+                 (if (string-null? args)
+                   args
+                   (string-append " " args)))
+               ")")
+             config unit))
+          (cdr params-list))))))
 
 (define (convert-type type)
   (let ([conv '(
@@ -1071,6 +1105,7 @@
     (define-constant . ,analyze-normal-define)
     (define-method . ,analyze-method-define)
     (define-macro . ,analyze-normal-define)
+    (define-syntax . ,analyze-syntax-define)
     (define-class . ,analyze-class-define)
     (define-condition-type . ,analyze-condition-class-define)
     (define-module . ,analyze-module-define)
@@ -1346,10 +1381,11 @@
           (make <doc> :units (filter
                                (lambda (u) 
                                  (let ([n (string->symbol (slot-ref u 'name))]) 
-                                   (find (cut eq? <> n) exports)))
+                                   (any (cut eq? <> n) exports)))
                                (slot-ref doc 'units))
                 :filepath (slot-ref doc 'filepath)
                 :extend (slot-ref doc 'extend)))))))
+
 
 ;;;;;
 ;;ファイルを解析しドキュメントユニットを生成する

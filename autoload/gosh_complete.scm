@@ -270,13 +270,19 @@
   (boolean (unit-top-equal? this other)))
 
 (define (merge-units units1 units2)
-  (map
-    (lambda (u)
-      (when (<= (slot-ref u 'line) 0)
-        (if-let1 u2 (find (cut unit-equal? u <>) units2)
-          (slot-set! u 'line (slot-ref u2 'line))))
-      u)
-    units1))
+  (append
+    (map
+      (lambda (u)
+        (when (<= (slot-ref u 'line) 0)
+          (if-let1 u2 (find (cut unit-equal? u <>) units2)
+            (slot-set! u 'line (slot-ref u2 'line))))
+        u)
+      units1)
+    (filter
+      (lambda (u) (not (any (cut unit-equal? u <>) units1)))
+      units2)))
+
+
 
 (define (not-found-garud-geninfo module)
   (guard (e 
