@@ -16,7 +16,7 @@ endfunction
 
 function! s:source.hooks.on_init(args, context)
   if has_key(a:context, 'source__with_keyword')
-    let units = gosh_complete#match_unit_in_order_first_match(bufnr('%'),a:context.input , 0) "no duplicate
+    let units = gosh_complete#match_unit_in_order_first_match_prionity_exact_match(bufnr('%'),a:context.input , 0) "no duplicate
   else
     let units = gosh_complete#match_unit_in_order(bufnr('%'), '', 0) "no duplicate
   endif
@@ -110,7 +110,7 @@ function! s:start_search(with_key, is_insert, only_unique)
     let cword = expand('<cword>')
     let context['input'] = cword
 
-    let units = gosh_complete#match_unit_in_order_first_match(bufnr('%'), cword, 0)
+    let units = gosh_complete#match_unit_in_order_first_match_prionity_exact_match(bufnr('%'), cword, 0)
     if len(units) == 1 
       let is_unique = 1
       let context['immediately'] = 1

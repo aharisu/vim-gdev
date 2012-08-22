@@ -150,6 +150,19 @@ function! gosh_complete#get_module_order(buf_num)"{{{
   return order
 endfunction"}}}
 
+function! gosh_complete#match_unit_in_order_first_match_prionity_exact_match(buf_num, keyword, allow_duplicate)
+  let units = gosh_complete#match_unit_in_order_first_match(a:buf_num, a:keyword, a:allow_duplicate)
+  let keyword_len = strlen(a:keyword)
+  for unit in units
+    if strlen(unit['n']) == keyword_len
+      return [unit]
+    endif
+  endfor
+
+  return units
+endfunction
+
+
 function! gosh_complete#match_unit_in_order_first_match(buf_num, keyword, allow_duplicate)"{{{
   if a:allow_duplicate
     return s:match_unit_in_order_allow_duplicate(a:buf_num, a:keyword, function('s:first_match_filter'))
@@ -925,7 +938,7 @@ endfunction"}}}
 " Gauche Development Environment Command
 
 function! gosh_complete#gosh_goto_define(buf_num, keyword, split)"{{{
-  let units = gosh_complete#match_unit_in_order_first_match(a:buf_num, a:keyword, 0) "no duplicate
+  let units = gosh_complete#match_unit_in_order_first_match_prionity_exact_match(a:buf_num, a:keyword, 0) "no duplicate
   if len(units) == 1
     let line = units[0]['l']
     let filepath = units[0]['filepath']

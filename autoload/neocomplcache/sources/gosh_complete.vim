@@ -153,7 +153,7 @@ endfunction"}}}
 
 function! s:constract_word_list(bufnr)"{{{
   " get all unit
-  let units = gosh_complete#match_unit_in_order(a:bufnr, '', 0)
+  let units = gosh_complete#match_unit_in_order_first_match(a:bufnr, '', 0)
 
   " unit to completion word
   let word_list = s:units_to_word_list(units)
