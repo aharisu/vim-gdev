@@ -95,24 +95,26 @@ function! s:source.async_gather_candidates(args, context)"{{{
 endfunction"}}}
 
 function! s:get_all_symbol_callback(out, err, context)"{{{
-  if a:out ==# '##'
-    if !s:symbol_selected
-      call gosh_complete#write_text("#resume-load-all-symbol\n")
-      return 1
-    else
+  let docs = eval(a:out)
+  if type(docs) == type('')
+    if docs ==# '##'
+      if !s:symbol_selected
+        call gosh_complete#write_text("#resume-load-all-symbol\n")
+        return 1
+      else
+        let s:ginfo_doc = []
+        let s:finish_get_all_symbol = 1
+        return 0
+      endif
+
+    elseif docs ==# '#'
       let s:ginfo_doc = []
       let s:finish_get_all_symbol = 1
       return 0
     endif
-
-  elseif a:out ==# '#'
-    let s:ginfo_doc = []
-    let s:finish_get_all_symbol = 1
-    return 0
-
   else 
     if !s:symbol_selected
-      call add(s:ginfo_doc, eval(a:out)[0])
+      call add(s:ginfo_doc, docs[0])
     endif
 
     return 1

@@ -400,14 +400,11 @@
 (define (output-order order)
   (display-std "[")
   (unless (null? order)
-    (display-std "\"")
-    (display-std (car order))
-    (display-std "\"")
+    (display-std (make-json-string (x->string (car order))))
     (for-each
       (lambda (m)
-        (display-std ",\"")
-        (display-std m)
-        (display-std "\""))
+        (display-std ",")
+        (display-std (make-json-string (x->string m))))
       (cdr order)))
   (display-std "]"))
 
@@ -424,17 +421,24 @@
     (map (cut string-append "\"" <> "\"") accept-list)
     ","))
 
+(define (make-json-string text)
+  (string-append "\""
+                 (regexp-replace-all #/(\/)/ text
+                                     (lambda (m) (string-append "\\" (rxmatch-substring m 1))))
+                                     ;(lambda (m) (string-append (rxmatch-substring m 1))))
+                 "\""))
+
 (define (make-params-text params)
   (string-join 
     (map
       (lambda (p)
         (string-append
           ;; n is name
-          "{\"n\":\"" (param-name p) "\""
+          "{\"n\":" (make-json-string (param-name p))
           (let1 desc (make-description (param-description p))
             (if (output? desc)
               ;; d is description
-              (string-append ",\"d\":\"" desc "\"")
+              (string-append ",\"d\":" (make-json-string desc))
               ""))
           (let1 accept (make-list-text (param-acceptable p))
             (if (output? accept)
@@ -453,7 +457,7 @@
                               [(equal? type-const (ref unit 'type)) "C"]
                               [else (ref unit 'type)]) "\""
                  ;; n is name
-                 ",\"n\":\"" (ref unit 'name) "\""
+                 ",\"n\":" (make-json-string (ref unit 'name))
                  ;; l is line
                  ",\"l\":\"" (x->string (ref unit 'line)) "\""
                  ;; d is description
@@ -461,7 +465,7 @@
                    ""
                    (let1 desc (make-description (ref unit 'description))
                      (if (output? desc)
-                       (string-append ",\"d\":\"" desc "\"")
+                       (string-append ",\"d\":" (make-json-string desc))
                        "")))
                  )))
 
@@ -477,7 +481,7 @@
                    ;; r is return
                    (let1 return (make-description (ref unit 'return))
                      (if (output? return)
-                       (string-append ",\"r\":\"" return "\"")
+                       (string-append ",\"r\":" (make-json-string return))
                        "")))))
   )
 
@@ -497,8 +501,8 @@
 
 (define-method output ((c <json-context>) (doc <doc>))
   (display-std (string-append
-                 "\"n\":\"" (x->string (ref doc 'name)) "\""
-                 ",\"f\":\"" (x->string (ref doc 'filepath)) "\""
+                 "\"n\":" (make-json-string (x->string (ref doc 'name)))
+                 ",\"f\":" (make-json-string (x->string (ref doc 'filepath)))
                  ",\"units\":"))
   (output-unit-list (ref doc 'units)))
 
@@ -611,13 +615,13 @@
                         (when (zero? (remainder (+ index 1) 12))
                           (let/cc resume-cont
                             ;;pause
-                            (print-std "##")
+                            (print-std "\"##\"")
                             (set! load-all-symbol-continuation resume-cont)
                             (escape))))
                       (append
                         default-module
                         (all-library-names)))
-                    (print-std "#")))
+                    (print-std "\"#\"")))
                 (else
                   (let/cc escape
                     (for-each
@@ -632,7 +636,7 @@
                       (append
                         default-module
                         (all-library-names))))
-                  (print-std "#")))))
+                  (print-std "\"#\"")))))
 
 (define-cmd resume-load-all-symbol
             zero?
