@@ -394,6 +394,12 @@
 ;;Functions related to output
 ;;---------------------
 
+(define (make-json-string text)
+  (string-append "\""
+                 (regexp-replace-all #/(\/)/ text
+                                     (lambda (m) (string-append "\\" (rxmatch-substring m 1))))
+                 "\""))
+
 ;;---
 ;;output order list
 ;;---
