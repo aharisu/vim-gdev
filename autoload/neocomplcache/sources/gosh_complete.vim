@@ -41,7 +41,7 @@ let s:default_module_order = []
 
 
 function! s:source.initialize()"{{{
-  call gosh_complete#init_proc()
+  call gdev#init_proc()
 
   augroup neocomplcache
     autocmd FileType scheme call s:initialize_buffer()
@@ -50,7 +50,7 @@ function! s:source.initialize()"{{{
     autocmd CursorHoldI * call s:cursor_hold('holdi')
     autocmd CursorMoved * call s:cursor_moved('move')
     autocmd CursorMovedI * call s:cursor_moved('movei')
-    autocmd VimLeave * call gosh_complete#finale_proc()
+    autocmd VimLeave * call gdev#finale_proc()
   augroup END
 
   call s:load_default_module()
@@ -58,7 +58,7 @@ function! s:source.initialize()"{{{
 endfunction"}}}
 
 function! s:source.finalize()"{{{
-  call gosh_complete#finale_proc()
+  call gdev#finale_proc()
 endfunction"}}}
 
 function! s:source.get_keyword_pos(cur_text)"{{{
@@ -71,7 +71,7 @@ function! s:source.get_complete_words(cur_keyword_pos, cur_keyword_str)"{{{
   if s:check_buffer_init()
     "It is not necessary to copy?
     let list = neocomplcache#keyword_filter(
-          \ copy(gosh_complete#get_buf_data(bufnr('%'), 'words', []))
+          \ copy(gdev#get_buf_data(bufnr('%'), 'words', []))
           \ ,a:cur_keyword_str)
     if len(list) > g:neocomplcache_max_list * 2
       let list = list[0 : g:neocomplcache_max_list * 2]
@@ -108,15 +108,15 @@ function! s:cursor_hold(type)"{{{
     "call s:parse_cur_buf(1)
 
     "wait until all tasks
-    while !gosh_complete#is_empty_async_task()
-      call gosh_complete#check_async_task()
+    while !gdev#is_empty_async_task()
+      call gdev#check_async_task()
     endwhile
   endif
 endfunction"}}}
 
 function! s:cursor_moved(type)"{{{
   if &filetype !=# 'unite'
-    call gosh_complete#check_async_task() 
+    call gdev#check_async_task() 
   endif
 endfunction"}}}
 
@@ -140,7 +140,7 @@ endfunction"}}}
 
 function! s:add_doc(docs)"{{{
   for doc in a:docs
-    call gosh_complete#add_doc(doc['n'] ,doc['f'] ,get(doc, 'units', []))
+    call gdev#add_doc(doc['n'] ,doc['f'] ,get(doc, 'units', []))
   endfor
 endfunction "}}}
 
@@ -148,18 +148,18 @@ function! s:set_module_order(bufnr, order)"{{{
   let order = copy(s:default_module_order)
   call extend(order, a:order)
 
-  call gosh_complete#set_module_order(a:bufnr, order)
+  call gdev#set_module_order(a:bufnr, order)
 endfunction"}}}
 
 function! s:constract_word_list(bufnr)"{{{
   " get all unit
-  let units = gosh_complete#match_unit_in_order_first_match(a:bufnr, '', 0)
+  let units = gdev#match_unit_in_order_first_match(a:bufnr, '', 0)
 
   " unit to completion word
   let word_list = s:units_to_word_list(units)
 
   " register word list
-  call gosh_complete#set_buf_data(a:bufnr, 'words', word_list)
+  call gdev#set_buf_data(a:bufnr, 'words', word_list)
 endfunction"}}}
 
 function! s:units_to_word_list(units) "{{{
@@ -208,7 +208,7 @@ endfunction"}}}
 " Communicate to gosh-complete.scm
 
 function! s:load_default_module()"{{{
-  call gosh_complete#add_async_task("#load-default-module\n", 
+  call gdev#add_async_task("#load-default-module\n", 
         \ function('neocomplcache#sources#gosh_complete#load_default_module_end_callback'),
         \ {})
 endfunction
@@ -278,7 +278,7 @@ function! s:parse_cur_buf(parse_tick)"{{{
     endif
 
     "parse from buffer
-    call gosh_complete#add_async_task('#stdin ' . basedir . ' ' . docname . "\n" .
+    call gdev#add_async_task('#stdin ' . basedir . ' ' . docname . "\n" .
           \ join(getbufline('%', 1, '$'), "\n") . "\n" .
           \ "#stdin-eof\n", 
           \ function('neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback'),
@@ -290,7 +290,7 @@ function! s:parse_cur_buf(parse_tick)"{{{
     endif
 
     "parse from file
-    call gosh_complete#add_async_task('#load-file ' . filename . ' ' . docname . "\n",
+    call gdev#add_async_task('#load-file ' . filename . ' ' . docname . "\n",
           \ function('neocomplcache#sources#gosh_complete#parse_cur_buf_end_callback'),
           \ {'bufnr' : bufnr('%')})
   endif

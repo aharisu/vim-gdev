@@ -1,7 +1,7 @@
 "=============================================================================
-" FILE: gosh_complete.vim
+" FILE: gdev.vim
 " AUTHOR:  aharisu <foo.yobina@gmail.com>
-" Last Modified: 21 Aug 2012.
+" Last Modified: 30 Sep 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -55,17 +55,17 @@ function! s:initialize()"{{{
 
   " Register key mapping
   nnoremap <silent> <Plug>(gosh_info_row_up)
-        \ :call gosh_complete#do_cmd_in_gosh_info("call s:gosh_info_scroll_up()")<CR>
+        \ :call gdev#do_cmd_in_gosh_info("call s:gosh_info_scroll_up()")<CR>
   nnoremap <silent> <Plug>(gosh_info_row_down)
-        \ :call gosh_complete#do_cmd_in_gosh_info("call s:gosh_info_scroll_down()")<CR>
+        \ :call gdev#do_cmd_in_gosh_info("call s:gosh_info_scroll_down()")<CR>
   nnoremap <silent> <Plug>(gosh_info_close)
-        \ :call gosh_complete#do_cmd_in_gosh_info("wincmd q")<CR>
+        \ :call gdev#do_cmd_in_gosh_info("wincmd q")<CR>
   inoremap <silent> <Plug>(gosh_info_row_up) 
-        \<ESC>:call gosh_complete#do_cmd_in_gosh_info("call s:gosh_info_scroll_up()")<CR>a
+        \<ESC>:call gdev#do_cmd_in_gosh_info("call s:gosh_info_scroll_up()")<CR>a
   inoremap <silent> <Plug>(gosh_info_row_down) 
-        \<ESC>:call gosh_complete#do_cmd_in_gosh_info("call s:gosh_info_scroll_down()")<CR>a
+        \<ESC>:call gdev#do_cmd_in_gosh_info("call s:gosh_info_scroll_down()")<CR>a
   inoremap <silent> <Plug>(gosh_info_close) 
-        \<ESC>:call gosh_complete#do_cmd_in_gosh_info("wincmd q")<CR>a
+        \<ESC>:call gdev#do_cmd_in_gosh_info("wincmd q")<CR>a
 
   inoremap <silent> <Plug>(gosh_info_start_search_with_cur_keyword) 
         \<ESC>:call unite#sources#gosh_info#start_search_with_cur_keyword(1, 0)<CR>
@@ -78,7 +78,7 @@ function! s:initialize()"{{{
         \ :call unite#sources#gosh_info#start_search_with_cur_keyword(0, 0)<CR>
 endfunction"}}}
 
-function! gosh_complete#add_doc(name, filepath, units)"{{{
+function! gdev#add_doc(name, filepath, units)"{{{
   if s:debug
     call neocomplcache#print_warning('add_doc:' . a:name . ',' . a:filepath)
   endif
@@ -108,7 +108,7 @@ function! gosh_complete#add_doc(name, filepath, units)"{{{
   endif
 endfunction"}}}
 
-function! gosh_complete#set_buf_data(buf_num, name, data)"{{{
+function! gdev#set_buf_data(buf_num, name, data)"{{{
   if s:debug
     call neocomplcache#print_warning('set_buf_data:' 
           \ . a:buf_num . ':' 
@@ -125,7 +125,7 @@ function! gosh_complete#set_buf_data(buf_num, name, data)"{{{
   endif
 endfunction"}}}
 
-function! gosh_complete#get_buf_data(buf_num, name, ...)"{{{
+function! gdev#get_buf_data(buf_num, name, ...)"{{{
   if has_key(s:each_buf_data, a:buf_num) &&
         \ has_key(s:each_buf_data[a:buf_num], a:name)
     return s:each_buf_data[a:buf_num][a:name]
@@ -136,12 +136,12 @@ function! gosh_complete#get_buf_data(buf_num, name, ...)"{{{
   endif
 endfunction"}}}
 
-function! gosh_complete#set_module_order(buf_num, order)"{{{
-  call gosh_complete#set_buf_data(a:buf_num, 'order', a:order)
+function! gdev#set_module_order(buf_num, order)"{{{
+  call gdev#set_buf_data(a:buf_num, 'order', a:order)
 endfunction"}}}
 
-function! gosh_complete#get_module_order(buf_num)"{{{
-  let order = gosh_complete#get_buf_data(a:buf_num, 'order', 0)
+function! gdev#get_module_order(buf_num)"{{{
+  let order = gdev#get_buf_data(a:buf_num, 'order', 0)
   if order is 0
     unlet order
     let order = keys(s:ginfo_table)
@@ -150,8 +150,8 @@ function! gosh_complete#get_module_order(buf_num)"{{{
   return order
 endfunction"}}}
 
-function! gosh_complete#match_unit_in_order_first_match_prionity_exact_match(buf_num, keyword, allow_duplicate)
-  let units = gosh_complete#match_unit_in_order_first_match(a:buf_num, a:keyword, a:allow_duplicate)
+function! gdev#match_unit_in_order_first_match_prionity_exact_match(buf_num, keyword, allow_duplicate)
+  let units = gdev#match_unit_in_order_first_match(a:buf_num, a:keyword, a:allow_duplicate)
   let keyword_len = strlen(a:keyword)
   for unit in units
     if strlen(unit['n']) == keyword_len
@@ -163,7 +163,7 @@ function! gosh_complete#match_unit_in_order_first_match_prionity_exact_match(buf
 endfunction
 
 
-function! gosh_complete#match_unit_in_order_first_match(buf_num, keyword, allow_duplicate)"{{{
+function! gdev#match_unit_in_order_first_match(buf_num, keyword, allow_duplicate)"{{{
   if a:allow_duplicate
     return s:match_unit_in_order_allow_duplicate(a:buf_num, a:keyword, function('s:first_match_filter'))
   else
@@ -171,7 +171,7 @@ function! gosh_complete#match_unit_in_order_first_match(buf_num, keyword, allow_
   endif
 endfunction"}}}
 
-function! gosh_complete#match_unit_in_order(buf_num, keyword, allow_duplicate)"{{{
+function! gdev#match_unit_in_order(buf_num, keyword, allow_duplicate)"{{{
   if a:allow_duplicate
     return s:match_unit_in_order_allow_duplicate(a:buf_num, a:keyword, function('s:unit_name_head_filter'))
   else
@@ -182,7 +182,7 @@ endfunction"}}}
 functio! s:match_unit_in_order_no_duplicate(buf_num, keyword, Comp)"{{{
   let unit_table = {}
 
-  for mod in gosh_complete#get_module_order(a:buf_num)
+  for mod in gdev#get_module_order(a:buf_num)
     if !has_key(s:ginfo_table, mod)
       continue
     endif
@@ -207,7 +207,7 @@ functio! s:match_unit_in_order_allow_duplicate(buf_num, keyword, Comp)"{{{
   let unit_table = {}
   let type_list = type([])
 
-  for mod in gosh_complete#get_module_order(a:buf_num)
+  for mod in gdev#get_module_order(a:buf_num)
     if !has_key(s:ginfo_table, mod)
       continue
     endif
@@ -277,13 +277,13 @@ function! s:unit_name_head_filter(units, keyword)"{{{
   return filter(copy(a:units), expr)
 endfunction"}}}
 
-function! gosh_complete#show_ginfo(module, symbol, ...)"{{{
+function! gdev#show_ginfo(module, symbol, ...)"{{{
 
   if has_key(s:ginfo_table, a:module)
     let units = s:find_ginfo_in_doc(s:ginfo_table[a:module], a:symbol)
     let is_in_table = 1
   else
-    let units = [{'n' : a:symbol, 'docname' : a:module, '_loaded_doc' : 0}]
+    let units = [{'n' : a:symbol, 'filepath' : '', 'docname' : a:module, '_loaded_doc' : 0}]
     let is_in_table = 0
   endif
 
@@ -327,19 +327,20 @@ function! s:get_unit_ginfo(units, is_in_table)
   else
     let unit_name = a:units[0]['n']
     let doc_name = a:units[0]['docname']
+    "let filepath = has_key(a:units[0], 'filepath') ? a:units[0]['filepath'] : ''
     let filepath = a:units[0]['filepath']
 
     let s:get_unit_ginfo_complete = 0
 
     "call gosh
-    call gosh_complete#add_async_task('#get-unit '
+    call gdev#add_async_task('#get-unit '
           \ . doc_name . ' ' . unit_name . "\n",
           \ function('s:get_unit_ginfo_callback'),
           \ {})
 
     "wait until get unit
     while !s:get_unit_ginfo_complete
-      call gosh_complete#check_async_task()
+      call gdev#check_async_task()
 
       sleep 50m
     endwhile
@@ -543,7 +544,7 @@ function! s:get_param_description(param, is_show_empty)
   endif
 endfunction"}}}
 
-function! gosh_complete#constract_unit_word(unit, ...)"{{{
+function! gdev#constract_unit_word(unit, ...)"{{{
   let name = a:unit.n
   let len = len(name)
   let padding = 30 - len
@@ -581,7 +582,7 @@ endfunction"}}}
 "
 " Communicate to gosh-complete.scm
 
-function! gosh_complete#init_proc()"{{{
+function! gdev#init_proc()"{{{
   if s:init_count == 0
     call s:initialize()
 
@@ -622,7 +623,7 @@ function! s:get_loaded_module_name(docname)"{{{
   return name
 endfunction"}}}"}}}
 
-function! gosh_complete#finale_proc()"{{{
+function! gdev#finale_proc()"{{{
   let s:init_count -= 1
 
   if s:init_count <= 0
@@ -639,17 +640,17 @@ function! s:restart_gosh_process()"{{{
 
   "signal 15 is SIGTERM
   call s:gosh_comp.kill(15)
-  call gosh_complete#init_proc()
+  call gdev#init_proc()
 
   " restore s:init_count
   let s:init_count = tmp
 endfunction"}}}
 
-function! gosh_complete#write_text(text)"{{{
+function! gdev#write_text(text)"{{{
   call s:gosh_comp.stdin.write(a:text)
 endfunction"}}}
 
-function! gosh_complete#add_async_task(text, callback, context)"{{{
+function! gdev#add_async_task(text, callback, context)"{{{
   if empty(s:async_task_queue)
     call s:gosh_comp.stdin.write(a:text)
     call add(s:async_task_queue, {'callback':a:callback, 'time' : localtime(), 'context' : a:context})
@@ -658,13 +659,13 @@ function! gosh_complete#add_async_task(text, callback, context)"{{{
   endif
 endfunction
 
-function! gosh_complete#is_empty_async_task()
+function! gdev#is_empty_async_task()
   return empty(s:async_task_queue)
 endfunction
 
 let s:outport_remain = ''
 let s:errport_remain = ''
-function! gosh_complete#check_async_task()
+function! gdev#check_async_task()
   if empty(s:async_task_queue)
     return 0
   endif
@@ -850,7 +851,7 @@ function! s:initialize_buffer()"{{{
   setlocal filetype=gosh-info
 endfunction"}}}
 
-function! gosh_complete#do_cmd_in_gosh_info(cmd)"{{{
+function! gdev#do_cmd_in_gosh_info(cmd)"{{{
   call s:mark_back_to_window()
 
   if s:move_to_gosh_info_window()
@@ -937,8 +938,8 @@ endfunction"}}}
 "
 " Gauche Development Environment Command
 
-function! gosh_complete#gosh_goto_define(buf_num, keyword, split)"{{{
-  let units = gosh_complete#match_unit_in_order_first_match_prionity_exact_match(a:buf_num, a:keyword, 0) "no duplicate
+function! gdev#gosh_goto_define(buf_num, keyword, split)"{{{
+  let units = gdev#match_unit_in_order_first_match_prionity_exact_match(a:buf_num, a:keyword, 0) "no duplicate
   if len(units) == 1
     let line = units[0]['l']
     let filepath = units[0]['filepath']

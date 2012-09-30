@@ -13,7 +13,7 @@ let s:source = {
 
 
 function! unite#sources#gosh_all_symbol#define()
-  call gosh_complete#init_proc()
+  call gdev#init_proc()
 
   return s:source
 endfunction
@@ -28,17 +28,17 @@ function! s:source.hooks.on_init(args, context)"{{{
 
   let a:context.source__candidates_state = 0
 
-  call gosh_complete#add_async_task("#load-all-symbol\n",
+  call gdev#add_async_task("#load-all-symbol\n",
         \ s:funcref('get_all_symbol_callback'),
         \ 0)
 endfunction"}}}
 
 function! s:source.hooks.on_close(args, context)"{{{
   let s:symbol_selected = 1
-  call gosh_complete#write_text("#end-load-all-symbol\n")
+  call gdev#write_text("#end-load-all-symbol\n")
 
   while !s:finish_get_all_symbol
-    call gosh_complete#check_async_task()
+    call gdev#check_async_task()
   endwhile
 endfunction"}}}
 
@@ -51,7 +51,7 @@ function! s:source.async_gather_candidates(args, context)"{{{
   endif
 
   for n in range(0, s:equal_count * 4)
-    if gosh_complete#check_async_task() == 0
+    if gdev#check_async_task() == 0
       break
     endif
   endfor
@@ -72,7 +72,7 @@ function! s:source.async_gather_candidates(args, context)"{{{
       call extend(ret, map(units, '{
           \ "word" : v:val.n,
           \ "kind" : "openable",
-          \ "abbr" : gosh_complete#constract_unit_word(v:val, doc_name),
+          \ "abbr" : gdev#constract_unit_word(v:val, doc_name),
           \ "source__docname" : doc_name,
           \}'))
     endfor
@@ -99,7 +99,7 @@ function! s:get_all_symbol_callback(out, err, context)"{{{
   if type(docs) == type('')
     if docs ==# '##'
       if !s:symbol_selected
-        call gosh_complete#write_text("#resume-load-all-symbol\n")
+        call gdev#write_text("#resume-load-all-symbol\n")
         return 1
       else
         let s:ginfo_doc = []
@@ -129,7 +129,7 @@ let s:openable_action_table.open ={
       \ 'is_selectable' : 0,
       \ }
 function! s:openable_action_table.open.func(c)
-  call gosh_complete#show_ginfo(a:c.source__docname, a:c.word)
+  call gdev#show_ginfo(a:c.source__docname, a:c.word)
 endfunction"}}}
 
 "split {{{
@@ -137,7 +137,7 @@ let s:openable_action_table.split ={
       \ 'is_selectable' : 0,
       \ }
 function! s:openable_action_table.split.func(c)
-  call gosh_complete#show_ginfo(a:c.source__docname, a:c.word, 'h')
+  call gdev#show_ginfo(a:c.source__docname, a:c.word, 'h')
 endfunction"}}}
 
 " vsplit {{{
@@ -145,7 +145,7 @@ let s:openable_action_table.vsplit ={
       \ 'is_selectable' : 0,
       \ }
 function! s:openable_action_table.vsplit.func(c)
-  call gosh_complete#show_ginfo(a:c.source__docname, a:c.word, 'v')
+  call gdev#show_ginfo(a:c.source__docname, a:c.word, 'v')
 endfunction"}}}
 
 " left {{{
@@ -153,7 +153,7 @@ let s:openable_action_table.left ={
       \ 'is_selectable' : 0,
       \ }
 function! s:openable_action_table.left.func(c)
-  call gosh_complete#show_ginfo(a:c.source__docname, a:c.word, 'v:l')
+  call gdev#show_ginfo(a:c.source__docname, a:c.word, 'v:l')
 endfunction"}}}
 
 " right {{{
@@ -161,7 +161,7 @@ let s:openable_action_table.right ={
       \ 'is_selectable' : 0,
       \ }
 function! s:openable_action_table.right.func(c)
-  call gosh_complete#show_ginfo(a:c.source__docname, a:c.word, 'v:r')
+  call gdev#show_ginfo(a:c.source__docname, a:c.word, 'v:r')
 endfunction"}}}
 
 " above {{{
@@ -169,7 +169,7 @@ let s:openable_action_table.above ={
       \ 'is_selectable' : 0,
       \ }
 function! s:openable_action_table.above.func(c)
-  call gosh_complete#show_ginfo(a:c.source__docname, a:c.word, 'h:a')
+  call gdev#show_ginfo(a:c.source__docname, a:c.word, 'h:a')
 endfunction"}}}
 
 " below {{{
@@ -177,7 +177,7 @@ let s:openable_action_table.below ={
       \ 'is_selectable' : 0,
       \ }
 function! s:openable_action_table.below.func(c)
-  call gosh_complete#show_ginfo(a:c.source__docname, a:c.word, 'h:b')
+  call gdev#show_ginfo(a:c.source__docname, a:c.word, 'h:b')
 endfunction"}}}
 
 

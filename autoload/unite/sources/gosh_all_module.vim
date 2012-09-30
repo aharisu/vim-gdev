@@ -11,7 +11,7 @@ let s:source = {
       \ }
 
 function! unite#sources#gosh_all_module#define()
-  call gosh_complete#init_proc()
+  call gdev#init_proc()
 
   return s:source
 endfunction
@@ -19,13 +19,13 @@ endfunction
 function! s:source.hooks.on_init(args, context)"{{{
   let a:context.source__first_candidates = 1
 
-  call gosh_complete#add_async_task("#load-all-module\n",
+  call gdev#add_async_task("#load-all-module\n",
         \ s:funcref('get_all_module_callback'),
         \ 0)
 endfunction"}}}
 
 function! s:source.async_gather_candidates(args, context)"{{{
-  call gosh_complete#check_async_task()
+  call gdev#check_async_task()
 
   if exists('s:modules')
     "clear loading word

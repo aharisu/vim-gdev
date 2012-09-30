@@ -1,7 +1,7 @@
 "=============================================================================
-" FILE: gauche_complete.vim
+" FILE: gdev.vim
 " AUTHOR:  aharisu <foo.yobina@gmail.com>
-" Last Modified: 21 Aug 2012.
+" Last Modified: 30 Sep 2012.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -24,16 +24,16 @@
 " }}}
 "=============================================================================
 
-if exists("loaded_gauche_complete")
+if exists("loaded_gdev")
   finish
 endif
-let loaded_gauche_complete = 1
+let loaded_gdev = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-nnoremap <silent> <Plug>(gosh_goto_define) :call gosh_complete#gosh_goto_define(bufnr('%'), expand('<cword>'), 0)<CR>
-nnoremap <silent> <Plug>(gosh_goto_define_split) :call gosh_complete#gosh_goto_define(bufnr('%'), expand('<cword>'), 1)<CR>
+nnoremap <silent> <Plug>(gosh_goto_define) :call gdev#gosh_goto_define(bufnr('%'), expand('<cword>'), 0)<CR>
+nnoremap <silent> <Plug>(gosh_goto_define_split) :call gdev#gosh_goto_define(bufnr('%'), expand('<cword>'), 1)<CR>
 
 let &cpo = s:save_cpo
 
