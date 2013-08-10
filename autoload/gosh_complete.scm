@@ -39,6 +39,8 @@
 (use gauche.sequence)
 (use ginfo)
 
+(add-load-path "." :relative)
+
 (ignore-geninfo-warning? #t)
 
 (define-constant default-module '(gauche scheme null))
@@ -658,7 +660,7 @@
             (lambda () 
               (set! load-all-symbol-continuation #f)))
 
-(include "./module_description.scm")
+(include "module_description.scm")
 (define-cmd load-all-module
             zero?
             (lambda ()
