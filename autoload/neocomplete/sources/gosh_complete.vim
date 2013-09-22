@@ -31,7 +31,7 @@ let s:source = {
       \ 'hooks' : {},
       \}
 
-let s:debug = 1
+let s:debug = 0
 let s:debug_out_err = 0
 
 let s:neocom_sources_directory = expand('<sfile>:p:h')
@@ -80,7 +80,6 @@ function! s:source.gather_candidates(context)"{{{
 endfunction"}}}
 
 function! neocomplete#sources#gosh_complete#define()"{{{
-  call neocomplete#print_error("hohoho")
   if neocomplete#util#has_vimproc()
     return s:source
   else
