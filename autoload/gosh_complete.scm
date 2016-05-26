@@ -785,7 +785,7 @@
     (cond
       ([eq? #\m kind] (string->symbol (substring token 1 (string-length token))))
       ([eq? #\f kind] (substring token 1 (string-length token)))
-      ([else (errorf "illegal token.[~S]" token)]))))
+      (else (errorf "illegal token.[~S]" token)))))
 
 (define (main args)
   (let-args (cdr args)
